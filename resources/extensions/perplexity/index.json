@@ -1,0 +1,15 @@
+{
+    "extension_name": "Perplexity AI",
+    "version": "1.0",
+    "controllers": [
+      "app/Http/Controllers/Admin/Extensions/PerplexityController.php"
+    ],
+    "views": [
+      "resources/views/default/admin/davinci/configuration/extension/perplexity/setting.blade.php"
+    ],
+    "routes": "routes/perplexity_route.php",
+    "migrations": {
+        "install": [],
+        "uninstall": []
+    }
+}

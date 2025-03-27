@@ -1,0 +1,5 @@
+{
+	"name": "classic",
+	"extends": "default",
+	"asset-path": "themes\/classic"
+}

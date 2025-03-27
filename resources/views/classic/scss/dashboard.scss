@@ -1,0 +1,24 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+// Variables
+@import 'variables';
+
+//Layout
+@import "layouts/alignments";
+@import "layouts/widgets";
+@import "layouts/backgrounds";
+@import "layouts/cards";
+@import "layouts/layouts";
+@import "layouts/dropdown";
+@import "layouts/checkout";
+@import "layouts/color";
+@import "layouts/sidemenu";
+
+//Custom
+@import "custom/style";
+@import "custom/custom-styles";
+@import "custom/dark-styles";
+@import "custom/rtl";
+
+// Responsive
+@import "layouts/responsive"

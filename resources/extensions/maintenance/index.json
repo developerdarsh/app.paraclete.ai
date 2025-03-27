@@ -1,0 +1,15 @@
+{
+    "extension_name": "Maintenance Mode",
+    "version": "1.0",
+    "controllers": [
+      "app/Http/Controllers/Admin/Extensions/MaintenanceModeController.php"
+    ],
+    "views": [
+      "resources/views/default/admin/davinci/configuration/extension/maintenance/setting.blade.php"
+    ],
+    "routes": "routes/maintenance_route.php",
+    "migrations": {
+        "install": [],
+        "uninstall": []
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "extension_name": "IBM Watson Text to Speech",
+    "version": "1.0",
+    "controllers": [
+      "app/Http/Controllers/Admin/Extensions/WatsonController.php",
+      "app/Services/IBMTTSService.php"
+    ],
+    "views": [
+      "resources/views/default/admin/davinci/configuration/extension/watson/setting.blade.php"
+    ],
+    "routes": "routes/watson_route.php",
+    "migrations": {
+        "install": [],
+        "uninstall": []
+    }
+}

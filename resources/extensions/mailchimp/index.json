@@ -1,0 +1,15 @@
+{
+    "extension_name": "Mailchimp",
+    "version": "1.0",
+    "controllers": [
+      "app/Http/Controllers/Admin/Extensions/MailchimpController.php"
+    ],
+    "views": [
+      "resources/views/default/admin/davinci/configuration/extension/mailchimp/index.blade.php"
+    ],
+    "routes": "routes/mailchimp_route.php",
+    "migrations": {
+        "install": [],
+        "uninstall": []
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "extension_name": "Hubspot",
+    "version": "1.0",
+    "controllers": [
+      "app/Http/Controllers/Admin/Extensions/HubspotController.php"
+    ],
+    "views": [
+      "resources/views/default/admin/davinci/configuration/extension/hubspot/index.blade.php"
+    ],
+    "routes": "routes/hubspot_route.php",
+    "migrations": {
+        "install": [],
+        "uninstall": []
+    }
+}
