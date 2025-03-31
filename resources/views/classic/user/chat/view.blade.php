@@ -1027,20 +1027,6 @@
 								convertTextToSpeech(parsedResult.data, parsedResult.voice_code);
 							})
                         }
-						fetch("/app/user/chat/update-words", { 
-							headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-							method: 'post',
-							body: formData
-							})
-						.then(function(response){
-							return response.text();
-						})
-						.then(function(result){
-							const parsedResult = JSON.parse(result);
-							$("#balance").text(parsedResult.balance);
-							$("#available_words").text(parsedResult.available_words);
-							$("#available_words_prepaid").text(parsedResult.available_words_prepaid);
-						})
 						msgerSendBtn.disabled = false
 						eventSource.close();
 						$msg_txt.html(escape_html(msg));
@@ -1054,13 +1040,21 @@
 							if (model == 'claude-3-5-haiku-20241022' || model == 'claude-3-5-sonnet-20241022' || model == 'claude-3-opus-20240229' || model == 'gemini_pro' || model == 'o1-mini' || model == 'o1-preview') {
 								txt = e.data;
 							} else {
-								txt = JSON.parse(e.data).choices[0].delta.content;
-								if(isProcess){
-									response.innerHTML = '';
-									console.log('model' , model);
-									msg = "";
-								}	// clear
-								isProcess = JSON.parse(e.data).choices[0].delta.process;
+								try {
+									let parsedData = JSON.parse(e.data);
+									if (parsedData.choices && parsedData.choices[0].delta) {
+										txt = parsedData.choices[0].delta.content;
+										if (isProcess) {
+											response.innerHTML = '';
+											console.log('model', model);
+											msg = "";
+										}
+										isProcess = parsedData.choices[0].delta.process;
+									}
+								} catch (error) {
+									console.error("JSON Parsing Error:", error, "Raw Data:", e.data);
+									txt = e.data; // Fallback to raw data
+								}
 							}
 							
 						} else {

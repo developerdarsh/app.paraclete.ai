@@ -1095,20 +1095,6 @@
 								convertTextToSpeech(parsedResult.data, parsedResult.voice_code);
 							})
                         }
-						fetch("/app/user/chat/update-words", { 
-							headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-							method: 'post',
-							body: formData
-							})
-						.then(function(response){
-							return response.text();
-						})
-						.then(function(result){
-							const parsedResult = JSON.parse(result);
-							$("#balance").text(parsedResult.balance);
-							$("#available_words").text(parsedResult.available_words);
-							$("#available_words_prepaid").text(parsedResult.available_words_prepaid);
-						})
 						msgerSendBtn.disabled = false
 						eventSource.close();
 						$msg_txt.html(escape_html(msg));
