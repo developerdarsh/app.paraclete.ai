@@ -1,4 +1,6 @@
 .env
 .lic
+/public/
+/vendor/
 /public/*
 /vendor/*
