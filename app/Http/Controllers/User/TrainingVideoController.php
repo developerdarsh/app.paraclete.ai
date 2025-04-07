@@ -23,6 +23,10 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use App\Models\Payment;
 use GuzzleHttp\Client;
+use App\Models\MainSetting;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\WelcomeMessage;
+use Exception;
 
 class TrainingVideoController extends Controller
 {
@@ -725,6 +729,17 @@ public function searchFeeds(Request $request){
 			'country' => $request['country'], // Country from the request array
 		]);
 
+		$product_id = $request['order']['line_item_global_product_ids'][0] ?? null;
+
+		$plan = SubscriptionPlan::where('stripe_gateway_plan_id', $product_id)->first();
+
+		if ($plan) {
+			$plan_id = $plan->id; // Retrieve the plan ID
+		} else {
+			$plan_id = null; // Handle the case where no matching plan is found
+		}
+		$settings = MainSetting::first();
+
 		$email_opt_in = true; // Assuming they always opt-in
 		$referral_code = ($request->hasCookie('referral')) ? $request->cookie('referral') : ''; 
 		$referrer = ($referral_code != '') ? User::where('referral_id', $referral_code)->firstOrFail() : null; // Updated to null to avoid errors if not found
@@ -735,18 +750,10 @@ public function searchFeeds(Request $request){
         $user->assignRole(config('settings.default_user'));
 		$user->status = $status;
         $user->group = config('settings.default_user');
-        $user->gpt_3_turbo_credits = config('settings.free_gpt_3_turbo_credits');
-        $user->gpt_4_turbo_credits = config('settings.free_gpt_4_turbo_credits');
-        $user->gpt_4_credits = config('settings.free_gpt_4_credits');
-        $user->fine_tune_credits = config('settings.free_fine_tune_credits');
-        $user->claude_3_opus_credits = config('settings.free_claude_3_opus_credits');
-        $user->claude_3_sonnet_credits = config('settings.free_claude_3_sonnet_credits');
-        $user->claude_3_haiku_credits = config('settings.free_claude_3_haiku_credits');
-        $user->gemini_pro_credits = config('settings.free_gemini_pro_credits');
-        $user->available_dalle_images = config('settings.free_tier_dalle_images');
-        $user->available_sd_images = config('settings.free_tier_sd_images');
-        $user->available_chars = config('settings.voiceover_welcome_chars');
-        $user->available_minutes = config('settings.whisper_welcome_minutes');
+		$user->images = $settings->image_credits;
+		$user->tokens = $settings->token_credits;
+		$user->characters = config('settings.voiceover_welcome_chars');
+		$user->minutes = config('settings.whisper_welcome_minutes');
         $user->default_voiceover_language = config('settings.voiceover_default_language');
         $user->default_voiceover_voice = config('settings.voiceover_default_voice');
         $user->default_template_language = config('settings.default_language');
@@ -756,6 +763,8 @@ public function searchFeeds(Request $request){
         $user->referral_id = strtoupper(Str::random(15));
         $user->referred_by = $referrer_id;
         $user->email_opt_in = $email_opt_in;
+		$user->plan_id = $plan_id;
+		$user->plan_type = 'paid';
         // $this->addToGetResponse($request->name, $request->email);
         $user->save();   
 
@@ -811,9 +820,9 @@ public function searchFeeds(Request $request){
         // $record_payment->save(); 
 
 		try {
-			Mail::to($request->user())->send(new WelcomeMessage());
+			Mail::to($user)->send(new WelcomeMessage());
 		} catch (Exception $e) {
-			\Log::info('SMTP settings are not configured yet');
+			Log::error('Mail sending failed: ' . $e->getMessage());
 		}
   
 
