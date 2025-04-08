@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\LicenseController;
 use Illuminate\Support\Facades\Auth;
 use App\Traits\VoiceToneTrait;
 use Illuminate\Http\Request;
-use OpenAI\Laravel\Facades\OpenAI;
+use OpenAI\Client;
 use App\Models\FavoriteTemplate;
 use App\Models\CustomTemplate;
 use App\Models\SubscriptionPlan;
@@ -25,13 +24,6 @@ use App\Services\HelperService;
 class RewriterController extends Controller
 {
     use VoiceToneTrait;
-
-    private $api;
-
-    public function __construct()
-    {
-        $this->api = new LicenseController();
-    }
 
     /** 
      * Display a listing of the resource.
@@ -253,29 +245,29 @@ class RewriterController extends Controller
 	public function process(Request $request) 
     {
         if (config('settings.personal_openai_api') == 'allow') {
-            config(['openai.api_key' => auth()->user()->personal_openai_key]);         
+            $openai_api = auth()->user()->personal_openai_key;        
         } elseif (!is_null(auth()->user()->plan_id)) {
             $check_api = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
             if ($check_api->personal_openai_api) {
-                config(['openai.api_key' => auth()->user()->personal_openai_key]);                
+                $openai_api = auth()->user()->personal_openai_key;               
             } else {
                 if (config('settings.openai_key_usage') !== 'main') {
-                    $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
-                    array_push($api_keys, config('services.openai.key'));
-                    $key = array_rand($api_keys, 1);
-                    config(['openai.api_key' => $api_keys[$key]]);
-                } else {
-                    config(['openai.api_key' => config('services.openai.key')]);
-                }
+                $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
+                array_push($api_keys, config('services.openai.key'));
+                $key = array_rand($api_keys, 1);
+                $openai_api = $api_keys[$key];
+            } else {
+                $openai_api = config('services.openai.key');
             }
+        }               
         } else {
             if (config('settings.openai_key_usage') !== 'main') {
                 $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
                 array_push($api_keys, config('services.openai.key'));
                 $key = array_rand($api_keys, 1);
-                config(['openai.api_key' => $api_keys[$key]]);
+                $openai_api = $api_keys[$key];
             } else {
-                config(['openai.api_key' => config('services.openai.key')]);
+                $openai_api = config('services.openai.key');
             }
         }
         
@@ -286,79 +278,96 @@ class RewriterController extends Controller
         $language = $request->language;
         $content = Content::where('id', $content_id)->first();
         $prompt = $content->input_text;  
-        $model = $content->model;
 
-        return response()->stream(function () use($model, $prompt, $content_id, $temperature, $language) {
+        return response()->stream(function () use($prompt, $content_id, $temperature, $language, $openai_api) {
 
+            $content = Content::where('id', $content_id)->first();  
+            $model = $content->model;         
+            $input_tokens = 0;
+            $output_tokens = 0;
             $text = "";
+
+            $messages[] = ['role' => 'user', 'content' => $prompt];             
 
             try {
 
-                $results = OpenAI::chat()->createStreamed([
-                    'model' => $model,
-                    'messages' => [
-                        ['role' => 'user', 'content' => $prompt]
-                    ],
-                    'frequency_penalty' => 0,
-                    'presence_penalty' => 0,
-                    'temperature' => (float)$temperature,
-                ]);
+                $openai_client = \OpenAI::client($openai_api);
 
-                $output = "";
-                $responsedText = "";
-                foreach ($results as $result) {
-                    
-                    if (isset($result['choices'][0]['delta']['content'])) {
-                        $raw = $result['choices'][0]['delta']['content'];
+                if (in_array($model, ['o1', 'o1-mini', 'o3-mini'])) {
+                    $stream = $openai_client->chat()->createStreamed([
+                        'model' => $model,
+                        'messages' => $messages,
+                        'frequency_penalty' => 0,
+                        'presence_penalty' => 0,
+                        'stream_options'=>[
+                            'include_usage' => true,
+                        ]
+                    ]);
+                } else {
+                    $stream = $openai_client->chat()->createStreamed([
+                        'model' => $model,
+                        'messages' => $messages,
+                        'frequency_penalty' => 0,
+                        'presence_penalty' => 0,
+                        'temperature' => (float)$temperature,                        
+                        'stream_options'=>[
+                            'include_usage' => true,
+                        ]
+                    ]);
+                }
+
+                foreach ($stream as $result) {
+
+                    if (isset($result->choices[0]->delta->content)) {
+                        $raw = $result->choices[0]->delta->content;
                         $clean = str_replace(["\r\n", "\r", "\n"], "<br/>", $raw);
                         $text .= $raw;
     
-                        echo 'data: ' . $clean ."\n\n";
+                        if (connection_aborted()) {
+                            break;
+                        }
+    
+                        echo 'data: ' . $clean;
+                        echo "\n\n";
                         ob_flush();
                         flush();
-                        usleep(400);
                     }
     
-    
-                    if (connection_aborted()) { break; }
+                    if($result->usage !== null){
+                        $input_tokens = $result->usage->promptTokens;
+                        $output_tokens = $result->usage->completionTokens; 
+                    }
                 }
 
-
-            } catch (\Exception $exception) {
-                echo "data: " . $exception->getMessage();
-                echo "\n\n";
-                ob_flush();
-                flush();
                 echo 'data: [DONE]';
                 echo "\n\n";
                 ob_flush();
                 flush();
-                usleep(50000);
+
+
+            } catch (\Exception $e) {
+                \Log::error('OpenAI API Error: ' . $e->getMessage());
+                echo 'data: OpenAI Notification: <span class="font-weight-bold">' . $e->getMessage() . '</span>. Please contact support team.';
+                echo "\n\n";
+                echo 'data: [DONE]';
+                echo "\n\n";
+                ob_flush();
+                flush();
             }
            
 
-            $words = count(explode(' ', ($text)));
-            HelperService::updateBalance($words, $model); 
-            # Update credit balance
-            // if ($language != 'cmn-CN' && $language != 'ja-JP') {
-            //     $words = count(explode(' ', ($text)));
-            //     $this->updateBalance($words); 
-            // } else {
-            //     $words = $this->updateBalanceKanji($text);
-            // }
-             
-            $content = Content::where('id', $content_id)->first();
-            $content->tokens = $words;
-            $content->words = $words;
-            $content->save();
+            if (!empty($text)) {
+                # Update credit balance
+                $words = count(explode(' ', ($text)));
+                HelperService::updateBalance($words, $model, $input_tokens, $output_tokens);   
 
+                $content->result_text = $text;
+                $content->input_tokens = $input_tokens;
+                $content->output_tokens = $output_tokens;
+                $content->words = $words;
+                $content->save();
 
-            echo 'data: [DONE]';
-            echo "\n\n";
-            ob_flush();
-            flush();
-            usleep(40000);
-            
+            }
             
         }, 200, [
             'Cache-Control' => 'no-cache',
@@ -376,34 +385,34 @@ class RewriterController extends Controller
             if (is_null(auth()->user()->personal_openai_key)) {
                 return response()->json(["status" => "error", 'message' => __('You must include your personal Openai API key in your profile settings first')]);
             } else {
-                config(['openai.api_key' => auth()->user()->personal_openai_key]); 
-            } 
+                $openai_api = auth()->user()->personal_openai_key; 
+            }                    
         } elseif (!is_null(auth()->user()->plan_id)) {
             $check_api = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
             if ($check_api->personal_openai_api) {
                 if (is_null(auth()->user()->personal_openai_key)) {
                     return response()->json(["status" => "error", 'message' => __('You must include your personal Openai API key in your profile settings first')]);
                 } else {
-                    config(['openai.api_key' => auth()->user()->personal_openai_key]); 
-                }
+                    $openai_api = auth()->user()->personal_openai_key; 
+                }                               
             } else {
                 if (config('settings.openai_key_usage') !== 'main') {
-                   $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
-                   array_push($api_keys, config('services.openai.key'));
-                   $key = array_rand($api_keys, 1);
-                   config(['openai.api_key' => $api_keys[$key]]);
-               } else {
-                    config(['openai.api_key' => config('services.openai.key')]);
-               }
-           }
+                $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
+                array_push($api_keys, config('services.openai.key'));
+                $key = array_rand($api_keys, 1);
+                $openai_api = $api_keys[$key];
+            } else {
+                $openai_api = config('services.openai.key');
+            }
+        }               
         } else {
             if (config('settings.openai_key_usage') !== 'main') {
                 $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
                 array_push($api_keys, config('services.openai.key'));
                 $key = array_rand($api_keys, 1);
-                config(['openai.api_key' => $api_keys[$key]]);
+                $openai_api = $api_keys[$key];
             } else {
-                config(['openai.api_key' => config('services.openai.key')]);
+                $openai_api = config('services.openai.key');
             }
         }
 
@@ -436,7 +445,10 @@ class RewriterController extends Controller
             $prompt = $request->prompt . '. If the task is not related to translation, return response in the language of the content text.';
         }
 
-        $completion = OpenAI::chat()->create([
+        $openai_client = \OpenAI::client($openai_api);
+
+
+        $completion = $openai_client->chat()->create([
             'model' => $model,
             'temperature' => 0.9,
             'messages' => [[
@@ -445,9 +457,11 @@ class RewriterController extends Controller
             ]]
         ]);
 
+        $input_token = $completion->usage->promptTokens; 
+        $output_token = $completion->usage->completionTokens; 
 
         $words = count(explode(' ', ($completion->choices[0]->message->content)));
-        HelperService::updateBalance($words, $model); 
+        HelperService::updateBalance($words, $model, $input_token, $output_token); 
 
         return response()->json(["status" => "success", "message" => $completion->choices[0]->message->content]);
     }

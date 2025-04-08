@@ -8,10 +8,10 @@ use App\Services\Statistics\UserService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use App\Traits\VoiceToneTrait;
 use Illuminate\Http\Request;
-use OpenAI\Laravel\Facades\OpenAI;
 use App\Models\SubscriptionPlan;
 use App\Models\Template;
 use App\Models\Content;
@@ -22,6 +22,7 @@ use App\Models\User;
 use App\Models\ArticleWizard;
 use App\Models\FineTuneModel;
 use App\Services\HelperService;
+use OpenAI\Client;
 use Exception;
 
 
@@ -135,6 +136,7 @@ class ArticleWizardController extends Controller
 
            
             # Check Openai APIs
+            $key = '';
             $key = $this->getOpenai();
             if ($key == 'none') {
                 $data['status'] = 'error';
@@ -151,38 +153,64 @@ class ArticleWizardController extends Controller
             }
   
             try {
-                $response = OpenAI::chat()->create([
-                    'model' => $request->model,
-                    'messages' => [[
+
+                $message = [[
                         'role' => 'user',
                         'content' => "Generate $request->keywords_numbers keywords (simple words or 2 words, not phrase, not person name) about '$request->topic'. Must resut as a comma separated string without any extra details. Result format is: keyword1, keyword2, ..., keywordN. Must not write ```json."
-                    ]]
-                ]);
+                    ]];
+
+                $openai_client = \OpenAI::client($key);
+                
+                if (in_array($request->model, ['o1', 'o1-mini', 'o3-mini'])) {
+                    $response = $openai_client->chat()->create([
+                        'model' => $request->model,
+                        'messages' => $message,
+                        'frequency_penalty' => 0,
+                        'presence_penalty' => 0,
+                    ]);
+                } else {
+                    $response = $openai_client->chat()->create([
+                        'model' => $request->model,
+                        'messages' => $message,
+                        'frequency_penalty' => 0,
+                        'presence_penalty' => 0,
+                        'temperature' => (float)$request->creativity                       
+                    ]);
+                }
+
+                $result = $response->choices[0]->message->content;
+                $tokens = [
+                    'prompt_tokens' => $response->usage->promptTokens,
+                    'completion_tokens' => $response->usage->completionTokens,
+                ];
+                    
 
                 # Update credit balance
-                $words = count(explode(' ', ($response['choices'][0]['message']['content'])));
+                $words = count(explode(' ', $result));
                 HelperService::updateBalance($words, $request->model); 
 
                 $flag = Language::where('language_code', $request->language)->first();
 
                 $wizard = ArticleWizard::where('id', $request->wizard)->first();
                 if (is_null($wizard->keywords)) {
-                    $wizard->keywords = $response['choices'][0]['message']['content'];
+                    $wizard->keywords = $result;
                 } else {
-                    $wizard->keywords .= ', ' . $response['choices'][0]['message']['content'];
+                    $wizard->keywords .= ', ' . $result;
                 }          
                 $wizard->language = $flag->language;          
                 $wizard->tone = $request->tone;          
                 $wizard->creativity = (float)$request->creativity;          
                 $wizard->view_point = $request->view_point;          
                 $wizard->max_words = $request->words;          
+                $wizard->input_tokens = $tokens['prompt_tokens'];          
+                $wizard->output_tokens = $tokens['completion_tokens'];          
                 $wizard->save();
 
-                $data['old'] = auth()->user()->available_words + auth()->user()->available_words_prepaid;
-                $data['current'] = auth()->user()->available_words + auth()->user()->available_words_prepaid - $words;
-                $data['type'] = (auth()->user()->available_words == -1) ? 'unlimited' : 'counted';
+                $data['old'] = auth()->user()->tokens + auth()->user()->tokens_prepaid;
+                $data['current'] = auth()->user()->tokens + auth()->user()->tokens_prepaid - $words;
+                $data['type'] = (auth()->user()->tokens == -1) ? 'unlimited' : 'counted';
 
-                return response()->json(['result' => $response['choices'][0]['message']['content'], 'balance' => $data]);
+                return response()->json(['result' => $result, 'balance' => $data]);
 
             } catch (Exception $e) {
                 $data['status'] = 'error';
@@ -230,15 +258,35 @@ class ArticleWizardController extends Controller
                     $prompt = "Generate $request->topics_number titles. Titles must be about topic:  $request->topic . (Without number for order, titles are not keywords). Must not write any description. Strictly create in array json data. Every title is sentence or phrase string. The depth is 1. This is result format: [title1, title2, ..., titlen]. Maximum title length is $request->topic_length. Must not write ```json.";
                 }
 
-                $response = OpenAI::chat()->create([
-                    'model' => $request->model,
-                    'messages' => [[
+                $message = [[
                         'role' => 'user',
                         'content' => $prompt,
-                    ]]
-                ]);
+                    ]];
+
+                $openai_client = \OpenAI::client($key);
                 
-                $result = json_decode($response['choices'][0]['message']['content']);
+                if (in_array($request->model, ['o1', 'o1-mini', 'o3-mini'])) {
+                    $response = $openai_client->chat()->create([
+                        'model' => $request->model,
+                        'messages' => $message,
+                        'frequency_penalty' => 0,
+                        'presence_penalty' => 0,
+                    ]);
+                } else {
+                    $response = $openai_client->chat()->create([
+                        'model' => $request->model,
+                        'messages' => $message,
+                        'frequency_penalty' => 0,
+                        'presence_penalty' => 0,
+                        'temperature' => (float)$request->creativity                       
+                    ]);
+                }
+
+                $result = json_decode($response->choices[0]->message->content);
+                $tokens = [
+                    'prompt_tokens' => $response->usage->promptTokens,
+                    'completion_tokens' => $response->usage->completionTokens,
+                ];
        
                 $main_string = '';
                 $numItems = count($result);
@@ -252,7 +300,7 @@ class ArticleWizardController extends Controller
                 }
 
                 # Update credit balance
-                $words = count(explode(' ', ($response['choices'][0]['message']['content'])));
+                $words = count(explode(' ', ($response->choices[0]->message->content)));
                 HelperService::updateBalance($words, $request->model); 
 
                 $wizard = ArticleWizard::where('id', $request->wizard)->first();
@@ -267,12 +315,14 @@ class ArticleWizardController extends Controller
                 $wizard->creativity = (float)$request->creativity;          
                 $wizard->view_point = $request->view_point;  
                 $wizard->max_words = $request->words;  
+                $wizard->input_tokens = $wizard->input_tokens + $tokens['prompt_tokens'];          
+                $wizard->output_tokens = $wizard->output_tokens + $tokens['completion_tokens']; 
                 $wizard->current_step = 1;
                 $wizard->save();
 
-                $data['old'] = auth()->user()->available_words + auth()->user()->available_words_prepaid;
-                $data['current'] = auth()->user()->available_words + auth()->user()->available_words_prepaid - $words;
-                $data['type'] = (auth()->user()->available_words == -1) ? 'unlimited' : 'counted';
+                $data['old'] = auth()->user()->tokens + auth()->user()->tokens_prepaid;
+                $data['current'] = auth()->user()->tokens + auth()->user()->tokens_prepaid - $words;
+                $data['type'] = (auth()->user()->tokens == -1) ? 'unlimited' : 'counted';
 
                 return response()->json(['result' => $main_string, 'balance' => $data]);
 
@@ -322,20 +372,40 @@ class ArticleWizardController extends Controller
                     $prompt = "Generate different outlines related to $request->title (Each outline must has only $request->outline_subtitles subtitles (Without number for order, subtitles are not keywords)) $request->outline_number times. Provide response in the exat same language as the title. Use $request->tone writing tone. The depth is 1.  Must not write any description. Result must be array json data. Every subtitle is sentence or phrase string. This is result format: [[subtitle1(string), subtitle2(string), subtitle3(string), ... , subtitle-$request->outline_subtitles(string)]]. Must not write ```json.";
                 }
 
-                $response = OpenAI::chat()->create([
-                    'model' => $request->model,
-                    'messages' => [[
-                        'role' => 'user',
-                        'content' => $prompt,
-                    ]],
-                    'temperature' => (float)$request->creativity,
-                ]);
+                $message = [[
+                    'role' => 'user',
+                    'content' => $prompt,
+                ]];
 
-                $temp = str_replace('```json', '', $response['choices'][0]['message']['content']);
+                $openai_client = \OpenAI::client($key);
+                
+                if (in_array($request->model, ['o1', 'o1-mini', 'o3-mini'])) {
+                    $response = $openai_client->chat()->create([
+                        'model' => $request->model,
+                        'messages' => $message,
+                        'frequency_penalty' => 0,
+                        'presence_penalty' => 0,
+                    ]);
+                } else {
+                    $response = $openai_client->chat()->create([
+                        'model' => $request->model,
+                        'messages' => $message,
+                        'frequency_penalty' => 0,
+                        'presence_penalty' => 0,
+                        'temperature' => (float)$request->creativity                       
+                    ]);
+                }
+
+                $tokens = [
+                    'prompt_tokens' => $response->usage->promptTokens,
+                    'completion_tokens' => $response->usage->completionTokens,
+                ];
+
+                $temp = str_replace('```json', '', $response->choices[0]->message->content);
                 $temp = str_replace('```', '', $temp);
                 
                 # Update credit balance
-                $words = count(explode(' ', ($response['choices'][0]['message']['content'])));
+                $words = count(explode(' ', ($response->choices[0]->message->content)));
                 HelperService::updateBalance($words, $request->model); 
 
                 $flag = Language::where('language_code', $request->language)->first();
@@ -348,14 +418,16 @@ class ArticleWizardController extends Controller
                 $wizard->creativity = (float)$request->creativity;          
                 $wizard->view_point = $request->view_point;  
                 $wizard->max_words = $request->words;  
+                $wizard->input_tokens = $wizard->input_tokens + $tokens['prompt_tokens'];          
+                $wizard->output_tokens = $wizard->output_tokens + $tokens['completion_tokens']; 
                 $wizard->current_step = 2;
                 $wizard->save();
 
-                $data['old'] = auth()->user()->available_words + auth()->user()->available_words_prepaid;
-                $data['current'] = auth()->user()->available_words + auth()->user()->available_words_prepaid - $words;
-                $data['type'] = (auth()->user()->available_words == -1) ? 'unlimited' : 'counted';
+                $data['old'] = auth()->user()->tokens + auth()->user()->tokens_prepaid;
+                $data['current'] = auth()->user()->tokens + auth()->user()->tokens_prepaid - $words;
+                $data['type'] = (auth()->user()->tokens == -1) ? 'unlimited' : 'counted';
 
-                return response()->json(['result' => json_decode($response['choices'][0]['message']['content']), 'balance' => $data]);
+                return response()->json(['result' => json_decode($response->choices[0]->message->content), 'balance' => $data]);
 
             } catch (Exception $e) {
                 $data['status'] = 'error';
@@ -380,8 +452,8 @@ class ArticleWizardController extends Controller
 
            
             # Check Openai APIs
-            $key = $this->getOpenai();
-            if ($key == 'none') {
+            $openai_key = $this->getOpenai();
+            if ($openai_key == 'none') {
                 $data['status'] = 'error';
                 $data['message'] = __('You must include your personal Openai API key in your profile settings first');
                 return $data; 
@@ -412,20 +484,40 @@ class ArticleWizardController extends Controller
                             $prompt = "Generate $request->points_number talking points for this outline: $outline. It must be also relevant to this title: $request->title. Provide talking points in the exact same language as the outline. The depth is 1.  Must not write any description. Use $request->tone writing tone. Strictly create in json array of objects. This is result format: [talking_point1(string), talking_point2(string), talking_point3(string), ...]. Maximum length of each talking point must be $request->points_length words. Must not write ```json.";
                         }
     
-                        $response = OpenAI::chat()->create([
-                            'model' => $request->model,
-                            'messages' => [[
-                                'role' => 'user',
-                                'content' => $prompt,
-                            ]],
-                            'temperature' => (float)$request->creativity,
-                        ]);
+                        $message = [[
+                            'role' => 'user',
+                            'content' => $prompt,
+                        ]];
+        
+                        $openai_client = \OpenAI::client($openai_key);
+                        
+                        if (in_array($request->model, ['o1', 'o1-mini', 'o3-mini'])) {
+                            $response = $openai_client->chat()->create([
+                                'model' => $request->model,
+                                'messages' => $message,
+                                'frequency_penalty' => 0,
+                                'presence_penalty' => 0,
+                            ]);
+                        } else {
+                            $response = $openai_client->chat()->create([
+                                'model' => $request->model,
+                                'messages' => $message,
+                                'frequency_penalty' => 0,
+                                'presence_penalty' => 0,
+                                'temperature' => (float)$request->creativity                       
+                            ]);
+                        }
+        
+                        $tokens = [
+                            'prompt_tokens' => $response->usage->promptTokens,
+                            'completion_tokens' => $response->usage->completionTokens,
+                        ];
 
-                        $temp = str_replace('```json', '', $response['choices'][0]['message']['content']);
+                        $temp = str_replace('```json', '', $response->choices[0]->message->content);
                         $temp = str_replace('```', '', $temp);
 
                         # Update credit balance
-                        $words = count(explode(' ', ($response['choices'][0]['message']['content'])));
+                        $words = count(explode(' ', ($response->choices[0]->message->content)));
                         $total_words += $words;
 
                         $results[$key] = json_decode($temp);
@@ -446,12 +538,14 @@ class ArticleWizardController extends Controller
                 $wizard->creativity = (float)$request->creativity;          
                 $wizard->view_point = $request->view_point;  
                 $wizard->max_words = $request->words;  
+                $wizard->input_tokens = $wizard->input_tokens + $tokens['prompt_tokens'];          
+                $wizard->output_tokens = $wizard->output_tokens + $tokens['completion_tokens']; 
                 $wizard->current_step = 3;
                 $wizard->save();
 
-                $data['old'] = auth()->user()->available_words + auth()->user()->available_words_prepaid;
-                $data['current'] = auth()->user()->available_words + auth()->user()->available_words_prepaid - $total_words;
-                $data['type'] = (auth()->user()->available_words == -1) ? 'unlimited' : 'counted';
+                $data['old'] = auth()->user()->tokens + auth()->user()->tokens_prepaid;
+                $data['current'] = auth()->user()->tokens + auth()->user()->tokens_prepaid - $words;
+                $data['type'] = (auth()->user()->tokens == -1) ? 'unlimited' : 'counted';
                 
                 return response()->json(['result' => json_encode($results), 'input' => json_encode($input), 'balance' => $data]);
 
@@ -491,65 +585,17 @@ class ArticleWizardController extends Controller
             
             $vendor = '';
             # Verify if user has enough credits
-            if (config('settings.wizard_image_vendor') == 'dall-e-2' || config('settings.wizard_image_vendor') == 'dall-e-3' || config('settings.wizard_image_vendor') == 'dall-e-3-hd') {
-                $vendor = 'dalle';
-                if (auth()->user()->image_credits != -1) {
-                    if ((auth()->user()->image_credits + auth()->user()->image_credits_prepaid) < 1) {
-                        if (!is_null(auth()->user()->member_of)) {
-                            if (auth()->user()->member_use_credits_image) {
-                                $member = User::where('id', auth()->user()->member_of)->first();
-                                if (($member->image_credits + $member->image_credits_prepaid) < 1) {
-                                    $data['status'] = 'error';
-                                    $data['message'] = __('Not enough Dalle image balance to proceed, subscribe or top up your image balance and try again');
-                                    return $data;
-                                }
-                            } else {
-                                $data['status'] = 'error';
-                                $data['message'] = __('Not enough Dalle image balance to proceed, subscribe or top up your image balance and try again');
-                                return $data;
-                            }
-                            
-                        } else {
-                            $data['status'] = 'error';
-                            $data['message'] = __('Not enough Dalle image balance to proceed, subscribe or top up your image balance and try again');
-                            return $data;
-                        } 
-                    }
-                }
-            } else {
-                $vendor = 'sd';
-                if (auth()->user()->image_credits != -1) {
-                    if ((auth()->user()->image_credits + auth()->user()->image_credits_prepaid) < 1) {
-                        if (!is_null(auth()->user()->member_of)) {
-                            if (auth()->user()->member_use_credits_image) {
-                                $member = User::where('id', auth()->user()->member_of)->first();
-                                if (($member->image_credits + $member->image_credits_prepaid) < 1) {
-                                    $data['status'] = 'error';
-                                    $data['message'] = __('Not enough Stable Diffusion image balance to proceed, subscribe or top up your image balance and try again');
-                                    return $data;
-                                }
-                            } else {
-                                $data['status'] = 'error';
-                                $data['message'] = __('Not enough Stable Diffusion image balance to proceed, subscribe or top up your image balance and try again');
-                                return $data;
-                            }
-                            
-                        } else {
-                            $data['status'] = 'error';
-                            $data['message'] = __('Not enough Stable Diffusion image balance to proceed, subscribe or top up your image balance and try again');
-                            return $data;
-                        } 
-                    }
-                }
+            $credit_status = $this->checkCredits(config('settings.wizard_image_vendor'));
+            if (!$credit_status) {
+                $data['status'] = 'error';
+                $data['message'] = __('Not enough media credits to proceed, subscribe or top up your media credit balance and try again');
+                return $data;
             }
             
 
             $response = '';
             $storage = '';
             $image_url = '';
-            $identify = $this->api->verify_license();
-            if($identify['data']!=633855){return false;}
-
             
 
             if (!is_null($request->image_description) || $request->image_description != '') {
@@ -561,21 +607,25 @@ class ArticleWizardController extends Controller
 
             try {
                 if (config('settings.wizard_image_vendor') == 'dall-e-2' || config('settings.wizard_image_vendor') == 'dall-e-3') {
-                    $response = OpenAI::images()->create([
+                    $client = \OpenAI::client(config('services.openai.key'));
+
+                    $response = $client->images()->create([
                         'model' => config('settings.wizard_image_vendor'),
                         'prompt' => $prompt,
                         'size' => $request->image_size,
                         'n' => 1,
-                        "response_format" => "url",
+                        'response_format' => 'url'
                     ]);
 
                 } elseif(config('settings.wizard_image_vendor') == 'dall-e-3-hd') {
-                    $response = OpenAI::images()->create([
+                    $client = \OpenAI::client(config('services.openai.key'));
+
+                    $response = $client->images()->create([
                         'model' => 'dall-e-3',
                         'prompt' => $prompt,
                         'size' => $request->image_size,
                         'n' => 1,
-                        "response_format" => "url",
+                        'response_format' => 'url',
                         'quality' => "hd",
                     ]);
 
@@ -732,7 +782,7 @@ class ArticleWizardController extends Controller
             }
 
             # Update image credit balance
-            $this->updateImageBalance(1, $vendor);
+            $this->updateBalance(1, config('settings.wizard_image_vendor'));
 
             $flag = Language::where('language_code', $request->language)->first();
 
@@ -804,7 +854,7 @@ class ArticleWizardController extends Controller
             $content->language_flag = $flag->language_flag;
             $content->template_code = $request->template;
             $content->template_name = 'Article Wizard';
-            $content->icon = '<i class="fa-solid fa-sharp fa-sparkles wizard-icon"></i>';
+            $content->icon = '<i class="fa-solid fa-sparkles wizard-icon"></i>';
             $content->group = 'wizard';
             $content->tokens = 0;
             $content->image = $request->image_url;
@@ -831,8 +881,8 @@ class ArticleWizardController extends Controller
 	public function process(Request $request) 
     {
         # Check Openai APIs
-        $key = $this->getOpenai();
-        if ($key == 'none') {
+        $openai_key = $this->getOpenai();
+        if ($openai_key == 'none') {
             $data['status'] = 'error';
             $data['message'] = __('You must include your personal Openai API key in your profile settings first');
             return $data; 
@@ -849,10 +899,12 @@ class ArticleWizardController extends Controller
         $model = $current_content->model;
 
 
-        return response()->stream(function () use($model, $wizard, $content) {
+        return response()->stream(function () use($model, $wizard, $content, $openai_key) {
 
             $text = "";
             $final_text = "";
+            $input_tokens = 0;
+            $output_tokens = 0;
 
             $input = ArticleWizard::where('id', $wizard)->first();
 
@@ -879,75 +931,93 @@ class ArticleWizardController extends Controller
                 }
                 
 
-                $results = OpenAI::chat()->createStreamed([
-                    'model' => $model,
-                    'messages' => [
-                        ['role' => 'user', 'content' => $prompt]
-                    ],
-                    'frequency_penalty' => 0,
-                    'presence_penalty' => 0,
-                    'temperature' => (float)$input->creativity,
-                ]);
 
+                $message = [[
+                    'role' => 'user',
+                    'content' => $prompt,
+                ]];
 
-            } catch (\Exception $exception) {
-                echo "data: " . $exception->getMessage();
-                echo "\n\n";
-                ob_flush();
-                flush();
+                $openai_client = \OpenAI::client($openai_key);
+                
+                if (in_array($model, ['o1', 'o1-mini', 'o3-mini'])) {
+                    $stream = $openai_client->chat()->createStreamed([
+                        'model' => $model,
+                        'messages' => $message,
+                        'frequency_penalty' => 0,
+                        'presence_penalty' => 0,
+                        'stream_options'=>[
+                            'include_usage' => true,
+                        ]
+                    ]);
+                } else {
+                    $stream = $openai_client->chat()->createStreamed([
+                        'model' => $model,
+                        'messages' => $message,
+                        'frequency_penalty' => 0,
+                        'presence_penalty' => 0,
+                        'temperature' => (float)$input->creativity,                        
+                        'stream_options'=>[
+                            'include_usage' => true,
+                        ]
+                    ]);
+                }
+                
+
+                foreach ($stream as $result) {
+
+                    if (isset($result->choices[0]->delta->content)) {
+                        $raw = $result->choices[0]->delta->content;
+                        $clean = str_replace(["\r\n", "\r", "\n"], "<br/>", $raw);
+                        $text .= $raw;
+                        $final_text .= $clean;
+    
+                        if (connection_aborted()) {
+                            break;
+                        }
+    
+                        echo 'data: ' . $clean;
+                        echo "\n\n";
+                        ob_flush();
+                        flush();
+                    }
+    
+                    if($result->usage !== null){
+                        $input_tokens = $result->usage->promptTokens;
+                        $output_tokens = $result->usage->completionTokens; 
+                    }
+                }
+
                 echo 'data: [DONE]';
                 echo "\n\n";
                 ob_flush();
                 flush();
-                usleep(50000);
+
+            } catch (Exception $e) {
+                Log::error('OpenAI API Error: ' . $e->getMessage());
+                echo 'data: OpenAI Notification: <span class="font-weight-bold">' . $e->getMessage() . '</span>. Please contact support team.';
+                echo "\n\n";
+                echo 'data: [DONE]';
+                echo "\n\n";
+                ob_flush();
+                flush();
             }
 
 
-            $output = "";
-            $responsedText = "";
-            foreach ($results as $result) {
-       
-                if (isset($result['choices'][0]['delta']['content'])) {
-                    $raw = $result['choices'][0]['delta']['content'];
-                    $clean = str_replace(["\r\n", "\r", "\n"], "<br/>", $raw);
-                    $text .= $raw;
-                    $final_text .= $clean;
+            if (!empty($text)) {
+                # Update credit balance
+                $words = count(explode(' ', ($text)));
+                HelperService::updateBalance($words, $model, $input_tokens, $output_tokens);              
 
-                    echo 'data: ' . $clean ."\n\n";
-                    ob_flush();
-                    flush();
-                    usleep(400);
-                }
-
-                if (connection_aborted()) { break; }
-            }
-
-            # Update credit balance
-            $words = count(explode(' ', ($text)));
-            HelperService::updateBalance($words, $model); 
-            // if ($input->language != 'Chinese (Mandarin)' && $input->language != 'Japanese (Japan)') {
-            //     $words = count(explode(' ', ($text)));
-            //     $this->updateBalance($words); 
-            // } else {
-            //     $words = $this->updateBalanceKanji($text);
-            // }
-             
-
-            $content = Content::where('id', $content)->first();
-            $content->tokens = $words;
-            $content->words = $words;
-            $content->input_text = $prompt;
-            $content->result_text = $final_text;
-            $content->title = $input->selected_title;
-            $content->workbook = $input->workbook;
-            $content->save();
-
-            echo 'data: [DONE]';
-            echo "\n\n";
-            ob_flush();
-            flush();
-            usleep(40000);
-            
+                $content = Content::where('id', $content)->first();
+                $content->input_tokens = $input_tokens;
+                $content->output_tokens = $output_tokens;
+                $content->words = $words;
+                $content->input_text = $prompt;
+                $content->result_text = $final_text;
+                $content->title = $input->selected_title;
+                $content->workbook = $input->workbook;
+                $content->save();       
+            }     
             
         }, 200, [
             'Cache-Control' => 'no-cache',
@@ -958,137 +1028,138 @@ class ArticleWizardController extends Controller
 	}
 
 
+    public function checkCredits($model) 
+    {
+        $status = true;
+        
+        switch ($model) {
+            case 'dall-e-2':
+                $status = HelperService::checkMediaCredits('openai_dalle_2');
+                break;
+            case 'dall-e-3':
+                $status = HelperService::checkMediaCredits('openai_dalle_3');
+                break;
+            case 'dall-e-3-hd':
+                $status = HelperService::checkMediaCredits('openai_dalle_3_hd');
+                break;
+            case 'stable-diffusion-v1-6':
+                $status = HelperService::checkMediaCredits('sd_v16');
+                break;
+            case 'stable-diffusion-xl-1024-v1-0':
+                $status = HelperService::checkMediaCredits('sd_xl_v10');
+                break;
+            case 'sd3.5-medium':
+                $status = HelperService::checkMediaCredits('sd_3_medium');
+                break;
+            case 'sd3.5-large':
+                $status = HelperService::checkMediaCredits('sd_3_large');
+                break;
+            case 'sd3.5-large-turbo':
+                $status = HelperService::checkMediaCredits('sd_3_large_turbo');
+                break;
+            case 'core':
+                $status = HelperService::checkMediaCredits('sd_core');
+                break;
+            case 'ultra':
+                $status = HelperService::checkMediaCredits('sd_ultra');
+                break;
+            case 'flux/dev':
+                $status = HelperService::checkMediaCredits('flux_dev');
+                break;
+            case 'flux/schnell':
+                $status = HelperService::checkMediaCredits('flux_schnell');
+                break;
+            case 'flux-pro/new':
+                $status = HelperService::checkMediaCredits('flux_pro');
+                break;
+            case 'flux-realism':
+                $status = HelperService::checkMediaCredits('flux_realism');
+                break;
+            case 'midjourney/fast':
+                $status = HelperService::checkMediaCredits('midjourney_fast');
+                break;
+            case 'midjourney/relax':
+                $status = HelperService::checkMediaCredits('midjourney_relax');
+                break;
+            case 'midjourney/turbo':
+                $status = HelperService::checkMediaCredits('midjourney_turbo');
+                break;
+            case 'clipdrop':
+                $status = HelperService::checkMediaCredits('clipdrop');
+                break;
+        }
+
+        return $status;
+    }
+
+
     /**
 	*
-	* Update user image balance
+	* Update user image balance`
 	* @param - total words generated
 	* @return - confirmation
 	*
 	*/
-    public function updateImageBalance($images, $vendor) {
+    public function updateBalance($images, $model) {
 
-        $user = User::find(Auth::user()->id);
-
-        if ($vendor == 'dalle') {
-            if (auth()->user()->image_credits != -1) {
-        
-                if (Auth::user()->image_credits > $images) {
+        switch ($model) {
+            case 'dall-e-2':
     
-                    $total_images = Auth::user()->image_credits - $images;
-                    $user->image_credits = ($total_images < 0) ? 0 : $total_images;
-    
-                } elseif (Auth::user()->image_credits_prepaid > $images) {
-    
-                    $total_images_prepaid = Auth::user()->image_credits_prepaid - $images;
-                    $user->image_credits_prepaid = ($total_images_prepaid < 0) ? 0 : $total_images_prepaid;
-    
-                } elseif ((Auth::user()->image_credits + Auth::user()->image_credits_prepaid) == $images) {
-    
-                    $user->image_credits = 0;
-                    $user->image_credits_prepaid = 0;
-    
-                } else {
-    
-                    if (!is_null(Auth::user()->member_of)) {
-    
-                        $member = User::where('id', Auth::user()->member_of)->first();
-    
-                        if ($member->image_credits > $images) {
-    
-                            $total_images = $member->image_credits - $images;
-                            $member->image_credits = ($total_images < 0) ? 0 : $total_images;
-                
-                        } elseif ($member->image_credits_prepaid > $images) {
-                
-                            $total_images_prepaid = $member->image_credits_prepaid - $images;
-                            $member->image_credits_prepaid = ($total_images_prepaid < 0) ? 0 : $total_images_prepaid;
-                
-                        } elseif (($member->image_credits + $member->image_credits_prepaid) == $images) {
-                
-                            $member->image_credits = 0;
-                            $member->image_credits_prepaid = 0;
-                
-                        } else {
-                            $remaining = $images - $member->image_credits;
-                            $member->image_credits = 0;
-            
-                            $prepaid_left = $member->image_credits_prepaid - $remaining;
-                            $member->image_credits_prepaid = ($prepaid_left < 0) ? 0 : $prepaid_left;
-                        }
-    
-                        $member->update();
-    
-                    } else {
-                        $remaining = $images - Auth::user()->image_credits;
-                        $user->image_credits = 0;
-    
-                        $prepaid_left = Auth::user()->image_credits_prepaid - $remaining;
-                        $user->image_credits_prepaid = ($prepaid_left < 0) ? 0 : $prepaid_left;
-                    }
-                }
-            }
-        } else {
-            if (auth()->user()->image_credits != -1) {
-        
-                if (Auth::user()->image_credits > $images) {
-    
-                    $total_images = Auth::user()->image_credits - $images;
-                    $user->image_credits = ($total_images < 0) ? 0 : $total_images;
-    
-                } elseif (Auth::user()->image_credits_prepaid > $images) {
-    
-                    $total_images_prepaid = Auth::user()->image_credits_prepaid - $images;
-                    $user->image_credits_prepaid = ($total_images_prepaid < 0) ? 0 : $total_images_prepaid;
-    
-                } elseif ((Auth::user()->image_credits + Auth::user()->image_credits_prepaid) == $images) {
-    
-                    $user->image_credits = 0;
-                    $user->image_credits_prepaid = 0;
-    
-                } else {
-    
-                    if (!is_null(Auth::user()->member_of)) {
-    
-                        $member = User::where('id', Auth::user()->member_of)->first();
-    
-                        if ($member->image_credits > $images) {
-    
-                            $total_images = $member->image_credits - $images;
-                            $member->image_credits = ($total_images < 0) ? 0 : $total_images;
-                
-                        } elseif ($member->image_credits_prepaid > $images) {
-                
-                            $total_images_prepaid = $member->image_credits_prepaid - $images;
-                            $member->image_credits_prepaid = ($total_images_prepaid < 0) ? 0 : $total_images_prepaid;
-                
-                        } elseif (($member->image_credits + $member->image_credits_prepaid) == $images) {
-                
-                            $member->image_credits = 0;
-                            $member->image_credits_prepaid = 0;
-                
-                        } else {
-                            $remaining = $images - $member->image_credits;
-                            $member->image_credits = 0;
-            
-                            $prepaid_left = $member->image_credits_prepaid - $remaining;
-                            $member->image_credits_prepaid = ($prepaid_left < 0) ? 0 : $prepaid_left;
-                        }
-    
-                        $member->update();
-    
-                    } else {
-                        $remaining = $images - Auth::user()->image_credits;
-                        $user->image_credits = 0;
-    
-                        $prepaid_left = Auth::user()->image_credits_prepaid - $remaining;
-                        $user->image_credits_prepaid = ($prepaid_left < 0) ? 0 : $prepaid_left;
-                    }
-                }
-            }
+                HelperService::updateMediaBalance('openai_dalle_2', $images);
+                break;
+            case 'dall-e-3':
+                HelperService::updateMediaBalance('openai_dalle_3', $images);
+                break;
+            case 'dall-e-3-hd':
+                HelperService::updateMediaBalance('openai_dalle_3_hd', $images);
+                break;
+            case 'stable-diffusion-v1-6':
+                HelperService::updateMediaBalance('sd_v16', $images);
+                break;
+            case 'stable-diffusion-xl-1024-v1-0':
+                HelperService::updateMediaBalance('sd_xl_v10', $images);
+                break;
+            case 'sd3.5-medium':
+                HelperService::updateMediaBalance('sd_3_medium', $images);
+                break;
+            case 'sd3.5-large':
+                HelperService::updateMediaBalance('sd_3_large', $images);
+                break;
+            case 'sd3.5-large-turbo':
+                HelperService::updateMediaBalance('sd_3_large_turbo', $images);
+                break;
+            case 'core':
+                HelperService::updateMediaBalance('sd_core', $images);
+                break;
+            case 'ultra':
+                HelperService::updateMediaBalance('sd_ultra', $images);
+                break;
+            case 'flux/dev':
+                HelperService::updateMediaBalance('flux_dev', $images);
+                break;
+            case 'flux/schnell':
+                HelperService::updateMediaBalance('flux_schnell', $images);
+                break;
+            case 'flux-pro/new':
+                HelperService::updateMediaBalance('flux_pro', $images);
+                break;
+            case 'flux-realism':
+                HelperService::updateMediaBalance('flux_realism', $images);
+                break;
+            case 'midjourney/fast':
+                HelperService::updateMediaBalance('midjourney_fast', $images);
+                break;
+            case 'midjourney/relax':
+                HelperService::updateMediaBalance('midjourney_relax', $images);
+                break;
+            case 'midjourney/turbo':
+                HelperService::updateMediaBalance('midjourney_turbo', $images);
+                break;
+            case 'clipdrop':
+                HelperService::updateMediaBalance('clipdrop', $images);
+                break;
         }
-
-        $user->update();
-
+        
     }
 
 
@@ -1142,8 +1213,7 @@ class ArticleWizardController extends Controller
             if (is_null(auth()->user()->personal_openai_key)) {
                 return 'none'; 
             } else {
-                config(['openai.api_key' => auth()->user()->personal_openai_key]); 
-                return 'valid';
+                return auth()->user()->personal_openai_key; 
             } 
 
         } elseif (!is_null(auth()->user()->plan_id)) {
@@ -1152,19 +1222,16 @@ class ArticleWizardController extends Controller
                 if (is_null(auth()->user()->personal_openai_key)) {
                     return 'none'; 
                 } else {
-                    config(['openai.api_key' => auth()->user()->personal_openai_key]); 
-                    return 'valid';
+                    return auth()->user()->personal_openai_key; 
                 }
             } else {
                 if (config('settings.openai_key_usage') !== 'main') {
                    $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
                    array_push($api_keys, config('services.openai.key'));
                    $key = array_rand($api_keys, 1);
-                   config(['openai.api_key' => $api_keys[$key]]);
-                   return 'valid';
+                   return $api_keys[$key];
                } else {
-                    config(['openai.api_key' => config('services.openai.key')]);
-                    return 'valid';
+                    return config('services.openai.key');
                }
            }
 
@@ -1173,11 +1240,9 @@ class ArticleWizardController extends Controller
                 $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
                 array_push($api_keys, config('services.openai.key'));
                 $key = array_rand($api_keys, 1);
-                config(['openai.api_key' => $api_keys[$key]]);
-                return 'valid';
+                return $api_keys[$key];
             } else {
-                config(['openai.api_key' => config('services.openai.key')]);
-                return 'valid';
+                return config('services.openai.key');
             }
         }
     }

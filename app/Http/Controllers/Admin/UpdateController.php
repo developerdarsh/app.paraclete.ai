@@ -34,11 +34,10 @@ class UpdateController extends Controller
     {
         try {
             Artisan::call('migrate', ['--force' => true]);
+            Artisan::call('db:seed', ['--class'=> 'CookiesSeeder', '--force' => true]);
             Artisan::call('db:seed', ['--class'=> 'MenuSeeder', '--force' => true]);
-            Artisan::call('db:seed', ['--class'=> 'ChatsSeeder', '--force' => true]);
-            Artisan::call('db:seed', ['--class'=> 'IntegrationSeeder', '--force' => true]);
-            Artisan::call('db:seed', ['--class'=> 'ApiCreditSeeder', '--force' => true]);
-            Artisan::call('db:seed', ['--class'=> 'VoicesSeeder', '--force' => true]);
+            Artisan::call('db:seed', ['--class'=> 'EmailsSeeder', '--force' => true]);
+            Artisan::call('db:seed', ['--class'=> 'AzureModelSeeder', '--force' => true]);
             Artisan::call('view:clear');
             Artisan::call('route:clear');
             Artisan::call('cache:clear');

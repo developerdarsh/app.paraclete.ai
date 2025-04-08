@@ -105,13 +105,23 @@ class ChatWebController extends Controller
 
                 $stream = $this->query->askQuestionStreamed($context, $question, $request->model);
                 $resultText = "";
+                $input_tokens = 0;
+                $output_tokens = 0;
+
                 foreach ($stream as $response) {
-                    $text = $response->choices[0]->delta->content;
-                    $resultText .= $text;
-                    if (connection_aborted()) {
-                        break;
+                    if (isset($response->choices[0]->delta->content)) {
+                        $text = $response->choices[0]->delta->content;
+                        $resultText .= $text;
+                        if (connection_aborted()) {
+                            break;
+                        }
+                        ServerEvent::send($text, "");
                     }
-                    ServerEvent::send($text, "");
+
+                    if(isset($response->usage)){
+                        $input_tokens = $response->usage->promptTokens;
+                        $output_tokens = $response->usage->completionTokens; 
+                    }
                 }
 
                 $words = count(explode(' ', ($resultText)));                
@@ -123,6 +133,8 @@ class ChatWebController extends Controller
                     'user_id' => auth()->user()->id,
                     'model' => $request->model,
                     'words' => 0,
+                    'input_tokens' => $input_tokens,
+                    'output_tokens' => $output_tokens
                 ], [
                     'chat_special_id' => $request->chat_id,
                     'role' => ChatHistorySpecial::ROLE_BOT,
@@ -130,12 +142,14 @@ class ChatWebController extends Controller
                     'user_id' => auth()->user()->id,
                     'model' => $request->model,
                     'words' => $words,
+                    'input_tokens' => $input_tokens,
+                    'output_tokens' => $output_tokens
                 ]]);
 
                 $chat->messages = $chat->messages + 1;
                 $chat->save();
                 
-                HelperService::updateBalance($words, $request->model);
+                HelperService::updateBalance($words, $request->model, $input_tokens, $output_tokens);
 
             } catch (Exception $e) {
                 Log::error($e);

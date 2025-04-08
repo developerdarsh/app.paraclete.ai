@@ -70,14 +70,6 @@ class GlobalController extends Controller
         $this->storeSettings('GENERAL_SETTINGS_LIVE_CHAT_LINK', request('live-chat-link'));
         $this->storeSettings('GENERAL_SETTINGS_THEME', request('theme'));
 
-       
-        # Enable/Disable GDRP Cookie
-        if (request('enable-gdpr') == 'on') {
-            $this->storeSettings('COOKIE_CONSENT_ENABLED', true);
-        } else {
-            $this->storeSettings('COOKIE_CONSENT_ENABLED', false);
-        }
-
         toastr()->success(__('Global settings were successfully updated'));
         return redirect()->back();
     }

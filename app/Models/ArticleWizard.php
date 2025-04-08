@@ -9,31 +9,9 @@ class ArticleWizard extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id',
-        'titles',
-        'keywords',
-        'outlines',
-        'talking_points',
-        'current_step',
-        'language',
-        'image',
-        'image_description',
-        'tone',
-        'creativity',
-        'view_point',
-        'max_words',
-        'status',
-        'selected_keywords',
-        'selected_title',
-        'selected_outline',
-        'selected_talking_points',
-    ];
+    protected $guarded = [];
+
+    protected $table = 'article_wizards';
 
     protected $casts = [
         'outlines' => 'array'

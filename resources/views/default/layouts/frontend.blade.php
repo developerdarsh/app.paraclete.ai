@@ -86,7 +86,6 @@
 				========================================================-->
 				@yield('footer')
 				
-				@include('cookie-consent::index')
 
 			@endif
 		
@@ -100,6 +99,7 @@
 				{!! $frontend_settings->custom_body_code !!}
 			@endif
 		@endif
+
 	</body>
 </html>
 

@@ -20,6 +20,7 @@ use App\Models\ExtensionSetting;
 use App\Models\ImageCredit;
 use App\Models\ApiCredit;
 use Carbon\Carbon;
+use Exception;
 
 class HelperService 
 {
@@ -79,76 +80,6 @@ class HelperService
         return $custom_templates;
     }
 
-    public static function userAvailableGPT4TWords()
-    {   
-        $value = self::numberFormat(auth()->user()->gpt_4_turbo_credits + auth()->user()->gpt_4_turbo_credits_prepaid);
-        return $value;
-    }
-
-    public static function userAvailableGPT4Words()
-    {   
-        $value = self::numberFormat(auth()->user()->gpt_4_credits + auth()->user()->gpt_4_credits_prepaid);
-        return $value;
-    }
-
-    public static function userAvailableGPT4oWords()
-    {   
-        $value = self::numberFormat(auth()->user()->gpt_4o_credits + auth()->user()->gpt_4o_credits_prepaid);
-        return $value;
-    }
-
-    public static function userAvailableGPT4oMiniWords()
-    {   
-        $value = self::numberFormat(auth()->user()->gpt_4o_mini_credits + auth()->user()->gpt_4o_mini_credits_prepaid);
-        return $value;
-    }
-
-    public static function userAvailableO1PreviewWords()
-    {   
-        $value = self::numberFormat(auth()->user()->o1_preview_credits + auth()->user()->o1_preview_credits_prepaid);
-        return $value;
-    }
-
-    public static function userAvailableO1MiniWords()
-    {   
-        $value = self::numberFormat(auth()->user()->o1_mini_credits + auth()->user()->o1_mini_credits_prepaid);
-        return $value;
-    }
-
-    public static function userAvailableFineTuneWords()
-    {   
-        $value = self::numberFormat(auth()->user()->fine_tune_credits + auth()->user()->fine_tune_credits_prepaid);
-        return $value;
-    }
-
-    public static function userAvailableClaudeOpusWords()
-    {   
-        $value = self::numberFormat(auth()->user()->claude_3_opus_credits + auth()->user()->claude_3_opus_credits_prepaid);
-        return $value;
-    }
-
-    public static function userAvailableClaudeSonnetWords()
-    {   
-        $value = self::numberFormat(auth()->user()->claude_3_sonnet_credits + auth()->user()->claude_3_sonnet_credits_prepaid);
-        return $value;
-    }
-
-    public static function userAvailableClaudeHaikuWords()
-    {   
-        $value = self::numberFormat(auth()->user()->claude_3_haiku_credits + auth()->user()->claude_3_haiku_credits_prepaid);
-        return $value;
-    }
-
-    public static function userAvailableGeminiProWords()
-    {   
-        $value = self::numberFormat(auth()->user()->gemini_pro_credits + auth()->user()->gemini_pro_credits_prepaid);
-        return $value;
-    }
-    public static function userAvailableWords()
-    {
-        $value = self::numberFormat(auth()->user()->gpt_3_turbo_credits + auth()->user()->gpt_3_turbo_credits_prepaid);
-        return $value;
-    }
     public static function userAvailableTokens()
     {   
         $value = self::numberFormat(auth()->user()->tokens + auth()->user()->tokens_prepaid);
@@ -287,7 +218,7 @@ class HelperService
 	* @return - confirmation
 	*
 	*/
-    public static function updateBalance($words, $model, $input_tokens = 0, $output_tokens = 0) {
+    public static function updateBalance($words = 0, $model, $input_tokens = 0, $output_tokens = 0) {
 
         $setting = MainSetting::first();
         $user = User::find(Auth::user()->id);
@@ -362,7 +293,7 @@ class HelperService
     }
 
 
-    private static function modelCreditMultiplier($model, $charge_type, $input_tokens = 0, $output_tokens)
+    private static function modelCreditMultiplier($model, $charge_type, $input_tokens = 0, $output_tokens = 0)
     {
         $api = ApiCredit::first();
         $total = 0;
@@ -583,7 +514,34 @@ class HelperService
                     } else {
                         $total = $api->sonar_output_token * $output_tokens;
                     }
-                break;                
+                break;  
+            case 'us.amazon.nova-micro-v1:0': 
+                    if ($charge_type == 'both') {
+                        $total = ($api->nova_micro_input_token * $input_tokens) + ($api->nova_micro_output_token * $output_tokens);
+                    } elseif ($charge_type == 'input') {
+                        $total = $api->nova_micro_input_token * $input_tokens;
+                    } else {
+                        $total = $api->nova_micro_output_token * $output_tokens;
+                    }
+                break;  
+            case 'us.amazon.nova-lite-v1:0': 
+                    if ($charge_type == 'both') {
+                        $total = ($api->nova_lite_input_token * $input_tokens) + ($api->nova_lite_output_token * $output_tokens);
+                    } elseif ($charge_type == 'input') {
+                        $total = $api->nova_lite_input_token * $input_tokens;
+                    } else {
+                        $total = $api->nova_lite_output_token * $output_tokens;
+                    }
+                break;  
+            case 'us.amazon.nova-pro-v1:0': 
+                    if ($charge_type == 'both') {
+                        $total = ($api->nova_pro_input_token * $input_tokens) + ($api->nova_pro_output_token * $output_tokens);
+                    } elseif ($charge_type == 'input') {
+                        $total = $api->nova_pro_input_token * $input_tokens;
+                    } else {
+                        $total = $api->nova_pro_output_token * $output_tokens;
+                    }
+                break;             
         }
 
         return $total;
@@ -851,6 +809,28 @@ class HelperService
         $record_payment->minutes = $id->minutes;
         $record_payment->save();
 
+        if (\App\Services\HelperService::extensionXero()) {
+            $invoiceData = [
+                'line_items' => [
+                    [
+                        'Description' => $id->plan_name . ' ' . 'plan',
+                        'Quantity' => 1,
+                        'UnitAmount' => $id->price, // Amount per unit/hour
+                        'AccountCode' => '200', // Your Xero account code for sales
+                        'TaxType' => 'OUTPUT', // Or your appropriate tax type
+                        'LineAmount' => $price, // Optional: Quantity * UnitAmount
+                    ],
+                ],
+                'reference' => 'PO-'. $order, // Your custom reference number
+                'due_date' => date('Y-m-d'), // Optional: Set due date
+            ];
+            try {
+                $result = \App\Services\XeroService::xeroInvoice($invoiceData);
+            } catch (Exception $e) {
+                \Log::error('Xero invoice error: ' . $e->getMessage());
+            } 
+        }
+
         return $record_payment;
     }
 
@@ -919,6 +899,7 @@ class HelperService
             'tokens' => $id->token_credits,
             'subscription_id' => $order,
         ]);  
+        
     }
 
 
@@ -933,6 +914,28 @@ class HelperService
     {
         $tax_value = (config('payment.payment_tax') > 0) ? $tax = $id->price * config('payment.payment_tax') / 100 : 0;
         $total_value = $tax_value + $id->price;
+
+        if (\App\Services\HelperService::extensionXero()) {
+            $invoiceData = [
+                'line_items' => [
+                    [
+                        'Description' => $id->plan_name . ' ' . 'plan',
+                        'Quantity' => 1,
+                        'UnitAmount' => $id->price, // Amount per unit/hour
+                        'AccountCode' => '200', // Your Xero account code for sales
+                        'TaxType' => 'OUTPUT', // Or your appropriate tax type
+                        'LineAmount' => $total_value, // Optional: Quantity * UnitAmount
+                    ],
+                ],
+                'reference' => 'PO-'. $orderID, // Your custom reference number
+                'due_date' => date('Y-m-d'), // Optional: Set due date
+            ];
+            try {
+                $result = \App\Services\XeroService::xeroInvoice($invoiceData);
+            } catch (Exception $e) {
+                \Log::error('Xero invoice error: ' . $e->getMessage());
+            } 
+        }
 
         $record_payment = new Payment();
 
@@ -994,104 +997,6 @@ class HelperService
         $user->save();
     }
 
-
-     public static function mainPlanModel()
-    {
-        $default = auth()->user()->default_model_template;
-
-        switch ($default) {
-            case 'gpt-3.5-turbo-0125':
-                $model = 'GPT 3.5 Turbo';
-                break;
-            case 'gpt-4':
-                $model = 'GPT 4';
-                break;
-            case 'gpt-4o':
-                $model = 'GPT 4o';
-                break;
-            case 'gpt-4o-mini':
-                $model = 'GPT 4o mini';
-                break;
-            case 'gpt-4-0125-preview':
-                $model = 'GPT 4 Turbo';
-                break;            
-            case 'gpt-4-turbo-2024-04-09':
-                $model = 'GPT 4 Turbo Vision';
-                break;
-            case 'o1-mini':
-                $model = 'o1 mini';
-                break;
-            case 'o1-preview':
-                $model = 'o1 preview';
-                break;
-            case 'claude-3-opus-20240229':
-                $model = 'Claude 3 Opus';
-                break;
-            case 'claude-3-5-sonnet-20241022':
-                $model = 'Claude 3.5 Sonnet';
-                break;
-            case 'claude-3-5-haiku-20241022':
-                $model = 'Claude 3.5 Haiku';
-                break;
-            case 'gemini_pro':
-                $model = 'Gemini Pro';
-                break;
-            default:
-                $model = 'Fine Tune';
-                break;
-        }
-
-        return $model;
-    }
-
-    public static function mainPlanBalance()
-    {
-        $default = auth()->user()->default_model_template;
-
-        switch ($default) {
-            case 'gpt-3.5-turbo-0125':
-                $balance = (auth()->user()->gpt_3_turbo_credits == -1) ? __('Unlimited') : \App\Services\HelperService::userAvailableWords();
-                break;
-            case 'gpt-4':
-                $balance = (auth()->user()->gpt_4_credits == -1) ? __('Unlimited') : \App\Services\HelperService::userAvailableGPT4Words();
-                break;
-            case 'gpt-4o':
-                $balance = (auth()->user()->gpt_4o_credits == -1) ? __('Unlimited') : \App\Services\HelperService::userAvailableGPT4oWords();
-                break;
-            case 'gpt-4o-mini':
-                $balance = (auth()->user()->gpt_4o_mini_credits == -1) ? __('Unlimited') : \App\Services\HelperService::userAvailableGPT4oMiniWords();
-                break;
-            case 'gpt-4-0125-preview':
-                $balance = (auth()->user()->gpt_4_turbo_credits == -1) ? __('Unlimited') : \App\Services\HelperService::userAvailableGPT4TWords();
-                break;            
-            case 'gpt-4-turbo-2024-04-09':
-                $balance = (auth()->user()->gpt_4_turbo_credits == -1) ? __('Unlimited') : \App\Services\HelperService::userAvailableGPT4TWords();
-                break;
-            case 'o1-mini':
-                $balance = (auth()->user()->o1_mini_credits == -1) ? __('Unlimited') : \App\Services\HelperService::userAvailableO1MiniWords();
-                break;
-            case 'o1-preview':
-                $balance = (auth()->user()->o1_preview_credits == -1) ? __('Unlimited') : \App\Services\HelperService::userAvailableO1PreviewWords();
-                break;
-            case 'claude-3-opus-20240229':
-                $balance = (auth()->user()->claude_3_opus_credits == -1) ? __('Unlimited') : \App\Services\HelperService::userAvailableClaudeOpusWords();
-                break;
-            case 'claude-3-5-sonnet-20241022':
-                $balance = (auth()->user()->claude_3_sonnet_credits == -1) ? __('Unlimited') : \App\Services\HelperService::userAvailableClaudeSonnetWords();
-                break;
-            case 'claude-3-5-haiku-20241022':
-                $balance = (auth()->user()->claude_3_haiku_credits == -1) ? __('Unlimited') : \App\Services\HelperService::userAvailableClaudeHaikuWords();
-                break;
-            case 'gemini_pro':
-                $balance = (auth()->user()->gemini_pro_credits == -1) ? __('Unlimited') : \App\Services\HelperService::userAvailableGeminiProWords();
-                break;
-            default:
-                $balance = (auth()->user()->fine_tune_credits == -1) ? __('Unlimited') : \App\Services\HelperService::userAvailableFineTuneWords();
-                break;
-        }
-
-        return $balance;
-    }
 
     public static function checkDBStatus()
     {
@@ -1162,6 +1067,7 @@ class HelperService
             case 'invoice_settings': 
             case 'payment_settings': return self::checkSaaSAccess(); break;
             case 'menu_builder': return self::checkMenuAccess(); break;
+            case 'ai_speech_to_text_pro': return self::checkSpeechProAccess(); break;
             default:
                 return true;
                 break;
@@ -1867,6 +1773,19 @@ class HelperService
         }
     }
     // ===================================================================================
+
+
+    // SPEECH PRO FEATURE
+    // ===================================================================================
+    public static function checkSpeechProAccess()
+    {   
+        if (self::extensionSpeechToTextPro()) {
+            return self::checkSpeechToTextProFeature();
+        } else {
+            return false;
+        }
+    }
+    // ===================================================================================  
 
 
     // TEAM MEMBER FEATURE
@@ -2938,6 +2857,124 @@ class HelperService
         } else {
             return false;
         }  
+    }
+    // ===================================================================================
+
+
+    // AZURE OPENAI EXTENSION
+    // ===================================================================================
+    public static function extensionAzureOpenai()
+    {   
+        $extension = Extension::where('slug', 'azure-openai')->first();
+
+        if ($extension) {
+            return ($extension->installed) ? true : false;
+        } else {
+            return false;
+        }
+    }
+    // ===================================================================================
+
+
+    // AMAZON BEDROCK EXTENSION
+    // ===================================================================================
+    public static function extensionAmazonBedrock()
+    {   
+        $extension = Extension::where('slug', 'bedrock')->first();
+
+        if ($extension) {
+            return ($extension->installed) ? true : false;
+        } else {
+            return false;
+        }
+    }
+    // ===================================================================================
+
+
+    // SPEECH TO TEXT PRO EXTENSION
+    // ===================================================================================
+    public static function extensionSpeechToTextPro()
+    {   
+        $extension = Extension::where('slug', 'speech-text-pro')->first();
+
+        if ($extension) {
+            return ($extension->installed) ? true : false;
+        } else {
+            return false;
+        }
+    }
+
+    public static function checkSpeechToTextProFeature()
+    {   
+        $settings = ExtensionSetting::first();
+
+        if (isset($settings->speech_text_pro_feature)) {
+            if (!is_null(auth()->user()->plan_id)) {
+                $plan = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
+                if (!is_null($plan->speech_text_pro_feature)) {
+                    return $plan->speech_text_pro_feature;
+                } else {
+                    return false;
+                }
+            } else {
+                if ($settings->speech_text_pro_feature) {
+                    if ($settings->speech_text_pro_free_tier) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }  
+    }
+    // ===================================================================================
+
+
+    // ONBOARDING PRO EXTENSION
+    // ===================================================================================
+    public static function extensionOnboardingPro()
+    {   
+        $extension = Extension::where('slug', 'onboarding-pro')->first();
+
+        if ($extension) {
+            return ($extension->installed) ? true : false;
+        } else {
+            return false;
+        }
+    }
+    // ===================================================================================
+
+
+    // AZURE OPENAI EXTENSION
+    // ===================================================================================
+    public static function extensionXero()
+    {   
+        $extension = Extension::where('slug', 'xero')->first();
+
+        if ($extension) {
+            return ($extension->installed) ? true : false;
+        } else {
+            return false;
+        }
+    }
+    // ===================================================================================
+
+
+    // AMAZON BEDROCK EXTENSION
+    // ===================================================================================
+    public static function extensionOpenRouter()
+    {   
+        $extension = Extension::where('slug', 'open-router')->first();
+
+        if ($extension) {
+            return ($extension->installed) ? true : false;
+        } else {
+            return false;
+        }
     }
     // ===================================================================================
 

@@ -33,6 +33,8 @@ return new class extends Migration
             $table->longText('selected_title')->nullable();
             $table->longText('selected_outline')->nullable();
             $table->longText('selected_talking_points')->nullable();
+            $table->integer('input_tokens')->default(0);
+            $table->integer('output_tokens')->default(0);
             $table->timestamps();
         });
     }

@@ -38,6 +38,7 @@ use App\Http\Controllers\Admin\Settings\SMTPController;
 use App\Http\Controllers\Admin\Settings\RegistrationController;
 use App\Http\Controllers\Admin\Settings\UpgradeController;
 use App\Http\Controllers\Admin\Settings\SystemController;
+use App\Http\Controllers\Admin\Settings\GDPRController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\User\TeamController;
@@ -76,11 +77,6 @@ use Illuminate\Support\Facades\Artisan;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 use Elseyyid\LaravelJsonLocationsManager\Controllers\HomeController as ElseyyidController;
 use App\Models\MainSetting;
-use App\Http\Controllers\User\TrainingVideoController;
-use App\Http\Controllers\Admin\DavinciBannerController;
-use App\Http\Controllers\User\AiResumeController;
-use App\Http\Controllers\User\AiUGCVideoController;
-use App\Http\Controllers\User\DeepSeekController;
 
 /*
 |--------------------------------------------------------------------------
@@ -97,21 +93,6 @@ use App\Http\Controllers\User\DeepSeekController;
 Route::middleware(['middleware' => 'PreventBackHistory'])->group(function () {
     require __DIR__.'/auth.php';
 });
-
-Route::get('/pdf',function(){
-    return view('user.resume.pdf');
-});
-
-// Route::group(['prefix' => 'user', 'middleware' => ['verified', 'cors' , '2fa.verify', 'role:user|admin|subscriber', 'PreventBackHistory']], function() {
-//     Route::get('/smart-ads', [TrainingVideoController::class, 'viewSmartAds'])->name('smart.ads');
-// });
-
-Route::group(['prefix' => 'user', 'middleware' => ['verified', 'cors' , '2fa.verify', 'role:user|admin|subscriber', 'PreventBackHistory']], function() {
-    Route::get('/elementor', [TrainingVideoController::class, 'viewElementor'])->name('user.elementor');
-});
-
-// PAYMENT GATEWAY WEBHOOKS ROUTES
-Route::post('/webhooks/ghl-signup', [TrainingVideoController::class, 'handleGHLSignup']);
 
 // FRONTEND ROUTES
 Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']], function () {
@@ -142,6 +123,11 @@ Route::group(['prefix' => 'install', 'middleware' => 'install'], function() {
 Route::controller(ActivationController::class)->group(function() {
     Route::get('/update/v6/download', 'showDownload')->name('download.update');
     Route::post('/update/v6/download', 'storeKey')->name('download.update.store');
+});
+
+Route::controller(ChatController::class)->group(function() {
+    Route::get('/app/chat/share/{uuid}', 'showChatShare')->name('app.chat.share');
+    Route::post('/app/chat/process', 'processChatShare');
 });
 
 Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']], function () {
@@ -543,6 +529,12 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 Route::post('/settings/system/sitemap', 'sitemap')->name('admin.settings.system.sitemap');
             });
 
+            // ADMIN GENERAL SETTINGS - GDPR SETTINGS
+            Route::controller(GDPRController::class)->group(function() {
+                Route::get('/settings/gdpr', 'index')->name('admin.settings.gdpr');
+                Route::post('/settings/gdpr', 'store')->name('admin.settings.gdpr.store');
+            });
+
             // ADMIN - MARKETPLACE
             Route::controller(MarketplaceController::class)->group(function() {
                 Route::get('/marketplace', 'index')->name('admin.extensions');
@@ -568,16 +560,6 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 Route::get('/payments/stripe/market/approved', 'handleMarketApproval')->name('admin.payments.market.approved');
                 Route::get('/payments/stripe/theme/cancel', 'processThemeCancel')->name('admin.payments.stripe.theme.cancel');
                 Route::get('/payments/stripe/market/cancel', 'processMarketCancel')->name('admin.payments.stripe.market.cancel');
-            });
-
-            // ADMIN DAVINCI BANNER ROUTES
-            Route::controller(DavinciBannerController::class)->group(function() {
-                Route::get('/davinci/banner', 'index')->name('admin.davinci.banner');
-                Route::post('/davinci/banner', 'store')->name('admin.davinci.banner.store');
-                Route::get('/davinci/banner/{id}/show', 'show')->name('admin.davinci.banner.show');
-                Route::put('/davinci/banner/{id}/update', 'update')->name('admin.davinci.banner.update');
-                Route::post('/davinci/banner/create', 'create');
-                Route::post('/davinci/banner/delete', 'delete');
             });
     
         });
@@ -692,11 +674,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 Route::get('/chats/{code}', 'view');
                 Route::get('/chats/realtime', 'viewRealtime')->name('user.chat.realtime');
                 Route::get('/chats/custom/{code}', 'viewCustom');
-                Route::post('/chat/save-audio', 'saveAudio');
-                Route::post('/chat/audio-convert', 'audioConvert');
-                Route::post('/chat/update-words', 'updateWords');
-                Route::get('chat/convert-text-to-audio', 'convertTextToAudio')->name('convert-text-to-audio');
                 Route::post('/chat/storeRealtime', 'storeRealtimeMessage');
+                Route::post('/chat/storeChatShare', 'storeChatShare');
             });
 
             // USER SPEECH TO TEXT ROUTES
@@ -919,38 +898,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
             });    
 
             // USER SEARCH ROUTES
-            Route::any('/search', [SearchController::class, 'index'])->name('search');
-
-            // USER TRAINING VIDEO ROUTES
-            Route::controller(TrainingVideoController::class)->group(function () {
-                Route::get('/videos', 'index')->name('user.videos');
-                Route::get('/media-editor', 'mediaEditor')->name('user.media-editor');
-                Route::get('/rss-feed', 'rssFeed')->name('user.rss-feed');
-                Route::get('/automation', 'automation')->name('user.automation');
-                Route::get('/agentAi', 'agentAi')->name('user.agentAi');        
-                Route::get('/agentIframe', 'iframe')->name('user.agentIframe');        
-                Route::post('/agentAiCreate', 'agentAiCreate')->name('user.agentAiCreate');
-                Route::get('/search-feeds', 'searchFeeds')->name('user.searchFeeds');
-                Route::post('/videos/search', 'index')->name('user.videos.search');
-                Route::get('/videos/create', 'create')->name('user.videos.create');
-                Route::get('/videos/list', 'list')->name('user.videos.list');
-                Route::get('/videos/delete/{id}', 'delete')->name('user.videos.delete');
-                Route::post('/videos/save', 'save')->name('user.videos.save');
-                Route::get('/videos/edit/{id}', 'edit')->name('user.videos.edit');
-                Route::post('/videos/update/{id}', 'update')->name('user.videos.update');
-                Route::get('/videos/download', 'videoDownload')->name('user.videos.download');
-                Route::get('/videos/pdfdownload', 'pdfDownload')->name('user.videos.pdfdownload');
-                Route::get('/smart-ads', [TrainingVideoController::class, 'viewSmartAds'])->name('user.smart.ads');
-            });
-
-            //AI RESUME
-            Route::controller(AiResumeController::class)->group(function () {
-                Route::get('/resume', 'index')->name('user.resume');
-                Route::get('/get-job-titles', 'getJobTitles')->name('user.get-job-titles');
-                Route::post('/openai-complete', 'complete')->name('user.openai.complete');
-                Route::post('/store-resume', 'storeResume')->name('resume.store');
-            });
-
+            Route::any('/search', [SearchController::class, 'index'])->name('search'); 
         });
 
 

@@ -74,6 +74,11 @@
 													<option value="sonar-reasoning" @if ( config('settings.default_model_admin')  == 'sonar-reasoning') selected @endif>{{ __('Perplexity Sonar Reasoning') }}</option>
 													<option value="sonar-reasoning-pro" @if ( config('settings.default_model_admin')  == 'sonar-reasoning-pro') selected @endif>{{ __('Perplexity Sonar Reasoning Pro') }}</option>
 												@endif
+												@if (App\Services\HelperService::extensionAmazonBedrock())	
+													<option value="us.amazon.nova-micro-v1:0" @if ( config('settings.default_model_admin')  == 'us.amazon.nova-micro-v1:0') selected @endif>{{ __('Nova Micro') }}</option>
+													<option value="us.amazon.nova-lite-v1:0" @if ( config('settings.default_model_admin')  == 'us.amazon.nova-lite-v1:0') selected @endif>{{ __('Nova Lite') }}</option>
+													<option value="us.amazon.nova-pro-v1:0" @if ( config('settings.default_model_admin')  == 'us.amazon.nova-pro-v1:0') selected @endif>{{ __('Nova Pro') }}</option>
+												@endif
 												@foreach ($models as $model)
 													<option value="{{ $model->model }}" @if ( config('settings.default_model_admin')  == $model->model) selected @endif>{{ $model->description }} ({{ __('Fine Tune Model')}})</option>
 												@endforeach
@@ -1421,6 +1426,116 @@
 										</div>
 									</div>
 								@endif
+
+								@if (App\Services\HelperService::extensionAzureOpenai())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/azure-openai')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<i class="fa-brands fa-microsoft mr-4" style="font-size: 40px!important;"></i>											
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Azure OpenAI') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Azure OpenAI settings and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionAmazonBedrock())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/bedrock')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/csp/aws-sm.png')}}" class="mr-4" alt="" style="width: 40px;">												
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Amazon Bedrock') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Amazon Bedrock Access keys and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionOnboardingPro())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/onboarding-pro')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<i class=" fa-solid fa-waveform-lines mr-4" style="font-size: 40px!important;"></i>											
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Onboarding Pro') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Onboarding settings and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionSpeechToTextPro())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/speech-text-pro')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<i class="fa-solid fa-microphone-lines mr-4" style="font-size: 40px!important;"></i>											
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Speech to Text Pro') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Elevenlabs API key and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionXero())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/xero')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/csp/xero.webp')}}" class="mr-4" alt="" style="width: 40px;">												
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Xero') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Xero API keys and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+
+								@if (App\Services\HelperService::extensionOpenRouter())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/open-router')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/csp/openrouter.png')}}" class="mr-4" alt="" style="width: 40px;">										
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('OpenRouter') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('OpenRouter API key and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
 							</div>
 						</div>
 
@@ -1493,6 +1608,11 @@
 															<option value="sonar-reasoning" @if ( config('settings.default_model_user_bot')  == 'sonar-reasoning') selected @endif>{{ __('Perplexity Sonar Reasoning') }}</option>
 															<option value="sonar-reasoning-pro" @if ( config('settings.default_model_user_bot')  == 'sonar-reasoning-pro') selected @endif>{{ __('Perplexity Sonar Reasoning Pro') }}</option>
 														@endif
+														@if (App\Services\HelperService::extensionAmazonBedrock())	
+															<option value="us.amazon.nova-micro-v1:0" @if ( config('settings.default_model_user_bot')  == 'us.amazon.nova-micro-v1:0') selected @endif>{{ __('Nova Micro') }}</option>
+															<option value="us.amazon.nova-lite-v1:0" @if ( config('settings.default_model_user_bot')  == 'us.amazon.nova-lite-v1:0') selected @endif>{{ __('Nova Lite') }}</option>
+															<option value="us.amazon.nova-pro-v1:0" @if ( config('settings.default_model_user_bot')  == 'us.amazon.nova-pro-v1:0') selected @endif>{{ __('Nova Pro') }}</option>
+														@endif
 														@foreach ($models as $model)
 															<option value="{{ $model->model }}" @if ( config('settings.default_model_user_bot')  == $model->model) selected @endif>{{ $model->description }} ({{ __('Fine Tune Model')}})</option>
 														@endforeach
@@ -1529,6 +1649,11 @@
 															<option value="sonar-pro" @if ( config('settings.default_model_user_template')  == 'sonar-pro') selected @endif>{{ __('Perplexity Sonar Pro') }}</option>
 															<option value="sonar-reasoning" @if ( config('settings.default_model_user_template')  == 'sonar-reasoning') selected @endif>{{ __('Perplexity Sonar Reasoning') }}</option>
 															<option value="sonar-reasoning-pro" @if ( config('settings.default_model_user_template')  == 'sonar-reasoning-pro') selected @endif>{{ __('Perplexity Sonar Reasoning Pro') }}</option>
+														@endif
+														@if (App\Services\HelperService::extensionAmazonBedrock())	
+															<option value="us.amazon.nova-micro-v1:0" @if ( config('settings.default_model_user_template')  == 'us.amazon.nova-micro-v1:0') selected @endif>{{ __('Nova Micro') }}</option>
+															<option value="us.amazon.nova-lite-v1:0" @if ( config('settings.default_model_user_template')  == 'us.amazon.nova-lite-v1:0') selected @endif>{{ __('Nova Lite') }}</option>
+															<option value="us.amazon.nova-pro-v1:0" @if ( config('settings.default_model_user_template')  == 'us.amazon.nova-pro-v1:0') selected @endif>{{ __('Nova Pro') }}</option>
 														@endif
 														@foreach ($models as $model)
 															<option value="{{ $model->model }}" @if ( config('settings.default_model_user_template')  == $model->model) selected @endif>{{ $model->description }} ({{ __('Fine Tune Model')}})</option>
@@ -1567,6 +1692,12 @@
 															<option value="sonar-reasoning" @foreach ($all_models as $key=>$value) @if($value == 'sonar-reasoning') selected @endif @endforeach>{{ __('Perplexity Sonar Reasoning') }}</option>
 															<option value="sonar-reasoning-pro" @foreach ($all_models as $key=>$value) @if($value == 'sonar-reasoning-pro') selected @endif @endforeach>{{ __('Perplexity Sonar Reasoning Pro') }}</option>
 														@endif
+														@if (App\Services\HelperService::extensionAmazonBedrock())	
+															<option value="us.amazon.nova-micro-v1:0" @foreach ($all_models as $key=>$value) @if($value == 'us.amazon.nova-micro-v1:0') selected @endif @endforeach>{{ __('Nova Micro') }}</option>
+															<option value="us.amazon.nova-lite-v1:0" @foreach ($all_models as $key=>$value) @if($value == 'us.amazon.nova-lite-v1:0') selected @endif @endforeach>{{ __('Nova Lite') }}</option>
+															<option value="us.amazon.nova-pro-v1:0" @foreach ($all_models as $key=>$value) @if($value == 'us.amazon.nova-pro-v1:0') selected @endif @endforeach>{{ __('Nova Pro') }}</option>
+														@endif
+														
 														@foreach ($models as $model)
 															<option value="{{ $model->model }}" @foreach ($all_models as $key=>$value) @if($value == $model->model) selected @endif @endforeach>{{ $model->description }} ({{ __('Fine Tune Model')}})</option>
 														@endforeach

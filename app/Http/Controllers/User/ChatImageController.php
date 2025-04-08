@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\LicenseController;
-use App\Services\Statistics\UserService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Orhanerday\OpenAi\OpenAi;
+use App\Services\HelperService;
 use App\Models\SubscriptionPlan;
 use App\Models\FavoriteChat;
 use App\Models\ChatConversation;
@@ -25,12 +24,6 @@ use GuzzleHttp\Client;
 
 class ChatImageController extends Controller
 {
-    private $api;
-
-    public function __construct()
-    {
-        $this->api = new LicenseController();
-    }
 
     /** 
      * Display a listing of the resource.
@@ -146,29 +139,13 @@ class ChatImageController extends Controller
 
 
             # Check if user has sufficient words available to proceed
-            if (auth()->user()->image_credits != -1) {
-                if ((auth()->user()->image_credits + auth()->user()->image_credits_prepaid) <= 0) {
-                    if (!is_null(auth()->user()->member_of)) {
-                        if (auth()->user()->member_use_credits_image) {
-                            $member = User::where('id', auth()->user()->member_of)->first();
-                            if (($member->image_credits + $member->image_credits_prepaid) <= 0) {
-                                $data['status'] = 'error';
-                                $data['message'] = __('Not enough image credit balance to proceed, subscribe or top up your image balance and try again');
-                                return $data;
-                            }
-                        } else {
-                            $data['status'] = 'error';
-                            $data['message'] = __('Not enough image credit balance to proceed, subscribe or top up your image balance and try again');
-                            return $data;
-                        }
-                        
-                    } else {
-                        $data['status'] = 'error';
-                        $data['message'] = __('Not enough image credit balance to proceed, subscribe or top up your image balance and try again');
-                        return $data;
-                    } 
-                }
+            $credit_status = $this->checkCredits('dall-e-3');
+            if (!$credit_status) {
+                $data['status'] = 'error';
+                $data['message'] = __('Not enough media credits to proceed, subscribe or top up your media credit balance and try again');
+                return $data;
             }
+
 
             $chat = new ChatHistory();
             $chat->user_id = auth()->user()->id;
@@ -227,7 +204,7 @@ class ChatImageController extends Controller
                 $chat->save();
 
                 # Update credit balance
-                $this->updateBalance(1);  
+                $this->updateBalance('dall-e-3');  
 
                 $chat_conversation = ChatConversation::where('conversation_id', $request->conversation_id)->first(); 
                 $chat_conversation->words = 0;
@@ -237,9 +214,9 @@ class ChatImageController extends Controller
         
                 $data['status'] = 'success';
                 $data['url'] = $image_url;
-                $data['old'] = auth()->user()->image_credits + auth()->user()->image_credits_prepaid;
-                $data['current'] = auth()->user()->image_credits + auth()->user()->image_credits_prepaid - 1;
-                $data['balance'] = (auth()->user()->image_credits == -1) ? 'unlimited' : 'counted';
+                $data['old'] = auth()->user()->images + auth()->user()->images_prepaid;
+                $data['current'] = auth()->user()->images + auth()->user()->images_prepaid - 1;
+                $data['balance'] = (auth()->user()->images == -1) ? 'unlimited' : 'counted';
                 return $data; 
 
             } else {
@@ -275,79 +252,139 @@ class ChatImageController extends Controller
 	}
 
 
+    public function checkCredits($model) 
+    {
+        $status = true;
+        
+        switch ($model) {
+            case 'dall-e-2':
+                $status = HelperService::checkMediaCredits('openai_dalle_2');
+                break;
+            case 'dall-e-3':
+                $status = HelperService::checkMediaCredits('openai_dalle_3');
+                break;
+            case 'dall-e-3-hd':
+                $status = HelperService::checkMediaCredits('openai_dalle_3_hd');
+                break;
+            case 'stable-diffusion-v1-6':
+                $status = HelperService::checkMediaCredits('sd_v16');
+                break;
+            case 'stable-diffusion-xl-1024-v1-0':
+                $status = HelperService::checkMediaCredits('sd_xl_v10');
+                break;
+            case 'sd3.5-medium':
+                $status = HelperService::checkMediaCredits('sd_3_medium');
+                break;
+            case 'sd3.5-large':
+                $status = HelperService::checkMediaCredits('sd_3_large');
+                break;
+            case 'sd3.5-large-turbo':
+                $status = HelperService::checkMediaCredits('sd_3_large_turbo');
+                break;
+            case 'core':
+                $status = HelperService::checkMediaCredits('sd_core');
+                break;
+            case 'ultra':
+                $status = HelperService::checkMediaCredits('sd_ultra');
+                break;
+            case 'flux/dev':
+                $status = HelperService::checkMediaCredits('flux_dev');
+                break;
+            case 'flux/schnell':
+                $status = HelperService::checkMediaCredits('flux_schnell');
+                break;
+            case 'flux-pro/new':
+                $status = HelperService::checkMediaCredits('flux_pro');
+                break;
+            case 'flux-realism':
+                $status = HelperService::checkMediaCredits('flux_realism');
+                break;
+            case 'midjourney/fast':
+                $status = HelperService::checkMediaCredits('midjourney_fast');
+                break;
+            case 'midjourney/relax':
+                $status = HelperService::checkMediaCredits('midjourney_relax');
+                break;
+            case 'midjourney/turbo':
+                $status = HelperService::checkMediaCredits('midjourney_turbo');
+                break;
+            case 'clipdrop':
+                $status = HelperService::checkMediaCredits('clipdrop');
+                break;
+        }
+
+        return $status;
+    }
+
+
 
     /**
 	*
-	* Update user word balance
+	* Update user image balance`
 	* @param - total words generated
 	* @return - confirmation
 	*
 	*/
-    public function updateBalance($images) {
+    public function updateBalance($model) {
 
-        $user = User::find(Auth::user()->id);
-
-        if (auth()->user()->image_credits != -1) {
-        
-            if (Auth::user()->image_credits > $images) {
-
-                $total_images = Auth::user()->image_credits - $images;
-                $user->image_credits = ($total_images < 0) ? 0 : $total_images;
-
-            } elseif (Auth::user()->image_credits_prepaid > $images) {
-
-                $total_images_prepaid = Auth::user()->image_credits_prepaid - $images;
-                $user->image_credits_prepaid = ($total_images_prepaid < 0) ? 0 : $total_images_prepaid;
-
-            } elseif ((Auth::user()->image_credits + Auth::user()->available_idalle_mages_prepaid) == $images) {
-
-                $user->image_credits = 0;
-                $user->image_credits_prepaid = 0;
-
-            } else {
-
-                if (!is_null(Auth::user()->member_of)) {
-
-                    $member = User::where('id', Auth::user()->member_of)->first();
-
-                    if ($member->image_credits > $images) {
-
-                        $total_images = $member->image_credits - $images;
-                        $member->image_credits = ($total_images < 0) ? 0 : $total_images;
-            
-                    } elseif ($member->image_credits_prepaid > $images) {
-            
-                        $total_images_prepaid = $member->image_credits_prepaid - $images;
-                        $member->image_credits_prepaid = ($total_images_prepaid < 0) ? 0 : $total_images_prepaid;
-            
-                    } elseif (($member->image_credits + $member->image_credits_prepaid) == $images) {
-            
-                        $member->image_credits = 0;
-                        $member->image_credits_prepaid = 0;
-            
-                    } else {
-                        $remaining = $images - $member->image_credits;
-                        $member->image_credits = 0;
-        
-                        $prepaid_left = $member->image_credits_prepaid - $remaining;
-                        $member->image_credits_prepaid = ($prepaid_left < 0) ? 0 : $prepaid_left;
-                    }
-
-                    $member->update();
-
-                } else {
-                    $remaining = $images - Auth::user()->image_credits;
-                    $user->image_credits = 0;
-
-                    $prepaid_left = Auth::user()->image_credits_prepaid - $remaining;
-                    $user->image_credits_prepaid = ($prepaid_left < 0) ? 0 : $prepaid_left;
-                }
-            }
+        switch ($model) {
+            case 'dall-e-2':
+    
+                HelperService::updateMediaBalance('openai_dalle_2', 1);
+                break;
+            case 'dall-e-3':
+                HelperService::updateMediaBalance('openai_dalle_3', 1);
+                break;
+            case 'dall-e-3-hd':
+                HelperService::updateMediaBalance('openai_dalle_3_hd', 1);
+                break;
+            case 'stable-diffusion-v1-6':
+                HelperService::updateMediaBalance('sd_v16', 1);
+                break;
+            case 'stable-diffusion-xl-1024-v1-0':
+                HelperService::updateMediaBalance('sd_xl_v10', 1);
+                break;
+            case 'sd3.5-medium':
+                HelperService::updateMediaBalance('sd_3_medium', 1);
+                break;
+            case 'sd3.5-large':
+                HelperService::updateMediaBalance('sd_3_large', 1);
+                break;
+            case 'sd3.5-large-turbo':
+                HelperService::updateMediaBalance('sd_3_large_turbo', 1);
+                break;
+            case 'core':
+                HelperService::updateMediaBalance('sd_core', 1);
+                break;
+            case 'ultra':
+                HelperService::updateMediaBalance('sd_ultra', 1);
+                break;
+            case 'flux/dev':
+                HelperService::updateMediaBalance('flux_dev', 1);
+                break;
+            case 'flux/schnell':
+                HelperService::updateMediaBalance('flux_schnell', 1);
+                break;
+            case 'flux-pro/new':
+                HelperService::updateMediaBalance('flux_pro', 1);
+                break;
+            case 'flux-realism':
+                HelperService::updateMediaBalance('flux_realism', 1);
+                break;
+            case 'midjourney/fast':
+                HelperService::updateMediaBalance('midjourney_fast', 1);
+                break;
+            case 'midjourney/relax':
+                HelperService::updateMediaBalance('midjourney_relax', 1);
+                break;
+            case 'midjourney/turbo':
+                HelperService::updateMediaBalance('midjourney_turbo', 1);
+                break;
+            case 'clipdrop':
+                HelperService::updateMediaBalance('clipdrop', 1);
+                break;
         }
-
-        $user->update();
-
-        return true;
+        
     }
 
 

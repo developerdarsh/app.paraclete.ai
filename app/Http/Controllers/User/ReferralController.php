@@ -41,17 +41,12 @@ class ReferralController extends Controller
     {   
         try {
 
-            Mail::to(request('email'))->cc(auth()->user()->email)->send(new ReferralEmail());
- 
-            if (Mail::flushMacros()) {
-                toastr()->error(__('Sending email failed, please try again'));
-                return redirect()->back();
-            }
-        
+            Mail::to(request('email'))->send(new ReferralEmail());
+
         } catch(Exception $e) {
-            toastr()->error(__('SMTP settings are not configured correctly yet') . $e->getMessage());
+            toastr()->error(__('An error occurred while sending the email: ') . $e->getMessage());
             return redirect()->back();
-        }     
+        }    
         
         toastr()->success(__('Email was sent successfully'));
         return redirect()->back();

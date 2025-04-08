@@ -21,6 +21,7 @@ use App\Models\ChatPrompt;
 use App\Models\ApiKey;
 use App\Models\CustomChat;
 use App\Models\Chat;
+use App\Models\ChatShare;
 use App\Models\User;
 use App\Models\BrandVoice;
 use App\Models\ExtensionSetting;
@@ -31,13 +32,9 @@ use App\Services\HelperService;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use OpenAI\Client;
-use Orhanerday\OpenAi\OpenAi;
-use Michelf\Markdown;
 use Exception;
-use App\Library\URLFetcher;
-use App\Models\Voice;	
-use App\Services\AzureTTSService;
-use App\Models\ChatTemplates;
+
+
 
 class ChatController extends Controller
 {
@@ -313,50 +310,63 @@ class ChatController extends Controller
 
         # Start OpenAI task
         if (in_array($model, ['gpt-3.5-turbo-0125', 'gpt-4', 'gpt-4o', 'gpt-4o-mini', 'gpt-4.5-preview', 'o1', 'o1-mini', 'o3-mini', 'gpt-4-0125-preview'])) {
-            if (config('settings.personal_openai_api') == 'allow') {
-                $openai_api = auth()->user()->personal_openai_key;        
-            } elseif (!is_null(auth()->user()->plan_id)) {
-                $check_api = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
-                if ($check_api->personal_openai_api) {
-                    $openai_api = auth()->user()->personal_openai_key;               
+            if (\App\Services\HelperService::extensionAzureOpenai() && $extension->azure_openai_activate) {
+    
+                return $this->streamAzure($conversation_id, $chat_id, $prompt);                      
+
+            } elseif (\App\Services\HelperService::extensionOpenRouter() && $extension->open_router_activate) {
+
+                return $this->streamOpenRouter($conversation_id, $chat_id, $prompt);                      
+            
+            } else {
+
+                if (config('settings.personal_openai_api') == 'allow') {
+                    $openai_api = auth()->user()->personal_openai_key;        
+                } elseif (!is_null(auth()->user()->plan_id)) {
+                    $check_api = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
+                    if ($check_api->personal_openai_api) {
+                        $openai_api = auth()->user()->personal_openai_key;               
+                    } else {
+                        if (config('settings.openai_key_usage') !== 'main') {
+                           $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
+                           array_push($api_keys, config('services.openai.key'));
+                           $key = array_rand($api_keys, 1);
+                           $openai_api = $api_keys[$key];
+                       } else {
+                           $openai_api = config('services.openai.key');
+                       }
+                   }               
                 } else {
                     if (config('settings.openai_key_usage') !== 'main') {
-                       $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
-                       array_push($api_keys, config('services.openai.key'));
-                       $key = array_rand($api_keys, 1);
-                       $openai_api = $api_keys[$key];
-                   } else {
-                       $openai_api = config('services.openai.key');
-                   }
-               }               
-            } else {
-                if (config('settings.openai_key_usage') !== 'main') {
-                    $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
-                    array_push($api_keys, config('services.openai.key'));
-                    $key = array_rand($api_keys, 1);
-                    $openai_api = $api_keys[$key];
-                } else {
-                    $openai_api = config('services.openai.key');
+                        $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
+                        array_push($api_keys, config('services.openai.key'));
+                        $key = array_rand($api_keys, 1);
+                        $openai_api = $api_keys[$key];
+                    } else {
+                        $openai_api = config('services.openai.key');
+                    }
                 }
+    
+                if (is_null($openai_api) || $openai_api == '') {
+                    return response()->stream(function () {
+                        echo 'data: OpenAI Notification: <span class="font-weight-bold">Missing OpenAI API key</span>. Please contact support team.';
+                        echo "\n\n";
+                        echo 'data: [DONE]';
+                        echo "\n\n";
+                        ob_flush();
+                        flush();
+                    }, 200, [
+                        'Cache-Control' => 'no-cache',
+                        'X-Accel-Buffering' => 'no',
+                        'Content-Type' => 'text/event-stream',
+                    ]);
+                }
+    
+                return $this->streamOpenai($conversation_id, $chat_id, $prompt, $openai_api);
             }
-
-            if (is_null($openai_api) || $openai_api == '') {
-                return response()->stream(function () {
-                    echo 'data: OpenAI Notification: <span class="font-weight-bold">Missing OpenAI API key</span>. Please contact support team.';
-                    echo "\n\n";
-                    echo 'data: [DONE]';
-                    echo "\n\n";
-                    ob_flush();
-                    flush();
-                }, 200, [
-                    'Cache-Control' => 'no-cache',
-                    'X-Accel-Buffering' => 'no',
-                    'Content-Type' => 'text/event-stream',
-                ]);
-            }
-
-            return $this->streamOpenai($conversation_id, $chat_id, $prompt, $openai_api);
+            
         }
+
 
         # Start Anthropic task
         if (in_array($model, ['claude-3-7-sonnet-20250219', 'claude-3-opus-20240229', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022'])) {
@@ -392,8 +402,8 @@ class ChatController extends Controller
         }
 
 
-         # Start Anthropic task         
-         if ($model == 'gemini-1.5-pro' || $model == 'gemini-1.5-flash' || $model == 'gemini-2.0-flash') {
+        # Start Gemini task         
+        if ($model == 'gemini-1.5-pro' || $model == 'gemini-1.5-flash' || $model == 'gemini-2.0-flash') {
             if (config('settings.personal_gemini_api') == 'allow') {
                 $gemini_api = auth()->user()->personal_gemini_key;        
             } elseif (!is_null(auth()->user()->plan_id)) {
@@ -465,6 +475,28 @@ class ChatController extends Controller
             }
 
             return $this->streamDeepSeek($conversation_id, $chat_id, $prompt, $settings->deepseek_api, $settings->deepseek_base_url);
+        }
+
+
+        # Start Nova task         
+        if ($model == 'us.amazon.nova-micro-v1:0' || $model == 'us.amazon.nova-lite-v1:0' || $model == 'us.amazon.nova-pro-v1:0') {    
+
+            if (is_null($extension->amazon_bedrock_access_key) || $extension->amazon_bedrock_access_key == '') {
+                return response()->stream(function () {
+                    echo 'data: Amazon Nova Notification: <span class="font-weight-bold">Missing AWS Access keys</span>. Please contact support team.';
+                    echo "\n\n";
+                    echo 'data: [DONE]';
+                    echo "\n\n";
+                    ob_flush();
+                    flush();
+                }, 200, [
+                    'Cache-Control' => 'no-cache',
+                    'X-Accel-Buffering' => 'no',
+                    'Content-Type' => 'text/event-stream',
+                ]);
+            }
+
+            return $this->streamBedrock($conversation_id, $chat_id, $prompt);
         }
 
 
@@ -635,7 +667,7 @@ class ChatController extends Controller
                         flush();
                     }
     
-                    if($result->usage !== null){
+                    if(isset($result->usage)){
                         $input_tokens = $result->usage->promptTokens;
                         $output_tokens = $result->usage->completionTokens; 
                     }
@@ -1386,7 +1418,7 @@ class ChatController extends Controller
 
                     if (isset($result['candidates'][0]['content']['parts'][0]['text'])) {
                         $raw = $result['candidates'][0]['content']['parts'][0]['text'];
-                        Log::info($result);
+
                         $clean = str_replace(["\r\n", "\r", "\n"], "<br/>", $raw);
                         $text .= $raw;
     
@@ -1693,6 +1725,87 @@ class ChatController extends Controller
 
     /**
 	*
+	* Bedrock stream task
+	* @param - file id in DB
+	* @return - text stream
+	*
+	*/
+    private function streamBedrock($conversation_id, $chat_id, $prompt)
+    {
+        return response()->stream(function () use ($conversation_id, $chat_id, $prompt) {
+            $streamService = new \App\Services\AmazonBedrock($conversation_id, $chat_id, $prompt);
+            
+            $streamService->processStream(function ($content) {
+                echo 'data: ' . $content;
+                echo "\n\n";
+                ob_flush();
+                flush();
+            });
+            
+        }, 200, [
+            'Cache-Control' => 'no-cache',
+            'X-Accel-Buffering' => 'no',
+            'Content-Type' => 'text/event-stream',
+        ]);
+    }
+
+
+    /**
+	*
+	* Azure Openai stream task
+	* @param - file id in DB
+	* @return - text stream
+	*
+	*/
+    private function streamAzure($conversation_id, $chat_id, $prompt)
+    {
+        return response()->stream(function () use ($conversation_id, $chat_id, $prompt) {
+            $streamService = new \App\Services\AzureOpenai($conversation_id, $chat_id, $prompt);
+            
+            $streamService->processStream(function ($content) {
+                echo 'data: ' . $content;
+                echo "\n\n";
+                ob_flush();
+                flush();
+            });
+            
+        }, 200, [
+            'Cache-Control' => 'no-cache',
+            'X-Accel-Buffering' => 'no',
+            'Content-Type' => 'text/event-stream',
+        ]);
+    }
+
+
+    /**
+	*
+	* Azure Openai stream task
+	* @param - file id in DB
+	* @return - text stream
+	*
+	*/
+    private function streamOpenRouter($conversation_id, $chat_id, $prompt)
+    {
+        return response()->stream(function () use ($conversation_id, $chat_id, $prompt) {
+            $streamService = new \App\Services\OpenRouter($conversation_id, $chat_id, $prompt);
+            
+            $streamService->processStream(function ($content) {
+                echo 'data: ' . $content;
+                echo "\n\n";
+                ob_flush();
+                flush();
+            });
+            
+        }, 200, [
+            'Cache-Control' => 'no-cache',
+            'X-Accel-Buffering' => 'no',
+            'Content-Type' => 'text/event-stream',
+        ]);
+    }
+
+
+    /**
+	*
 	* Process Input Text
 	* @param - file id in DB
 	* @return - confirmation
@@ -1952,7 +2065,7 @@ class ChatController extends Controller
                         if ($chunk instanceof ServerSentEvent) {
                             
                             $raw = $chunk->getArrayData();
-    
+
                             if ($raw['object'] == 'thread.message.delta') {
                                 $answer = $raw['delta']['content'][0]['text']['value'];
                                 $text .= $answer;
@@ -1961,7 +2074,7 @@ class ChatController extends Controller
                                 echo "\n\n";
                                 ob_flush();
                                 flush();                                
-
+                            
                             } elseif ($raw['object'] == 'thread.run') {
                                 if ($raw['status'] == 'completed') {
                                     $input_tokens = $raw['usage']['prompt_tokens'];
@@ -1970,7 +2083,7 @@ class ChatController extends Controller
                                 }
                             }
                            
-                        } else {
+                        } else  {
                             break;
                         }
                     }
@@ -2228,8 +2341,7 @@ class ChatController extends Controller
             session()->forget('conversation_id');
         }
 
-        $chat = Chat::where('chat_code', $code)->first();
-        $template = ChatTemplates::where([['chat_id', $chat->id],['status',1]])->get();
+        $chat = Chat::where('chat_code', $code)->first(); 
         $messages = ChatConversation::where('user_id', auth()->user()->id)->where('chat_code', $chat->chat_code)->orderBy('updated_at', 'desc')->get(); 
 
         $categories = ChatPrompt::where('status', true)->groupBy('group')->pluck('group'); 
@@ -2251,7 +2363,7 @@ class ChatController extends Controller
         $brands = BrandVoice::where('user_id', auth()->user()->id)->get();
         $brands_feature = \App\Services\HelperService::checkBrandVoiceAccess();
 
-        return view('user.chat.view', compact('template','chat', 'messages', 'categories', 'prompts', 'internet', 'brands', 'brands_feature', 'default_model', 'extension'));
+        return view('user.chat.view', compact('chat', 'messages', 'categories', 'prompts', 'internet', 'brands', 'brands_feature', 'default_model', 'extension'));
 	}
 
 
@@ -2919,72 +3031,46 @@ class ChatController extends Controller
         
     }
 
-    public function saveAudio(Request $request)
+
+    public function storeChatShare(Request $request)
     {
-        $audio = $request->file('audio');
-        $format = $audio->getClientOriginalExtension();
-        $file_name = $audio->getClientOriginalName();
-        $size = $audio->getSize();
-        $name = Str::random(10) . '.' . $format;
-        if (config('settings.whisper_default_storage') == 'local') {
-            $audio_url = $audio->store('transcribe', 'public');
-        } elseif (config('settings.whisper_default_storage') == 'aws') {
-            Storage::disk('s3')->put($name, file_get_contents($audio));
-            $audio_url = Storage::disk('s3')->url($name);
-        } elseif (config('settings.whisper_default_storage') == 'wasabi') {
-            Storage::disk('wasabi')->put($name, file_get_contents($audio));
-            $audio_url = Storage::disk('wasabi')->url($name);
+        if ($request->ajax()) {
+
+            $conversation = ChatConversation::where('conversation_id', $request->conversation_id)->first();
+
+            if ($conversation) {
+                ChatShare::create([
+                    'uuid' => $request->uuid,
+                    'chat_code' => $conversation->chat_code,
+                    'conversation_id' => $conversation->conversation_id,
+                    'read_only' => $request->read_only
+                ]);
+
+                return response()->json([
+                    'status' => 200
+                ]);
+            } else {
+                return response()->json([
+                    'status' => 400
+                ]);
+            }            
         }
-
-        if (config('settings.whisper_default_storage') == 'local') {
-            $file = curl_file_create($audio_url);
-        } else {
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_URL, $audio_url);
-            $content = curl_exec($curl);
-            Storage::disk('public')->put('transcribe/' . $file_name, $content);
-            $file = curl_file_create('transcribe/' . $file_name);
-            curl_close($curl);
-
-        }
-        $open_ai = new OpenAi(config('services.openai.key'));
-        $complete = $open_ai->translate([
-            'model' => 'whisper-1',
-            'file' => $file,
-            'prompt' => "",
-        ]);
-        $response = json_decode($complete, true);
-
-        return response()->json(['response' => $response, 'message' => 'Audio recorded successfully']);
     }
-    public function audioConvert(Request $request)
-    {
-        $conversation_id = $request->conversation_id;
-        $chat_message = ChatHistory::where('conversation_id', $conversation_id)->orderBy('created_at', 'desc')->first();
-        $messages = $chat_message->response;
-        $chat_conversation = ChatConversation::where('conversation_id', $conversation_id)->first();
-        $chat_code = $chat_conversation->chat_code;
-        $voice_code = Chat::where('chat_code', $chat_code)->first();
-        // $i = count($messages)-1;
-        $lastAssistantData['voice_code'] = $voice_code->voice_code;
-        $lastAssistantData['data'] = $messages;
-        return $lastAssistantData;
-    }
-    public function convertTextToAudio(Request $request)
-    {
-        // language_code , voice_id
-        $text = $request->text;
-        if ($request->voiceCode == 1) {
-            $voice = Voice::where('id', 208)->first();
-        } else {
-            $voice = Voice::where('id', 424)->first();
-        }
 
-        $format = 'mp3';
-        $file_name = 'LISTEN--' . Str::random(10) . '.mp3';
-        $azure = new AzureTTSService();
-        return $azure->synthesizeSpeech($voice, $text, $format, $file_name);
+
+    public function showChatShare($uuid)
+    {
+
+        $shared = ChatShare::where('uuid', $uuid)->first();
+
+        if ($shared) {
+            $chat = Chat::where('chat_code', $shared->chat_code)->first(); 
+            $conversation = ChatConversation::where('conversation_id', $shared->conversation_id)->orderBy('updated_at', 'desc')->first(); 
+            $messages = ChatHistory::where('conversation_id', $shared->conversation_id)->get();
+
+            return view('user.chat.share', compact('chat', 'conversation', 'messages'));
+        }
+        
     }
 
 }

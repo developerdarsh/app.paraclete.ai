@@ -4403,10 +4403,10 @@
 			url: '/app/user/chat/model',
 			data: { 'model': model},
 			success: function (data) {					
-				let balance = document.getElementById('balance-number');
-				let model = document.getElementById('model-name');
-				balance.innerHTML =  data['balance'];
-				model.innerHTML =  data['model'];
+				// let balance = document.getElementById('balance-number');
+				// let model = document.getElementById('model-name');
+				// balance.innerHTML =  data['balance'];
+				// model.innerHTML =  data['model'];
 
 			},
 			error: function(data) {

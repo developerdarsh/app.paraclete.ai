@@ -681,49 +681,60 @@ class TemplateController extends Controller
 
          # Start OpenAI task
          if (in_array($model, ['gpt-3.5-turbo-0125', 'gpt-4', 'gpt-4o', 'gpt-4o-mini', 'gpt-4.5-preview', 'o1', 'o1-mini', 'o3-mini', 'gpt-4-0125-preview'])) {
-            if (config('settings.personal_openai_api') == 'allow') {
-                $openai_api = auth()->user()->personal_openai_key;        
-            } elseif (!is_null(auth()->user()->plan_id)) {
-                $check_api = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
-                if ($check_api->personal_openai_api) {
-                    $openai_api = auth()->user()->personal_openai_key;               
+            if (\App\Services\HelperService::extensionAzureOpenai() && $extension->azure_openai_activate) {
+    
+                return $this->streamAzure($request->content_id, $max_results, $prompt, $max_words, $temperature);                      
+
+            } elseif (\App\Services\HelperService::extensionOpenRouter() && $extension->open_router_activate) {
+            
+                return $this->streamOpenRouter($request->content_id, $max_results, $prompt, $max_words, $temperature); 
+
+            } else {
+
+                if (config('settings.personal_openai_api') == 'allow') {
+                    $openai_api = auth()->user()->personal_openai_key;        
+                } elseif (!is_null(auth()->user()->plan_id)) {
+                    $check_api = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
+                    if ($check_api->personal_openai_api) {
+                        $openai_api = auth()->user()->personal_openai_key;               
+                    } else {
+                        if (config('settings.openai_key_usage') !== 'main') {
+                        $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
+                        array_push($api_keys, config('services.openai.key'));
+                        $key = array_rand($api_keys, 1);
+                        $openai_api = $api_keys[$key];
+                    } else {
+                        $openai_api = config('services.openai.key');
+                    }
+                }               
                 } else {
                     if (config('settings.openai_key_usage') !== 'main') {
-                       $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
-                       array_push($api_keys, config('services.openai.key'));
-                       $key = array_rand($api_keys, 1);
-                       $openai_api = $api_keys[$key];
-                   } else {
-                       $openai_api = config('services.openai.key');
-                   }
-               }               
-            } else {
-                if (config('settings.openai_key_usage') !== 'main') {
-                    $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
-                    array_push($api_keys, config('services.openai.key'));
-                    $key = array_rand($api_keys, 1);
-                    $openai_api = $api_keys[$key];
-                } else {
-                    $openai_api = config('services.openai.key');
+                        $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
+                        array_push($api_keys, config('services.openai.key'));
+                        $key = array_rand($api_keys, 1);
+                        $openai_api = $api_keys[$key];
+                    } else {
+                        $openai_api = config('services.openai.key');
+                    }
                 }
-            }
 
-            if (is_null($openai_api) || $openai_api == '') {
-                return response()->stream(function () {
-                    echo 'data: OpenAI Notification: <span class="font-weight-bold">Missing OpenAI API key</span>. Please contact support team.';
-                    echo "\n\n";
-                    echo 'data: [DONE]';
-                    echo "\n\n";
-                    ob_flush();
-                    flush();
-                }, 200, [
-                    'Cache-Control' => 'no-cache',
-                    'X-Accel-Buffering' => 'no',
-                    'Content-Type' => 'text/event-stream',
-                ]);
-            }
+                if (is_null($openai_api) || $openai_api == '') {
+                    return response()->stream(function () {
+                        echo 'data: OpenAI Notification: <span class="font-weight-bold">Missing OpenAI API key</span>. Please contact support team.';
+                        echo "\n\n";
+                        echo 'data: [DONE]';
+                        echo "\n\n";
+                        ob_flush();
+                        flush();
+                    }, 200, [
+                        'Cache-Control' => 'no-cache',
+                        'X-Accel-Buffering' => 'no',
+                        'Content-Type' => 'text/event-stream',
+                    ]);
+                }
 
-            return $this->streamOpenai($prompt, $request->content_id, $max_results, $max_words, $temperature, $openai_api);
+                return $this->streamOpenai($prompt, $request->content_id, $max_results, $max_words, $temperature, $openai_api);
+            }
         }
 
         # Start Anthropic task
@@ -854,6 +865,28 @@ class TemplateController extends Controller
             }
 
             return $this->streamPerplexity($prompt, $request->content_id, $max_results, $max_words, $temperature, $extension->perplexity_api);
+        }
+
+
+        # Start Nova task         
+        if ($model == 'us.amazon.nova-micro-v1:0' || $model == 'us.amazon.nova-lite-v1:0' || $model == 'us.amazon.nova-pro-v1:0') {    
+
+            if (is_null($extension->amazon_bedrock_access_key) || $extension->amazon_bedrock_access_key == '') {
+                return response()->stream(function () {
+                    echo 'data: Amazon Nova Notification: <span class="font-weight-bold">Missing AWS Access keys</span>. Please contact support team.';
+                    echo "\n\n";
+                    echo 'data: [DONE]';
+                    echo "\n\n";
+                    ob_flush();
+                    flush();
+                }, 200, [
+                    'Cache-Control' => 'no-cache',
+                    'X-Accel-Buffering' => 'no',
+                    'Content-Type' => 'text/event-stream',
+                ]);
+            }
+
+            return $this->streamBedrock($request->content_id, $max_results, $prompt, $max_words, $temperature);
         }
 
 	}
@@ -1851,6 +1884,87 @@ class TemplateController extends Controller
                 $content->save();
             }
 
+        }, 200, [
+            'Cache-Control' => 'no-cache',
+            'X-Accel-Buffering' => 'no',
+            'Content-Type' => 'text/event-stream',
+        ]);
+    }
+
+
+     /**
+	*
+	* Bedrock stream task
+	* @param - file id in DB
+	* @return - text stream
+	*
+	*/
+    private function streamBedrock($content_id, $max_results, $prompt, $max_words, $temperature)
+    {
+        return response()->stream(function () use ($content_id, $max_results, $prompt, $max_words, $temperature) {
+            $streamService = new \App\Services\AmazonBedrock($content_id, $max_results, $prompt, $max_words, $temperature);
+            
+            $streamService->processTemplateStream(function ($content) {
+                echo 'data: ' . $content;
+                echo "\n\n";
+                ob_flush();
+                flush();
+            });
+            
+        }, 200, [
+            'Cache-Control' => 'no-cache',
+            'X-Accel-Buffering' => 'no',
+            'Content-Type' => 'text/event-stream',
+        ]);
+    }
+
+
+    /**
+	*
+	* Azure Openai stream task
+	* @param - file id in DB
+	* @return - text stream
+	*
+	*/
+    private function streamAzure($content_id, $max_results, $prompt, $max_words, $temperature)
+    {
+        return response()->stream(function () use ($content_id, $max_results, $prompt, $max_words, $temperature) {
+            $streamService = new \App\Services\AzureOpenai($content_id, $max_results, $prompt, $max_words, $temperature);
+            
+            $streamService->processTemplateStream(function ($content) {
+                echo 'data: ' . $content;
+                echo "\n\n";
+                ob_flush();
+                flush();
+            });
+            
+        }, 200, [
+            'Cache-Control' => 'no-cache',
+            'X-Accel-Buffering' => 'no',
+            'Content-Type' => 'text/event-stream',
+        ]);
+    }
+
+
+    /**
+	*
+	* Azure Openai stream task
+	* @param - file id in DB
+	* @return - text stream
+	*
+	*/
+    private function streamOpenRouter($content_id, $max_results, $prompt, $max_words, $temperature)
+    {
+        return response()->stream(function () use ($content_id, $max_results, $prompt, $max_words, $temperature) {
+            $streamService = new \App\Services\OpenRouter($content_id, $max_results, $prompt, $max_words, $temperature);
+            
+            $streamService->processTemplateStream(function ($content) {
+                echo 'data: ' . $content;
+                echo "\n\n";
+                ob_flush();
+                flush();
+            });
+            
         }, 200, [
             'Cache-Control' => 'no-cache',
             'X-Accel-Buffering' => 'no',

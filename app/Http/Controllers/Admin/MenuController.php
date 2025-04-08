@@ -28,6 +28,30 @@ class MenuController extends Controller
         return $this->buildMenuTree($menuItems);
     }
 
+    public function getUserMenu()
+    {
+        $menuItems = MenuItem::where('parent_key', null)
+                        ->where('is_active', true)
+                        ->where('is_admin', false)
+                        ->orderBy('order', 'asc')
+                        ->get();
+        
+        
+        return $this->buildMenuTree($menuItems);
+    }
+
+    public function getAdminMenu()
+    {
+        $menuItems = MenuItem::where('parent_key', null)
+                        ->where('is_active', true)
+                        ->where('is_admin', true)
+                        ->orderBy('order')
+                        ->get();
+        
+        
+        return $this->buildMenuTree($menuItems);
+    }
+
     protected function buildMenuTree(Collection $items)
     {
         $menu = [];

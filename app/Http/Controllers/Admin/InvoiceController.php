@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Setting;
+use App\Models\InvoiceSetting;
 
 class InvoiceController extends Controller
 {
@@ -15,15 +15,7 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        $invoice_rows = ['invoice_currency', 'invoice_language', 'invoice_vendor', 'invoice_vendor_website', 'invoice_address', 'invoice_city', 'invoice_state', 'invoice_postal_code', 'invoice_country', 'invoice_phone', 'invoice_vat_number'];
-        $invoice = [];
-        $settings = Setting::all();
-
-        foreach ($settings as $row) {
-            if (in_array($row['name'], $invoice_rows)) {
-                $invoice[$row['name']] = $row['value'];
-            }
-        }
+        $invoice = InvoiceSetting::first();
 
         return view('admin.finance.invoice.finance_invoice_index', compact('invoice'));
     }
@@ -38,13 +30,36 @@ class InvoiceController extends Controller
     public function store(Request $request)
     {
         request()->validate([
-            'invoice_vendor' => 'required',
+            'company' => 'required',
         ]);
 
-        $rows = ['invoice_currency', 'invoice_language', 'invoice_vendor', 'invoice_vendor_website', 'invoice_address', 'invoice_city', 'invoice_state', 'invoice_postal_code', 'invoice_country', 'invoice_phone', 'invoice_vat_number'];
-        
-        foreach ($rows as $row) {
-            Setting::where('name', $row)->update(['value' => $request->input($row)]);
+        $invoice = InvoiceSetting::first();
+
+        if ($invoice) {
+            $invoice->update([
+                'company' => request('company'),
+                'website' => request('website'),
+                'address' => request('address'),
+                'city' => request('city'),
+                'state' => request('state'),
+                'postal_code' => request('postal_code'),
+                'country' => request('country'),
+                'phone' => request('phone'),
+                'vat_number' => request('vat_number'),
+            ]);
+        } else {
+            InvoiceSetting::create([
+                'company' => request('company'),
+                'website' => request('website'),
+                'address' => request('address'),
+                'city' => request('city'),
+                'state' => request('state'),
+                'postal_code' => request('postal_code'),
+                'country' => request('country'),
+                'phone' => request('phone'),
+                'vat_number' => request('vat_number'),
+            ]);
+
         }
 
         toastr()->success(__('Invoice settings successfully updated'));

@@ -4,16 +4,19 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use App\Traits\InvoiceGeneratorTrait;
 use App\Models\Payment;
 use App\Models\Email;
 
 class PaymentSuccess extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable, SerializesModels, InvoiceGeneratorTrait;
 
     public $order;
     public $email;
@@ -62,6 +65,26 @@ class PaymentSuccess extends Mailable
      */
     public function attachments()
     {
-        return [];
+        try {
+
+            $fileName = $this->invoiceAttachment($this->order->order_id);
+            
+            $invoicePath = Storage::disk('audio')->path("{$fileName}.pdf");
+            
+            if (Storage::disk('audio')->exists("{$fileName}.pdf")) {
+                return [
+                    Attachment::fromPath($invoicePath)
+                        ->as("{$fileName}.pdf")
+                        ->withMime('application/pdf')
+                ];
+            }
+            
+            return [];
+        } catch (\Exception $e) {
+            \Log::error('Failed to generate invoice attachment: ' . $e->getMessage());
+            return [];
+        
+        }
+    
     }
 }

@@ -13,6 +13,8 @@
 <!-- Toastr -->
 <link href="{{URL::asset('plugins/toastr/toastr.min.css')}}" rel="stylesheet" />
 
+<link href="https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@3.1.0/dist/cookieconsent.css" rel="stylesheet" />
+
 
 @yield('css')
 

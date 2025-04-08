@@ -9,6 +9,13 @@ use App\Models\SubscriptionPlan;
 use App\Models\PrepaidPlan;
 use App\Models\User;
 use App\Models\MainSetting;
+use App\Models\InvoiceSetting;
+use LaravelDaily\Invoices\Invoice;
+use LaravelDaily\Invoices\Classes\Party;
+use LaravelDaily\Invoices\Classes\InvoiceItem;
+use Illuminate\Support\Facades\Log;
+use \NumberFormatter;
+use Exception;
 
 trait InvoiceGeneratorTrait
 {
@@ -18,200 +25,478 @@ trait InvoiceGeneratorTrait
      */
     public function generateInvoice($order_id)
     {   
-        $invoice_rows = ['invoice_currency', 'invoice_language', 'invoice_vendor', 'invoice_vendor_website', 'invoice_address', 'invoice_city', 'invoice_state', 'invoice_postal_code', 'invoice_country', 'invoice_phone', 'invoice_vat_number'];
-        $invoice = [];
-        $settings = Setting::all();
+        $id = Payment::where('order_id', $order_id)->firstOrFail();
 
-        foreach ($settings as $row) {
-            if (in_array($row['name'], $invoice_rows)) {
-                $invoice[$row['name']] = $row['value'];
+        try {
+
+            $invoice = InvoiceSetting::first();
+
+            $user = User::where('id', $id->user_id)->firstOrFail();
+            $plan = ($id->frequency == 'prepaid') ? 
+                PrepaidPlan::where('id', $id->plan_id)->first() : 
+                SubscriptionPlan::where('id', $id->plan_id)->first();
+
+            // Create Seller
+            $seller = new Party([
+                'name'          => $invoice->company,                
+                'address'       => $invoice->address,
+                'phone'         => $invoice->phone,
+                'code'          => $invoice->postal_code,
+                'vat'          => $invoice->vat_number,
+                'custom_fields' => [
+                    __('invoices::invoice.website') => $invoice->website,
+                ],
+            ]);
+
+
+            # Customer Data
+            $customerData = [];
+            if (!empty($user->name)) {$customerData['name'] = $user->name;}
+            if (!empty($id->billing_address) || !empty($id->billing_city) || !empty($id->billing_country)) {$customerData['address'] = $id->billing_address . ', ' . $id->billing_city . ', ' . $id->billing_postal_code . ', ' . $id->billing_country;}
+            if (!empty($user->email)) {$customerData['custom_fields'][__('invoices::invoice.email')] = $user->email;}
+            if (!empty($id->gateway)) {$customerData['custom_fields'][__('invoices::invoice.gateway')] = $id->gateway;}
+            if (!empty($id->gateway)) {$customerData['custom_fields'][__('invoices::invoice.transaction')] = $id->order_id;}
+            if (!empty($id->billing_vat_number)) {$customerData['custom_fields'][__('invoices::invoice.vat')] = $id->billing_vat_number;}
+
+            $customer = new Party($customerData);
+
+
+            // Calculate Tax
+            $tax_rate = config('payment.payment_tax');
+            $tax_amount = ($tax_rate > 0) ? ($plan->price * $tax_rate) / 100 : 0;
+            $total = $tax_amount + $plan->price;
+
+            // Create Invoice Item
+            $item = (new InvoiceItem())
+                ->title('Plan Name: ' . $plan->plan_name)
+                ->pricePerUnit($plan->price)
+                ->quantity(1);
+
+            $notes = __('All subscription cancellations will be processed by the next month');
+
+            foreach(config('currencies.all') as $key => $value) {     
+                if (strtolower($key) == strtolower($id->currency)) {
+                    $currency_symbol =  html_entity_decode($value['symbol'], ENT_QUOTES, 'UTF-8'); 
+                } 
             }
+           
+
+            // Create Invoice
+            if (is_null($id->billing_vat_number)) {
+                $invoice = Invoice::make()
+                ->series(config('invoices.serial_number.series'))
+                ->sequence($id->id)
+                ->status($id->status === 'completed' ? __('invoices::invoice.paid') : __('invoices::invoice.pending'))
+                ->seller($seller)
+                ->buyer($customer)
+                ->date(now())
+                ->dateFormat('M d, Y')
+                ->payUntilDays(3)
+                ->currencySymbol($currency_symbol)
+                ->currencyCode($id->currency)
+                ->addItem($item)
+                ->taxRate($tax_rate)
+                ->logo(public_path(MainSetting::first()->logo_dashboard))
+                ->template('default')
+                ->filename($id->order_id)
+                ->notes($notes);
+            } else {
+                $invoice = Invoice::make()
+                ->series(config('invoices.serial_number.series'))
+                ->sequence($id->id)
+                ->status($id->status === 'completed' ? __('invoices::invoice.paid') : __('invoices::invoice.pending'))
+                ->seller($seller)
+                ->buyer($customer)
+                ->date(now())
+                ->dateFormat('M d, Y')
+                ->payUntilDays(3)
+                ->currencySymbol($currency_symbol)
+                ->currencyCode($id->currency)
+                ->addItem($item)
+                ->logo(public_path(MainSetting::first()->logo_dashboard))
+                ->template('default')
+                ->filename($id->order_id)
+                ->notes($notes);
+            }
+
+            // Save and download PDF
+            return $invoice->stream();
+        } catch (Exception $e) {
+            Log::error('Invoice Generation Error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            toastr()->error(__('Failed to generate invoice. Please try again later'));
+            return redirect()->back();
         }
+    }  
 
-        $payment = Payment::where('order_id', $order_id)->firstOrFail();
-        $user = User::where('id', $payment->user_id)->firstOrFail();
-        $plan = ($payment->frequency == 'prepaid') ? PrepaidPlan::where('id', $payment->plan_id)->first() : SubscriptionPlan::where('id', $payment->plan_id)->first();
-        $description = '';
 
-        $tax_total = (config('payment.payment_tax') > 0) ? ($plan->price * config('payment.payment_tax')) / 100 : 0;
-        $total = $tax_total + $plan->price;
+    public function showInvoice($order_id)
+    {   
+        $id = Payment::where('order_id', $order_id)->first();
 
-        $final_total = $total;
+        try {
 
-        $serviceProvider = [
-            'Service Provider',
-            $invoice['invoice_vendor'],
-            $invoice['invoice_vendor_website'],
-            $invoice['invoice_address'],
-            $invoice['invoice_city'] . ', ' . $invoice['invoice_postal_code'] . ', ' . $invoice['invoice_country'],
-            $invoice['invoice_phone'],
-            'VAT Number: ' . $invoice['invoice_vat_number'],
-        ];
+            $invoice = InvoiceSetting::first();
 
-        $serviceUser = [
-            'Service User',
-            $user->name,
-            $user->email,
-            $user->company,
-            $user->address,
-            $user->city . ' ' . $user->postal_code . ' ' . $user->country,
-        ];
+            $user = User::where('id', $id->user_id)->firstOrFail();
+            $plan = ($id->frequency == 'prepaid') ? 
+                PrepaidPlan::where('id', $id->plan_id)->first() : 
+                SubscriptionPlan::where('id', $id->plan_id)->first();
 
-        $size = 'A4';
-        $currency = $invoice['invoice_currency'];
-        $language = $invoice['invoice_language'];
+            // Create Seller
+            $seller = new Party([
+                'name'          => $invoice->company,                
+                'address'       => $invoice->address,
+                'phone'         => $invoice->phone,
+                'code'          => $invoice->postal_code,
+                'vat'          => $invoice->vat_number,
+                'custom_fields' => [
+                    __('invoices::invoice.website') => $invoice->website,
+                ],
+            ]);
 
-        $invoice = new InvoicePrinter($size, $currency, $language);
-        $logo = MainSetting::first();
+
+            # Customer Data
+            $customerData = [];
+            if (!empty($user->name)) {$customerData['name'] = $user->name;}
+            if (!empty($id->billing_address) || !empty($id->billing_city) || !empty($id->billing_country)) {$customerData['address'] = $id->billing_address . ', ' . $id->billing_city . ', ' . $id->billing_postal_code . ', ' . $id->billing_country;}
+            if (!empty($user->email)) {$customerData['custom_fields'][__('invoices::invoice.email')] = $user->email;}
+            if (!empty($id->gateway)) {$customerData['custom_fields'][__('invoices::invoice.gateway')] = $id->gateway;}
+            if (!empty($id->gateway)) {$customerData['custom_fields'][__('invoices::invoice.transaction')] = $id->order_id;}
+            if (!empty($id->billing_vat_number)) {$customerData['custom_fields'][__('invoices::invoice.vat')] = $id->billing_vat_number;}
+
+            $customer = new Party($customerData);
+
+
+            // Calculate Tax
+            $tax_rate = config('payment.payment_tax');
+            $tax_amount = ($tax_rate > 0) ? ($plan->price * $tax_rate) / 100 : 0;
+            $total = $tax_amount + $plan->price;
+
+            // Create Invoice Item
+            $item = (new InvoiceItem())
+                ->title('Plan Name: ' . $plan->plan_name)
+                ->pricePerUnit($plan->price)
+                ->quantity(1);
+
+            $notes = __('All subscription cancellations will be processed by the next month');
+
+            foreach(config('currencies.all') as $key => $value) {     
+                if (strtolower($key) == strtolower($id->currency)) {
+                    $currency_symbol =  html_entity_decode($value['symbol'], ENT_QUOTES, 'UTF-8'); 
+                } 
+            }
+           
+
+            // Create Invoice
+            if (is_null($id->billing_vat_number)) {
+                $invoice = Invoice::make()
+                ->series(config('invoices.serial_number.series'))
+                ->sequence($id->id)
+                ->status($id->status === 'completed' ? __('invoices::invoice.paid') : __('invoices::invoice.pending'))
+                ->seller($seller)
+                ->buyer($customer)
+                ->date(now())
+                ->dateFormat('M d, Y')
+                ->payUntilDays(3)
+                ->currencySymbol($currency_symbol)
+                ->currencyCode($id->currency)
+                ->addItem($item)
+                ->taxRate($tax_rate)
+                ->logo(public_path(MainSetting::first()->logo_dashboard))
+                ->template('default')
+                ->filename($id->order_id)
+                ->notes($notes);
+            } else {
+                $invoice = Invoice::make()
+                ->series(config('invoices.serial_number.series'))
+                ->sequence($id->id)
+                ->status($id->status === 'completed' ? __('invoices::invoice.paid') : __('invoices::invoice.pending'))
+                ->seller($seller)
+                ->buyer($customer)
+                ->date(now())
+                ->dateFormat('M d, Y')
+                ->payUntilDays(3)
+                ->currencySymbol($currency_symbol)
+                ->currencyCode($id->currency)
+                ->addItem($item)
+                ->logo(public_path(MainSetting::first()->logo_dashboard))
+                ->template('default')
+                ->filename($id->order_id)
+                ->notes($notes);
+            }
+
+            // Save and download PDF
+            return $invoice->stream();
+        } catch (Exception $e) {
+            Log::error('Invoice Generation Error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            toastr()->error(__('Failed to generate invoice. Please try again later'));
+            return redirect()->back();
+        }
         
-        /* Header settings */
-        $invoice->setLogo($logo->logo_dashboard);
-        $invoice->setColor("#007Bff");      // pdf color scheme
-        $invoice->setType("Invoice");    // Invoice Type
-        $invoice->setReference($order_id);   // Reference
-        $invoice->setDate(date('M dS ,Y',time()));   //Billing Date
-        $invoice->setTime(date('h:i:s A',time()));   //Billing Time
-        $invoice->setFrom($serviceProvider);
-        $invoice->setTo($serviceUser);
-        
-        $invoice->addItem('Plan Name: '. $plan->plan_name, $description, 1, $tax_total, $plan->price, 0, $total);
-        
-        $invoice->addTotal("Total", $total);
-        $invoice->addTotal("VAT ". config('payment.payment_tax') ."%", $tax_total);
-        $invoice->addTotal("Total Paid", $final_total, true);
-        
-        $invoice->addBadge("Payment Paid");        
-        $invoice->addTitle("Important Notice");        
-        $invoice->addParagraph("All subscription cancellations will be processed by the next month.");        
-        $invoice->setFooternote(config('payment.company.name'),);
-        
-        $invoice->render('invoice.pdf','D'); 
     }
 
 
     public function bankTransferInvoice($order_id)
     {   
         $invoice_rows = ['bank_requisites'];
-        $invoice = [];
+        $bank = [];
         $settings = Setting::all();
 
         foreach ($settings as $row) {
             if (in_array($row['name'], $invoice_rows)) {
-                $invoice[$row['name']] = $row['value'];
+                $bank[$row['name']] = $row['value'];
             }
         }
 
-        $id = Payment::where('order_id', $order_id)->firstOrFail();
-        $user = User::where('id', $id->user_id)->firstOrFail();
-        $plan = ($id->frequency == 'prepaid') ? PrepaidPlan::where('id', $id->plan_id)->first() : SubscriptionPlan::where('id', $id->plan_id)->first();
-        $description = '';
+        $id = Payment::where('order_id', $order_id)->first();
 
-        $tax_total = (config('payment.payment_tax') > 0) ? $tax = ($plan->price * config('payment.payment_tax')) / 100 : 0;
-        $total = $tax_total + $plan->price;
+        try {
 
-        $serviceProvider = [
-            'Bank Requisites',
-            $invoice['bank_requisites'],
-        ];
+            $invoice = InvoiceSetting::first();
 
-        $size = 'A4';
-        $currency = $id->currency;
-        $language = 'en';
+            $user = User::where('id', $id->user_id)->firstOrFail();
+            $plan = ($id->frequency == 'prepaid') ? 
+                PrepaidPlan::where('id', $id->plan_id)->first() : 
+                SubscriptionPlan::where('id', $id->plan_id)->first();
 
-        $invoice = new InvoicePrinter($size, $currency, $language);
-        $logo = MainSetting::first();
-        
-        /* Header settings */
-        $invoice->setLogo($logo->logo_dashboard);
-        $invoice->setColor("#007Bff");      // pdf color scheme
-        $invoice->setType("Invoice");    // Invoice Type
-        $invoice->setReference($id->order_id);   // Reference
-        $invoice->setDate(date('M dS ,Y',time()));   //Billing Date
-        $invoice->setTime(date('h:i:s A',time()));   //Billing Time
-        $invoice->setFrom($serviceProvider);
-        $invoice->hideToFromHeaders();
-        
-        $invoice->addItem('Plan Name: '. $plan->plan_name, $description, 1, $tax_total, $plan->price, 0, $total);
-        
-        $invoice->addTotal("Total", $total);
-        $invoice->addTotal("VAT ". config('payment.payment_tax') ."%", $tax_total);
-        $invoice->addTotal("Total Due", $id->price, true);
-        
-        $invoice->addBadge("Payment Pending", '#f00');        
-        $invoice->addTitle("Important Notice");        
-        $invoice->addParagraph("All subscription cancellations will be processed by the next month.");        
-        $invoice->setFooternote(config('payment.company.name'),);
-        
-        $invoice->render('invoice.pdf','D'); 
+            // Create Seller
+            $seller = new Party([
+                'name'          => $invoice->company,                
+                'address'       => $invoice->address,
+                'phone'         => $invoice->phone,
+                'code'          => $invoice->postal_code,
+                'vat'          => $invoice->vat_number,
+                'custom_fields' => [
+                    __('invoices::invoice.website') => $invoice->website,
+                    'Bank Requisites' => $bank['bank_requisites'],
+                ],
+            ]);
+
+
+            # Customer Data
+            $customerData = [];
+            if (!empty($user->name)) {$customerData['name'] = $user->name;}
+            if (!empty($id->billing_address) || !empty($id->billing_city) || !empty($id->billing_country)) {$customerData['address'] = $id->billing_address . ', ' . $id->billing_city . ', ' . $id->billing_postal_code . ', ' . $id->billing_country;}
+            if (!empty($user->email)) {$customerData['custom_fields'][__('invoices::invoice.email')] = $user->email;}
+            if (!empty($id->gateway)) {$customerData['custom_fields'][__('invoices::invoice.gateway')] = $id->gateway;}
+            if (!empty($id->gateway)) {$customerData['custom_fields'][__('invoices::invoice.transaction')] = $id->order_id;}
+            if (!empty($id->billing_vat_number)) {$customerData['custom_fields'][__('invoices::invoice.vat')] = $id->billing_vat_number;}
+
+            $customer = new Party($customerData);
+
+
+            // Calculate Tax
+            $tax_rate = config('payment.payment_tax');
+            $tax_amount = ($tax_rate > 0) ? ($plan->price * $tax_rate) / 100 : 0;
+            $total = $tax_amount + $plan->price;
+
+            // Create Invoice Item
+            $item = (new InvoiceItem())
+                ->title('Plan Name: ' . $plan->plan_name)
+                ->pricePerUnit($plan->price)
+                ->quantity(1);
+
+            $notes = __('All subscription cancellations will be processed by the next month');
+
+            foreach(config('currencies.all') as $key => $value) {     
+                if (strtolower($key) == strtolower($id->currency)) {
+                    $currency_symbol =  html_entity_decode($value['symbol'], ENT_QUOTES, 'UTF-8'); 
+                } 
+            }
+           
+
+            // Create Invoice
+            if (is_null($id->billing_vat_number)) {
+                $invoice = Invoice::make()
+                ->series(config('invoices.serial_number.series'))
+                ->sequence($id->id)
+                ->status($id->status === 'completed' ? __('invoices::invoice.paid') : __('invoices::invoice.pending'))
+                ->seller($seller)
+                ->buyer($customer)
+                ->date(now())
+                ->dateFormat('M d, Y')
+                ->payUntilDays(3)
+                ->currencySymbol($currency_symbol)
+                ->currencyCode($id->currency)
+                ->addItem($item)
+                ->taxRate($tax_rate)
+                ->logo(public_path(MainSetting::first()->logo_dashboard))
+                ->template('default')
+                ->filename($id->order_id)
+                ->notes($notes);
+            } else {
+                $invoice = Invoice::make()
+                ->series(config('invoices.serial_number.series'))
+                ->sequence($id->id)
+                ->status($id->status === 'completed' ? __('invoices::invoice.paid') : __('invoices::invoice.pending'))
+                ->seller($seller)
+                ->buyer($customer)
+                ->date(now())
+                ->dateFormat('M d, Y')
+                ->payUntilDays(3)
+                ->currencySymbol($currency_symbol)
+                ->currencyCode($id->currency)
+                ->addItem($item)
+                ->logo(public_path(MainSetting::first()->logo_dashboard))
+                ->template('default')
+                ->filename($id->order_id)
+                ->notes($notes);
+            }
+
+            // Save and download PDF
+            return $invoice->stream();
+        } catch (Exception $e) {
+            Log::error('Invoice Generation Error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            
+            toastr()->error(__('Failed to generate invoice. Please try again later'));
+            return redirect()->back();
+        }
     }
 
 
-    public function showInvoice(Payment $id)
+    public function invoiceAttachment($order_id)
     {   
-        $invoice_rows = ['invoice_currency', 'invoice_language', 'invoice_vendor', 'invoice_vendor_website', 'invoice_address', 'invoice_city', 'invoice_state', 'invoice_postal_code', 'invoice_country', 'invoice_phone', 'invoice_vat_number'];
-        $invoice = [];
-        $settings = Setting::all();
 
-        foreach ($settings as $row) {
-            if (in_array($row['name'], $invoice_rows)) {
-                $invoice[$row['name']] = $row['value'];
+        $id = Payment::where('order_id', $order_id)->first();
+
+        try {
+
+            $invoice = InvoiceSetting::first();
+
+            $user = User::where('id', $id->user_id)->firstOrFail();
+            $plan = ($id->frequency == 'prepaid') ? 
+                PrepaidPlan::where('id', $id->plan_id)->first() : 
+                SubscriptionPlan::where('id', $id->plan_id)->first();
+
+            // Create Seller
+            if ($id->gateway == 'BankTransfer') {
+                $invoice_rows = ['bank_requisites'];
+                $bank = [];
+                $settings = Setting::all();
+
+                foreach ($settings as $row) {
+                    if (in_array($row['name'], $invoice_rows)) {
+                        $bank[$row['name']] = $row['value'];
+                    }
+                }
+
+                $seller = new Party([
+                    'name'          => $invoice->company,                
+                    'address'       => $invoice->address,
+                    'phone'         => $invoice->phone,
+                    'code'          => $invoice->postal_code,
+                    'vat'          => $invoice->vat_number,
+                    'custom_fields' => [
+                        __('invoices::invoice.website') => $invoice->website,
+                        'Bank Requisites' => $bank['bank_requisites'],
+                    ],
+                ]);
+            } else {
+                $seller = new Party([
+                    'name'          => $invoice->company,                
+                    'address'       => $invoice->address,
+                    'phone'         => $invoice->phone,
+                    'code'          => $invoice->postal_code,
+                    'vat'          => $invoice->vat_number,
+                    'custom_fields' => [
+                        __('invoices::invoice.website') => $invoice->website,
+                    ],
+                ]);
             }
+            
+
+
+            # Customer Data
+            $customerData = [];
+            if (!empty($user->name)) {$customerData['name'] = $user->name;}
+            if (!empty($id->billing_address) || !empty($id->billing_city) || !empty($id->billing_country)) {$customerData['address'] = $id->billing_address . ', ' . $id->billing_city . ', ' . $id->billing_postal_code . ', ' . $id->billing_country;}
+            if (!empty($user->email)) {$customerData['custom_fields'][__('invoices::invoice.email')] = $user->email;}
+            if (!empty($id->gateway)) {$customerData['custom_fields'][__('invoices::invoice.gateway')] = $id->gateway;}
+            if (!empty($id->gateway)) {$customerData['custom_fields'][__('invoices::invoice.transaction')] = $id->order_id;}
+            if (!empty($id->billing_vat_number)) {$customerData['custom_fields'][__('invoices::invoice.vat')] = $id->billing_vat_number;}
+
+            $customer = new Party($customerData);
+
+
+            // Calculate Tax
+            $tax_rate = config('payment.payment_tax');
+            $tax_amount = ($tax_rate > 0) ? ($plan->price * $tax_rate) / 100 : 0;
+            $total = $tax_amount + $plan->price;
+
+            // Create Invoice Item
+            $item = (new InvoiceItem())
+                ->title('Plan Name: ' . $plan->plan_name)
+                ->pricePerUnit($plan->price)
+                ->quantity(1);
+
+            $notes = __('All subscription cancellations will be processed by the next month');
+
+            foreach(config('currencies.all') as $key => $value) {     
+                if (strtolower($key) == strtolower($id->currency)) {
+                    $currency_symbol =  html_entity_decode($value['symbol'], ENT_QUOTES, 'UTF-8'); 
+                } 
+            }
+           
+
+            // Create Invoice
+            if (is_null($id->billing_vat_number)) {
+                $invoice = Invoice::make()
+                ->series(config('invoices.serial_number.series'))
+                ->sequence($id->id)
+                ->status($id->status === 'completed' ? __('invoices::invoice.paid') : __('invoices::invoice.pending'))
+                ->seller($seller)
+                ->buyer($customer)
+                ->date(now())
+                ->dateFormat('M d, Y')
+                ->payUntilDays(3)
+                ->currencySymbol($currency_symbol)
+                ->currencyCode($id->currency)
+                ->addItem($item)
+                ->taxRate($tax_rate)
+                ->logo(public_path(MainSetting::first()->logo_dashboard))
+                ->template('default')
+                ->notes($notes)
+                ->filename("invoice-{$id->order_id}")
+                ->save('audio');
+            } else {
+                $invoice = Invoice::make()
+                ->series(config('invoices.serial_number.series'))
+                ->sequence($id->id)
+                ->status($id->status === 'completed' ? __('invoices::invoice.paid') : __('invoices::invoice.pending'))
+                ->seller($seller)
+                ->buyer($customer)
+                ->date(now())
+                ->dateFormat('M d, Y')
+                ->payUntilDays(3)
+                ->currencySymbol($currency_symbol)
+                ->currencyCode($id->currency)
+                ->addItem($item)
+                ->logo(public_path(MainSetting::first()->logo_dashboard))
+                ->template('default')
+                ->notes($notes)
+                ->filename("invoice-{$id->order_id}")
+                ->save('audio');
+            }
+
+            // Save and download PDF
+            return "invoice-{$id->order_id}";
+        } catch (Exception $e) {
+            Log::error('Invoice Generation Error', [
+                'message' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+ 
         }
-
-        $user = User::where('id', $id->user_id)->firstOrFail();
-        $plan = ($id->frequency == 'prepaid') ? PrepaidPlan::where('id', $id->plan_id)->first() : SubscriptionPlan::where('id', $id->plan_id)->first();
-        $description = '';
-
-        $tax_total = (config('payment.payment_tax') > 0) ? $tax = ($plan->price * config('payment.payment_tax')) / 100 : 0;
-        $total = $tax_total + $plan->price;
-
-        $serviceProvider = [
-            'Service Provider',
-            $invoice['invoice_vendor'],
-            $invoice['invoice_vendor_website'],
-            $invoice['invoice_address'],
-            $invoice['invoice_city'] . ', ' . $invoice['invoice_postal_code'] . ', ' . $invoice['invoice_country'],
-            $invoice['invoice_phone'],
-            'VAT Number: ' . $invoice['invoice_vat_number'],
-        ];
-
-        $serviceUser = [
-            'Service User',
-            $user->name,
-            $user->email,
-            $user->company,
-            $user->address,
-            $user->city . ' ' . $user->postal_code . ' ' . $user->country,
-        ];
-
-        $size = 'A4';
-        $currency = $id->currency;
-        $language = $invoice['invoice_language'];
-
-        $invoice = new InvoicePrinter($size, $currency, $language);
-        $logo = MainSetting::first();
-        
-        /* Header settings */
-        $invoice->setLogo($logo->logo_dashboard);
-        $invoice->setColor("#007Bff");      // pdf color scheme
-        $invoice->setType("Invoice");    // Invoice Type
-        $invoice->setReference($id->order_id);   // Reference
-        $invoice->setDate(date('M dS ,Y',time()));   //Billing Date
-        $invoice->setTime(date('h:i:s A',time()));   //Billing Time
-        $invoice->setFrom($serviceProvider);
-        $invoice->setTo($serviceUser);
-        
-        $invoice->addItem('Plan Name: '. $plan->plan_name, $description, 1, $tax_total, $plan->price, 0, $total);
-        
-        $invoice->addTotal("Total", $total);
-        $invoice->addTotal("VAT ". config('payment.payment_tax') ."%", $tax_total);
-        $invoice->addTotal("Total Paid", $id->price, true);
-        
-        $invoice->addBadge("Payment Paid");        
-        $invoice->addTitle("Important Notice");        
-        $invoice->addParagraph("All subscription cancellations will be processed by the next month.");        
-        $invoice->setFooternote(config('payment.company.name'),);
-        
-        $invoice->render('invoice.pdf','D'); 
     }
 }

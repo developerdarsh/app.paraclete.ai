@@ -48,6 +48,12 @@
             <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('Perplexity | Sonar Reasoning') }}</option>
         @elseif (trim($model) == 'sonar-reasoning-pro')
             <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('Perplexity | Sonar Reasoning Pro') }}</option>
+        @elseif (trim($model) == 'us.amazon.nova-micro-v1:0')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('Amazon | Nova Micro') }}</option>
+        @elseif (trim($model) == 'us.amazon.nova-lite-v1:0')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('Amazon | Nova Lite') }}</option>
+        @elseif (trim($model) == 'us.amazon.nova-pro-v1:0')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('Amazon | Nova Pro') }}</option>
         @else
             @foreach ($fine_tunes as $fine_tune)
                 @if (trim($model) == $fine_tune->model)

@@ -43,6 +43,8 @@ class DatabaseSeeder extends Seeder
             SocialMediaSeeder::class,
             ApiCreditSeeder::class,
             MenuSeeder::class,
+            AzureModelSeeder::class,
+            CookiesSeeder::class,
         ]);
     }
 }

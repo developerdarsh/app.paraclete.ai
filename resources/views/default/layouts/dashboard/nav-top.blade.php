@@ -25,16 +25,6 @@
             <!-- END SEARCH BAR -->
             <!-- MENU BAR -->
             <div class="d-flex order-lg-2 ml-auto"> 
-                <div id="form-group">
-                    <select id="template-selection" name="template-selection" class="top-form-select" data-placeholder="{{ __('Create AI Document') }}" data-callback="changeTemplate">
-                        @foreach (App\Services\HelperService::listTemplates() as $temp)
-                            <option data-id="{{ $temp->template_code }}" value="app/user/templates/original-template/{{ $temp->slug }}" data-icon="{{   $temp->icon }}">{{ __($temp->name)  }}</option>
-                        @endforeach	
-                        @foreach (App\Services\HelperService::listCustomTemplates() as $temp)
-                            <option data-id="{{ $temp->template_code }}" value="app/user/templates/{{ $temp->slug }}/{{ $temp->template_code }}" data-icon="{{   $temp->icon }}">{{ __($temp->name)  }}</option>
-                        @endforeach																																
-                    </select>
-                </div>
                 <div class="dropdown header-notify">
                     <a class="nav-link icon" data-bs-toggle="dropdown">                        
                         @role('admin')

@@ -11,6 +11,7 @@ use App\Models\MainSetting;
 use App\Models\FrontendSection;
 use App\Models\FrontendSetting;
 use App\Models\SeoSetting;
+use App\Models\CookieSetting;
 
 class ViewServiceProvider extends ServiceProvider
 {
@@ -49,6 +50,11 @@ class ViewServiceProvider extends ServiceProvider
             if (Schema::hasTable('seo_settings')) {
                 $metadata = SeoSetting::first();
                 View::share('metadata', $metadata);
+            }
+
+            if (Schema::hasTable('cookie_settings')) {
+                $cookie = CookieSetting::first();
+                View::share('cookie_settings', $cookie);
             }
 
         } else {

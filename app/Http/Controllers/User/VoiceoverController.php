@@ -17,7 +17,6 @@ use App\Services\AzureTTSService;
 use App\Services\GCPTTSService;
 use App\Services\OpenaiTTSService;
 use App\Services\ElevenlabsTTSService;
-use App\Services\IBMTTSService;
 use App\Models\VoiceoverResult;
 use App\Models\User;
 use App\Models\VoiceoverLanguage;
@@ -887,6 +886,7 @@ class VoiceoverController extends Controller
                         $text_characters = mb_strlen($input_text, 'UTF-8');
                     break;
             }
+            
             # Limit of Max Chars for synthesizing          
             if ($total_characters > config('settings.voiceover_max_chars_limit')) {
                 return response()->json(["error" => __("Total characters of your text is more than allowed. Please decrease the length of your text.")], 422);
@@ -982,7 +982,7 @@ class VoiceoverController extends Controller
                     # code...
                     break;
             }
-            
+
             if (config('settings.voiceover_default_storage') === 'aws') {
                 Storage::disk('s3')->writeStream($file_name, Storage::disk('audio')->readStream($file_name));
                 $result_url = Storage::disk('s3')->url($file_name); 
@@ -1189,7 +1189,11 @@ class VoiceoverController extends Controller
         $azure = new AzureTTSService();
         $openai = new OpenaiTTSService();
         $elevenlabs = new ElevenlabsTTSService();
-        $ibm = new IBMTTSService();
+        if (\App\Services\HelperService::extensionWatson()) {
+            $ibm = new \App\Services\IBMTTSService();
+        }
+        
+
         
         switch($voice->vendor) {
             case 'aws':
@@ -1208,7 +1212,8 @@ class VoiceoverController extends Controller
                 return $elevenlabs->synthesizeSpeech($voice, $text, $file_name);
                 break;
             case 'ibm':
-                return $ibm->synthesizeSpeech($voice, $text, $format, $file_name);
+                if (\App\Services\HelperService::extensionWatson()) 
+                    return $ibm->synthesizeSpeech($voice, $text, $format, $file_name);
                 break;
         }
     }
