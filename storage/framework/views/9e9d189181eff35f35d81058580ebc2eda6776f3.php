@@ -1,7 +1,7 @@
-@extends('layouts.smart')
-@section('css')
+
+<?php $__env->startSection('css'); ?>
 	<!-- Sweet Alert CSS -->
-	<link href="{{URL::asset('plugins/sweetalert/sweetalert2.min.css')}}" rel="stylesheet" />
+	<link href="<?php echo e(URL::asset('plugins/sweetalert/sweetalert2.min.css')); ?>" rel="stylesheet" />
 	<style>
  	.info-btn-alt {
  		font-size: 15px;
@@ -14,9 +14,9 @@
  		border-radius: 0.5rem;
  	}
  	</style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 
 <div class="container-fluid pl-0 pr-0">
 
@@ -25,92 +25,96 @@
 				<div id="main-templates-container" class="app-sidebar responsive-left-column">
 						<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
 						<div class="main-templates-title">
-							<h6 class="mb-0 font-weight-bold">{{ __('All Templates') }}</h6>
+							<h6 class="mb-0 font-weight-bold"><?php echo e(__('All Templates')); ?></h6>
 							<a href="#" id="hide-left-menu"><i class="fa-solid fa-chevrons-left"></i></a>
 						</div>
 						<div class="chat-sidebar-search ">	
 							<div class="input-box relative">				
-								<input id="template-search" class="form-control" type="text" placeholder="{{ __('Search your template...') }}">	
+								<input id="template-search" class="form-control" type="text" placeholder="<?php echo e(__('Search your template...')); ?>">	
 								<i class="fa-solid fa-magnifying-glass fs-14 text-muted chat-search-icon"></i>	
 							</div>			
 						</div>
 						<div class="templates-wrapper pt-0 ">						
-							@foreach ($favorite_templates as $template)
-								<div class="template-box" id="template-{{ $template->template_code }}">
-									<a href="#" class="template-title fs-14 font-weight-bold target-template" id="{{ $template->template_code}}" type="{{ $template->type }}" name="{{ $template->name }}" icon="{{ $template->icon }}">
-										<span class="mr-3 ml-1">{!! $template->icon !!}</span>{{ __($template->name) }}
-										<i class="fa-solid fa-star" data-tippy-content="{{ __('Favorite Template') }}"></i>
-										@if($template->package == 'professional') 
-											<span class="fs-7 btn btn-pro ml-2 btn-package"><i class="   fa-solid fa-crown mr-2"></i>{{ __('Pro') }} </span> 
-										@elseif($template->package == 'free')
-											<span class="fs-7 btn btn-free ml-2 btn-package"><i class="   fa-solid fa-gift mr-2"></i>{{ __('Free') }} </span> 
-										@elseif($template->package == 'premium')
-											<span class="fs-7 btn btn-yellow ml-2 btn-package"><i class="   fa-solid fa-gem mr-2"></i>{{ __('Premium') }} </span> 
-										@elseif($template->new)
-											<span class="fs-7 btn btn-new ml-2 btn-package"><i class="   fa-solid fa-sparkles mr-2"></i>{{ __('New') }}</span>
-										@endif
+							<?php $__currentLoopData = $favorite_templates; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $template): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+								<div class="template-box" id="template-<?php echo e($template->template_code); ?>">
+									<a href="#" class="template-title fs-14 font-weight-bold target-template" id="<?php echo e($template->template_code); ?>" type="<?php echo e($template->type); ?>" name="<?php echo e($template->name); ?>" icon="<?php echo e($template->icon); ?>">
+										<span class="mr-3 ml-1"><?php echo $template->icon; ?></span><?php echo e(__($template->name)); ?>
+
+										<i class="fa-solid fa-star" data-tippy-content="<?php echo e(__('Favorite Template')); ?>"></i>
+										<?php if($template->package == 'professional'): ?> 
+											<span class="fs-7 btn btn-pro ml-2 btn-package"><i class="   fa-solid fa-crown mr-2"></i><?php echo e(__('Pro')); ?> </span> 
+										<?php elseif($template->package == 'free'): ?>
+											<span class="fs-7 btn btn-free ml-2 btn-package"><i class="   fa-solid fa-gift mr-2"></i><?php echo e(__('Free')); ?> </span> 
+										<?php elseif($template->package == 'premium'): ?>
+											<span class="fs-7 btn btn-yellow ml-2 btn-package"><i class="   fa-solid fa-gem mr-2"></i><?php echo e(__('Premium')); ?> </span> 
+										<?php elseif($template->new): ?>
+											<span class="fs-7 btn btn-new ml-2 btn-package"><i class="   fa-solid fa-sparkles mr-2"></i><?php echo e(__('New')); ?></span>
+										<?php endif; ?>
 									</a>
 								</div>						
-							@endforeach			
-							@foreach ($favorite_custom_templates as $template)
-								<div class="template-box" id="template-{{ $template->template_code }}">
-									<a href="#" class="template-title fs-14 font-weight-bold target-template" id="{{ $template->template_code}}" type="{{ $template->type }}" name="{{ $template->name }}" icon="{{ $template->icon }}">
-										<span class="mr-3 ml-1">{!! $template->icon !!}</span>{{ __($template->name) }}
-										<i class="fa-solid fa-star" data-tippy-content="{{ __('Favorite Template') }}"></i>
-										@if($template->package == 'professional') 
-											<span class="fs-7 btn btn-pro ml-2 btn-package"><i class="   fa-solid fa-crown mr-2"></i>{{ __('Pro') }} </span> 
-										@elseif($template->package == 'free')
-											<span class="fs-7 btn btn-free ml-2 btn-package"><i class="   fa-solid fa-gift mr-2"></i>{{ __('Free') }} </span> 
-										@elseif($template->package == 'premium')
-											<span class="fs-7 btn btn-yellow ml-2 btn-package"><i class="   fa-solid fa-gem mr-2"></i>{{ __('Premium') }} </span> 
-										@elseif($template->new)
-											<span class="fs-7 btn btn-new ml-2 btn-package"><i class="   fa-solid fa-sparkles mr-2"></i>{{ __('New') }}</span>
-										@endif
+							<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>			
+							<?php $__currentLoopData = $favorite_custom_templates; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $template): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+								<div class="template-box" id="template-<?php echo e($template->template_code); ?>">
+									<a href="#" class="template-title fs-14 font-weight-bold target-template" id="<?php echo e($template->template_code); ?>" type="<?php echo e($template->type); ?>" name="<?php echo e($template->name); ?>" icon="<?php echo e($template->icon); ?>">
+										<span class="mr-3 ml-1"><?php echo $template->icon; ?></span><?php echo e(__($template->name)); ?>
+
+										<i class="fa-solid fa-star" data-tippy-content="<?php echo e(__('Favorite Template')); ?>"></i>
+										<?php if($template->package == 'professional'): ?> 
+											<span class="fs-7 btn btn-pro ml-2 btn-package"><i class="   fa-solid fa-crown mr-2"></i><?php echo e(__('Pro')); ?> </span> 
+										<?php elseif($template->package == 'free'): ?>
+											<span class="fs-7 btn btn-free ml-2 btn-package"><i class="   fa-solid fa-gift mr-2"></i><?php echo e(__('Free')); ?> </span> 
+										<?php elseif($template->package == 'premium'): ?>
+											<span class="fs-7 btn btn-yellow ml-2 btn-package"><i class="   fa-solid fa-gem mr-2"></i><?php echo e(__('Premium')); ?> </span> 
+										<?php elseif($template->new): ?>
+											<span class="fs-7 btn btn-new ml-2 btn-package"><i class="   fa-solid fa-sparkles mr-2"></i><?php echo e(__('New')); ?></span>
+										<?php endif; ?>
 									</a>
 								</div>						
-							@endforeach	
-							@foreach ($other_templates as $template)
-								<div class="template-box" id="template-{{ $template->template_code }}">
-									<a href="#" class="template-title fs-14 font-weight-bold target-template" id="{{ $template->template_code}}" type="{{ $template->type }}" name="{{ $template->name }}" icon="{{ $template->icon }}">
-										<span class="mr-3 ml-1">{!! $template->icon !!}</span>{{ __($template->name) }}
-										@if($template->package == 'professional') 
-											<span class="fs-7 btn btn-pro ml-2 btn-package"><i class="   fa-solid fa-crown mr-2"></i>{{ __('Pro') }} </span> 
-										@elseif($template->package == 'free')
-											<span class="fs-7 btn btn-free ml-2 btn-package"><i class="   fa-solid fa-gift mr-2"></i>{{ __('Free') }} </span> 
-										@elseif($template->package == 'premium')
-											<span class="fs-7 btn btn-yellow ml-2 btn-package"><i class="   fa-solid fa-gem mr-2"></i>{{ __('Premium') }} </span> 
-										@elseif($template->new)
-											<span class="fs-7 btn btn-new ml-2 btn-package"><i class="   fa-solid fa-sparkles mr-2"></i>{{ __('New') }}</span>
-										@endif
+							<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>	
+							<?php $__currentLoopData = $other_templates; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $template): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+								<div class="template-box" id="template-<?php echo e($template->template_code); ?>">
+									<a href="#" class="template-title fs-14 font-weight-bold target-template" id="<?php echo e($template->template_code); ?>" type="<?php echo e($template->type); ?>" name="<?php echo e($template->name); ?>" icon="<?php echo e($template->icon); ?>">
+										<span class="mr-3 ml-1"><?php echo $template->icon; ?></span><?php echo e(__($template->name)); ?>
+
+										<?php if($template->package == 'professional'): ?> 
+											<span class="fs-7 btn btn-pro ml-2 btn-package"><i class="   fa-solid fa-crown mr-2"></i><?php echo e(__('Pro')); ?> </span> 
+										<?php elseif($template->package == 'free'): ?>
+											<span class="fs-7 btn btn-free ml-2 btn-package"><i class="   fa-solid fa-gift mr-2"></i><?php echo e(__('Free')); ?> </span> 
+										<?php elseif($template->package == 'premium'): ?>
+											<span class="fs-7 btn btn-yellow ml-2 btn-package"><i class="   fa-solid fa-gem mr-2"></i><?php echo e(__('Premium')); ?> </span> 
+										<?php elseif($template->new): ?>
+											<span class="fs-7 btn btn-new ml-2 btn-package"><i class="   fa-solid fa-sparkles mr-2"></i><?php echo e(__('New')); ?></span>
+										<?php endif; ?>
 									</a>
 								</div>						
-							@endforeach			
-							@foreach ($custom_templates as $template)
-								<div class="template-box" id="template-{{ $template->template_code }}">
-									<a href="#" class="template-title fs-14 font-weight-bold target-template" id="{{ $template->template_code}}" type="{{ $template->type }}" name="{{ $template->name }}" icon="{{ $template->icon }}">
-										<span class="mr-3 ml-1">{!! $template->icon !!}</span>{{ __($template->name) }}
-										@if($template->package == 'professional') 
-											<span class="fs-7 btn btn-pro ml-2 btn-package"><i class="   fa-solid fa-crown mr-2"></i>{{ __('Pro') }} </span> 
-										@elseif($template->package == 'free')
-											<span class="fs-7 btn btn-free ml-2 btn-package"><i class="   fa-solid fa-gift mr-2"></i>{{ __('Free') }} </span> 
-										@elseif($template->package == 'premium')
-											<span class="fs-7 btn btn-yellow ml-2 btn-package"><i class="   fa-solid fa-gem mr-2"></i>{{ __('Premium') }} </span> 
-										@elseif($template->new)
-											<span class="fs-7 btn btn-new ml-2 btn-package"><i class="   fa-solid fa-sparkles mr-2"></i>{{ __('New') }}</span>
-										@endif
+							<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>			
+							<?php $__currentLoopData = $custom_templates; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $template): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+								<div class="template-box" id="template-<?php echo e($template->template_code); ?>">
+									<a href="#" class="template-title fs-14 font-weight-bold target-template" id="<?php echo e($template->template_code); ?>" type="<?php echo e($template->type); ?>" name="<?php echo e($template->name); ?>" icon="<?php echo e($template->icon); ?>">
+										<span class="mr-3 ml-1"><?php echo $template->icon; ?></span><?php echo e(__($template->name)); ?>
+
+										<?php if($template->package == 'professional'): ?> 
+											<span class="fs-7 btn btn-pro ml-2 btn-package"><i class="   fa-solid fa-crown mr-2"></i><?php echo e(__('Pro')); ?> </span> 
+										<?php elseif($template->package == 'free'): ?>
+											<span class="fs-7 btn btn-free ml-2 btn-package"><i class="   fa-solid fa-gift mr-2"></i><?php echo e(__('Free')); ?> </span> 
+										<?php elseif($template->package == 'premium'): ?>
+											<span class="fs-7 btn btn-yellow ml-2 btn-package"><i class="   fa-solid fa-gem mr-2"></i><?php echo e(__('Premium')); ?> </span> 
+										<?php elseif($template->new): ?>
+											<span class="fs-7 btn btn-new ml-2 btn-package"><i class="   fa-solid fa-sparkles mr-2"></i><?php echo e(__('New')); ?></span>
+										<?php endif; ?>
 									</a>
 								</div>						
-							@endforeach		
+							<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>		
 						</div>
 					
 
 					<div id="single-templates-container" class="hidden">
 						<div class="d-flex">
 							<div>
-								<a id="favorite" onclick="favoriteStatus()" data-tippy-content="{{ __('Select as favorite') }}"><i id="favorite-icon" class="fa-regular fa-star star"></i></a>
+								<a id="favorite" onclick="favoriteStatus()" data-tippy-content="<?php echo e(__('Select as favorite')); ?>"><i id="favorite-icon" class="fa-regular fa-star star"></i></a>
 							</div>	
 							<div class="single-template-back text-right mb-5">
-								<i class="fa-solid fa-chart-tree-map text-muted mr-2"></i><a href="#" id="show-all-templates" class="fs-12 text-muted">{{ __('All Templates') }}</a>
+								<i class="fa-solid fa-chart-tree-map text-muted mr-2"></i><a href="#" id="show-all-templates" class="fs-12 text-muted"><?php echo e(__('All Templates')); ?></a>
 							</div>
 						</div>
 						<div class="single-templates mb-5">
@@ -122,94 +126,115 @@
 								<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
 									<div class="chat-sidebar-search-small ">	
 										<div class="input-box relative">				
-											<input id="template-search-small" class="form-control" type="text" placeholder="{{ __('Search your template...') }}">	
+											<input id="template-search-small" class="form-control" type="text" placeholder="<?php echo e(__('Search your template...')); ?>">	
 											<i class="fa-solid fa-magnifying-glass fs-14 text-muted chat-search-icon"></i>	
 										</div>			
 									</div>
-									@foreach ($favorite_templates as $template)						
-										<a class="dropdown-item d-flex" href="#"  id="{{ $template->template_code}}" type="{{ $template->type }}" name="{{ __($template->name) }}" icon="{{ $template->icon }}">
-											<span class="dropdown-item-icon mr-3 ml-1">{!! $template->icon !!}</span>
-											<i class="fa-solid fa-star" data-tippy-content="{{ __('Favorite Template') }}"></i>
-											<h6 class="dropdown-item-title fs-14 font-weight-bold">{{ __($template->name) }}</h6>	
-											@if($template->package == 'professional') 
-												<span class="fs-7 btn btn-pro ml-2 btn-package"><i class="   fa-solid fa-crown mr-2"></i>{{ __('Pro') }} </span> 
-											@elseif($template->package == 'free')
-												<span class="fs-7 btn btn-free ml-2 btn-package"><i class="   fa-solid fa-gift mr-2"></i>{{ __('Free') }} </span> 
-											@elseif($template->package == 'premium')
-												<span class="fs-7 btn btn-yellow ml-2 btn-package"><i class="   fa-solid fa-gem mr-2"></i>{{ __('Premium') }} </span> 
-											@elseif($template->new)
-												<span class="fs-7 btn btn-new ml-2 btn-package"><i class="   fa-solid fa-sparkles mr-2"></i>{{ __('New') }}</span>
-											@endif									
+									<?php $__currentLoopData = $favorite_templates; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $template): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>						
+										<a class="dropdown-item d-flex" href="#"  id="<?php echo e($template->template_code); ?>" type="<?php echo e($template->type); ?>" name="<?php echo e(__($template->name)); ?>" icon="<?php echo e($template->icon); ?>">
+											<span class="dropdown-item-icon mr-3 ml-1"><?php echo $template->icon; ?></span>
+											<i class="fa-solid fa-star" data-tippy-content="<?php echo e(__('Favorite Template')); ?>"></i>
+											<h6 class="dropdown-item-title fs-14 font-weight-bold"><?php echo e(__($template->name)); ?></h6>	
+											<?php if($template->package == 'professional'): ?> 
+												<span class="fs-7 btn btn-pro ml-2 btn-package"><i class="   fa-solid fa-crown mr-2"></i><?php echo e(__('Pro')); ?> </span> 
+											<?php elseif($template->package == 'free'): ?>
+												<span class="fs-7 btn btn-free ml-2 btn-package"><i class="   fa-solid fa-gift mr-2"></i><?php echo e(__('Free')); ?> </span> 
+											<?php elseif($template->package == 'premium'): ?>
+												<span class="fs-7 btn btn-yellow ml-2 btn-package"><i class="   fa-solid fa-gem mr-2"></i><?php echo e(__('Premium')); ?> </span> 
+											<?php elseif($template->new): ?>
+												<span class="fs-7 btn btn-new ml-2 btn-package"><i class="   fa-solid fa-sparkles mr-2"></i><?php echo e(__('New')); ?></span>
+											<?php endif; ?>									
 										</a>												
-									@endforeach	
-									@foreach ($favorite_custom_templates as $template)						
-										<a class="dropdown-item d-flex" href="#"  id="{{ $template->template_code}}" type="{{ $template->type }}" name="{{ __($template->name) }}" icon="{{ $template->icon }}">
-											<span class="dropdown-item-icon mr-3 ml-1">{!! $template->icon !!}</span>
-											<i class="fa-solid fa-star" data-tippy-content="{{ __('Favorite Template') }}"></i>
-											<h6 class="dropdown-item-title fs-14 font-weight-bold">{{ __($template->name) }}</h6>
-											@if($template->package == 'professional') 
-												<span class="fs-7 btn btn-pro ml-2 btn-package"><i class="   fa-solid fa-crown mr-2"></i>{{ __('Pro') }} </span> 
-											@elseif($template->package == 'free')
-												<span class="fs-7 btn btn-free ml-2 btn-package"><i class="   fa-solid fa-gift mr-2"></i>{{ __('Free') }} </span> 
-											@elseif($template->package == 'premium')
-												<span class="fs-7 btn btn-yellow ml-2 btn-package"><i class="   fa-solid fa-gem mr-2"></i>{{ __('Premium') }} </span> 
-											@elseif($template->new)
-												<span class="fs-7 btn btn-new ml-2 btn-package"><i class="   fa-solid fa-sparkles mr-2"></i>{{ __('New') }}</span>
-											@endif											
+									<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>	
+									<?php $__currentLoopData = $favorite_custom_templates; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $template): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>						
+										<a class="dropdown-item d-flex" href="#"  id="<?php echo e($template->template_code); ?>" type="<?php echo e($template->type); ?>" name="<?php echo e(__($template->name)); ?>" icon="<?php echo e($template->icon); ?>">
+											<span class="dropdown-item-icon mr-3 ml-1"><?php echo $template->icon; ?></span>
+											<i class="fa-solid fa-star" data-tippy-content="<?php echo e(__('Favorite Template')); ?>"></i>
+											<h6 class="dropdown-item-title fs-14 font-weight-bold"><?php echo e(__($template->name)); ?></h6>
+											<?php if($template->package == 'professional'): ?> 
+												<span class="fs-7 btn btn-pro ml-2 btn-package"><i class="   fa-solid fa-crown mr-2"></i><?php echo e(__('Pro')); ?> </span> 
+											<?php elseif($template->package == 'free'): ?>
+												<span class="fs-7 btn btn-free ml-2 btn-package"><i class="   fa-solid fa-gift mr-2"></i><?php echo e(__('Free')); ?> </span> 
+											<?php elseif($template->package == 'premium'): ?>
+												<span class="fs-7 btn btn-yellow ml-2 btn-package"><i class="   fa-solid fa-gem mr-2"></i><?php echo e(__('Premium')); ?> </span> 
+											<?php elseif($template->new): ?>
+												<span class="fs-7 btn btn-new ml-2 btn-package"><i class="   fa-solid fa-sparkles mr-2"></i><?php echo e(__('New')); ?></span>
+											<?php endif; ?>											
 										</a>												
-									@endforeach
-									@foreach ($other_templates as $template)						
-										<a class="dropdown-item d-flex" href="#"  id="{{ $template->template_code}}" type="{{ $template->type }}" name="{{ __($template->name) }}" icon="{{ $template->icon }}">
-											<span class="dropdown-item-icon mr-3 ml-1">{!! $template->icon !!}</span>
-											<h6 class="dropdown-item-title fs-14 font-weight-bold">{{ __($template->name) }}</h6>
-											@if($template->package == 'professional') 
-												<span class="fs-7 btn btn-pro ml-2 btn-package"><i class="   fa-solid fa-crown mr-2"></i>{{ __('Pro') }} </span> 
-											@elseif($template->package == 'free')
-												<span class="fs-7 btn btn-free ml-2 btn-package"><i class="   fa-solid fa-gift mr-2"></i>{{ __('Free') }} </span> 
-											@elseif($template->package == 'premium')
-												<span class="fs-7 btn btn-yellow ml-2 btn-package"><i class="   fa-solid fa-gem mr-2"></i>{{ __('Premium') }} </span> 
-											@elseif($template->new)
-												<span class="fs-7 btn btn-new ml-2 btn-package"><i class="   fa-solid fa-sparkles mr-2"></i>{{ __('New') }}</span>
-											@endif											
+									<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+									<?php $__currentLoopData = $other_templates; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $template): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>						
+										<a class="dropdown-item d-flex" href="#"  id="<?php echo e($template->template_code); ?>" type="<?php echo e($template->type); ?>" name="<?php echo e(__($template->name)); ?>" icon="<?php echo e($template->icon); ?>">
+											<span class="dropdown-item-icon mr-3 ml-1"><?php echo $template->icon; ?></span>
+											<h6 class="dropdown-item-title fs-14 font-weight-bold"><?php echo e(__($template->name)); ?></h6>
+											<?php if($template->package == 'professional'): ?> 
+												<span class="fs-7 btn btn-pro ml-2 btn-package"><i class="   fa-solid fa-crown mr-2"></i><?php echo e(__('Pro')); ?> </span> 
+											<?php elseif($template->package == 'free'): ?>
+												<span class="fs-7 btn btn-free ml-2 btn-package"><i class="   fa-solid fa-gift mr-2"></i><?php echo e(__('Free')); ?> </span> 
+											<?php elseif($template->package == 'premium'): ?>
+												<span class="fs-7 btn btn-yellow ml-2 btn-package"><i class="   fa-solid fa-gem mr-2"></i><?php echo e(__('Premium')); ?> </span> 
+											<?php elseif($template->new): ?>
+												<span class="fs-7 btn btn-new ml-2 btn-package"><i class="   fa-solid fa-sparkles mr-2"></i><?php echo e(__('New')); ?></span>
+											<?php endif; ?>											
 										</a>												
-									@endforeach	
-									@foreach ($custom_templates as $template)						
-										<a class="dropdown-item d-flex" href="#"  id="{{ $template->template_code}}" type="{{ $template->type }}" name="{{ __($template->name) }}" icon="{{ $template->icon }}">
-											<span class="dropdown-item-icon mr-3 ml-1">{!! $template->icon !!}</span>
-											<h6 class="dropdown-item-title fs-14 font-weight-bold">{{ __($template->name) }}</h6>
-											@if($template->package == 'professional') 
-												<span class="fs-7 btn btn-pro ml-2 btn-package"><i class="   fa-solid fa-crown mr-2"></i>{{ __('Pro') }} </span> 
-											@elseif($template->package == 'free')
-												<span class="fs-7 btn btn-free ml-2 btn-package"><i class="   fa-solid fa-gift mr-2"></i>{{ __('Free') }} </span> 
-											@elseif($template->package == 'premium')
-												<span class="fs-7 btn btn-yellow ml-2 btn-package"><i class="   fa-solid fa-gem mr-2"></i>{{ __('Premium') }} </span> 
-											@elseif($template->new)
-												<span class="fs-7 btn btn-new ml-2 btn-package"><i class="   fa-solid fa-sparkles mr-2"></i>{{ __('New') }}</span>
-											@endif											
+									<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>	
+									<?php $__currentLoopData = $custom_templates; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $template): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>						
+										<a class="dropdown-item d-flex" href="#"  id="<?php echo e($template->template_code); ?>" type="<?php echo e($template->type); ?>" name="<?php echo e(__($template->name)); ?>" icon="<?php echo e($template->icon); ?>">
+											<span class="dropdown-item-icon mr-3 ml-1"><?php echo $template->icon; ?></span>
+											<h6 class="dropdown-item-title fs-14 font-weight-bold"><?php echo e(__($template->name)); ?></h6>
+											<?php if($template->package == 'professional'): ?> 
+												<span class="fs-7 btn btn-pro ml-2 btn-package"><i class="   fa-solid fa-crown mr-2"></i><?php echo e(__('Pro')); ?> </span> 
+											<?php elseif($template->package == 'free'): ?>
+												<span class="fs-7 btn btn-free ml-2 btn-package"><i class="   fa-solid fa-gift mr-2"></i><?php echo e(__('Free')); ?> </span> 
+											<?php elseif($template->package == 'premium'): ?>
+												<span class="fs-7 btn btn-yellow ml-2 btn-package"><i class="   fa-solid fa-gem mr-2"></i><?php echo e(__('Premium')); ?> </span> 
+											<?php elseif($template->new): ?>
+												<span class="fs-7 btn btn-new ml-2 btn-package"><i class="   fa-solid fa-sparkles mr-2"></i><?php echo e(__('New')); ?></span>
+											<?php endif; ?>											
 										</a>												
-									@endforeach		
+									<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>		
 								</div>
 							</div>
 						</div>
 
 						<form id="openai-form" action="" method="post" enctype="multipart/form-data">
-							@csrf
+							<?php echo csrf_field(); ?>
 							<div id="single-template-view">
 								<div class="text-left mb-4" id="balance-status">
-									<x-balance-template />
+									<?php if (isset($component)) { $__componentOriginale3df425532980655235957ec92e7e3b72c498067 = $component; } ?>
+<?php $component = App\View\Components\BalanceTemplate::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component->withName('balance-template'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(App\View\Components\BalanceTemplate::class))->getConstructor()): ?>
+<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginale3df425532980655235957ec92e7e3b72c498067)): ?>
+<?php $component = $__componentOriginale3df425532980655235957ec92e7e3b72c498067; ?>
+<?php unset($__componentOriginale3df425532980655235957ec92e7e3b72c498067); ?>
+<?php endif; ?>
 								</div>								
 
 								<div class="single-template-options">
 									<div class="form-group mb-5">	
-										<h6 class="fs-11 text-muted mb-2 font-weight-semibold">{{ __('Language') }}</h6>								
-										<select id="language" name="language" class="form-select" data-placeholder="{{ __('Select input language') }}">		
-											@foreach ($languages as $language)
-												<option value="{{ $language->language_code }}" data-img="{{ theme_url($language->language_flag) }}" @if (auth()->user()->default_template_language == $language->language_code) selected @endif> {{ __($language->language) }}</option>
-											@endforeach									
+										<h6 class="fs-11 text-muted mb-2 font-weight-semibold"><?php echo e(__('Language')); ?></h6>								
+										<select id="language" name="language" class="form-select" data-placeholder="<?php echo e(__('Select input language')); ?>">		
+											<?php $__currentLoopData = $languages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $language): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+												<option value="<?php echo e($language->language_code); ?>" data-img="<?php echo e(theme_url($language->language_flag)); ?>" <?php if(auth()->user()->default_template_language == $language->language_code): ?> selected <?php endif; ?>> <?php echo e(__($language->language)); ?></option>
+											<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>									
 										</select>
-										@error('language')
-											<p class="text-danger">{{ $errors->first('language') }}</p>
-										@enderror	
+										<?php $__errorArgs = ['language'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+											<p class="text-danger"><?php echo e($errors->first('language')); ?></p>
+										<?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>	
 									</div>
 								</div>
 
@@ -220,47 +245,61 @@
 								<div class="single-template-options">
 									
 									<div class="form-group mb-5">	
-										<h6 class="fs-11 mb-2 text-muted font-weight-semibold">{{ __('AI Model') }}</h6>								
-										<x-openai-models-template />	
+										<h6 class="fs-11 mb-2 text-muted font-weight-semibold"><?php echo e(__('AI Model')); ?></h6>								
+										<?php if (isset($component)) { $__componentOriginal0d36781196e8076eea45e04e25c803d6ebe817f3 = $component; } ?>
+<?php $component = App\View\Components\OpenaiModelsTemplate::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
+<?php $component->withName('openai-models-template'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag && $constructor = (new ReflectionClass(App\View\Components\OpenaiModelsTemplate::class))->getConstructor()): ?>
+<?php $attributes = $attributes->except(collect($constructor->getParameters())->map->getName()->all()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginal0d36781196e8076eea45e04e25c803d6ebe817f3)): ?>
+<?php $component = $__componentOriginal0d36781196e8076eea45e04e25c803d6ebe817f3; ?>
+<?php unset($__componentOriginal0d36781196e8076eea45e04e25c803d6ebe817f3); ?>
+<?php endif; ?>	
 									</div>									
 									
 									<div class="form-group mb-5">
-										<h6 class="fs-11 mb-2 text-muted font-weight-semibold">{{ __('Writing Tone') }} <i class="ml-1 text-dark fs-12 fa-solid fa-circle-info" data-tippy-content="{{ __('Set result tone of the text as needed') }}"></i></h6>
+										<h6 class="fs-11 mb-2 text-muted font-weight-semibold"><?php echo e(__('Writing Tone')); ?> <i class="ml-1 text-dark fs-12 fa-solid fa-circle-info" data-tippy-content="<?php echo e(__('Set result tone of the text as needed')); ?>"></i></h6>
 										<select id="tone" name="tone" class="form-select" >
-											<option value="Professional" selected> {{ __('Professional') }}</option>	
-											<option value="Exciting"> {{ __('Exciting') }}</option>	
-											<option value="Friendly"> {{ __('Friendly') }}</option>	
-											<option value="Witty"> {{ __('Witty') }}</option>	
-											<option value="Humorous"> {{ __('Humorous') }}</option>	
-											<option value="Convincing"> {{ __('Convincing') }}</option>	
-											<option value="Empathetic"> {{ __('Empathetic') }}</option>	
-											<option value="Inspiring"> {{ __('Inspiring') }}</option>	
-											<option value="Supportive"> {{ __('Supportive') }}</option>	
-											<option value="Trusting"> {{ __('Trusting') }}</option>	
-											<option value="Playful"> {{ __('Playful') }}</option>	
-											<option value="Excited"> {{ __('Excited') }}</option>	
-											<option value="Positive"> {{ __('Positive') }}</option>	
-											<option value="Negative"> {{ __('Negative') }}</option>	
-											<option value="Engaging"> {{ __('Engaging') }}</option>	
-											<option value="Worried"> {{ __('Worried') }}</option>	
-											<option value="Urgent"> {{ __('Urgent') }}</option>	
-											<option value="Passionate"> {{ __('Passionate') }}</option>	
-											<option value="Informative"> {{ __('Informative') }}</option>
-											<option value="Funny">{{ __('Funny') }}</option>
-											<option value="Casual"> {{ __('Casual') }}</option>																																																														
-											<option value="Sarcastic"> {{ __('Sarcastic') }}</option>																																																																																												
-											<option value="Dramatic"> {{ __('Dramatic') }}</option>																																																													
+											<option value="Professional" selected> <?php echo e(__('Professional')); ?></option>	
+											<option value="Exciting"> <?php echo e(__('Exciting')); ?></option>	
+											<option value="Friendly"> <?php echo e(__('Friendly')); ?></option>	
+											<option value="Witty"> <?php echo e(__('Witty')); ?></option>	
+											<option value="Humorous"> <?php echo e(__('Humorous')); ?></option>	
+											<option value="Convincing"> <?php echo e(__('Convincing')); ?></option>	
+											<option value="Empathetic"> <?php echo e(__('Empathetic')); ?></option>	
+											<option value="Inspiring"> <?php echo e(__('Inspiring')); ?></option>	
+											<option value="Supportive"> <?php echo e(__('Supportive')); ?></option>	
+											<option value="Trusting"> <?php echo e(__('Trusting')); ?></option>	
+											<option value="Playful"> <?php echo e(__('Playful')); ?></option>	
+											<option value="Excited"> <?php echo e(__('Excited')); ?></option>	
+											<option value="Positive"> <?php echo e(__('Positive')); ?></option>	
+											<option value="Negative"> <?php echo e(__('Negative')); ?></option>	
+											<option value="Engaging"> <?php echo e(__('Engaging')); ?></option>	
+											<option value="Worried"> <?php echo e(__('Worried')); ?></option>	
+											<option value="Urgent"> <?php echo e(__('Urgent')); ?></option>	
+											<option value="Passionate"> <?php echo e(__('Passionate')); ?></option>	
+											<option value="Informative"> <?php echo e(__('Informative')); ?></option>
+											<option value="Funny"><?php echo e(__('Funny')); ?></option>
+											<option value="Casual"> <?php echo e(__('Casual')); ?></option>																																																														
+											<option value="Sarcastic"> <?php echo e(__('Sarcastic')); ?></option>																																																																																												
+											<option value="Dramatic"> <?php echo e(__('Dramatic')); ?></option>																																																													
 										</select>
 									</div>
 								
 									<div class="form-group mb-5">
-										<h6 class="fs-11 mb-2 text-muted font-weight-semibold">{{ __('Creativity') }} <i class="ml-1 text-dark fs-12 fa-solid fa-circle-info" data-tippy-content="{{ __('Increase or decrease the creativity level to get variety in generated results') }}"></i></h6>
+										<h6 class="fs-11 mb-2 text-muted font-weight-semibold"><?php echo e(__('Creativity')); ?> <i class="ml-1 text-dark fs-12 fa-solid fa-circle-info" data-tippy-content="<?php echo e(__('Increase or decrease the creativity level to get variety in generated results')); ?>"></i></h6>
 										<select id="creativity" name="creativity" class="form-select">
-											<option value=0>{{ __('Repetitive') }}</option>
-											<option value=0.25> {{ __('Deterministic') }}</option>																															
-											<option value=0.5 selected> {{ __('Original') }}</option>																															
-											<option value=0.75> {{ __('Creative') }}</option>																															
-											<option value=1> {{ __('Imaginative') }}</option>																																							
+											<option value=0><?php echo e(__('Repetitive')); ?></option>
+											<option value=0.25> <?php echo e(__('Deterministic')); ?></option>																															
+											<option value=0.5 selected> <?php echo e(__('Original')); ?></option>																															
+											<option value=0.75> <?php echo e(__('Creative')); ?></option>																															
+											<option value=1> <?php echo e(__('Imaginative')); ?></option>																																							
 										</select>
 									</div>
 								
@@ -268,7 +307,7 @@
 
 								<div class="w-100 pt-2">
 									<div class="text-center">
-										<button type="submit" name="submit" class="btn btn-primary" id="generate">{{ __('Generate') }}</button>
+										<button type="submit" name="submit" class="btn btn-primary" id="generate"><?php echo e(__('Generate')); ?></button>
 									</div>
 								</div>
 							</div>
@@ -289,24 +328,24 @@
 				<div class="responsive-right-column" id="meta-container-editor">
 					<div class="form-group">
 						<a href="#" id="hide-right-menu"><i class="fa-solid fa-chevrons-left"></i></a>	
-						<h6 class="text-center font-weight-bold">{{ __('My Workbooks') }}</h6>
-						<select id="project" name="project" class="form-select" data-placeholder="{{ __('Select Workbook Name') }}">	
-							<option value="all"> {{ __('All Workbooks') }}</option>
-							@foreach ($workbooks as $workbook)
-								<option value="{{ $workbook->name }}" @if (strtolower(auth()->user()->workbook) == strtolower($workbook->name)) selected @endif> {{ ucfirst($workbook->name) }}</option>
-							@endforeach											
+						<h6 class="text-center font-weight-bold"><?php echo e(__('My Workbooks')); ?></h6>
+						<select id="project" name="project" class="form-select" data-placeholder="<?php echo e(__('Select Workbook Name')); ?>">	
+							<option value="all"> <?php echo e(__('All Workbooks')); ?></option>
+							<?php $__currentLoopData = $workbooks; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $workbook): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+								<option value="<?php echo e($workbook->name); ?>" <?php if(strtolower(auth()->user()->workbook) == strtolower($workbook->name)): ?> selected <?php endif; ?>> <?php echo e(ucfirst($workbook->name)); ?></option>
+							<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>											
 						</select>
 					</div>
 					<div class="meta-action-buttons mt-4">
-						<a id="save-button" class="btn btn-primary" onclick="return saveText(this);" href="#">{{ __('Save Document') }}</a>
+						<a id="save-button" class="btn btn-primary" onclick="return saveText(this);" href="#"><?php echo e(__('Save Document')); ?></a>
 						<div class="btn-group w-100 mt-4">
-							<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="export" data-bs-display="static" aria-expanded="false">{{ __('Export Content') }}</button>
+							<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="export" data-bs-display="static" aria-expanded="false"><?php echo e(__('Export Content')); ?></button>
 							<div class="dropdown-menu" aria-labelledby="export" data-popper-placement="bottom-start">								
-								<a class="dropdown-item" id="copy-text"><i class="fa-solid fa-copy fs-13 text-muted mr-2"></i> {{ __('Copy Text') }}</a>
-								<a class="dropdown-item" id="copy-html"><i class="fa-brands fa-html5 fs-13 text-muted mr-2"></i>{{ __('Copy HTML') }}</a>
-								<a class="dropdown-item" id="export-text" onclick="exportTXTEditor();"><i class="fa-solid fa-text-size fs-13 text-muted mr-2"></i>{{ __('Text File') }}</a>								
-								<a class="dropdown-item" id="export-word" onclick="exportWordEditor();"><i class="   fa-solid fa-file-word fs-13 text-muted mr-2"></i>{{ __('MS Word Document') }}</a>
-								{{-- <a class="dropdown-item" id="export-pdf" onclick="exportPDFEditor();"><i class="   fa-solid fa-file-pdf fs-13 text-muted mr-2"></i>{{ __('PDF Document') }}</a> --}}
+								<a class="dropdown-item" id="copy-text"><i class="fa-solid fa-copy fs-13 text-muted mr-2"></i> <?php echo e(__('Copy Text')); ?></a>
+								<a class="dropdown-item" id="copy-html"><i class="fa-brands fa-html5 fs-13 text-muted mr-2"></i><?php echo e(__('Copy HTML')); ?></a>
+								<a class="dropdown-item" id="export-text" onclick="exportTXTEditor();"><i class="fa-solid fa-text-size fs-13 text-muted mr-2"></i><?php echo e(__('Text File')); ?></a>								
+								<a class="dropdown-item" id="export-word" onclick="exportWordEditor();"><i class="   fa-solid fa-file-word fs-13 text-muted mr-2"></i><?php echo e(__('MS Word Document')); ?></a>
+								
 							</div>
 						</div>
 					</div>
@@ -337,12 +376,12 @@
  		</div>
  	</div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('js')
-<script src="{{URL::asset('plugins/sweetalert/sweetalert2.all.min.js')}}"></script>
-<script src="{{URL::asset('plugins/tinymce/tinymce.min.js')}}"></script>
-<script src="{{theme_url('js/export.js')}}"></script>
+<?php $__env->startSection('js'); ?>
+<script src="<?php echo e(URL::asset('plugins/sweetalert/sweetalert2.all.min.js')); ?>"></script>
+<script src="<?php echo e(URL::asset('plugins/tinymce/tinymce.min.js')); ?>"></script>
+<script src="<?php echo e(theme_url('js/export.js')); ?>"></script>
 <script type="text/javascript">
 	let active_template;
 	let active_type;
@@ -380,14 +419,14 @@
 				const menuItems = {
 					'customwrite': {
 						icon: 'icon',
-						text: '{{ __('Tell AI how to edit or what to generate..') }}',
+						text: '<?php echo e(__('Tell AI how to edit or what to generate..')); ?>',
 						onAction: function ( e ) {
 							if ( event?.type != 'keydown' || $( event?.srcElement ).attr( 'id' ) != 'custom_prompt' ) {
 								e.preventDefault();
 								return;
 							}
 							if(editor.selection.getContent().trim().length == 0) {
-								toastr.warning('{{ __("Please highlight your target text first") }}');
+								toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 								return;
 							}
 						
@@ -426,10 +465,10 @@
 					},
 					'rewrite': {
 						icon: 'iconRewrite',
-						text: '{{ __('Rewrite') }}',
+						text: '<?php echo e(__('Rewrite')); ?>',
 						onAction: function () {
 							if(editor.selection.getContent().trim().length == 0) {
-								toastr.warning('{{ __("Please highlight your target text first") }}');
+								toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 								return;
 							}
 							let formData = new FormData();
@@ -467,10 +506,10 @@
 					},
 					'summarize': {
 						icon: 'iconSummarize',
-						text: '{{ __('Summarize Content') }}',
+						text: '<?php echo e(__('Summarize Content')); ?>',
 						onAction: function () {
 							if(editor.selection.getContent().trim().length == 0) {
-								toastr.warning('{{ __("Please highlight your target text first") }}');
+								toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 								return;
 							}
 							let formData = new FormData();
@@ -508,10 +547,10 @@
 					},
 					'improve': {
 						icon: 'iconImprove',
-						text: '{{ __('Improve Writing') }}',
+						text: '<?php echo e(__('Improve Writing')); ?>',
 						onAction: function () {
 							if(editor.selection.getContent().trim().length == 0) {
-								toastr.warning('{{ __("Please highlight your target text first") }}');
+								toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 								return;
 							}
 							let formData = new FormData();
@@ -549,10 +588,10 @@
 					},
 					'simplify': {
 						icon: 'iconSimplify',
-						text: '{{ __('Simplify Language') }}',
+						text: '<?php echo e(__('Simplify Language')); ?>',
 						onAction: function () {
 							if(editor.selection.getContent().trim().length == 0) {
-								toastr.warning('{{ __("Please highlight your target text first") }}');
+								toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 								return;
 							}
 							let formData = new FormData();
@@ -590,10 +629,10 @@
 					},					
 					'expand': {
 						icon: 'iconExpand',
-						text: '{{ __('Expand Content') }}',
+						text: '<?php echo e(__('Expand Content')); ?>',
 						onAction: function () {
 							if(editor.selection.getContent().trim().length == 0) {
-								toastr.warning('{{ __("Please highlight your target text first") }}');
+								toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 								return;
 							}
 							let formData = new FormData();
@@ -631,10 +670,10 @@
 					},
 					'trim': {
 						icon: 'iconTrim',
-						text: '{{ __('Shrink Content') }}',
+						text: '<?php echo e(__('Shrink Content')); ?>',
 						onAction: function () {
 							if(editor.selection.getContent().trim().length == 0) {
-								toastr.warning('{{ __("Please highlight your target text first") }}');
+								toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 								return;
 							}
 							let formData = new FormData();
@@ -672,10 +711,10 @@
 					},	
 					'fixgrammar': {
 						icon: 'iconFixGrammer',
-						text: '{{ __('Check Grammar') }}',
+						text: '<?php echo e(__('Check Grammar')); ?>',
 						onAction: function () {
 							if(editor.selection.getContent().trim().length == 0) {
-								toastr.warning('{{ __("Please highlight your target text first") }}');
+								toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 								return;
 							}
 							let formData = new FormData();
@@ -714,15 +753,15 @@
 					'tone': {
 						type: 'nestedmenuitem',
 						icon: 'iconTone',
-						text: '{{ __('Change Tone') }}',
+						text: '<?php echo e(__('Change Tone')); ?>',
 						getSubmenuItems: function () {
 						return [
 							{
 							type: 'menuitem',
-							text: '{{ __('Professional') }}',
+							text: '<?php echo e(__('Professional')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -760,10 +799,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Casual') }}',
+							text: '<?php echo e(__('Casual')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -801,10 +840,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Exciting') }}',
+							text: '<?php echo e(__('Exciting')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -842,10 +881,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Friendly') }}',
+							text: '<?php echo e(__('Friendly')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -883,10 +922,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Witty') }}',
+							text: '<?php echo e(__('Witty')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -924,10 +963,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Humorous') }}',
+							text: '<?php echo e(__('Humorous')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -965,10 +1004,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Convincing') }}',
+							text: '<?php echo e(__('Convincing')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1006,10 +1045,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Empathetic') }}',
+							text: '<?php echo e(__('Empathetic')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1047,10 +1086,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Inspiring') }}',
+							text: '<?php echo e(__('Inspiring')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1088,10 +1127,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Supportive') }}',
+							text: '<?php echo e(__('Supportive')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1129,10 +1168,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Trusting') }}',
+							text: '<?php echo e(__('Trusting')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1170,10 +1209,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Playful') }}',
+							text: '<?php echo e(__('Playful')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1211,10 +1250,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Positive') }}',
+							text: '<?php echo e(__('Positive')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1252,10 +1291,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Negative') }}',
+							text: '<?php echo e(__('Negative')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1293,10 +1332,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Engaging') }}',
+							text: '<?php echo e(__('Engaging')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1334,10 +1373,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Worried') }}',
+							text: '<?php echo e(__('Worried')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1375,10 +1414,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Urgent') }}',
+							text: '<?php echo e(__('Urgent')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1416,10 +1455,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Passionate') }}',
+							text: '<?php echo e(__('Passionate')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1457,10 +1496,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Informative') }}',
+							text: '<?php echo e(__('Informative')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1498,10 +1537,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Funny') }}',
+							text: '<?php echo e(__('Funny')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1539,10 +1578,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Sarcastic') }}',
+							text: '<?php echo e(__('Sarcastic')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1580,10 +1619,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Dramatic') }}',
+							text: '<?php echo e(__('Dramatic')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1625,15 +1664,15 @@
 					'style': {
 						type: 'nestedmenuitem',
 						icon: 'iconStyle',
-						text: '{{ __('Adjust Style') }}',
+						text: '<?php echo e(__('Adjust Style')); ?>',
 						getSubmenuItems: function () {
 						return [
 							{
 							type: 'menuitem',
-							text: '{{ __('Business') }}',
+							text: '<?php echo e(__('Business')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1671,10 +1710,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Legal') }}',
+							text: '<?php echo e(__('Legal')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1712,10 +1751,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Journalism') }}',
+							text: '<?php echo e(__('Journalism')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1753,10 +1792,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Medical') }}',
+							text: '<?php echo e(__('Medical')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1794,10 +1833,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Poetic') }}',
+							text: '<?php echo e(__('Poetic')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1839,15 +1878,15 @@
 					'translate': {
 						type: 'nestedmenuitem',
 						icon: 'iconTranslate',
-						text: '{{ __('Translate to') }}',
+						text: '<?php echo e(__('Translate to')); ?>',
 						getSubmenuItems: function () {
 						return [
 							{
 							type: 'menuitem',
-							text: '{{ __('Afrikaans') }}',
+							text: '<?php echo e(__('Afrikaans')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1882,10 +1921,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Arabic') }}',
+							text: '<?php echo e(__('Arabic')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1920,10 +1959,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Armenian') }}',
+							text: '<?php echo e(__('Armenian')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1958,10 +1997,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Azerbaijani') }}',
+							text: '<?php echo e(__('Azerbaijani')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -1996,10 +2035,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Belarusian') }}',
+							text: '<?php echo e(__('Belarusian')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2033,10 +2072,10 @@
 								}
 							},{
 							type: 'menuitem',
-							text: '{{ __('Bosnian') }}',
+							text: '<?php echo e(__('Bosnian')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2071,10 +2110,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Bulgarian') }}',
+							text: '<?php echo e(__('Bulgarian')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2109,10 +2148,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Catalan') }}',
+							text: '<?php echo e(__('Catalan')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2147,10 +2186,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Chinese') }}',
+							text: '<?php echo e(__('Chinese')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2185,10 +2224,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Croatian') }}',
+							text: '<?php echo e(__('Croatian')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2223,10 +2262,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Czech') }}',
+							text: '<?php echo e(__('Czech')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2261,10 +2300,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Danish') }}',
+							text: '<?php echo e(__('Danish')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2299,10 +2338,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Dutch') }}',
+							text: '<?php echo e(__('Dutch')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2337,10 +2376,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('English') }}',
+							text: '<?php echo e(__('English')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2375,10 +2414,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Estonian') }}',
+							text: '<?php echo e(__('Estonian')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2413,10 +2452,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Finnish') }}',
+							text: '<?php echo e(__('Finnish')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2451,10 +2490,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('French') }}',
+							text: '<?php echo e(__('French')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2489,10 +2528,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('German') }}',
+							text: '<?php echo e(__('German')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2527,10 +2566,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Greek') }}',
+							text: '<?php echo e(__('Greek')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2565,10 +2604,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Hebrew') }}',
+							text: '<?php echo e(__('Hebrew')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2603,10 +2642,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Hindi') }}',
+							text: '<?php echo e(__('Hindi')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2641,10 +2680,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Hungarian') }}',
+							text: '<?php echo e(__('Hungarian')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2679,10 +2718,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Icelandic') }}',
+							text: '<?php echo e(__('Icelandic')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2717,10 +2756,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Indonesian') }}',
+							text: '<?php echo e(__('Indonesian')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2755,10 +2794,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Italian') }}',
+							text: '<?php echo e(__('Italian')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2793,10 +2832,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Japanese') }}',
+							text: '<?php echo e(__('Japanese')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2831,10 +2870,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Kazakh') }}',
+							text: '<?php echo e(__('Kazakh')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2869,10 +2908,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Korean') }}',
+							text: '<?php echo e(__('Korean')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2906,10 +2945,10 @@
 								}
 							},{
 							type: 'menuitem',
-							text: '{{ __('Malay') }}',
+							text: '<?php echo e(__('Malay')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2944,10 +2983,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Norwegian') }}',
+							text: '<?php echo e(__('Norwegian')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -2982,10 +3021,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Persian') }}',
+							text: '<?php echo e(__('Persian')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3020,10 +3059,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Polish') }}',
+							text: '<?php echo e(__('Polish')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3058,10 +3097,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Portuguese') }}',
+							text: '<?php echo e(__('Portuguese')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3096,10 +3135,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Romanian') }}',
+							text: '<?php echo e(__('Romanian')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3134,10 +3173,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Russian') }}',
+							text: '<?php echo e(__('Russian')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3171,10 +3210,10 @@
 								}
 							},{
 							type: 'menuitem',
-							text: '{{ __('Serbian') }}',
+							text: '<?php echo e(__('Serbian')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3209,10 +3248,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Slovak') }}',
+							text: '<?php echo e(__('Slovak')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3247,10 +3286,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Slovenian') }}',
+							text: '<?php echo e(__('Slovenian')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3285,10 +3324,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Spanish') }}',
+							text: '<?php echo e(__('Spanish')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3323,10 +3362,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Swahili') }}',
+							text: '<?php echo e(__('Swahili')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3361,10 +3400,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Tamil') }}',
+							text: '<?php echo e(__('Tamil')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3399,10 +3438,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Thai') }}',
+							text: '<?php echo e(__('Thai')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3437,10 +3476,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Turkish') }}',
+							text: '<?php echo e(__('Turkish')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3475,10 +3514,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Ukrainian') }}',
+							text: '<?php echo e(__('Ukrainian')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3513,10 +3552,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Urdu') }}',
+							text: '<?php echo e(__('Urdu')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3551,10 +3590,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Vietnamese') }}',
+							text: '<?php echo e(__('Vietnamese')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3589,10 +3628,10 @@
 							},
 							{
 							type: 'menuitem',
-							text: '{{ __('Welsh') }}',
+							text: '<?php echo e(__('Welsh')); ?>',
 							onAction: function () {
 									if(editor.selection.getContent().trim().length == 0) {
-										toastr.warning('{{ __("Please highlight your target text first") }}');
+										toastr.warning('<?php echo e(__("Please highlight your target text first")); ?>');
 										return;
 									}
 									let formData = new FormData();
@@ -3631,14 +3670,14 @@
 				};
 
 				var dialogConfig =  {
-					title: '{{ __('AI Assistant') }}',
+					title: '<?php echo e(__('AI Assistant')); ?>',
 					body: {
 						type: 'panel',
 						items: [
 						{
 							type: 'input',
 							name: 'user_prompt',
-							placeholder: '{{ __('Tell AI Assistant what to do with entire text...') }}'
+							placeholder: '<?php echo e(__('Tell AI Assistant what to do with entire text...')); ?>'
 						},
 						]
 					},
@@ -3646,12 +3685,12 @@
 						{
 						type: 'cancel',
 						name: 'closeButton',
-						text: '{{ __('Cancel') }}'
+						text: '<?php echo e(__('Cancel')); ?>'
 						},
 						{
 						type: 'submit',
 						name: 'submitButton',
-						text: '{{ __('Apply') }}',
+						text: '<?php echo e(__('Apply')); ?>',
 						primary: true
 						}
 					],
@@ -3745,11 +3784,11 @@
 					setTimeout( () => {
 						$( '.tox-collection' ).css( 'width', '240px');
 						$('.tox-collection').css('padding', '0px 16px');
-						$( $( ".tox-collection__item-label" )[ 0 ] ).html( '<input id="custom_prompt" type="text" class="w-100" placeholder="{{ __('What would you like to do?') }}">' );
+						$( $( ".tox-collection__item-label" )[ 0 ] ).html( '<input id="custom_prompt" type="text" class="w-100" placeholder="<?php echo e(__('What would you like to do?')); ?>">' );
 						$( $( '.tox-collection__group' )[ 0 ].querySelector( '#custom_label' ) ).remove();
 						$( $( '.tox-collection__group' )[ 1 ].querySelector( '#quick_label' ) ).remove();
-						$( $( '.tox-collection__group' )[ 0 ] ).prepend( '<p class="tox-custom-label" id="custom_label">{{ __('Custom Action') }}</p>' );
-						$( $( '.tox-collection__group' )[ 1 ] ).prepend( '<p class="tox-custom-label mt-2" id="quick_label">{{ __('Quick Actions') }}</p>' );
+						$( $( '.tox-collection__group' )[ 0 ] ).prepend( '<p class="tox-custom-label" id="custom_label"><?php echo e(__('Custom Action')); ?></p>' );
+						$( $( '.tox-collection__group' )[ 1 ] ).prepend( '<p class="tox-custom-label mt-2" id="quick_label"><?php echo e(__('Quick Actions')); ?></p>' );
 					}, 0 );
 				} );
 			}
@@ -3793,7 +3832,7 @@
 					if (data['status'] == 'error') {
 						$('#generate').prop('disabled', false);
 						let btn = document.getElementById('generate');					
-						btn.innerHTML = '{{ __('Generate') }}';
+						btn.innerHTML = '<?php echo e(__('Generate')); ?>';
 						toastr.warning(data['message']);
 						document.querySelector('#loader-line')?.classList?.add('hidden'); 
 					} else {		
@@ -3806,7 +3845,7 @@
 								eventSource.close();								
 								$('#generate').prop('disabled', false);
 								let btn = document.getElementById('generate');					
-								btn.innerHTML = '{{ __('Generate') }}'; 
+								btn.innerHTML = '<?php echo e(__('Generate')); ?>'; 
 								var $body = $(tinymce.activeEditor.getBody());
 								$body.find('p:last').append('<br><br>');
 								document.querySelector('#loader-line')?.classList?.add('hidden');  
@@ -3816,7 +3855,7 @@
 								console.log(e.data)
 								$('#generate').prop('disabled', false);
 								let btn = document.getElementById('generate');					
-								btn.innerHTML = '{{ __('Generate') }}'; 
+								btn.innerHTML = '<?php echo e(__('Generate')); ?>'; 
 								document.querySelector('#loader-line')?.classList?.add('hidden');    
 							} else {
 
@@ -3835,7 +3874,7 @@
 							eventSource.close();
 							$('#generate').prop('disabled', false);
 							let btn = document.getElementById('generate');					
-							btn.innerHTML = '{{ __('Generate') }}';  
+							btn.innerHTML = '<?php echo e(__('Generate')); ?>';  
 							document.querySelector('#loader-line')?.classList?.add('hidden'); 
 						};
 					}
@@ -3843,7 +3882,7 @@
 				
 				error: function(data) {
 					$('#generate').prop('disabled', false);
-					$('#generate').html('{{ __('Generate') }}'); 
+					$('#generate').html('<?php echo e(__('Generate')); ?>'); 
 					document.querySelector('#loader-line')?.classList?.add('hidden'); 
 					console.log(data)
 				}
@@ -3886,14 +3925,14 @@
 
 				if (data['status'] == 'success') {
 					if (data['set']) {
-						toastr.success('{{ __('Selected template has been successfully removed from favorites') }}');
+						toastr.success('<?php echo e(__('Selected template has been successfully removed from favorites')); ?>');
 						icon = document.getElementById('favorite-icon');
 						icon.classList.remove("fa-solid");
 						icon.classList.remove("fa-stars");
 						icon.classList.add("fa-regular");
 						icon.classList.add("fa-star");		
 					} else {
-						toastr.success('{{ __('Selected template has been successfully added to favorites') }}');
+						toastr.success('<?php echo e(__('Selected template has been successfully added to favorites')); ?>');
 						icon = document.getElementById('favorite-icon');
 						icon.classList.remove("fa-regular");
 						icon.classList.remove("fa-star");
@@ -3902,7 +3941,7 @@
 					}
 													
 				} else {
-					toastr.error('{{ __('There as an issue with setting favorite status for this template') }}');
+					toastr.error('<?php echo e(__('There as an issue with setting favorite status for this template')); ?>');
 				}      
 			},
 			error: function(data) {
@@ -3914,7 +3953,7 @@
 	function saveText(event) {
 
 		if(tinymce.activeEditor.getContent().trim().length == 0) {
-			toastr.warning('{{ __("Make sure to generate a content before saving") }}');
+			toastr.warning('<?php echo e(__("Make sure to generate a content before saving")); ?>');
 			return;
 		}
 
@@ -3930,19 +3969,19 @@
 			data: { 'id': active_content, 'text': textarea, 'workbook': workbook, 'language': language.value},
 			success: function (data) {					
 				if (data['status'] == 'new') {
-					toastr.success('{{ __('Successfully saved in the documents') }}');
+					toastr.success('<?php echo e(__('Successfully saved in the documents')); ?>');
 					active_content = data['id'];
 					document.querySelector('#loader-line')?.classList?.add('hidden');  
 				} else if(data['status'] == 'updated') {
-					toastr.success('{{ __('Changes were successfully saved in the documents') }}');
+					toastr.success('<?php echo e(__('Changes were successfully saved in the documents')); ?>');
 					document.querySelector('#loader-line')?.classList?.add('hidden');
 				} else {						
-					toastr.warning('{{ __('There was an issue while saving your changes') }}');
+					toastr.warning('<?php echo e(__('There was an issue while saving your changes')); ?>');
 					document.querySelector('#loader-line')?.classList?.add('hidden');
 				}
 			},
 			error: function(data) {
-				toastr.warning('{{ __('There was an issue while saving your changes') }}');
+				toastr.warning('<?php echo e(__('There was an issue while saving your changes')); ?>');
 				document.querySelector('#loader-line')?.classList?.add('hidden');
 			}
 		});
@@ -4038,11 +4077,11 @@
 					$('#single-templates-container').addClass('hidden'); 
 					$('#single-template-inputs').html(''); 
 				} else {						
-					toastr.warning('{{ __('Following template was not found, please contact support') }}');
+					toastr.warning('<?php echo e(__('Following template was not found, please contact support')); ?>');
 				}
 			},
 			error: function(data) {
-				toastr.warning('{{ __('There was an issue while getting the template details') }}');
+				toastr.warning('<?php echo e(__('There was an issue while getting the template details')); ?>');
 			}
 		});
 	})
@@ -4099,11 +4138,11 @@
 					$('#single-templates-container').addClass('hidden'); 
 					$('#single-template-inputs').html(''); 
 				} else {						
-					toastr.warning('{{ __('Following template was not found, please contact support') }}');
+					toastr.warning('<?php echo e(__('Following template was not found, please contact support')); ?>');
 				}
 			},
 			error: function(data) {
-				toastr.warning('{{ __('There was an issue while getting the template details') }}');
+				toastr.warning('<?php echo e(__('There was an issue while getting the template details')); ?>');
 			}
 		});
 	});
@@ -4153,11 +4192,11 @@
 		try{ 
 			var success = document.execCommand( "copy" ); 
 			if(success){
-				toastr.success('{{ __('The content of your article has been copied to your clipboard') }}');
+				toastr.success('<?php echo e(__('The content of your article has been copied to your clipboard')); ?>');
 			}
 		} 
 		catch( e ){ 
-			toastr.error('{{ __('Browser not compatible') }}');
+			toastr.error('<?php echo e(__('Browser not compatible')); ?>');
 		} 
 		document.body.removeChild( node );  
 	}
@@ -4171,14 +4210,14 @@
 		link.setAttribute('href', 'data:' + mimeType  +  ';charset=utf-8,' + encodeURIComponent(content));
 		link.click(); 
 
-		toastr.success('{{ __('Text file was created successfully') }}');
+		toastr.success('<?php echo e(__('Text file was created successfully')); ?>');
 	}
 
 	function exportWordEditor(){
 
 		exportWordSmart();
 
-		toastr.success('{{ __('Word document was created successfully') }}');
+		toastr.success('<?php echo e(__('Word document was created successfully')); ?>');
 	}
 
 	function getCookie(cName) {
@@ -4238,4 +4277,5 @@
 	}
 
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.smart', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /home/customer/www/staging.paraclete.ai/public_html/resources/views/default/user/smart_editor/index.blade.php ENDPATH**/ ?>

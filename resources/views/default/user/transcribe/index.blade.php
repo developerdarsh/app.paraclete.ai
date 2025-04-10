@@ -8,6 +8,18 @@
 	<link href="{{URL::asset('plugins/filepond/filepond.css')}}" rel="stylesheet" />
 	<!-- Green Audio Players CSS -->
 	<link href="{{ URL::asset('plugins/audio-player/green-audio-player.css') }}" rel="stylesheet" />
+	<style>
+ 	.info-btn-alt {
+ 		font-size: 15px;
+ 		background-color: rgb(126, 34, 206);
+ 		color: rgb(255, 255, 255);
+ 		padding-top: 0.5rem;
+ 		padding-bottom: 0.5rem;
+ 		padding-left: 1rem;
+ 		padding-right: 1rem;
+ 		border-radius: 0.5rem;
+ 	}
+ 	</style>
 @endsection
 
 @section('content')
@@ -18,7 +30,7 @@
 		<div class="col-lg-4 col-md-12 col-sm-12">
 			<div class="card border-0" id="template-input">
 				<div class="card-body p-5 pb-0">
-
+					<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
 					<div class="row">
 						<div class="template-view">
 							<div class="template-icon mb-2 d-flex">
@@ -232,6 +244,25 @@
 		</div>
 	</div>
 </form>
+<div class="modal fade" id="info-alert-model" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog">
+ 	<div class="modal-dialog modal-dialog-centered modal-xl">
+ 		<div class="modal-content">
+ 			<div class="modal-header">
+ 				<h2></h2>
+ 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+ 				<span aria-hidden="true">&times;</span>
+ 				</button>
+ 			</div>
+ 			<div class="modal-body">
+ 				<div class="row">
+ 					<!--ARCADE EMBED START-->
+ 						<div style="position: relative; padding-bottom: calc(46.925329428989755% + 41px); height: 0; width: 100%"><iframe src="https://demo.arcade.software/pKW6lSdfLVsENFCLPlow?embed" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen style="position: absolute; top: 0; left: 0; width: 100%; height: 100%;color-scheme: light;" title="Paraclete AI templates"></iframe></div>
+ 					<!--ARCADE EMBED END-->
+ 				</div>
+ 			</div>
+ 		</div>
+ 	</div>
+</div>
 @endsection
 
 @section('js')

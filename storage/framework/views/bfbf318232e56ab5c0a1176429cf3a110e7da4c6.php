@@ -25,16 +25,6 @@
             <!-- END SEARCH BAR -->
             <!-- MENU BAR -->
             <div class="d-flex order-lg-2 ml-auto"> 
-                <div id="form-group">
-                    <select id="template-selection" name="template-selection" class="top-form-select" data-placeholder="<?php echo e(__('Create AI Document')); ?>" data-callback="changeTemplate">
-                        <?php $__currentLoopData = App\Services\HelperService::listTemplates(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $temp): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <option data-id="<?php echo e($temp->template_code); ?>" value="app/user/templates/original-template/<?php echo e($temp->slug); ?>" data-icon="<?php echo e($temp->icon); ?>"><?php echo e(__($temp->name)); ?></option>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>	
-                        <?php $__currentLoopData = App\Services\HelperService::listCustomTemplates(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $temp): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <option data-id="<?php echo e($temp->template_code); ?>" value="app/user/templates/<?php echo e($temp->slug); ?>/<?php echo e($temp->template_code); ?>" data-icon="<?php echo e($temp->icon); ?>"><?php echo e(__($temp->name)); ?></option>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>																																
-                    </select>
-                </div>
                 <div class="dropdown header-notify">
                     <a class="nav-link icon" data-bs-toggle="dropdown">                        
                         <?php if(\Spatie\Permission\PermissionServiceProvider::bladeMethodWrapper('hasRole', 'admin')): ?>

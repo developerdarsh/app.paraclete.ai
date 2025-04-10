@@ -33,7 +33,11 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use OpenAI\Client;
 use Exception;
-
+use Orhanerday\OpenAi\OpenAi;
+use App\Library\URLFetcher;
+use App\Models\Voice;	
+use App\Services\AzureTTSService;
+use App\Models\ChatTemplates;
 
 
 class ChatController extends Controller
@@ -2341,7 +2345,8 @@ class ChatController extends Controller
             session()->forget('conversation_id');
         }
 
-        $chat = Chat::where('chat_code', $code)->first(); 
+        $chat = Chat::where('chat_code', $code)->first();
+        $template = ChatTemplates::where([['chat_id', $chat->id],['status',1]])->get();
         $messages = ChatConversation::where('user_id', auth()->user()->id)->where('chat_code', $chat->chat_code)->orderBy('updated_at', 'desc')->get(); 
 
         $categories = ChatPrompt::where('status', true)->groupBy('group')->pluck('group'); 
@@ -2363,7 +2368,7 @@ class ChatController extends Controller
         $brands = BrandVoice::where('user_id', auth()->user()->id)->get();
         $brands_feature = \App\Services\HelperService::checkBrandVoiceAccess();
 
-        return view('user.chat.view', compact('chat', 'messages', 'categories', 'prompts', 'internet', 'brands', 'brands_feature', 'default_model', 'extension'));
+        return view('user.chat.view', compact('template','chat', 'messages', 'categories', 'prompts', 'internet', 'brands', 'brands_feature', 'default_model', 'extension'));
 	}
 
 
@@ -3072,5 +3077,36 @@ class ChatController extends Controller
         }
         
     }
+
+    public function audioConvert(Request $request)
+    {
+        $conversation_id = $request->conversation_id;
+        $chat_message = ChatHistory::where('conversation_id', $conversation_id)->orderBy('created_at', 'desc')->first();
+        $messages = $chat_message->response;
+        $chat_conversation = ChatConversation::where('conversation_id', $conversation_id)->first();
+        $chat_code = $chat_conversation->chat_code;
+        $voice_code = Chat::where('chat_code', $chat_code)->first();
+        // $i = count($messages)-1;
+        $lastAssistantData['voice_code'] = $voice_code->voice_code;
+        $lastAssistantData['data'] = $messages;
+        return $lastAssistantData;
+    }
+
+    public function convertTextToAudio(Request $request)
+    {
+        // language_code , voice_id
+        $text = $request->text;
+        if ($request->voiceCode == 1) {
+            $voice = Voice::where('id', 208)->first();
+        } else {
+            $voice = Voice::where('id', 424)->first();
+        }
+
+        $format = 'mp3';
+        $file_name = 'LISTEN--' . Str::random(10) . '.mp3';
+        $azure = new AzureTTSService();
+        return $azure->synthesizeSpeech($voice, $text, $format, $file_name);
+    }
+
 
 }

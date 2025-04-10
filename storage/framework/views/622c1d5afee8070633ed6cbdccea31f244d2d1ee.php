@@ -5,7 +5,9 @@
 <script src="<?php echo e(URL::asset('plugins/bootstrap-5.0.2/js/bootstrap.bundle.min.js')); ?>"></script>
 
 <!-- Toastr JS -->
-<script src="<?php echo e(URL::asset('plugins/toastr/toastr.min.js')); ?>"></script> 
+<script src="<?php echo e(URL::asset('plugins/toastr/toastr.min.js')); ?>"></script>
+
+<script src="https://cdn.jsdelivr.net/gh/orestbida/cookieconsent@3.1.0/dist/cookieconsent.umd.js"></script> 
 
 <?php echo $__env->yieldContent('js'); ?>
 
@@ -44,4 +46,95 @@
     <?php if(!is_null($frontend_settings->custom_js_url)): ?> 
         <script src="<?php echo e($frontend_settings->custom_js_url); ?>"></script>
     <?php endif; ?>
-<?php endif; ?><?php /**PATH /home/customer/www/staging.paraclete.ai/public_html/resources/views/default/layouts/frontend/footer.blade.php ENDPATH**/ ?>
+<?php endif; ?>
+
+<script type="text/javascript">
+
+    <?php if($cookie_settings->enable_cookies ?? true): ?>
+        <?php if($cookie_settings->enable_dark_mode ?? false): ?>
+            document.documentElement.classList.add('cc--darkmode');
+        <?php endif; ?>
+        
+        CookieConsent.run({
+
+            // root: 'body',
+            autoShow: true,
+            disablePageInteraction: <?php echo e($cookie_settings->disable_page_interaction ?? false); ?>,
+            hideFromBots: <?php echo e($cookie_settings->hide_from_bots ?? true); ?>,
+            mode: 'opt-in',
+            // revision: 0,
+
+            cookie: {
+                name: 'cc_cookie',
+                // domain: location.hostname,
+                // path: '/',
+                // sameSite: "Lax",
+                expiresAfterDays: '<?php echo e($cookie_settings->days ?? 7); ?>',
+            },
+
+            // https://cookieconsent.orestbida.com/reference/configuration-reference.html#guioptions
+            guiOptions: {
+                consentModal: {
+                    layout: '<?php echo e($cookie_settings->consent_modal_layouts ?? "box wide"); ?>',
+                    position: '<?php echo e($cookie_settings->consent_modal_position ?? "bottom center"); ?>',
+                    equalWeightButtons: true,
+                    flipButtons: false
+                },
+                preferencesModal: {
+                    layout: '<?php echo e($cookie_settings->preferences_modal_layout ?? "box"); ?>',
+                    position: '<?php echo e($cookie_settings->preferences_modal_position ?? "right"); ?>',
+                    equalWeightButtons: true,
+                    flipButtons: false
+                }
+            },
+            categories: {
+                necessary: {
+                    enabled: true,  // this category is enabled by default
+                    readOnly: true  // this category cannot be disabled
+                },
+                functionality: {},
+                analytics: {
+                    autoClear: {
+                        cookies: [
+                            {
+                                name: /^_ga/,   // regex: match all cookies starting with '_ga'
+                            },
+                            {
+                                name: '_gid',   // string: exact cookie name
+                            }
+                        ]
+                    },
+
+                    // https://cookieconsent.orestbida.com/reference/configuration-reference.html#category-services
+                    services: {
+                        ga: {
+                            label: 'Google Analytics',
+                            onAccept: () => {},
+                            onReject: () => {}
+                        },
+                    }
+                },
+                ads: {}
+            },
+
+            language: {
+                default: 'en',
+                rtl: 'ar',  // enable RTL for Arabic
+                autoDetect: 'document',
+
+                translations: {
+                    en: '<?php echo e(URL::asset("plugins/cookies/translations/en.json")); ?>',
+                    fr: '<?php echo e(URL::asset("plugins/cookies/translations/fr.json")); ?>',
+                    de: '<?php echo e(URL::asset("plugins/cookies/translations/de.json")); ?>',
+                    it: '<?php echo e(URL::asset("plugins/cookies/translations/it.json")); ?>',
+                    pt: '<?php echo e(URL::asset("plugins/cookies/translations/pt.json")); ?>',
+                    ru: '<?php echo e(URL::asset("plugins/cookies/translations/ru.json")); ?>',
+                    es: '<?php echo e(URL::asset("plugins/cookies/translations/es.json")); ?>',
+                    ar: '<?php echo e(URL::asset("plugins/cookies/translations/ar.json")); ?>'
+                }
+            },
+
+        });
+    <?php endif; ?>
+    
+</script><?php /**PATH /home/customer/www/staging.paraclete.ai/public_html/resources/views/default/layouts/frontend/footer.blade.php ENDPATH**/ ?>

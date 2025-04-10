@@ -72,7 +72,61 @@
 
 				<div class="changelog">
 					<div class="changelog-version mt-5">
-						<span class="version-name"><?php echo e(__('Version')); ?> 7.0</span> - <span class="fs-14 font-weight-semibold">05.03.2025</span>
+						<span class="version-name"><?php echo e(__('Version')); ?> 7.1</span> - <span class="fs-14 font-weight-semibold">06.04.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">AI Speech to Text Pro extension added (Paid)</span></li>	
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Xero integration extension added (Free)</span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Amazon Bedrock extension added (Free)</span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Azure OpenAI extension added (Free)</span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">OpenRouter extension added (Free)</span></li>							
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Amazon New State of the Art Models Nova Micro / Lite / Pro added</span></li>							
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Google Veo2 added</span></li>							
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Advanced GDPR cookie consent banner added</span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New multi language invoicing mechanism added</span></li>													
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Finance settings page updated</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Ability to download invoices both by admins and users improved</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Sending out invoices manually to the users options added</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">All transactions have invoices attached now</span></li>							
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Saas Business Extension updated (v1.4)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Image to Video extension updated (v1.5)</span></li>							
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI ReWriter feature improved</span></li>		
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Article Wizard feature improved</span></li>		
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Hubspot configuration fixed (v1.1)</span></li>												
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">File chat feature minor issue fixed</span></li>												
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Web chat feature minor issue fixed</span></li>												
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Speech to Text credit view minor issue fixed</span></li>						
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">AI Chat Image credit view minor issue fixed</span></li>						
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
+						<span class="version-name"><?php echo e(__('Version')); ?> 7.0.1</span> - <span class="fs-14 font-weight-semibold">23.01.2025</span>
+					</div>
+					<div class="changelog-description mt-6"> 
+						<ul>								
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">AI Chat formatting fixed</span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">AI Chat Listening button fixed</span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">AI Voiceover credit display improved</span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">CRON video result task handling improved</span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">AI Code credit calculation fixed</span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Custom template credit calculation improved</span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">User list view issue fixed</span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">AI Writer menu visibility fixed</span></li>
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
+						<span class="version-name"><?php echo e(__('Version')); ?> 7.0</span> - <span class="fs-14 font-weight-semibold">15.03.2025</span>
 					</div>
 					<div class="changelog-description mt-6"> 
 						<ul>								
@@ -114,8 +168,8 @@
 							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Music extension updated (deletion and credit system added) (v1.2)</span></li>								
 							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Video to Video extension updated (v1.1)</span></li>		
 							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Faceswap extension updated (v1.1)</span></li>						
-							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Image to Video extension updated (v1.2)</span></li>						
-							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Text to Video extension updated (v1.1)</span></li>	
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Image to Video extension updated (v1.4)</span></li>						
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Text to Video extension updated (v1.3)</span></li>	
 							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Photo Studio extension updated (v1.1)</span></li>	
 							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Voice Clone extension updated (v1.1)</span></li>	
 							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Voice Isolator extension updated (v1.1)</span></li>	
