@@ -42,22 +42,20 @@
                         <span class="profile-icon fa-solid fa-folder-bookmark"></span>
                         <div class="fs-12">{{ __('Workbooks') }}</div>
                     </a> 
-                    @if (App\Services\HelperService::extensionSaaS())
-                        @if (config('payment.referral.enabled') == 'on')
-                            <a class="dropdown-item d-flex" href="{{ route('user.referral') }}">
-                                <span class="profile-icon fa-solid fa-badge-dollar"></span>
-                                <span class="fs-12">{{ __('Affiliate Program') }}</span></a>
-                            </a>
-                        @endif                        
-                        <a class="dropdown-item d-flex" href="{{ route('user.purchases') }}">
-                            <span class="profile-icon fa-solid fa-money-check-pen"></span>
-                            <span class="fs-12">{{ __('Transactions') }}</span></a>
+                    @if (config('payment.referral.enabled') == 'on')
+                        <a class="dropdown-item d-flex" href="{{ route('user.referral') }}">
+                            <span class="profile-icon fa-solid fa-badge-dollar"></span>
+                            <span class="fs-12">{{ __('Affiliate Program') }}</span></a>
                         </a>
-                        <a class="dropdown-item d-flex" href="{{ route('user.purchases.subscriptions') }}">
-                            <span class="profile-icon fa-solid fa-box-check"></span>
-                            <span class="fs-12">{{ __('Subscriptions') }}</span></a>
-                        </a>
-                    @endif
+                    @endif                        
+                    <a class="dropdown-item d-flex" href="{{ route('user.purchases') }}">
+                        <span class="profile-icon fa-solid fa-money-check-pen"></span>
+                        <span class="fs-12">{{ __('Transactions') }}</span></a>
+                    </a>
+                    <a class="dropdown-item d-flex" href="{{ route('user.purchases.subscriptions') }}">
+                        <span class="profile-icon fa-solid fa-box-check"></span>
+                        <span class="fs-12">{{ __('Subscriptions') }}</span></a>
+                    </a>
                     @role('user|subscriber')
                         @if (config('settings.user_support') == 'enabled')
                             <a class="dropdown-item d-flex" href="{{ route('user.support') }}">

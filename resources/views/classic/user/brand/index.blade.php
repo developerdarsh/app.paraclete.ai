@@ -4,24 +4,11 @@
 	<link href="{{URL::asset('plugins/datatable/datatables.min.css')}}" rel="stylesheet" />
 	<!-- Sweet Alert CSS -->
 	<link href="{{URL::asset('plugins/sweetalert/sweetalert2.min.css')}}" rel="stylesheet" />
-	<style>
-	.info-btn-alt {
-		font-size: 15px;
-		background-color: rgb(126, 34, 206);
-		color: rgb(255, 255, 255);
-		padding-top: 0.5rem;
-		padding-bottom: 0.5rem;
-		padding-left: 1rem;
-		padding-right: 1rem;
-		border-radius: 0.5rem;
-	}
-	</style>
 @endsection
 @section('page-header')
 <!-- PAGE HEADER -->
 <div class="page-header mt-5-7 justify-content-center">
 	<div class="page-leftheader text-center">
-		<a class="info-btn-alt mt-4" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a>
 		<h4 class="page-title mb-0">{{ __('Brand Voice') }}</h4>
 		<h6 class="text-muted">{{ __('Create unique AI-generated content tailored specifically for your brand, eliminating the need for repetitive company introductions.') }}</h6>
 		<ol class="breadcrumb mb-2 justify-content-center">
@@ -56,25 +43,6 @@
 				</div>
 			</div>
 		</div>
-	</div>
-	<div class="modal fade" id="info-alert-model" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog">
-		<div class="modal-dialog modal-dialog-centered modal-xl">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h2></h2>
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="row">
-						<!--ARCADE EMBED START-->
-							<div style="position: relative; padding-bottom: calc(56.25% + 41px); height: 0; width: 100%;"><iframe src="https://demo.arcade.software/tly54taiB95B4xRFOHJ5?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true" title="Your Brand Voice" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; color-scheme: light;" ></iframe></div>
-						<!--ARCADE EMBED END-->
-					</div>
-				</div>
-			</div>
-		</div>		
 	</div>
 @endsection
 

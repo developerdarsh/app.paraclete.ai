@@ -428,65 +428,63 @@
 			</div>
 		</div>
 
-		@if (App\Services\HelperService::extensionSaaS())
-			<div class="col-lg col-md-12 col-sm-12 mt-3">
-				<div class="card pb-5" id="admin-dashboard-panels">
-					<div class="card-header pt-4 pb-4 border-0">
-						<div class="mt-3">
-							<h3 class="card-title mb-2"><i class="fa-solid fa-money-bill-transfer mr-2 text-muted"></i>{{ __('Latest Transactions') }}</h3>
-							<div class="btn-group dashboard-menu-button">
-								<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="export" data-bs-display="static" aria-expanded="false"><i class="fa-solid fa-ellipsis  table-action-buttons table-action-buttons-big edit-action-button"></i></button>
-								<div class="dropdown-menu" aria-labelledby="export" data-popper-placement="bottom-start">								
-									<a class="dropdown-item" href="{{ route('admin.finance.transactions') }}">{{ __('View All') }}</a>	
-								</div>
+		<div class="col-lg col-md-12 col-sm-12 mt-3">
+			<div class="card pb-5" id="admin-dashboard-panels">
+				<div class="card-header pt-4 pb-4 border-0">
+					<div class="mt-3">
+						<h3 class="card-title mb-2"><i class="fa-solid fa-money-bill-transfer mr-2 text-muted"></i>{{ __('Latest Transactions') }}</h3>
+						<div class="btn-group dashboard-menu-button">
+							<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="export" data-bs-display="static" aria-expanded="false"><i class="fa-solid fa-ellipsis  table-action-buttons table-action-buttons-big edit-action-button"></i></button>
+							<div class="dropdown-menu" aria-labelledby="export" data-popper-placement="bottom-start">								
+								<a class="dropdown-item" href="{{ route('admin.finance.transactions') }}">{{ __('View All') }}</a>	
 							</div>
 						</div>
 					</div>
-					<div class="col-sm-12 pl-6 pr-6">
-						<div class="dashboard-3-column">
-							<div class="font-weight-semibold text-muted fs-12">{{ __('Plan') }}</div>
-							<div class="text-right font-weight-semibold text-muted fs-12">{{ __('Price') }}</div>
-							<div class="text-right font-weight-semibold text-muted fs-12">{{ __('Gateway') }}</div>
-							<div class="text-right mr-4 font-weight-semibold text-muted fs-12">{{ __('Status') }}</div>
-							<div class="text-right mr-5 font-weight-semibold text-muted fs-12">{{ __('Date') }}</div>
-						</div>
+				</div>
+				<div class="col-sm-12 pl-6 pr-6">
+					<div class="dashboard-3-column">
+						<div class="font-weight-semibold text-muted fs-12">{{ __('Plan') }}</div>
+						<div class="text-right font-weight-semibold text-muted fs-12">{{ __('Price') }}</div>
+						<div class="text-right font-weight-semibold text-muted fs-12">{{ __('Gateway') }}</div>
+						<div class="text-right mr-4 font-weight-semibold text-muted fs-12">{{ __('Status') }}</div>
+						<div class="text-right mr-5 font-weight-semibold text-muted fs-12">{{ __('Date') }}</div>
 					</div>
-					<div class="card-body pt-2 height-400">
+				</div>
+				<div class="card-body pt-2 height-400">
 
-						<div class="row">
-							
-							@foreach ($transaction as $data)
-								<div class="col-sm-12">					
-									<div class="card" onclick="window.location.href='{{ url('app/admin/finance/transaction/'.$data->id.'/show') }}'">
-										<div class="card-body pt-2 pb-2 pl-4 pr-4 dashboard-3-column">
-											<div class="template-icon">
-												<div class="fs-12">
-													<p class="font-weight-semibold fs-12 mb-0">{{ $data->plan_name }}</p>
-													<p class="text-muted fs-10 mb-0">{{ ucfirst($data->frequency) }} {{ __('Plan') }}</p>
-												</div>								
-											</div>
-											<div class="text-right mb-auto mt-auto">
-												<p class="fs-12 mb-0 text-muted">{!! config('payment.default_system_currency_symbol') !!}{{ number_format($data->price) }}</p>
-											</div>
-											<div class="text-right mb-auto mt-auto">
-												<p class="fs-12 mb-0 text-muted">{{ $data->gateway }}</p>
-											</div>
-											<div class="text-right mb-auto mt-auto">
-												<p class="fs-12 mb-0 text-muted">{{ __(ucfirst($data->status)) }}</p>
-											</div>
-											<div class="text-right mb-auto mt-auto">
-												<p class="fs-10 mb-0 text-muted">{{ date_format($data->created_at, 'd M Y') }}<br><span>{{ date_format($data->created_at, 'H:i A') }}</span></p>
-											</div>
+					<div class="row">
+						
+						@foreach ($transaction as $data)
+							<div class="col-sm-12">					
+								<div class="card" onclick="window.location.href='{{ url('app/admin/finance/transaction/'.$data->id.'/show') }}'">
+									<div class="card-body pt-2 pb-2 pl-4 pr-4 dashboard-3-column">
+										<div class="template-icon">
+											<div class="fs-12">
+												<p class="font-weight-semibold fs-12 mb-0">{{ $data->plan_name }}</p>
+												<p class="text-muted fs-10 mb-0">{{ ucfirst($data->frequency) }} {{ __('Plan') }}</p>
+											</div>								
 										</div>
-									</div>													
-								</div>
-							@endforeach
+										<div class="text-right mb-auto mt-auto">
+											<p class="fs-12 mb-0 text-muted">{!! config('payment.default_system_currency_symbol') !!}{{ number_format($data->price) }}</p>
+										</div>
+										<div class="text-right mb-auto mt-auto">
+											<p class="fs-12 mb-0 text-muted">{{ $data->gateway }}</p>
+										</div>
+										<div class="text-right mb-auto mt-auto">
+											<p class="fs-12 mb-0 text-muted">{{ __(ucfirst($data->status)) }}</p>
+										</div>
+										<div class="text-right mb-auto mt-auto">
+											<p class="fs-10 mb-0 text-muted">{{ date_format($data->created_at, 'd M Y') }}<br><span>{{ date_format($data->created_at, 'H:i A') }}</span></p>
+										</div>
+									</div>
+								</div>													
+							</div>
+						@endforeach
 
-						</div>
 					</div>
 				</div>
 			</div>
-		@endif
+		</div>
 	</div>
 
 	<div class="row">

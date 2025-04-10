@@ -1,23 +1,24 @@
 <!-- TOP MENU BAR -->
 <div class="app-header header">
-    <div class="container-fluid"> 
+    <div class="container"> 
         <div class="d-flex">
             <a class="header-brand" href="<?php echo e(url('/')); ?>">
                 <img src="<?php echo e(URL::asset($settings->logo_dashboard)); ?>" class="header-brand-img desktop-lgo" alt="Dashboard Logo">
                 <img src="<?php echo e(URL::asset($settings->logo_dashboard_collapsed)); ?>" class="header-brand-img mobile-logo" alt="Dashboard Logo">
             </a>
-            <div class="app-sidebar__toggle nav-link icon" data-toggle="sidebar">
+            <div class="app-sidebar__toggle2 nav-link icon" data-toggle="sidebar">
                 <a class="open-toggle" href="<?php echo e(url('#')); ?>">
-                    <span class="fa fa-align-left header-icon"></span>
+                    <span class="fa fa-align-justify header-icon"></span>
                 </a>
             </div>
             <!-- SEARCH BAR -->
             <div id="search-bar">                
                 <div>
-                    <a class="nav-link icon">
+                    <a class="nav-link icon" id="search-field-box">
                         <form id="search-field" action="<?php echo e(route('search')); ?>" method="POST" enctype="multipart/form-data">         
                             <?php echo csrf_field(); ?>                   
-                            <input type="search" name='keyword'>
+                            <input type="search" name='keyword' placeholder="<?php echo e(__('Search for templates and documents...')); ?>">
+                            <span class="bx bx-search-alt-2"></span>
                         </form>                        
                     </a>
                 </div>                
@@ -25,17 +26,22 @@
             <!-- END SEARCH BAR -->
             <!-- MENU BAR -->
             <div class="d-flex order-lg-2 ml-auto"> 
+                <div class="dropdown items-center flex">
+                    <a href="#" class="nav-link icon btn-theme-toggle">
+                        <span class="header-icon bx"></span>
+                    </a>
+                </div>
                 <div class="dropdown header-notify">
                     <a class="nav-link icon" data-bs-toggle="dropdown">                        
                         <?php if(\Spatie\Permission\PermissionServiceProvider::bladeMethodWrapper('hasRole', 'admin')): ?>
-                            <span class="header-icon fa-regular fa-bell pr-3"></span>
+                            <span class="header-icon bx bx-bell pr-3"></span>
                             <?php if(auth()->user()->unreadNotifications->where('type', '<>', 'App\Notifications\GeneralNotification')->count()): ?>
                                 <span class="pulse "></span>
                             <?php endif; ?>
                         <?php endif; ?>
                         <?php if(\Spatie\Permission\PermissionServiceProvider::bladeMethodWrapper('hasRole', 'user|subscriber')): ?>
                             <?php if(config('settings.user_notification') == 'enabled'): ?>
-                                <span class="header-icon fa-solid fa-bell pr-3"></span>                            
+                                <span class="header-icon bx bx-bell pr-3"></span>                            
                                     <?php if(auth()->user()->unreadNotifications->where('type', 'App\Notifications\GeneralNotification')->count()): ?>
                                         <span class="pulse "></span>
                                     <?php endif; ?>                            
@@ -146,20 +152,10 @@
                             <?php endif; ?>
                         <?php endif; ?>                        
                     </div>
-                </div>
-                <div class="dropdown items-center flex">
-                    <a href="#" class="nav-link icon btn-theme-toggle">
-                        <span class="header-icon fa-solid"></span>
-                    </a>
-                </div>
-                <div class="dropdown header-expand" >
-                    <a  class="nav-link icon" id="fullscreen-button">
-                        <span class="header-icon fa-solid fa-expand" id="fullscreen-icon"></span>
-                    </a>
-                </div>
+                </div>                
                 <div class="dropdown header-languages mr-2">
                     <a class="nav-link icon" data-bs-toggle="dropdown">
-                        <span class="header-icon fa-solid fa-globe"></span>
+                        <span class="header-icon bx bx-world"></span>
                     </a>
                     <div class="dropdown-menu animated">
                         <div class="local-menu">
@@ -189,35 +185,35 @@
                         </div>
                         <?php if(App\Services\HelperService::extensionSaaS()): ?>
                             <a class="dropdown-item d-flex" href="<?php echo e(route('user.plans')); ?>">
-                                <span class="profile-icon fa-solid fa-box-circle-check"></span>
+                                <span class="profile-icon bx bx-gift"></span>
                                 <div class="fs-12"><?php echo e(__('Subscription Plans')); ?></div>
-                            </a>     
-                        <?php endif; ?>   
+                            </a>  
+                        <?php endif; ?>      
                         <a class="dropdown-item d-flex" href="<?php echo e(route('user.workbooks')); ?>">
-                            <span class="profile-icon fa-solid fa-folder-bookmark"></span>
+                            <span class="profile-icon bx bx-folder-open"></span>
                             <div class="fs-12"><?php echo e(__('My Workbooks')); ?></div>
                         </a> 
                         <?php if(App\Services\HelperService::extensionSaaS()): ?>
                             <?php if(config('payment.referral.enabled') == 'on'): ?>
                                 <a class="dropdown-item d-flex" href="<?php echo e(route('user.referral')); ?>">
-                                    <span class="profile-icon fa-solid fa-badge-dollar"></span>
+                                    <span class="profile-icon bx bx-dollar-circle"></span>
                                     <span class="fs-12"><?php echo e(__('Affiliate Program')); ?></span></a>
                                 </a>
                             <?php endif; ?>                        
                             <a class="dropdown-item d-flex" href="<?php echo e(route('user.purchases')); ?>">
-                                <span class="profile-icon fa-solid fa-money-check-pen"></span>
+                                <span class="profile-icon bx bx-file-blank"></span>
                                 <span class="fs-12"><?php echo e(__('Orders')); ?></span></a>
                             </a>
                         <?php endif; ?>
                         <?php if(config('settings.user_support') == 'enabled'): ?>
                             <a class="dropdown-item d-flex" href="<?php echo e(route('user.support')); ?>">
-                                <span class="profile-icon fa-solid fa-headset"></span>
+                                <span class="profile-icon bx bx-support"></span>
                                 <div class="fs-12"><?php echo e(__('Support Request')); ?></div>
                             </a>
                         <?php endif; ?>        
                         <?php if(config('settings.user_notification') == 'enabled'): ?>
                             <a class="dropdown-item d-flex" href="<?php echo e(route('user.notifications')); ?>">
-                                <span class="profile-icon fa-solid fa-message-exclamation"></span>
+                                <span class="profile-icon bx bx-notification"></span>
                                 <div class="fs-12"><?php echo e(__('Notifications')); ?></div>
                                 <?php if(auth()->user()->unreadNotifications->where('type', 'App\Notifications\GeneralNotification')->count()): ?>
                                     <span class="badge badge-warning ml-3"><?php echo e(auth()->user()->unreadNotifications->where('type', 'App\Notifications\GeneralNotification')->count()); ?></span>
@@ -225,12 +221,12 @@
                             </a>
                         <?php endif; ?> 
                         <a class="dropdown-item d-flex" href="<?php echo e(route('user.profile')); ?>">
-                            <span class="profile-icon fa-solid fa-id-badge"></span>
+                            <span class="profile-icon bx bx-user-pin"></span>
                             <span class="fs-12"><?php echo e(__('Profile Settings')); ?></span></a>
                         </a>
                         <a class="dropdown-item d-flex" href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault();
                             document.getElementById('logout-form').submit();"> 
-                            <span class="profile-icon fa-solid fa-right-from-bracket"></span>          
+                            <span class="profile-icon bx bx-log-out"></span>          
                             <div class="fs-12"><?php echo e(__('Logout')); ?></div>                            
                         </a>
                         <form id="logout-form" action="<?php echo e(route('logout')); ?>" method="POST" class="d-none">
@@ -244,4 +240,4 @@
     </div>
 </div>
 <!-- END TOP MENU BAR -->
-<?php /**PATH /home/customer/www/staging.paraclete.ai/public_html/resources/views/default/layouts/dashboard/nav-top.blade.php ENDPATH**/ ?>
+<?php /**PATH /home/customer/www/staging.paraclete.ai/public_html/resources/views/classic/layouts/dashboard/nav-top.blade.php ENDPATH**/ ?>

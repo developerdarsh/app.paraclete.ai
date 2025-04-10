@@ -3,7 +3,7 @@
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-12 col-sm-12 text-center">
-                <span class="text-muted fs-11"><?php echo e(__('Copyright')); ?> © <?php echo e(date("Y")); ?> <a href="<?php echo e(config('app.url')); ?>"><?php echo e(config('app.name')); ?></a>. <?php echo e(__('All rights reserved')); ?></span>
+                <span class="text-muted fs-11"><?php echo e(__('Copyright')); ?> © <?php echo e(date("Y")); ?> <a class="text-primary" href="<?php echo e(config('app.url')); ?>"><?php echo e(config('app.name')); ?></a>. <?php echo e(__('All rights reserved')); ?></span>
             </div>
             <div class="col-md-12 col-sm-12 text-center">
                 <span class="fs-10 font-weight-bold text-info"><?php echo e(config('app.version')); ?></span>
@@ -48,8 +48,6 @@
 <!-- Custom js-->
 <script src="<?php echo e(theme_url('js/custom.js')); ?>"></script>
 
-<!-- multiselect select  -->
-<script src="<?php echo e(URL::asset('plugins/bootstrap-5.0.2/js/bootstrap-multiselect.min.js')); ?>"></script>
 
 <!-- Google Analytics -->
 <?php if(config('services.google.analytics.enable') == 'on'): ?>
@@ -127,49 +125,16 @@
         theme: 'material',
     });
 
-    const words_info = document.getElementById('nav-info-words');
-    const images_info = document.getElementById('nav-info-images');
-    const characters_info = document.getElementById('nav-info-characters');
-    const minutes_info = document.getElementById('nav-info-minutes');
-    
-    tippy('[data-tippy-words]', {
-        animation: 'scale-extreme',
-        theme: 'material',
-        content: words_info.innerHTML,
-        allowHTML: true,
-    });
-
-    tippy('[data-tippy-images]', {
-        animation: 'scale-extreme',
-        theme: 'material',
-        content: images_info.innerHTML,
-        allowHTML: true,
-    });
-
-    tippy('[data-tippy-characters]', {
-        animation: 'scale-extreme',
-        theme: 'material',
-        content: characters_info.innerHTML,
-        allowHTML: true,
-    });
-
-    tippy('[data-tippy-minutes]', {
-        animation: 'scale-extreme',
-        theme: 'material',
-        content: minutes_info.innerHTML,
-        allowHTML: true,
-    });
-
     toastr.options.showMethod = 'slideDown';
     toastr.options.hideMethod = 'slideUp';
     toastr.options.progressBar = true;
 
 
-    document.querySelector(".btn-theme-toggle > span").classList.add("fa-moon-stars");
+    document.querySelector(".btn-theme-toggle > span").classList.add("bx-moon");
     var myCookie = (document.cookie.match(/^(?:.*;)?\s*theme\s*=\s*([^;]+)(?:.*)?$/)||[,null])[1];
     if (myCookie == 'dark') {
-            document.querySelector(".btn-theme-toggle > span").classList.remove("fa-moon-stars");
-            document.querySelector(".btn-theme-toggle > span").classList.add("fa-sun-bright");  
+            document.querySelector(".btn-theme-toggle > span").classList.remove("bx-moon");
+            document.querySelector(".btn-theme-toggle > span").classList.add("bx-sun");  
             var logo = document.querySelector(".desktop-lgo");
             logo.src = '<?php echo e(URL::asset($settings->logo_dashboard_dark)); ?>';
     }
@@ -179,22 +144,22 @@
         if (document.body.classList.contains('light-theme')) {
             document.body.classList.remove('light-mode');
             document.body.classList.add('dark-mode');
-            document.querySelector(".btn-theme-toggle > span").classList.remove("fa-moon-stars");
-            document.querySelector(".btn-theme-toggle > span").classList.add("fa-sun-bright");
+            document.querySelector(".btn-theme-toggle > span").classList.remove("bx-moon");
+            document.querySelector(".btn-theme-toggle > span").classList.add("bx-sun");
             var logo = document.querySelector(".desktop-lgo");
             logo.src = '<?php echo e(URL::asset($settings->logo_dashboard)); ?>';
             var theme = "dark";
         } else if(document.body.classList.contains('dark-theme')) {
             document.body.classList.remove('dark-mode');
             document.body.classList.add('light-mode');
-            document.querySelector(".btn-theme-toggle > span").classList.remove("fa-sun-bright");
-            document.querySelector(".btn-theme-toggle > span").classList.add("fa-moon-stars");
+            document.querySelector(".btn-theme-toggle > span").classList.remove("bx-sun");
+            document.querySelector(".btn-theme-toggle > span").classList.add("bx-moon");
             var logo = document.querySelector(".desktop-lgo");
             logo.src = '<?php echo e(URL::asset($settings->logo_dashboard_dark)); ?>';
             var theme = "light";
         } else {
-            document.querySelector(".btn-theme-toggle > span").classList.remove("fa-moon-stars");
-            document.querySelector(".btn-theme-toggle > span").classList.add("fa-sun-bright");
+            document.querySelector(".btn-theme-toggle > span").classList.remove("bx-moon");
+            document.querySelector(".btn-theme-toggle > span").classList.add("bx-sun");
             document.body.classList.add('dark-mode');
             var logo = document.querySelector(".desktop-lgo");
             logo.src = '<?php echo e(URL::asset($settings->logo_dashboard_dark)); ?>';
@@ -274,4 +239,4 @@
             s0.parentNode.insertBefore(s1,s0);
         })();
     </script>
-<?php endif; ?><?php /**PATH /home/customer/www/staging.paraclete.ai/public_html/resources/views/default/layouts/dashboard/footer.blade.php ENDPATH**/ ?>
+<?php endif; ?><?php /**PATH /home/customer/www/staging.paraclete.ai/public_html/resources/views/classic/layouts/dashboard/footer.blade.php ENDPATH**/ ?>

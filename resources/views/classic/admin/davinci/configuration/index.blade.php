@@ -53,13 +53,32 @@
 												<option value="gpt-4o" @if ( config('settings.default_model_admin')  == 'gpt-4o') selected @endif>{{ __('GPT 4o') }}</option>
 												<option value="gpt-4o-mini" @if ( config('settings.default_model_admin')  == 'gpt-4o-mini') selected @endif>{{ __('GPT 4o mini') }}</option>
 												<option value="gpt-4-0125-preview" @if ( config('settings.default_model_admin')  == 'gpt-4-0125-preview') selected @endif>{{ __('GPT 4 Turbo') }}</option>
-												<option value="gpt-4-turbo-2024-04-09" @if ( config('settings.default_model_admin')  == 'gpt-4-turbo-2024-04-09') selected @endif>{{ __('GPT 4 Turbo with Vision') }}</option>
-												<option value="o1-preview" @if ( config('settings.default_model_admin')  == 'o1-preview') selected @endif>{{ __('o1 preview') }}</option>
+												<option value="gpt-4.5-preview" @if ( config('settings.default_model_admin')  == 'gpt-4.5-preview') selected @endif>{{ __('GPT 4.5') }}</option>
+												<option value="o1" @if ( config('settings.default_model_admin')  == 'o1') selected @endif>{{ __('o1') }}</option>
 												<option value="o1-mini" @if ( config('settings.default_model_admin')  == 'o1-mini') selected @endif>{{ __('o1 mini') }}</option>
+												<option value="o3-mini" @if ( config('settings.default_model_admin')  == 'o3-mini') selected @endif>{{ __('o3 mini') }}</option>
 												<option value="claude-3-opus-20240229" @if ( config('settings.default_model_admin')  == 'claude-3-opus-20240229') selected @endif>{{ __('Claude 3 Opus') }}</option>
-												<option value="claude-3-5-sonnet-20241022" @if ( config('settings.default_model_admin')  == 'claude-3-5-sonnet-20241022') selected @endif>{{ __('Claude 3.5 Sonnet') }}</option>
+												<option value="claude-3-7-sonnet-20250219" @if ( config('settings.default_model_admin')  == 'claude-3-7-sonnet-20250219') selected @endif>{{ __('Claude 3.7 Sonnet') }}</option>
+												<option value="claude-3-5-sonnet-20241022" @if ( config('settings.default_model_admin')  == 'claude-3-5-sonnet-20241022') selected @endif>{{ __('Claude 3.5v2 Sonnet') }}</option>
 												<option value="claude-3-5-haiku-20241022" @if ( config('settings.default_model_admin')  == 'claude-3-5-haiku-20241022') selected @endif>{{ __('Claude 3.5 Haiku') }}</option>
-												<option value="gemini_pro" @if ( config('settings.default_model_admin')  == 'gemini_pro') selected @endif>{{ __('Gemini Pro') }}</option>
+												<option value="gemini-1.5-pro" @if ( config('settings.default_model_admin')  == 'gemini-1.5-pro') selected @endif>{{ __('Gemini 1.5 Pro') }}</option>
+												<option value="gemini-1.5-flash" @if ( config('settings.default_model_admin')  == 'gemini-1.5-flash') selected @endif>{{ __('Gemini 1.5 Flash') }}</option>
+												<option value="gemini-2.0-flash" @if ( config('settings.default_model_admin')  == 'gemini-2.0-flash') selected @endif>{{ __('Gemini 2.0 Flash') }}</option>
+												<option value="deepseek-chat" @if ( config('settings.default_model_admin')  == 'deepseek-chat') selected @endif>{{ __('DeepSeek V3') }}</option>
+												<option value="deepseek-reasoner" @if ( config('settings.default_model_admin')  == 'deepseek-reasoner') selected @endif>{{ __('DeepSeek R1') }}</option>
+												<option value="grok-2-1212" @if ( config('settings.default_model_admin')  == 'grok-2-1212') selected @endif>{{ __('Grok 2') }}</option>
+												<option value="grok-2-vision-1212" @if ( config('settings.default_model_admin')  == 'grok-2-vision-1212') selected @endif>{{ __('Grok 2 Vision') }}</option>
+												@if (App\Services\HelperService::extensionPerplexity())	
+													<option value="sonar" @if ( config('settings.default_model_admin')  == 'sonar') selected @endif>{{ __('Perplexity Sonar') }}</option>
+													<option value="sonar-pro" @if ( config('settings.default_model_admin')  == 'sonar-pro') selected @endif>{{ __('Perplexity Sonar Pro') }}</option>
+													<option value="sonar-reasoning" @if ( config('settings.default_model_admin')  == 'sonar-reasoning') selected @endif>{{ __('Perplexity Sonar Reasoning') }}</option>
+													<option value="sonar-reasoning-pro" @if ( config('settings.default_model_admin')  == 'sonar-reasoning-pro') selected @endif>{{ __('Perplexity Sonar Reasoning Pro') }}</option>
+												@endif
+												@if (App\Services\HelperService::extensionAmazonBedrock())	
+													<option value="us.amazon.nova-micro-v1:0" @if ( config('settings.default_model_admin')  == 'us.amazon.nova-micro-v1:0') selected @endif>{{ __('Nova Micro') }}</option>
+													<option value="us.amazon.nova-lite-v1:0" @if ( config('settings.default_model_admin')  == 'us.amazon.nova-lite-v1:0') selected @endif>{{ __('Nova Lite') }}</option>
+													<option value="us.amazon.nova-pro-v1:0" @if ( config('settings.default_model_admin')  == 'us.amazon.nova-pro-v1:0') selected @endif>{{ __('Nova Pro') }}</option>
+												@endif
 												@foreach ($models as $model)
 													<option value="{{ $model->model }}" @if ( config('settings.default_model_admin')  == $model->model) selected @endif>{{ $model->description }} ({{ __('Fine Tune Model')}})</option>
 												@endforeach
@@ -147,170 +166,203 @@
 									</div>
 
 									<div class="col-lg-6 col-md-6 col-sm-12">
-										<div class="input-box">
-											<h6>{{ __('AI Writer Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-											<div class="form-group">
-												<label class="custom-switch">
-													<input type="checkbox" name="writer-feature-user" class="custom-switch-input" @if ( config('settings.writer_feature_user')  == 'allow') checked @endif>
-													<span class="custom-switch-indicator"></span>
-												</label>
-											</div>
-										</div>
-									</div>
-
-									<div class="col-lg-6 col-md-6 col-sm-12">
-										<div class="input-box">
-											<h6>{{ __('AI Article Wizard Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-											<div class="form-group">
-												<label class="custom-switch">
-													<input type="checkbox" name="wizard-feature-user" class="custom-switch-input" @if ( config('settings.wizard_feature_user')  == 'allow') checked @endif>
-													<span class="custom-switch-indicator"></span>
-												</label>
-											</div>
-										</div>
-									</div>
-
-									<div class="col-lg-6 col-md-6 col-sm-12">
-										<div class="input-box">
-											<h6>{{ __('Smart Editor Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-											<div class="form-group">
-												<label class="custom-switch">
-													<input type="checkbox" name="smart-editor-feature-user" class="custom-switch-input" @if ( config('settings.smart_editor_feature_user')  == 'allow') checked @endif>
-													<span class="custom-switch-indicator"></span>
-												</label>
-											</div>
-										</div>
-									</div>
-
-									<div class="col-lg-6 col-md-6 col-sm-12">
-										<div class="input-box">
-											<h6>{{ __('AI ReWriter Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-											<div class="form-group">
-												<label class="custom-switch">
-													<input type="checkbox" name="rewriter-feature-user" class="custom-switch-input" @if ( config('settings.rewriter_feature_user')  == 'allow') checked @endif>
-													<span class="custom-switch-indicator"></span>
-												</label>
-											</div>
-										</div>
-									</div>
-
-									<div class="col-lg-6 col-md-6 col-sm-12">
-										<div class="input-box">
-											<h6>{{ __('AI Vision Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-											<div class="form-group">
-												<label class="custom-switch">
-													<input type="checkbox" name="vision-feature-user" class="custom-switch-input" @if ( config('settings.vision_feature_user')  == 'allow') checked @endif>
-													<span class="custom-switch-indicator"></span>
-												</label>
-											</div>
-										</div>
-									</div>
-
-									<div class="col-lg-6 col-md-6 col-sm-12">
-										<div class="input-box">
-											<h6>{{ __('AI Vision for AI Chat') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-											<div class="form-group">
-												<label class="custom-switch">
-													<input type="checkbox" name="vision-for-chat-user" class="custom-switch-input" @if ( config('settings.vision_for_chat_feature_user')  == 'allow') checked @endif>
-													<span class="custom-switch-indicator"></span>
-												</label>
-											</div>
-										</div>
-									</div>
-
-									<div class="col-lg-6 col-md-6 col-sm-12">
-										<div class="input-box">
-											<h6>{{ __('AI File Chat Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-											<div class="form-group">
-												<label class="custom-switch">
-													<input type="checkbox" name="chat-file-feature-user" class="custom-switch-input" @if ( config('settings.chat_file_feature_user')  == 'allow') checked @endif>
-													<span class="custom-switch-indicator"></span>
-												</label>
-											</div>
-										</div>
-									</div>
-
-									<div class="col-lg-6 col-md-6 col-sm-12">
-										<div class="input-box">
-											<h6>{{ __('AI Web Chat Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-											<div class="form-group">
-												<label class="custom-switch">
-													<input type="checkbox" name="chat-web-feature-user" class="custom-switch-input" @if ( config('settings.chat_web_feature_user')  == 'allow') checked @endif>
-													<span class="custom-switch-indicator"></span>
-												</label>
-											</div>
-										</div>
-									</div>
-
-									<div class="col-lg-6 col-md-6 col-sm-12">
-										<div class="input-box">
-											<h6>{{ __('AI Chat Image Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-											<div class="form-group">
-												<label class="custom-switch">
-													<input type="checkbox" name="chat-image-feature-user" class="custom-switch-input" @if ( config('settings.chat_image_feature_user')  == 'allow') checked @endif>
-													<span class="custom-switch-indicator"></span>
-												</label>
-											</div>
-										</div>
-									</div>
-
-									<div class="col-lg-6 col-md-6 col-sm-12">
-										<div class="input-box">
-											<h6>{{ __('AI Code Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-											<div class="form-group">
-												<label class="custom-switch">
-													<input type="checkbox" name="code-feature-user" class="custom-switch-input" @if ( config('settings.code_feature_user')  == 'allow') checked @endif>
-													<span class="custom-switch-indicator"></span>
-												</label>
-											</div>
-										</div>
-									</div>
-
-									<div class="col-lg-6 col-md-6 col-sm-12">
 										<div class="input-box">	
-											<h6>{{ __('Team Members Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span></h6>
-											<div class="form-group">
-												<label class="custom-switch">
-													<input type="checkbox" name="team-members-feature" class="custom-switch-input" @if ( config('settings.team_members_feature')  == 'allow') checked @endif>
-													<span class="custom-switch-indicator"></span>
-												</label>
-											</div>
-										</div> 						
-									</div>	
-
-									<div class="col-lg-6 col-md-6 col-sm-12">
-										<div class="input-box">
-											<h6>{{ __('AI Youtube Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-											<div class="form-group">
-												<label class="custom-switch">
-													<input type="checkbox" name="youtube-feature" class="custom-switch-input" @if ($settings->youtube_feature) checked @endif>
-													<span class="custom-switch-indicator"></span>
-												</label>
-											</div>
-										</div>
+											<h6>{{ __('Real Time Data Access Engine') }} <span class="text-muted">({{ __('For All Groups') }})</span><span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+											<select id="realtime-engine" name="realtime-engine" class="form-select">			
+												<option value="serper" @if ( $settings->realtime_data_engine == 'serper') selected @endif>{{ __('Serper') }}</option>	
+												@if (App\Services\HelperService::extensionPerplexity())											
+													<option value="perplexity" @if ( $settings->realtime_data_engine == 'perplexity') selected @endif>{{ __('Perplexity') }}</option>	
+												@endif											
+											</select>
+										</div>								
 									</div>
+								</div>
 
-									<div class="col-lg-6 col-md-6 col-sm-12">
-										<div class="input-box">
-											<h6>{{ __('AI RSS Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-											<div class="form-group">
-												<label class="custom-switch">
-													<input type="checkbox" name="rss-feature" class="custom-switch-input" @if ($settings->rss_feature) checked @endif>
-													<span class="custom-switch-indicator"></span>
-												</label>
-											</div>
-										</div>
-									</div>
+								<div class="card shadow-0 mb-7">							
+									<div class="card-body">
+										<div class="row">		
 
-									<div class="col-lg-6 col-md-6 col-sm-12">
-										<div class="input-box">
-											<h6>{{ __('Integration Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-											<div class="form-group">
-												<label class="custom-switch">
-													<input type="checkbox" name="integration-feature" class="custom-switch-input" @if ($settings->integration_feature) checked @endif>
-													<span class="custom-switch-indicator"></span>
-												</label>
+											<h6 class="fs-12 font-weight-bold mb-6 mt-3"><i class="  fa-solid fa-cogs text-info fs-14 mr-2"></i>{{ __('AI Features Control') }} <span class="text-muted">({{ __('For All Groups') }})</span></h6>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">
+													<h6>{{ __('AI Writer Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+													<div class="form-group">
+														<label class="custom-switch">
+															<input type="checkbox" name="writer-feature-user" class="custom-switch-input" @if ($settings->writer_feature) checked @endif>
+															<span class="custom-switch-indicator"></span>
+														</label>
+													</div>
+												</div>
 											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">
+													<h6>{{ __('AI Article Wizard Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+													<div class="form-group">
+														<label class="custom-switch">
+															<input type="checkbox" name="wizard-feature-user" class="custom-switch-input" @if ($settings->wizard_feature) checked @endif>
+															<span class="custom-switch-indicator"></span>
+														</label>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">
+													<h6>{{ __('Smart Editor Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+													<div class="form-group">
+														<label class="custom-switch">
+															<input type="checkbox" name="smart-editor-feature-user" class="custom-switch-input" @if ($settings->smart_editor_feature) checked @endif>
+															<span class="custom-switch-indicator"></span>
+														</label>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">
+													<h6>{{ __('AI ReWriter Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+													<div class="form-group">
+														<label class="custom-switch">
+															<input type="checkbox" name="rewriter-feature-user" class="custom-switch-input" @if ($settings->rewriter_feature) checked @endif>
+															<span class="custom-switch-indicator"></span>
+														</label>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">
+													<h6>{{ __('AI Vision Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+													<div class="form-group">
+														<label class="custom-switch">
+															<input type="checkbox" name="vision-feature-user" class="custom-switch-input" @if ($settings->vision_feature) checked @endif>
+															<span class="custom-switch-indicator"></span>
+														</label>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">
+													<h6>{{ __('AI Vision for AI Chat') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+													<div class="form-group">
+														<label class="custom-switch">
+															<input type="checkbox" name="vision-for-chat-user" class="custom-switch-input" @if ( config('settings.vision_for_chat_feature_user')  == 'allow') checked @endif>
+															<span class="custom-switch-indicator"></span>
+														</label>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">
+													<h6>{{ __('AI File Chat Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+													<div class="form-group">
+														<label class="custom-switch">
+															<input type="checkbox" name="chat-file-feature-user" class="custom-switch-input" @if ($settings->file_chat_feature) checked @endif>
+															<span class="custom-switch-indicator"></span>
+														</label>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">
+													<h6>{{ __('AI Web Chat Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+													<div class="form-group">
+														<label class="custom-switch">
+															<input type="checkbox" name="chat-web-feature-user" class="custom-switch-input" @if ($settings->web_chat_feature) checked @endif>
+															<span class="custom-switch-indicator"></span>
+														</label>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">
+													<h6>{{ __('AI Chat Image Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+													<div class="form-group">
+														<label class="custom-switch">
+															<input type="checkbox" name="chat-image-feature-user" class="custom-switch-input" @if ($settings->image_chat_feature) checked @endif>
+															<span class="custom-switch-indicator"></span>
+														</label>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">
+													<h6>{{ __('AI Code Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+													<div class="form-group">
+														<label class="custom-switch">
+															<input type="checkbox" name="code-feature-user" class="custom-switch-input" @if ($settings->code_feature) checked @endif>
+															<span class="custom-switch-indicator"></span>
+														</label>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">	
+													<h6>{{ __('Team Members Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span></h6>
+													<div class="form-group">
+														<label class="custom-switch">
+															<input type="checkbox" name="team-members-feature" class="custom-switch-input" @if ($settings->team_member_feature) checked @endif>
+															<span class="custom-switch-indicator"></span>
+														</label>
+													</div>
+												</div> 						
+											</div>	
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">
+													<h6>{{ __('AI Youtube Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+													<div class="form-group">
+														<label class="custom-switch">
+															<input type="checkbox" name="youtube-feature" class="custom-switch-input" @if ($settings->youtube_feature) checked @endif>
+															<span class="custom-switch-indicator"></span>
+														</label>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">
+													<h6>{{ __('AI RSS Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+													<div class="form-group">
+														<label class="custom-switch">
+															<input type="checkbox" name="rss-feature" class="custom-switch-input" @if ($settings->rss_feature) checked @endif>
+															<span class="custom-switch-indicator"></span>
+														</label>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">
+													<h6>{{ __('Integration Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+													<div class="form-group">
+														<label class="custom-switch">
+															<input type="checkbox" name="integration-feature" class="custom-switch-input" @if ($settings->integration_feature) checked @endif>
+															<span class="custom-switch-indicator"></span>
+														</label>
+													</div>
+												</div>
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">	
+													<h6>{{ __('Brand Voice Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+													<div class="form-group">
+														<label class="custom-switch">
+															<input type="checkbox" name="brand-voice-feature" class="custom-switch-input" @if ($settings->brand_voice_feature) checked @endif>
+															<span class="custom-switch-indicator"></span>
+														</label>
+													</div>
+												</div> 						
+											</div>	
 										</div>
 									</div>
 								</div>
@@ -327,7 +379,7 @@
 													<h6>{{ __('AI Chat Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
 													<div class="form-group">
 														<label class="custom-switch">
-															<input type="checkbox" name="chat-feature-user" class="custom-switch-input" @if ( config('settings.chat_feature_user')  == 'allow') checked @endif>
+															<input type="checkbox" name="chat-feature-user" class="custom-switch-input" @if ($settings->chat_feature) checked @endif>
 															<span class="custom-switch-indicator"></span>
 														</label>
 													</div>
@@ -364,7 +416,7 @@
 													<h6>{{ __('AI Image Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
 													<div class="form-group">
 														<label class="custom-switch">
-															<input type="checkbox" name="image-feature-user" class="custom-switch-input" @if ( config('settings.image_feature_user')  == 'allow') checked @endif>
+															<input type="checkbox" name="image-feature-user" class="custom-switch-input" @if ($settings->images_feature) checked @endif>
 															<span class="custom-switch-indicator"></span>
 														</label>
 													</div>
@@ -378,7 +430,13 @@
 														<option value='openai' @foreach ($images as $key=>$value) @if($value == 'openai') selected @endif @endforeach>{{ __('OpenAI') }}</option>																															
 														<option value='sd' @foreach ($images as $key=>$value) @if($value == 'sd') selected @endif @endforeach> {{ __('Stable Diffusion') }}</option>																															
 														@if (App\Services\HelperService::extensionFlux())
-															<option value='falai' @foreach ($images as $key=>$value) @if($value == 'falai') selected @endif @endforeach> {{ __('Fal AI') }}</option>																																																																																													
+															<option value='falai' @foreach ($images as $key=>$value) @if($value == 'falai') selected @endif @endforeach> {{ __('Flux AI') }}</option>																																																																																													
+														@endif
+														@if (App\Services\HelperService::extensionMidjourney())
+															<option value='midjourney' @foreach ($images as $key=>$value) @if($value == 'midjourney') selected @endif @endforeach> {{ __('Midjourney') }}</option>																																																																																													
+														@endif
+														@if (App\Services\HelperService::extensionClipdrop())
+															<option value='clipdrop' @foreach ($images as $key=>$value) @if($value == 'clipdrop') selected @endif @endforeach> {{ __('Clipdrop') }}</option>																																																																																													
 														@endif
 													</select>
 												</div>
@@ -419,7 +477,7 @@
 													<h6>{{ __('AI Voiceover Feature') }} <span class="text-muted">({{ __('For All Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
 													<div class="form-group">
 														<label class="custom-switch">
-															<input type="checkbox" name="voiceover-feature-user" class="custom-switch-input" @if ( config('settings.voiceover_feature_user')  == 'allow') checked @endif>
+															<input type="checkbox" name="voiceover-feature-user" class="custom-switch-input" @if ($settings->voiceover_feature) checked @endif>
 															<span class="custom-switch-indicator"></span>
 														</label>
 													</div>
@@ -527,7 +585,7 @@
 													<h6>{{ __('AI Speech to Text Feature') }} <span class="text-muted">({{ __('For User & Subscriber Groups') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
 													<div class="form-group">
 														<label class="custom-switch">
-															<input type="checkbox" name="whisper-feature-user" class="custom-switch-input" @if ( config('settings.whisper_feature_user')  == 'allow') checked @endif>
+															<input type="checkbox" name="whisper-feature-user" class="custom-switch-input" @if ($settings->transcribe_feature) checked @endif>
 															<span class="custom-switch-indicator"></span>
 														</label>
 													</div>
@@ -601,6 +659,22 @@
 							<div class="row">
 
 								<div class="col-md-6 col-sm-12">
+									<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/api/credit')}}'">
+										<div class="card-body p-5 d-flex">
+											<div class="extension-icon">
+												<img src="{{theme_url('img/csp/api.png')}}" class="mr-4" alt="" style="width: 40px;">												
+											</div>
+											<div class="extension-title">
+												<div class="d-flex">
+													<h6 class="fs-15 font-weight-bold mb-3">{{ __('API Credit Management') }}</h6>
+												</div>
+												<p class="fs-12 mb-0 text-muted">{{ __('Full control of words/tokens consumption per AI model')}}</p>
+											</div>
+										</div>							
+									</div>
+								</div>
+
+								<div class="col-md-6 col-sm-12">
 									<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/api/openai')}}'">
 										<div class="card-body p-5 d-flex">
 											<div class="extension-icon">
@@ -610,7 +684,7 @@
 												<div class="d-flex">
 													<h6 class="fs-15 font-weight-bold mb-3">{{ __('OpenAI') }}</h6>
 												</div>
-												<p class="fs-12 mb-0 text-muted">{{ __('OpenAI API keys and service configurations')}}</p>
+												<p class="fs-12 mb-0 text-muted">{{ __('AI Writer | Article Wizard | Smart Editor | AI Images | AI Chat | AI Code')}}</p>
 											</div>
 										</div>							
 									</div>
@@ -626,7 +700,39 @@
 												<div class="d-flex">
 													<h6 class="fs-15 font-weight-bold mb-3">{{ __('Anthropic') }}</h6>
 												</div>
-												<p class="fs-12 mb-0 text-muted">{{ __('Anthropic API keys and service configurations')}}</p>
+												<p class="fs-12 mb-0 text-muted">{{ __('AI Writer | AI Chat')}}</p>
+											</div>
+										</div>							
+									</div>
+								</div>
+
+								<div class="col-md-6 col-sm-12">
+									<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/api/deepseek')}}'">
+										<div class="card-body p-5 d-flex">
+											<div class="extension-icon">
+												<img src="{{theme_url('img/csp/deepseek.png')}}" class="mr-4" alt="" style="width: 40px;">												
+											</div>
+											<div class="extension-title">
+												<div class="d-flex">
+													<h6 class="fs-15 font-weight-bold mb-3">{{ __('DeepSeek') }}</h6>
+												</div>
+												<p class="fs-12 mb-0 text-muted">{{ __('AI Writer | AI Chat')}}</p>
+											</div>
+										</div>							
+									</div>
+								</div>
+
+								<div class="col-md-6 col-sm-12">
+									<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/api/xai')}}'">
+										<div class="card-body p-5 d-flex">
+											<div class="extension-icon">
+												<img src="{{theme_url('img/csp/xai.png')}}" class="mr-4" alt="" style="width: 40px;">												
+											</div>
+											<div class="extension-title">
+												<div class="d-flex">
+													<h6 class="fs-15 font-weight-bold mb-3">{{ __('xAI') }}</h6>
+												</div>
+												<p class="fs-12 mb-0 text-muted">{{ __('AI Writer | AI Chat')}}</p>
 											</div>
 										</div>							
 									</div>
@@ -642,7 +748,7 @@
 												<div class="d-flex">
 													<h6 class="fs-15 font-weight-bold mb-3">{{ __('Google') }}</h6>
 												</div>
-												<p class="fs-12 mb-0 text-muted">{{ __('Google API keys and service configurations')}}</p>
+												<p class="fs-12 mb-0 text-muted">{{ __('AI Voiceover | AI Writer | AI Chat | Cloud Storage | Speech to Text')}}</p>
 											</div>
 										</div>							
 									</div>
@@ -658,7 +764,7 @@
 												<div class="d-flex">
 													<h6 class="fs-15 font-weight-bold mb-3">{{ __('Stable Diffusion') }}</h6>
 												</div>
-												<p class="fs-12 mb-0 text-muted">{{ __('Stable Diffusion API keys and service configurations')}}</p>
+												<p class="fs-12 mb-0 text-muted">{{ __('AI Images')}}</p>
 											</div>
 										</div>							
 									</div>
@@ -674,7 +780,7 @@
 												<div class="d-flex">
 													<h6 class="fs-15 font-weight-bold mb-3">{{ __('Azure') }}</h6>
 												</div>
-												<p class="fs-12 mb-0 text-muted">{{ __('Azure API keys and service configurations')}}</p>
+												<p class="fs-12 mb-0 text-muted">{{ __('AI Voiceover')}}</p>
 											</div>
 										</div>							
 									</div>
@@ -690,7 +796,7 @@
 												<div class="d-flex">
 													<h6 class="fs-15 font-weight-bold mb-3">{{ __('Elevenlabs') }}</h6>
 												</div>
-												<p class="fs-12 mb-0 text-muted">{{ __('Elevenlabs API keys and service configurations')}}</p>
+												<p class="fs-12 mb-0 text-muted">{{ __('AI Voiceover | Voice Clone')}}</p>
 											</div>
 										</div>							
 									</div>
@@ -706,7 +812,7 @@
 												<div class="d-flex">
 													<h6 class="fs-15 font-weight-bold mb-3">{{ __('AWS') }}</h6>
 												</div>
-												<p class="fs-12 mb-0 text-muted">{{ __('AWS API keys and service configurations')}}</p>
+												<p class="fs-12 mb-0 text-muted">{{ __('AI Voiceover | Cloud Storage | Speech to Text')}}</p>
 											</div>
 										</div>							
 									</div>
@@ -722,7 +828,7 @@
 												<div class="d-flex">
 													<h6 class="fs-15 font-weight-bold mb-3">{{ __('Storj') }}</h6>
 												</div>
-												<p class="fs-12 mb-0 text-muted">{{ __('Storj API keys and service configurations')}}</p>
+												<p class="fs-12 mb-0 text-muted">{{ __('Cloud Storage')}}</p>
 											</div>
 										</div>							
 									</div>
@@ -738,7 +844,7 @@
 												<div class="d-flex">
 													<h6 class="fs-15 font-weight-bold mb-3">{{ __('Dropbox') }}</h6>
 												</div>
-												<p class="fs-12 mb-0 text-muted">{{ __('Dropbox API keys and service configurations')}}</p>
+												<p class="fs-12 mb-0 text-muted">{{ __('Cloud Storage')}}</p>
 											</div>
 										</div>							
 									</div>
@@ -754,7 +860,7 @@
 												<div class="d-flex">
 													<h6 class="fs-15 font-weight-bold mb-3">{{ __('Wasabi') }}</h6>
 												</div>
-												<p class="fs-12 mb-0 text-muted">{{ __('Wasabi API keys and service configurations')}}</p>
+												<p class="fs-12 mb-0 text-muted">{{ __('Cloud Storage')}}</p>
 											</div>
 										</div>							
 									</div>
@@ -770,7 +876,7 @@
 												<div class="d-flex">
 													<h6 class="fs-15 font-weight-bold mb-3">{{ __('Cloudflare') }}</h6>
 												</div>
-												<p class="fs-12 mb-0 text-muted">{{ __('Cloudflare API keys and service configurations')}}</p>
+												<p class="fs-12 mb-0 text-muted">{{ __('Cloud Storage')}}</p>
 											</div>
 										</div>							
 									</div>
@@ -786,7 +892,7 @@
 												<div class="d-flex">
 													<h6 class="fs-15 font-weight-bold mb-3">{{ __('Serper') }}</h6>
 												</div>
-												<p class="fs-12 mb-0 text-muted">{{ __('Serper API keys and service configurations')}}</p>
+												<p class="fs-12 mb-0 text-muted">{{ __('AI Writer | AI Chat')}}</p>
 											</div>
 										</div>							
 									</div>
@@ -802,7 +908,7 @@
 												<div class="d-flex">
 													<h6 class="fs-15 font-weight-bold mb-3">{{ __('Youtube') }}</h6>
 												</div>
-												<p class="fs-12 mb-0 text-muted">{{ __('Youtube API keys and service configurations')}}</p>
+												<p class="fs-12 mb-0 text-muted">{{ __('AI Youtube')}}</p>
 											</div>
 										</div>							
 									</div>
@@ -825,7 +931,7 @@
 												</div>
 												<div class="extension-title">
 													<div class="d-flex">
-														<h6 class="fs-15 font-weight-bold mb-3">{{ __('SaaS') }}</h6>
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('SaaS Business') }}</h6>
 													</div>
 													<p class="fs-12 mb-0 text-muted">{{ __('SaaS Feature Configuration')}}</p>
 												</div>
@@ -861,7 +967,7 @@
 												</div>
 												<div class="extension-title">
 													<div class="d-flex">
-														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Fal AI') }}</h6>
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Flux AI') }}</h6>
 													</div>
 													<p class="fs-12 mb-0 text-muted">{{ __('Fal AI API keys')}}</p>
 												</div>
@@ -1049,6 +1155,368 @@
 										</div>
 									</div>
 								@endif	
+
+								@if (App\Services\HelperService::extensionVideoVideo())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/video-video')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/csp/flux.png')}}" class="mr-4" alt="" style="width: 40px;">												
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('AI Video') }} ({{__('Video to Video')}})</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Fal AI API keys and service configurations')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionMaintenance())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/maintenance')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<i class=" fa-solid fa-gear-complex-code mr-4" style="font-size: 40px!important;"></i>											
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Maintenance Mode') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Maintenance mode configuration settings')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionMidjourney())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/midjourney')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="https://assets.apidog.com/app/project-icon/custom/20241009/482dc896-55d5-49bc-93d8-0ac091ec6f2a.png" class="mr-4" alt="" style="width: 40px;">												
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Midjourney') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Midjourney API keys')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionFaceswap())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/faceswap')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="https://assets.apidog.com/app/project-icon/custom/20241009/482dc896-55d5-49bc-93d8-0ac091ec6f2a.png" class="mr-4" alt="" style="width: 40px;">												
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Faceswap') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Faceswap API keys and configuration settings')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+
+								@if (App\Services\HelperService::extensionMusic())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/music')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/csp/aiml.png')}}" class="mr-4" alt="" style="width: 40px;">	
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('AI Music (Text to Music)') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('AI/ML API keys and configuration settings')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionWatson())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/watson')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/csp/ibm.png')}}" class="mr-4" alt="" style="width: 40px;">												
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('IBM Watson Text to Speech') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('IBM API keys and service configurations')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionClipdrop())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/clipdrop')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/csp/clipdrop.jpg')}}" class="mr-4" alt="" style="width: 40px;">												
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Clipdrop') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Clipdrop API keys and service configurations')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionHubspot())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/hubspot')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/csp/hubspot.png')}}" class="mr-4" alt="" style="width: 40px;">												
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Hubspot CRM') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Hubspot API keys')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionMailchimp())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/mailchimp')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/csp/mailchimp.png')}}" class="mr-4" alt="" style="width: 40px;">												
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Mailchimp Newsletter') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Mailchimp API keys')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionSEO())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/seo')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<i class=" fa-solid fa-globe-pointer mr-4" style="font-size: 40px!important;"></i>											
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('SEO Tool') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('SEO Tool settings and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionPerplexity())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/perplexity')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/csp/perplexity.png')}}" class="mr-4" alt="" style="width: 40px;">												
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Perplexity AI') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Perplexity API keys')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionChatShare())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/chat-share')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<i class=" fa-solid fa-comments mr-4" style="font-size: 40px!important;"></i>											
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Chat Share') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Chat Share settings and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionTextract())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/textract')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/csp/aws-sm.png')}}" class="mr-4" alt="" style="width: 40px;">											
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('AI Textract') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Textract settings and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionRealtimeChat())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/realtime-chat')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<i class=" fa-solid fa-waveform-lines mr-4" style="font-size: 40px!important;"></i>											
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('AI Realtime Voice Chat') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Realtime Voice Chat settings and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionExternalChatbot())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/external-chatbot')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<i class=" fa-solid fa-user-robot mr-4" style="font-size: 40px!important;"></i>											
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('AI External Chatbot') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('External Chatbot settings and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionAzureOpenai())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/azure-openai')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<i class="fa-brands fa-microsoft mr-4" style="font-size: 40px!important;"></i>											
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Azure OpenAI') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Azure OpenAI settings and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionAmazonBedrock())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/bedrock')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/csp/aws-sm.png')}}" class="mr-4" alt="" style="width: 40px;">												
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Amazon Bedrock') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Amazon Bedrock Access keys and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionOnboardingPro())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/onboarding-pro')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<i class=" fa-solid fa-waveform-lines mr-4" style="font-size: 40px!important;"></i>											
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Onboarding Pro') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Onboarding settings and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionSpeechToTextPro())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/speech-text-pro')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<i class="fa-solid fa-folder-music mr-4" style="font-size: 40px!important;"></i>											
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Speech to Text Pro') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Elevenlabs API key and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionXero())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/xero')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/csp/xero.webp')}}" class="mr-4" alt="" style="width: 40px;">												
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Xero') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Xero API keys and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
 							</div>
 						</div>
 
@@ -1099,14 +1567,33 @@
 														<option value="gpt-4" @if ( config('settings.default_model_user_bot')  == 'gpt-4') selected @endif>{{ __('GPT 4') }}</option>
 														<option value="gpt-4o" @if ( config('settings.default_model_user_bot')  == 'gpt-4o') selected @endif>{{ __('GPT 4o') }}</option>
 														<option value="gpt-4o-mini" @if ( config('settings.default_model_user_bot')  == 'gpt-4o-mini') selected @endif>{{ __('GPT 4o mini') }}</option>
-														<option value="gpt-4-0125-preview" @if ( config('settings.default_model_user_bot')  == 'gpt-4-0125-preview') selected @endif>{{ __('GPT 4 Turbo') }}</option>
-														<option value="gpt-4-turbo-2024-04-09" @if ( config('settings.default_model_user_bot')  == 'gpt-4-turbo-2024-04-09') selected @endif>{{ __('GPT 4 Turbo with Vision') }}</option>
-														<option value="o1-preview" @if ( config('settings.default_model_user_bot')  == 'o1-preview') selected @endif>{{ __('o1 preview') }}</option>
+														<option value="gpt-4-0125-preview" @if ( config('settings.default_model_user_bot')  == 'gpt-4-0125-preview') selected @endif>{{ __('GPT 4 Turbo') }}</option>														
+														<option value="gpt-4.5-preview" @if ( config('settings.default_model_user_bot')  == 'gpt-4.5-preview') selected @endif>{{ __('GPT 4.5') }}</option>														
+														<option value="o1" @if ( config('settings.default_model_user_bot')  == 'o1') selected @endif>{{ __('o1') }}</option>
 														<option value="o1-mini" @if ( config('settings.default_model_user_bot')  == 'o1-mini') selected @endif>{{ __('o1 mini') }}</option>
+														<option value="o3-mini" @if ( config('settings.default_model_user_bot')  == 'o3-mini') selected @endif>{{ __('o3 mini') }}</option>
 														<option value="claude-3-opus-20240229" @if ( config('settings.default_model_user_bot')  == 'claude-3-opus-20240229') selected @endif>{{ __('Claude 3 Opus') }}</option>
-														<option value="claude-3-5-sonnet-20241022" @if ( config('settings.default_model_user_bot')  == 'claude-3-5-sonnet-20241022') selected @endif>{{ __('Claude 3.5 Sonnet') }}</option>
-														<option value="claude-3-5-haiku-20241022" @if ( config('settings.default_model_user_bot')  == 'claude-3-5-haiku-20241022') selected @endif>{{ __('Claude 3.5 Haiku') }}</option>
-														<option value="gemini_pro" @if ( config('settings.default_model_user_bot')  == 'gemini_pro') selected @endif>{{ __('Gemini Pro') }}</option>
+														<option value="claude-3-7-sonnet-20250219" @if ( config('settings.default_model_user_bot')  == 'claude-3-7-sonnet-20250219') selected @endif>{{ __('Claude 3.7 Sonnet') }}</option>
+														<option value="claude-3-5-sonnet-20241022" @if ( config('settings.default_model_user_bot')  == 'claude-3-5-sonnet-20241022') selected @endif>{{ __('Claude 3.5v2 Sonnet') }}</option>
+														<option value="claude-3-5-haiku-20241022" @if ( config('settings.default_model_user_bot')  == 'claude-3-5-haiku-20241022') selected @endif>{{ __('Claude 3.5 Haiku') }}</option>														
+														<option value="gemini-1.5-pro" @if ( config('settings.default_model_user_bot')  == 'gemini-1.5-pro') selected @endif>{{ __('Gemini 1.5 Pro') }}</option>
+														<option value="gemini-1.5-flash" @if ( config('settings.default_model_user_bot')  == 'gemini-1.5-flash') selected @endif>{{ __('Gemini 1.5 Flash') }}</option>
+														<option value="gemini-2.0-flash" @if ( config('settings.default_model_user_bot')  == 'gemini-2.0-flash') selected @endif>{{ __('Gemini 2.0 Flash') }}</option>
+														<option value="deepseek-chat" @if ( config('settings.default_model_user_bot')  == 'deepseek-chat') selected @endif>{{ __('DeepSeek V3') }}</option>
+														<option value="deepseek-reasoner" @if ( config('settings.default_model_user_bot')  == 'deepseek-reasoner') selected @endif>{{ __('DeepSeek R1') }}</option>
+														<option value="grok-2-1212" @if ( config('settings.default_model_user_bot')  == 'grok-2-1212') selected @endif>{{ __('Grok 2') }}</option>
+														<option value="grok-2-vision-1212" @if ( config('settings.default_model_user_bot')  == 'grok-2-vision-1212') selected @endif>{{ __('Grok 2 Vision') }}</option>
+														@if (App\Services\HelperService::extensionPerplexity())	
+															<option value="sonar" @if ( config('settings.default_model_user_bot')  == 'sonar') selected @endif>{{ __('Perplexity Sonar') }}</option>
+															<option value="sonar-pro" @if ( config('settings.default_model_user_bot')  == 'sonar-pro') selected @endif>{{ __('Perplexity Sonar Pro') }}</option>
+															<option value="sonar-reasoning" @if ( config('settings.default_model_user_bot')  == 'sonar-reasoning') selected @endif>{{ __('Perplexity Sonar Reasoning') }}</option>
+															<option value="sonar-reasoning-pro" @if ( config('settings.default_model_user_bot')  == 'sonar-reasoning-pro') selected @endif>{{ __('Perplexity Sonar Reasoning Pro') }}</option>
+														@endif
+														@if (App\Services\HelperService::extensionAmazonBedrock())	
+															<option value="us.amazon.nova-micro-v1:0" @if ( config('settings.default_model_user_bot')  == 'us.amazon.nova-micro-v1:0') selected @endif>{{ __('Nova Micro') }}</option>
+															<option value="us.amazon.nova-lite-v1:0" @if ( config('settings.default_model_user_bot')  == 'us.amazon.nova-lite-v1:0') selected @endif>{{ __('Nova Lite') }}</option>
+															<option value="us.amazon.nova-pro-v1:0" @if ( config('settings.default_model_user_bot')  == 'us.amazon.nova-pro-v1:0') selected @endif>{{ __('Nova Pro') }}</option>
+														@endif
 														@foreach ($models as $model)
 															<option value="{{ $model->model }}" @if ( config('settings.default_model_user_bot')  == $model->model) selected @endif>{{ $model->description }} ({{ __('Fine Tune Model')}})</option>
 														@endforeach
@@ -1122,14 +1609,33 @@
 														<option value="gpt-4" @if ( config('settings.default_model_user_template')  == 'gpt-4') selected @endif>{{ __('GPT 4') }}</option>
 														<option value="gpt-4o" @if ( config('settings.default_model_user_template')  == 'gpt-4o') selected @endif>{{ __('GPT 4o') }}</option>
 														<option value="gpt-4o-mini" @if ( config('settings.default_model_user_template')  == 'gpt-4o-mini') selected @endif>{{ __('GPT 4o mini') }}</option>
-														<option value="gpt-4-0125-preview" @if ( config('settings.default_model_user_template')  == 'gpt-4-0125-preview') selected @endif>{{ __('GPT 4 Turbo') }}</option>
-														<option value="gpt-4-turbo-2024-04-09" @if ( config('settings.default_model_user_template')  == 'gpt-4-turbo-2024-04-09') selected @endif>{{ __('GPT 4 Turbo with Vision') }}</option>														
-														<option value="o1-preview" @if ( config('settings.default_model_user_template')  == 'o1-preview') selected @endif>{{ __('o1 preview') }}</option>
+														<option value="gpt-4-0125-preview" @if ( config('settings.default_model_user_template')  == 'gpt-4-0125-preview') selected @endif>{{ __('GPT 4 Turbo') }}</option>																												
+														<option value="gpt-4.5-preview" @if ( config('settings.default_model_user_template')  == 'gpt-4.5-preview') selected @endif>{{ __('GPT 4.5') }}</option>																												
+														<option value="o1" @if ( config('settings.default_model_user_template')  == 'o1') selected @endif>{{ __('o1') }}</option>
 														<option value="o1-mini" @if ( config('settings.default_model_user_template')  == 'o1-mini') selected @endif>{{ __('o1 mini') }}</option>
+														<option value="o3-mini" @if ( config('settings.default_model_user_template')  == 'o3-mini') selected @endif>{{ __('o3 mini') }}</option>
 														<option value="claude-3-opus-20240229" @if ( config('settings.default_model_user_template')  == 'claude-3-opus-20240229') selected @endif>{{ __('Claude 3 Opus') }}</option>
-														<option value="claude-3-5-sonnet-20241022" @if ( config('settings.default_model_user_template')  == 'claude-3-5-sonnet-20241022') selected @endif>{{ __('Claude 3.5 Sonnet') }}</option>
+														<option value="claude-3-7-sonnet-20250219" @if ( config('settings.default_model_user_template')  == 'claude-3-7-sonnet-20250219') selected @endif>{{ __('Claude 3.7 Sonnet') }}</option>
+														<option value="claude-3-5-sonnet-20241022" @if ( config('settings.default_model_user_template')  == 'claude-3-5-sonnet-20241022') selected @endif>{{ __('Claude 3.5v2 Sonnet') }}</option>
 														<option value="claude-3-5-haiku-20241022" @if ( config('settings.default_model_user_template')  == 'claude-3-5-haiku-20241022') selected @endif>{{ __('Claude 3.5 Haiku') }}</option>
-														<option value="gemini_pro" @if ( config('settings.default_model_user_template')  == 'gemini_pro') selected @endif>{{ __('Gemini Pro') }}</option>
+														<option value="gemini-1.5-pro" @if ( config('settings.default_model_user_template')  == 'gemini-1.5-pro') selected @endif>{{ __('Gemini 1.5 Pro') }}</option>
+														<option value="gemini-1.5-flash" @if ( config('settings.default_model_user_template')  == 'gemini-1.5-flash') selected @endif>{{ __('Gemini 1.5 Flash') }}</option>
+														<option value="gemini-2.0-flash" @if ( config('settings.default_model_user_template')  == 'gemini-2.0-flash') selected @endif>{{ __('Gemini 2.0 Flash') }}</option>
+														<option value="deepseek-chat" @if ( config('settings.default_model_user_template')  == 'deepseek-chat') selected @endif>{{ __('DeepSeek V3') }}</option>
+														<option value="deepseek-reasoner" @if ( config('settings.default_model_user_template')  == 'deepseek-reasoner') selected @endif>{{ __('DeepSeek R1') }}</option>
+														<option value="grok-2-1212" @if ( config('settings.default_model_user_template')  == 'grok-2-1212') selected @endif>{{ __('Grok 2') }}</option>
+														<option value="grok-2-vision-1212" @if ( config('settings.default_model_user_template')  == 'grok-2-vision-1212') selected @endif>{{ __('Grok 2 Vision') }}</option>
+														@if (App\Services\HelperService::extensionPerplexity())	
+															<option value="sonar" @if ( config('settings.default_model_user_template')  == 'sonar') selected @endif>{{ __('Perplexity Sonar') }}</option>
+															<option value="sonar-pro" @if ( config('settings.default_model_user_template')  == 'sonar-pro') selected @endif>{{ __('Perplexity Sonar Pro') }}</option>
+															<option value="sonar-reasoning" @if ( config('settings.default_model_user_template')  == 'sonar-reasoning') selected @endif>{{ __('Perplexity Sonar Reasoning') }}</option>
+															<option value="sonar-reasoning-pro" @if ( config('settings.default_model_user_template')  == 'sonar-reasoning-pro') selected @endif>{{ __('Perplexity Sonar Reasoning Pro') }}</option>
+														@endif
+														@if (App\Services\HelperService::extensionAmazonBedrock())	
+															<option value="us.amazon.nova-micro-v1:0" @if ( config('settings.default_model_user_template')  == 'us.amazon.nova-micro-v1:0') selected @endif>{{ __('Nova Micro') }}</option>
+															<option value="us.amazon.nova-lite-v1:0" @if ( config('settings.default_model_user_template')  == 'us.amazon.nova-lite-v1:0') selected @endif>{{ __('Nova Lite') }}</option>
+															<option value="us.amazon.nova-pro-v1:0" @if ( config('settings.default_model_user_template')  == 'us.amazon.nova-pro-v1:0') selected @endif>{{ __('Nova Pro') }}</option>
+														@endif
 														@foreach ($models as $model)
 															<option value="{{ $model->model }}" @if ( config('settings.default_model_user_template')  == $model->model) selected @endif>{{ $model->description }} ({{ __('Fine Tune Model')}})</option>
 														@endforeach
@@ -1145,14 +1651,34 @@
 														<option value='gpt-4' @foreach ($all_models as $key=>$value) @if($value == 'gpt-4') selected @endif @endforeach>{{ __('GPT 4') }}</option>																																																																																																																																																																																																																		
 														<option value='gpt-4o' @foreach ($all_models as $key=>$value) @if($value == 'gpt-4o') selected @endif @endforeach>{{ __('GPT 4o') }}</option>																																																																																																																																																																																																																		
 														<option value="gpt-4o-mini" @foreach ($all_models as $key=>$value) @if($value == 'gpt-4o-mini') selected @endif @endforeach>{{ __('GPT 4o mini') }}</option>
-														<option value='gpt-4-0125-preview' @foreach ($all_models as $key=>$value) @if($value == 'gpt-4-0125-preview') selected @endif @endforeach>{{ __('GPT 4 Turbo') }}</option>																																																																																																																											
-														<option value='gpt-4-turbo-2024-04-09' @foreach ($all_models as $key=>$value) @if($value == 'gpt-4-turbo-2024-04-09') selected @endif @endforeach>{{ __('GPT 4 Turbo with Vision') }}</option>																																																																																																																											
-														<option value="o1-preview"  @foreach ($all_models as $key=>$value) @if($value == 'o1-preview') selected @endif @endforeach>{{ __('o1 preview') }}</option>
+														<option value='gpt-4-0125-preview' @foreach ($all_models as $key=>$value) @if($value == 'gpt-4-0125-preview') selected @endif @endforeach>{{ __('GPT 4 Turbo') }}</option>																		
+														<option value='gpt-4.5-preview' @foreach ($all_models as $key=>$value) @if($value == 'gpt-4.5-preview') selected @endif @endforeach>{{ __('GPT 4.5') }}</option>																		
+														<option value="o1"  @foreach ($all_models as $key=>$value) @if($value == 'o1') selected @endif @endforeach>{{ __('o1') }}</option>
 														<option value="o1-mini"  @foreach ($all_models as $key=>$value) @if($value == 'o1-mini') selected @endif @endforeach>{{ __('o1 mini') }}</option>
+														<option value="o3-mini"  @foreach ($all_models as $key=>$value) @if($value == 'o3-mini') selected @endif @endforeach>{{ __('o3 mini') }}</option>
 														<option value="claude-3-opus-20240229" @foreach ($all_models as $key=>$value) @if($value == 'claude-3-opus-20240229') selected @endif @endforeach>{{ __('Claude 3 Opus') }}</option>
-														<option value="claude-3-5-sonnet-20241022" @foreach ($all_models as $key=>$value) @if($value == 'claude-3-5-sonnet-20241022') selected @endif @endforeach>{{ __('Claude 3.5 Sonnet') }}</option>
+														<option value="claude-3-7-sonnet-20250219" @foreach ($all_models as $key=>$value) @if($value == 'claude-3-7-sonnet-20250219') selected @endif @endforeach>{{ __('Claude 3.7 Sonnet') }}</option>
+														<option value="claude-3-5-sonnet-20241022" @foreach ($all_models as $key=>$value) @if($value == 'claude-3-5-sonnet-20241022') selected @endif @endforeach>{{ __('Claude 3.5v2 Sonnet') }}</option>
 														<option value="claude-3-5-haiku-20241022" @foreach ($all_models as $key=>$value) @if($value == 'claude-3-5-haiku-20241022') selected @endif @endforeach>{{ __('Claude 3.5 Haiku') }}</option>
-														<option value="gemini_pro" @foreach ($all_models as $key=>$value) @if($value == 'gemini_pro') selected @endif @endforeach>{{ __('Gemini Pro') }}</option>
+														<option value="gemini-1.5-pro" @foreach ($all_models as $key=>$value) @if($value == 'gemini-1.5-pro') selected @endif @endforeach>{{ __('Gemini 1.5 Pro') }}</option>
+														<option value="gemini-1.5-flash" @foreach ($all_models as $key=>$value) @if($value == 'gemini-1.5-flash') selected @endif @endforeach>{{ __('Gemini 1.5 Flash') }}</option>
+														<option value="gemini-2.0-flash" @foreach ($all_models as $key=>$value) @if($value == 'gemini-2.0-flash') selected @endif @endforeach>{{ __('Gemini 2.0 Flash') }}</option>
+														<option value="deepseek-chat" @foreach ($all_models as $key=>$value) @if($value == 'deepseek-chat') selected @endif @endforeach>{{ __('DeeSeek V3') }}</option>
+														<option value="deepseek-reasoner" @foreach ($all_models as $key=>$value) @if($value == 'deepseek-reasoner') selected @endif @endforeach>{{ __('DeeSeek R1') }}</option>
+														<option value="grok-2-1212" @foreach ($all_models as $key=>$value) @if($value == 'grok-2-1212') selected @endif @endforeach>{{ __('Grok 2') }}</option>
+														<option value="grok-2-vision-1212" @foreach ($all_models as $key=>$value) @if($value == 'grok-2-vision-1212') selected @endif @endforeach>{{ __('Grok 2 Vision') }}</option>
+														@if (App\Services\HelperService::extensionPerplexity())	
+															<option value="sonar" @foreach ($all_models as $key=>$value) @if($value == 'sonar') selected @endif @endforeach>{{ __('Perplexity Sonar') }}</option>
+															<option value="sonar-pro" @foreach ($all_models as $key=>$value) @if($value == 'sonar-pro') selected @endif @endforeach>{{ __('Perplexity Sonar Pro') }}</option>
+															<option value="sonar-reasoning" @foreach ($all_models as $key=>$value) @if($value == 'sonar-reasoning') selected @endif @endforeach>{{ __('Perplexity Sonar Reasoning') }}</option>
+															<option value="sonar-reasoning-pro" @foreach ($all_models as $key=>$value) @if($value == 'sonar-reasoning-pro') selected @endif @endforeach>{{ __('Perplexity Sonar Reasoning Pro') }}</option>
+														@endif
+														@if (App\Services\HelperService::extensionAmazonBedrock())	
+															<option value="us.amazon.nova-micro-v1:0" @foreach ($all_models as $key=>$value) @if($value == 'us.amazon.nova-micro-v1:0') selected @endif @endforeach>{{ __('Nova Micro') }}</option>
+															<option value="us.amazon.nova-lite-v1:0" @foreach ($all_models as $key=>$value) @if($value == 'us.amazon.nova-lite-v1:0') selected @endif @endforeach>{{ __('Nova Lite') }}</option>
+															<option value="us.amazon.nova-pro-v1:0" @foreach ($all_models as $key=>$value) @if($value == 'us.amazon.nova-pro-v1:0') selected @endif @endforeach>{{ __('Nova Pro') }}</option>
+														@endif
+														
 														@foreach ($models as $model)
 															<option value="{{ $model->model }}" @foreach ($all_models as $key=>$value) @if($value == $model->model) selected @endif @endforeach>{{ $model->description }} ({{ __('Fine Tune Model')}})</option>
 														@endforeach
@@ -1169,393 +1695,378 @@
 														<option value='gcp' @foreach ($vendors as $key=>$value) @if($value == 'gcp') selected @endif @endforeach>{{ __('GCP') }}</option>																																																														
 														<option value='openai' @foreach ($vendors as $key=>$value) @if($value == 'openai') selected @endif @endforeach>{{ __('OpenAI') }}</option>																																																														
 														<option value='elevenlabs' @foreach ($vendors as $key=>$value) @if($value == 'elevenlabs') selected @endif @endforeach>{{ __('ElevenLabs') }}</option>																																																																																																																											
+														@if (App\Services\HelperService::extensionWatson())
+															<option value='ibm' @foreach ($vendors as $key=>$value) @if($value == 'ibm') selected @endif @endforeach>{{ __('IBM') }}</option>																																																																																				
+														@endif
 													</select>
 												</div>
 											</div>
+										</div>
 
-											<div class="col-lg-6 col-md-6 col-sm-12">
-												<div class="input-box">
-													<h6>{{ __('AI Writer Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-													<div class="form-group">
-														<label class="custom-switch">
-															<input type="checkbox" name="writer-user-access" class="custom-switch-input" @if ( config('settings.writer_user_access')  == 'allow') checked @endif>
-															<span class="custom-switch-indicator"></span>
-														</label>
+										<div class="card shadow-0 mb-5 mt-5">							
+											<div class="card-body">
+												<div class="row">
+
+													<h6 class="fs-12 font-weight-bold mb-6 mt-3"><i class="  fa-solid fa-cogs text-info fs-14 mr-2"></i>{{ __('AI Features Control') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span></h6>
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">
+															<h6>{{ __('AI Writer Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="writer-user-access" class="custom-switch-input" @if ($settings->writer_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">
+															<h6>{{ __('AI Article Wizard Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="wizard-user-access" class="custom-switch-input" @if ($settings->wizard_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">
+															<h6>{{ __('AI Chat Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="chat-user-access" class="custom-switch-input" @if ($settings->chat_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">
+															<h6>{{ __('AI Images Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="images-user-access" class="custom-switch-input" @if ($settings->images_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">
+															<h6>{{ __('Smart Editor Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="smart-editor-user-access" class="custom-switch-input" @if ($settings->smart_editor_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">
+															<h6>{{ __('AI ReWriter Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="rewriter-user-access" class="custom-switch-input" @if ($settings->rewriter_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">
+															<h6>{{ __('AI Vision Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="vision-user-access" class="custom-switch-input" @if ($settings->vision_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">
+															<h6>{{ __('AI Voiceover Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="voiceover-user-access" class="custom-switch-input" @if ($settings->voiceover_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">
+															<h6>{{ __('AI Speech to Text Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="transcribe-user-access" class="custom-switch-input" @if ($settings->transcribe_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">
+															<h6>{{ __('AI File Chat Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="chat-file-user-access" class="custom-switch-input" @if ($settings->file_chat_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">
+															<h6>{{ __('AI Web Chat Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="chat-web-user-access" class="custom-switch-input" @if ($settings->web_chat_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div>
+													</div>
+						
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">
+															<h6>{{ __('AI Chat Image Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="chat-image-user-access" class="custom-switch-input" @if ($settings->image_chat_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">	
+															<h6>{{ __('Brand Voice Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="brand-voice-user-access" class="custom-switch-input" @if ($settings->brand_voice_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div> 						
+													</div>	
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">
+															<h6>{{ __('Realtime Time Data Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="internet-user-access" class="custom-switch-input" @if ( config('settings.internet_user_access')  == 'allow') checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div>
+													</div>
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">	
+															<h6>{{ __('AI Youtube Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="youtube-user-access" class="custom-switch-input" @if ($settings->youtube_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div> 						
+													</div>	
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">	
+															<h6>{{ __('AI RSS Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="rss-user-access" class="custom-switch-input" @if ($settings->rss_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div> 						
+													</div>	
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">	
+															<h6>{{ __('AI Code Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="code-user-access" class="custom-switch-input" @if ($settings->code_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div> 						
+													</div>
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">	
+															<h6>{{ __('Integration Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="integration-user-access" class="custom-switch-input" @if ($settings->integration_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div> 						
+													</div>
+
+													<div class="col-lg-6 col-md-6 col-sm-12">
+														<div class="input-box">	
+															<h6>{{ __('Team Member Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span></h6>
+															<div class="form-group">
+																<label class="custom-switch">
+																	<input type="checkbox" name="team-member-user-access" class="custom-switch-input" @if ($settings->team_member_feature_free_tier) checked @endif>
+																	<span class="custom-switch-indicator"></span>
+																</label>
+															</div>
+														</div> 						
 													</div>
 												</div>
 											</div>
+										</div>
 
-											<div class="col-lg-6 col-md-6 col-sm-12">
-												<div class="input-box">
-													<h6>{{ __('AI Article Wizard Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-													<div class="form-group">
-														<label class="custom-switch">
-															<input type="checkbox" name="wizard-user-access" class="custom-switch-input" @if ( config('settings.wizard_access_user')  == 'allow') checked @endif>
-															<span class="custom-switch-indicator"></span>
-														</label>
-													</div>
-												</div>
-											</div>
+										<div class="row">
 
-											<div class="col-lg-6 col-md-6 col-sm-12">
-												<div class="input-box">
-													<h6>{{ __('Smart Editor Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-													<div class="form-group">
-														<label class="custom-switch">
-															<input type="checkbox" name="smart-editor-user-access" class="custom-switch-input" @if ( config('settings.smart_editor_user_access')  == 'allow') checked @endif>
-															<span class="custom-switch-indicator"></span>
-														</label>
-													</div>
-												</div>
-											</div>
+											<h6 class="fs-12 font-weight-bold mb-6 mt-4 text-center"><i class="fa fa-gift text-warning fs-14 mr-2"></i>{{ __('Welcome Credits & Limits for Non-Subscribers') }}</h6>
 
-											<div class="col-lg-6 col-md-6 col-sm-12">
-												<div class="input-box">
-													<h6>{{ __('AI ReWriter Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-													<div class="form-group">
-														<label class="custom-switch">
-															<input type="checkbox" name="rewriter-user-access" class="custom-switch-input" @if ( config('settings.rewriter_user_access')  == 'allow') checked @endif>
-															<span class="custom-switch-indicator"></span>
-														</label>
-													</div>
-												</div>
-											</div>
-
-											<div class="col-lg-6 col-md-6 col-sm-12">
-												<div class="input-box">
-													<h6>{{ __('AI Vision Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-													<div class="form-group">
-														<label class="custom-switch">
-															<input type="checkbox" name="vision-user-access" class="custom-switch-input" @if ( config('settings.vision_access_user')  == 'allow') checked @endif>
-															<span class="custom-switch-indicator"></span>
-														</label>
-													</div>
-												</div>
-											</div>
-
-											<div class="col-lg-6 col-md-6 col-sm-12">
-												<div class="input-box">
-													<h6>{{ __('AI File Chat Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-													<div class="form-group">
-														<label class="custom-switch">
-															<input type="checkbox" name="chat-file-user-access" class="custom-switch-input" @if ( config('settings.chat_file_user_access')  == 'allow') checked @endif>
-															<span class="custom-switch-indicator"></span>
-														</label>
-													</div>
-												</div>
-											</div>
-
-											<div class="col-lg-6 col-md-6 col-sm-12">
-												<div class="input-box">
-													<h6>{{ __('AI Web Chat Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-													<div class="form-group">
-														<label class="custom-switch">
-															<input type="checkbox" name="chat-web-user-access" class="custom-switch-input" @if ( config('settings.chat_web_user_access')  == 'allow') checked @endif>
-															<span class="custom-switch-indicator"></span>
-														</label>
-													</div>
-												</div>
-											</div>
-				
-											<div class="col-lg-6 col-md-6 col-sm-12">
-												<div class="input-box">
-													<h6>{{ __('AI Chat Image Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-													<div class="form-group">
-														<label class="custom-switch">
-															<input type="checkbox" name="chat-image-user-access" class="custom-switch-input" @if ( config('settings.chat_image_user_access')  == 'allow') checked @endif>
-															<span class="custom-switch-indicator"></span>
-														</label>
-													</div>
-												</div>
-											</div>
-
-											<div class="col-lg-6 col-md-6 col-sm-12">
-												<div class="input-box">	
-													<h6>{{ __('Brand Voice Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span></h6>
-													<div class="form-group">
-														<label class="custom-switch">
-															<input type="checkbox" name="brand-voice-user-access" class="custom-switch-input" @if ( config('settings.brand_voice_user_access')  == 'allow') checked @endif>
-															<span class="custom-switch-indicator"></span>
-														</label>
-													</div>
+											<div class="col-lg-6 col-md-6 col-sm-12">							
+												<div class="input-box">								
+													<h6>@if ($settings->model_credit_name == 'words') {{ __('Number of Words as a Gift upon Registration') }} @else {{ __('Number of Tokens as a Gift upon Registration') }} @endif<span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
+													<div class="form-group">							    
+														<input type="number" class="form-control" id="token_credits" name="token_credits" value="{{ $settings->token_credits }}">
+														<span class="text-muted fs-10">{{ __('Valid for all models') }}. @if ($settings->model_credit_name == 'words') {{ __('Set as -1 for unlimited words') }} @else {{ __('Set as -1 for unlimited tokens') }} @endif.</span>
+													</div> 
 												</div> 						
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">							
+												<div class="input-box">								
+													<h6>{{ __('Number of Media Credits as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
+													<div class="form-group">							    
+														<input type="number" class="form-control" id="image_credits" name="image_credits" value="{{ $settings->image_credits }}">
+														<span class="text-muted fs-10">{{ __('Valid for all media tasks') }}. {{ __('Set as -1 for unlimited media tasks') }}.</span>
+													</div> 
+													@error('image_credits')
+														<p class="text-danger">{{ $errors->first('image_credits') }}</p>
+													@enderror
+												</div> 						
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">								
+													<h6>{{ __('Number of Characters for AI Voiceover as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
+													<div class="form-group">							    
+														<input type="number" class="form-control @error('set-free-chars') is-danger @enderror" id="set-free-chars" name="set-free-chars" placeholder="Ex: 1000" value="{{ config('settings.voiceover_welcome_chars') }}" required>
+														<span class="text-muted fs-10">{{ __('Set as -1 for unlimited characters') }}.</span>
+														@error('set-free-chars')
+															<p class="text-danger">{{ $errors->first('set-free-chars') }}</p>
+														@enderror
+													</div> 
+												</div>							
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">								
+													<h6>{{ __('Number of Minutes for AI Speech to Text as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
+													<div class="form-group">							    
+														<input type="number" class="form-control @error('set-free-minutes') is-danger @enderror" id="set-free-minutes" name="set-free-minutes" placeholder="Ex: 1000" value="{{ config('settings.whisper_welcome_minutes') }}" required>
+														<span class="text-muted fs-10">{{ __('Set as -1 for unlimited minutes') }}.</span>
+														@error('set-free-minutes')
+															<p class="text-danger">{{ $errors->first('set-free-minutes') }}</p>
+														@enderror
+													</div> 
+												</div>							
 											</div>	
 
 											<div class="col-lg-6 col-md-6 col-sm-12">
-												<div class="input-box">
-													<h6>{{ __('Internet Real Time Data Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-													<div class="form-group">
-														<label class="custom-switch">
-															<input type="checkbox" name="internet-user-access" class="custom-switch-input" @if ( config('settings.internet_user_access')  == 'allow') checked @endif>
-															<span class="custom-switch-indicator"></span>
-														</label>
-													</div>
-												</div>
-											</div>
-
-											<div class="col-lg-6 col-md-6 col-sm-12">
 												<div class="input-box">	
-													<h6>{{ __('AI Youtube Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span></h6>
-													<div class="form-group">
-														<label class="custom-switch">
-															<input type="checkbox" name="youtube-user-access" class="custom-switch-input" @if ($settings->youtube_feature_free_tier) checked @endif>
-															<span class="custom-switch-indicator"></span>
-														</label>
-													</div>
-												</div> 						
-											</div>	
-
-											<div class="col-lg-6 col-md-6 col-sm-12">
-												<div class="input-box">	
-													<h6>{{ __('AI RSS Feature Access') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span></h6>
-													<div class="form-group">
-														<label class="custom-switch">
-															<input type="checkbox" name="rss-user-access" class="custom-switch-input" @if ($settings->rss_feature_free_tier) checked @endif>
-															<span class="custom-switch-indicator"></span>
-														</label>
-													</div>
-												</div> 						
-											</div>	
-
-											<div class="row">
-
-												<h6 class="fs-12 font-weight-bold mb-6 mt-4 text-center"><i class="fa fa-gift text-warning fs-14 mr-2"></i>{{ __('Welcome Credits & Limits for Non-Subscribers') }}</h6>
-
-												<div class="col-sm-12 col-md-6">
-													<div class="input-box">
-														<h6>{{ __('Number of GPT 3.5 Turbo Credits as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
-														<div class="form-group">															
-															<input type="number" class="form-control @error('gpt-3-turbo') is-danger @enderror" value={{ config('settings.free_gpt_3_turbo_credits') }} name="gpt-3-turbo">
-															<span class="text-muted fs-10">{{ __('Set as -1 for unlimited words') }}</span>									
-														</div>
-													</div>
-												</div>
-					
-												<div class="col-sm-12 col-md-6">
-													<div class="input-box">
-														<h6>{{ __('Number of GPT 4 Turbo Credits as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
-														<div class="form-group">															
-															<input type="number" class="form-control @error('gpt-4-turbo') is-danger @enderror" value={{ config('settings.free_gpt_4_turbo_credits') }} name="gpt-4-turbo">
-															<span class="text-muted fs-10">{{ __('Set as -1 for unlimited words') }}</span>									
-														</div>
-													</div>
-												</div>
-
-												<div class="col-sm-12 col-md-6">
-													<div class="input-box">
-														<h6>{{ __('Number of GPT 4o Credits as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
-														<div class="form-group">															
-															<input type="number" class="form-control @error('gpt-4o') is-danger @enderror" value={{ config('settings.free_gpt_4o_credits') }} name="gpt-4o">
-															<span class="text-muted fs-10">{{ __('Set as -1 for unlimited words') }}</span>									
-														</div>
-													</div>
-												</div>
-
-												<div class="col-sm-12 col-md-6">
-													<div class="input-box">
-														<h6>{{ __('Number of GPT 4o mini Credits as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
-														<div class="form-group">															
-															<input type="number" class="form-control @error('gpt-4o-mini') is-danger @enderror" value="{{ $settings->gpt_4o_mini_credits }}" name="gpt-4o-mini">
-															<span class="text-muted fs-10">{{ __('Set as -1 for unlimited words') }}</span>									
-														</div>
-													</div>
-												</div>
-					
-												<div class="col-sm-12 col-md-6">
-													<div class="input-box">
-														<h6>{{ __('Number of GPT 4 Credits as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
-														<div class="form-group">															
-															<input type="number" class="form-control @error('gpt-4') is-danger @enderror" value={{ config('settings.free_gpt_4_credits') }} name="gpt-4">
-															<span class="text-muted fs-10">{{ __('Set as -1 for unlimited words') }}</span>									
-														</div>
-													</div>
-												</div>	
-
-												<div class="col-sm-12 col-md-6">
-													<div class="input-box">
-														<h6>{{ __('Number of o1 preview Credits as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
-														<div class="form-group">															
-															<input type="number" class="form-control @error('o1-preview') is-danger @enderror" value="{{ $settings->o1_preview_credits }}" name="o1-preview">
-															<span class="text-muted fs-10">{{ __('Set as -1 for unlimited words') }}</span>									
-														</div>
-													</div>
-												</div>
-												
-												<div class="col-sm-12 col-md-6">
-													<div class="input-box">
-														<h6>{{ __('Number of o1 mini Credits as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
-														<div class="form-group">															
-															<input type="number" class="form-control @error('o1-mini') is-danger @enderror" value="{{ $settings->o1_mini_credits }}" name="o1-mini">
-															<span class="text-muted fs-10">{{ __('Set as -1 for unlimited words') }}</span>									
-														</div>
-													</div>
-												</div>
-					
-												<div class="col-sm-12 col-md-6">
-													<div class="input-box">
-														<h6>{{ __('Number of Fine Tune Credits as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
-														<div class="form-group">															
-															<input type="number" class="form-control @error('fine-tune') is-danger @enderror" value={{ config('settings.free_fine_tune_credits') }} name="fine-tune">
-															<span class="text-muted fs-10">{{ __('Set as -1 for unlimited words') }}</span>									
-														</div>
-													</div>
-												</div>
-					
-												<div class="col-sm-12 col-md-6">
-													<div class="input-box">
-														<h6>{{ __('Number of Claude 3 Opus Credits as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
-														<div class="form-group">															
-															<input type="number" class="form-control @error('claude-3-opus') is-danger @enderror" value={{ config('settings.free_claude_3_opus_credits') }} name="claude-3-opus">
-															<span class="text-muted fs-10">{{ __('Set as -1 for unlimited words') }}</span>									
-														</div>
-													</div>
-												</div>
-
-												<div class="col-sm-12 col-md-6">
-													<div class="input-box">
-														<h6>{{ __('Number of Claude 3.5 Sonnet Credits as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
-														<div class="form-group">															
-															<input type="number" class="form-control @error('claude-3-sonnet') is-danger @enderror" value={{ config('settings.free_claude_3_sonnet_credits') }} name="claude-3-sonnet">
-															<span class="text-muted fs-10">{{ __('Set as -1 for unlimited words') }}</span>									
-														</div>
-													</div>
-												</div>
-
-												<div class="col-sm-12 col-md-6">
-													<div class="input-box">
-														<h6>{{ __('Number of Claude 3.5 Haiku Credits as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
-														<div class="form-group">															
-															<input type="number" class="form-control @error('claude-3-haiku') is-danger @enderror" value={{ config('settings.free_claude_3_haiku_credits') }} name="claude-3-haiku">
-															<span class="text-muted fs-10">{{ __('Set as -1 for unlimited words') }}</span>									
-														</div>
-													</div>
-												</div>
-
-												<div class="col-sm-12 col-md-6">
-													<div class="input-box">
-														<h6>{{ __('Number of Gemini Pro Credits as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
-														<div class="form-group">															
-															<input type="number" class="form-control @error('gemini-pro') is-danger @enderror" value={{ config('settings.free_gemini_pro_credits') }} name="gemini-pro">
-															<span class="text-muted fs-10">{{ __('Set as -1 for unlimited words') }}</span>									
-														</div>
-													</div>
-												</div>
-
-												<div class="col-lg-6 col-md-6 col-sm-12">
-													<div class="input-box">								
-														<h6>{{ __('Number of Characters for AI Voiceover as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
-														<div class="form-group">							    
-															<input type="number" class="form-control @error('set-free-chars') is-danger @enderror" id="set-free-chars" name="set-free-chars" placeholder="Ex: 1000" value="{{ config('settings.voiceover_welcome_chars') }}" required>
-															<span class="text-muted fs-10">{{ __('Set as -1 for unlimited characters') }}.</span>
-															@error('set-free-chars')
-																<p class="text-danger">{{ $errors->first('set-free-chars') }}</p>
-															@enderror
-														</div> 
-													</div>							
-												</div>
-
-												<div class="col-lg-6 col-md-6 col-sm-12">
-													<div class="input-box">								
-														<h6>{{ __('Number of Minutes for AI Speech to Text as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
-														<div class="form-group">							    
-															<input type="number" class="form-control @error('set-free-minutes') is-danger @enderror" id="set-free-minutes" name="set-free-minutes" placeholder="Ex: 1000" value="{{ config('settings.whisper_welcome_minutes') }}" required>
-															<span class="text-muted fs-10">{{ __('Set as -1 for unlimited minutes') }}.</span>
-															@error('set-free-minutes')
-																<p class="text-danger">{{ $errors->first('set-free-minutes') }}</p>
-															@enderror
-														</div> 
-													</div>							
-												</div>	
-
-												<div class="col-lg-6 col-md-6 col-sm-12">							
-													<div class="input-box">								
-														<h6>{{ __('Number of Image Credits as a Gift upon Registration') }} <span class="text-muted">({{ __('One Time') }})<span class="text-required"><i class="fa-solid fa-asterisk"></i></span> </span></h6>
-														<div class="form-group">							    
-															<input type="number" class="form-control" id="image_credits" name="image_credits" value="{{ $settings->image_credits }}">
-															<span class="text-muted fs-10">{{ __('Valid for all image vendors') }}. {{ __('Set as -1 for unlimited images') }}.</span>
-														</div> 
-														@error('image_credits')
-															<p class="text-danger">{{ $errors->first('image_credits') }}</p>
-														@enderror
-													</div> 						
-												</div>
-
-												<div class="col-lg-6 col-md-6 col-sm-12">
-													<div class="input-box">	
-														<h6>{{ __('Maximum Result Length') }} <span class="text-muted">({{ __('In Words') }}) ({{ __('For Non-Subscribers') }})</span><span class="text-required"><i class="fa-solid fa-asterisk"></i></span><i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('OpenAI has a hard limit based on Token limits for each model. Refer to OpenAI documentation to learn more. As a recommended by OpenAI, max result length is capped at 1500 words.') }}"></i></h6>
-														<input type="number" class="form-control @error('max-results-user') is-danger @enderror" id="max-results-user" name="max-results-user" placeholder="Ex: 10" value="{{ config('settings.max_results_limit_user') }}" required>
-														@error('max-results-user')
-															<p class="text-danger">{{ $errors->first('max-results-user') }}</p>
-														@enderror
-													</div>								
-												</div>
-												
-												<div class="col-lg-6 col-md-6 col-sm-12">
-													<div class="input-box">	
-														<h6>{{ __('Maximum Allowed PDF File Size') }} <span class="text-muted">({{ __('In MB') }})</span><span class="text-required"><i class="fa-solid fa-asterisk"></i></span><i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('Set the maximum PDF file size limit for free tier user for AI File Chat feature') }}"></i></h6>
-														<input type="number" class="form-control @error('max-pdf-size') is-danger @enderror" id="max-pdf-size" name="max-pdf-size" placeholder="Ex: 10" min="0.1" step="0.1" value="{{ config('settings.chat_pdf_file_size_user') }}" required>
-														@error('max-pdf-size')
-															<p class="text-danger">{{ $errors->first('max-pdf-size') }}</p>
-														@enderror
-													</div>								
-												</div>
-
-												<div class="col-lg-6 col-md-6 col-sm-12">
-													<div class="input-box">	
-														<h6>{{ __('Maximum Allowed CSV File Size') }} <span class="text-muted">({{ __('In MB') }})</span><span class="text-required"><i class="fa-solid fa-asterisk"></i></span><i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('Set the maximum CSV file size limit for free tier user for AI File Chat feature') }}"></i></h6>
-														<input type="number" class="form-control @error('max-csv-size') is-danger @enderror" id="max-csv-size" name="max-csv-size" placeholder="Ex: 10" min="0.1" step="0.1" value="{{ config('settings.chat_csv_file_size_user') }}" required>
-														@error('max-csv-size')
-															<p class="text-danger">{{ $errors->first('max-csv-size') }}</p>
-														@enderror
-													</div>								
-												</div>
-
-												<div class="col-lg-6 col-md-6 col-sm-12">
-													<div class="input-box">	
-														<h6>{{ __('Maximum Allowed Word File Size') }} <span class="text-muted">({{ __('In MB') }})</span><span class="text-required"><i class="fa-solid fa-asterisk"></i></span><i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('Set the maximum Word file size limit for free tier user for AI File Chat feature') }}"></i></h6>
-														<input type="number" class="form-control @error('max-word-size') is-danger @enderror" id="max-word-size" name="max-word-size" placeholder="Ex: 10" min="0.1" step="0.1" value="{{ config('settings.chat_word_file_size_user') }}" required>
-														@error('max-word-size')
-															<p class="text-danger">{{ $errors->first('max-word-size') }}</p>
-														@enderror
-													</div>								
-												</div>
-
-												<div class="col-lg-6 col-md-6 col-sm-12">
-													<div class="input-box">	
-														<h6>{{ __('Team Members Quantity') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-														<input type="number" class="form-control @error('team-members-quantity') is-danger @enderror" id="team-members-quantity" name="team-members-quantity" placeholder="Ex: 5" value="{{ config('settings.team_members_quantity_user') }}">
-													</div> 						
-												</div>
-
-												<div class="col-lg-6 col-md-6 col-sm-12">							
-													<div class="input-box">								
-														<h6>{{ __('Image/Video/Voiceover Results Storage Period') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span><i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('After set days file results will be deleted via CRON task') }}."></i></h6>
-														<div class="form-group">							    
-															<input type="number" class="form-control" id="file-result-duration" name="file-result-duration" value="{{ config('settings.file_result_duration_user') }}">
-															<span class="text-muted fs-10">{{ __('In Days') }}. {{ __('Set as -1 for unlimited storage duration') }}.</span>
-														</div> 
-														@error('file-result-duration')
-															<p class="text-danger">{{ $errors->first('file-result-duration') }}</p>
-														@enderror
-													</div> 						
-												</div>
-		
-												<div class="col-lg-6 col-md-6 col-sm-12">							
-													<div class="input-box">								
-														<h6>{{ __('Generated Text Content Results Storage Period') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span><i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('After set days results will be deleted from database via CRON task') }}."></i></h6>
-														<div class="form-group">							    
-															<input type="number" class="form-control" id="document-result-duration" name="document-result-duration" value="{{ config('settings.document_result_duration_user') }}">
-															<span class="text-muted fs-10">{{ __('In Days') }}. {{ __('Set as -1 for unlimited storage duration') }}.</span>
-														</div> 
-														@error('document-result-duration')
-															<p class="text-danger">{{ $errors->first('document-result-duration') }}</p>
-														@enderror
-													</div> 						
-												</div>												
+													<h6>{{ __('Maximum Result Length') }} <span class="text-muted">({{ __('In Words') }}) ({{ __('For Non-Subscribers') }})</span><span class="text-required"><i class="fa-solid fa-asterisk"></i></span><i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('OpenAI has a hard limit based on Token limits for each model. Refer to OpenAI documentation to learn more. As a recommended by OpenAI, max result length is capped at 1500 words.') }}"></i></h6>
+													<input type="number" class="form-control @error('max-results-user') is-danger @enderror" id="max-results-user" name="max-results-user" placeholder="Ex: 10" value="{{ config('settings.max_results_limit_user') }}" required>
+													@error('max-results-user')
+														<p class="text-danger">{{ $errors->first('max-results-user') }}</p>
+													@enderror
+												</div>								
 											</div>
-
 											
-										</div>	
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">	
+													<h6>{{ __('Maximum Allowed PDF File Size') }} <span class="text-muted">({{ __('In MB') }})</span><span class="text-required"><i class="fa-solid fa-asterisk"></i></span><i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('Set the maximum PDF file size limit for free tier user for AI File Chat feature') }}"></i></h6>
+													<input type="number" class="form-control @error('max-pdf-size') is-danger @enderror" id="max-pdf-size" name="max-pdf-size" placeholder="Ex: 10" min="0.1" step="0.1" value="{{ config('settings.chat_pdf_file_size_user') }}" required>
+													@error('max-pdf-size')
+														<p class="text-danger">{{ $errors->first('max-pdf-size') }}</p>
+													@enderror
+												</div>								
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">	
+													<h6>{{ __('Maximum Allowed CSV File Size') }} <span class="text-muted">({{ __('In MB') }})</span><span class="text-required"><i class="fa-solid fa-asterisk"></i></span><i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('Set the maximum CSV file size limit for free tier user for AI File Chat feature') }}"></i></h6>
+													<input type="number" class="form-control @error('max-csv-size') is-danger @enderror" id="max-csv-size" name="max-csv-size" placeholder="Ex: 10" min="0.1" step="0.1" value="{{ config('settings.chat_csv_file_size_user') }}" required>
+													@error('max-csv-size')
+														<p class="text-danger">{{ $errors->first('max-csv-size') }}</p>
+													@enderror
+												</div>								
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">	
+													<h6>{{ __('Maximum Allowed Word File Size') }} <span class="text-muted">({{ __('In MB') }})</span><span class="text-required"><i class="fa-solid fa-asterisk"></i></span><i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('Set the maximum Word file size limit for free tier user for AI File Chat feature') }}"></i></h6>
+													<input type="number" class="form-control @error('max-word-size') is-danger @enderror" id="max-word-size" name="max-word-size" placeholder="Ex: 10" min="0.1" step="0.1" value="{{ config('settings.chat_word_file_size_user') }}" required>
+													@error('max-word-size')
+														<p class="text-danger">{{ $errors->first('max-word-size') }}</p>
+													@enderror
+												</div>								
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">
+												<div class="input-box">	
+													<h6>{{ __('Team Members Quantity') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span> <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+													<input type="number" class="form-control @error('team-members-quantity') is-danger @enderror" id="team-members-quantity" name="team-members-quantity" placeholder="Ex: 5" value="{{ config('settings.team_members_quantity_user') }}">
+												</div> 						
+											</div>
+
+											<div class="col-lg-6 col-md-6 col-sm-12">							
+												<div class="input-box">								
+													<h6>{{ __('Image/Video/Voiceover Results Storage Period') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span><i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('After set days file results will be deleted via CRON task') }}."></i></h6>
+													<div class="form-group">							    
+														<input type="number" class="form-control" id="file-result-duration" name="file-result-duration" value="{{ config('settings.file_result_duration_user') }}">
+														<span class="text-muted fs-10">{{ __('In Days') }}. {{ __('Set as -1 for unlimited storage duration') }}.</span>
+													</div> 
+													@error('file-result-duration')
+														<p class="text-danger">{{ $errors->first('file-result-duration') }}</p>
+													@enderror
+												</div> 						
+											</div>
+	
+											<div class="col-lg-6 col-md-6 col-sm-12">							
+												<div class="input-box">								
+													<h6>{{ __('Generated Text Content Results Storage Period') }} <span class="text-muted">({{ __('For Non-Subscribers') }})</span><i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('After set days results will be deleted from database via CRON task') }}."></i></h6>
+													<div class="form-group">							    
+														<input type="number" class="form-control" id="document-result-duration" name="document-result-duration" value="{{ config('settings.document_result_duration_user') }}">
+														<span class="text-muted fs-10">{{ __('In Days') }}. {{ __('Set as -1 for unlimited storage duration') }}.</span>
+													</div> 
+													@error('document-result-duration')
+														<p class="text-danger">{{ $errors->first('document-result-duration') }}</p>
+													@enderror
+												</div> 						
+											</div>												
+										</div>											
+											
 									</div>
 								</div>
 

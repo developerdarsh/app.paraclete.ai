@@ -3,50 +3,6 @@
 @section('css')
 	<!-- Sweet Alert CSS -->
 	<link href="{{URL::asset('plugins/sweetalert/sweetalert2.min.css')}}" rel="stylesheet" />
-	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
-    <style>
-		.slide-arrow{
-			position: absolute;
-			top: 50%;
-			margin-top: -15px;
-		}
-		.prev-arrow{
-			left: -30px;
-			width: 0;
-			height: 0;
-			border-left: 0 solid transparent;
-			border-right: 15px solid #113463;
-			border-top: 10px solid transparent;
-			border-bottom: 10px solid transparent;
-			background: none;
-		}
-		.next-arrow{
-			right: -30px;
-			width: 0;
-			height: 0;
-			border-right: 0 solid transparent;
-			border-left: 15px solid #113463;
-			border-top: 10px solid transparent;
-			border-bottom: 10px solid transparent;
-			background: none;
-		}
-		/** Dev. Slider CSS **/
-		.slick-slide img {
-			display: block;
-			height: auto;
-			width: 100%;
-		}  
-		/* Styles for the media controller */
-		#media-container iframe,
-		#media-container video {
-			width: 100%;
-			height: 300px;
-		}
-		#videoModal .modalbody {
-				padding: 1rem;
-		}
-		/** End Dev. Slider CSS **/
-	</style>
 @endsection
 
 @section('page-header')
@@ -66,47 +22,22 @@
 @section('content')
 	<!-- USER PROFILE PAGE -->
 	<div class="row">
-		<div class="card-body pt-5 pb-5">
-			<div class="col-lg-12 col-md-12">
-				<div class="card border-0">
-					<div class="card-body pt-5 pb-5">
-						<div class="slider lazy">
-							@foreach($BannerModel as $value)
-								<div>
-									<div class="image">
-										<img data-lazy="{{asset('banner/'.$value['image'])}}" data-type="{{ $value['type'] }}" data-url="{{ $value['url'] }}" />
-									</div>
-								</div>
-							@endforeach
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- Bootstrap modal structure -->
-		<div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-xs modal-dialog-centered" role="document">
-				<div class="modal-content">
-					<div class="modal-body">
-						<div id="media-container"></div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="col-lg-5 col-md-12">
-			<div class="card">
-				<div class="card-body pt-4 pb-4 pl-6 pr-6 custom-banner-bg">
+		<div class="@if (App\Services\HelperService::extensionSaaS()) col-lg-5 @else col-lg @endif col-md-12">
+			<div class="card border-0">
+				<div class="card-body pt-4 pb-4 pl-6 pr-6 custom-banner-bg" @if (!App\Services\HelperService::extensionSaaS()) style="height: 165px" @endif>
 					<div class="custom-banner-bg-image"></div>
 					<div class="row">
 						<div class="col-md-8 col-sm-12">
 							<span class="fs-10"><i class="fa-solid fa-calendar mr-2"></i> {{ now()->format('M d, Y H:i A'); }}</span>
 							<h4 class="mb-4 mt-2 font-weight-800 fs-24">{{ __('Welcome') }}, {{ auth()->user()->name }}</h4>
-							<span class="fs-10 custom-span">{{ __('Current Plan') }}</span>
-							@if (is_null(auth()->user()->plan_id))
-								<h4 class="mb-2 mt-2 font-weight-800 fs-24">{{ __('No Active Plan') }}</h4>						
-								<h6 class="fs-12">{{ __('You do not have an active subscription') }}</h6>
-							@else
-								<h4 class="mb-2 mt-2 font-weight-800 fs-24">{{ $subscription }} {{ __('Plan') }}</h4>
+							@if (App\Services\HelperService::extensionSaaS())
+								<span class="fs-10 custom-span">{{ __('Current Plan') }}</span>
+								@if (is_null(auth()->user()->plan_id))
+									<h4 class="mb-2 mt-2 font-weight-800 fs-24">{{ __('No Active Plan') }}</h4>						
+									<h6 class="fs-12">{{ __('You do not have an active subscription') }}</h6>
+								@else
+									<h4 class="mb-2 mt-2 font-weight-800 fs-24">{{ $subscription }} {{ __('Plan') }}</h4>
+								@endif
 							@endif
 						</div>
 						@if (App\Services\HelperService::extensionSaaS())
@@ -133,23 +64,25 @@
 			</div>
 		</div>
 
-		@if (config('payment.referral.enabled') == 'on')
-			<div class="col-lg col-md-12 d-flex align-items-stretch">
-				<div class="card">
-					<div class="card-body p-6 align-items-center">
-						<div class="row" style="height: 100%">
-							<div class="col-md-6 col-sm-12 text-left mt-auto">
-								<h6 class="fs-14 text-muted"><i class="fa-solid fa-badge-dollar mr-2"></i>{{ __('Your balance') }}</h6>
-								<h4 class="mt-4 mb-5 font-weight-bold text-muted fs-30">{!! config('payment.default_system_currency_symbol') !!}{{ number_format(auth()->user()->balance) }}</h4>
-								<h6 class="fs-14 text-muted">{{ __('Current referral earnings') }}</h6>	
-							</div>
-							<div class="col-md-6 col-sm-12 d-flex align-items-end justify-content-end">
-								<a href="{{ route('user.referral') }}" class="btn btn-primary yellow mt-2 mb-0 pl-6 pr-6" style="text-transform: none;">{{ __('Invite & Earn') }} <i class="fa-regular fa-chevron-right fs-8 ml-1"></i></a>
-							</div>
-						</div>		
+		@if (App\Services\HelperService::extensionSaaS())
+			@if (config('payment.referral.enabled') == 'on')
+				<div class="col-lg col-md-12 d-flex align-items-stretch">
+					<div class="card border-0">
+						<div class="card-body p-6 align-items-center">
+							<div class="row" style="height: 100%">
+								<div class="col-md-6 col-sm-12 text-left mt-auto">
+									<h6 class="fs-14 text-muted"><i class="fa-solid fa-badge-dollar mr-2"></i>{{ __('Your balance') }}</h6>
+									<h4 class="mt-4 mb-5 font-weight-bold text-muted fs-30">{!! config('payment.default_system_currency_symbol') !!}{{ number_format(auth()->user()->balance) }}</h4>
+									<h6 class="fs-14 text-muted">{{ __('Current referral earnings') }}</h6>	
+								</div>
+								<div class="col-md-6 col-sm-12 d-flex align-items-end justify-content-end">
+									<a href="{{ route('user.referral') }}" class="btn btn-primary yellow mt-2 mb-0 pl-6 pr-6" style="text-transform: none;">{{ __('Invite & Earn') }} <i class="fa-regular fa-chevron-right fs-8 ml-1"></i></a>
+								</div>
+							</div>		
+						</div>
 					</div>
 				</div>
-			</div>
+			@endif		
 		@endif		
 
 		<div class="col-lg col-md-12 d-flex align-items-stretch">
@@ -177,31 +110,31 @@
 				<div class="card-body pt-5 pb-5 pl-6 pr-6">
 					<div class="row text-center mb-4">
 						<div class="col-lg col-md-6 col-sm-6 dashboard-border-right mt-auto mb-auto">
-							<h6 class="fs-14 mt-3 font-weight-bold">{{ App\Services\HelperService::mainPlanModel()}} {{ __('Words Left') }}</h6>
-							<h4 class="mb-0 font-weight-800 text-primary fs-20">{{ App\Services\HelperService::mainPlanBalance()}}</h4>
+							<h6 class="fs-12 mt-3 font-weight-bold">@if ($configs->model_credit_name == 'words') {{ __('Words Left') }} @else {{ __('Tokens Left') }} @endif</h6>
+							<h4 class="mb-0 font-weight-800 text-primary fs-20">@if(auth()->user()->tokens == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->tokens + auth()->user()->tokens_prepaid) }} @endif</h4>
 							<div class="view-credits mb-3"><a class=" fs-11 text-muted" href="javascript:void(0)" id="view-credits" data-bs-toggle="modal" data-bs-target="#creditsModel"> {{ __('View All Credits') }}</a></div> 										
 						</div>
 						@role('user|subscriber|admin')
 							@if (config('settings.image_feature_user') == 'allow')
 								<div class="col-lg col-md-6 col-sm-6 dashboard-border-right mt-auto mb-auto">
-									<h6 class="fs-14 mt-3 font-weight-bold">{{ __('DE/SD Images Left') }}</h6>
-									<h4 class="mb-3 font-weight-800 text-primary fs-20">@if(auth()->user()->available_dalle_images == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->available_dalle_images + auth()->user()->available_dalle_images_prepaid + auth()->user()->available_sd_images + auth()->user()->available_sd_images_prepaid) }} @endif</h4>										
+									<h6 class="fs-12 mt-3 font-weight-bold">{{ __('Media Credits Left') }}</h6>
+									<h4 class="mb-3 font-weight-800 text-primary fs-20">@if(auth()->user()->images == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->images + auth()->user()->images_prepaid) }} @endif</h4>										
 								</div>	
 							@endif
 						@endrole	
 						@role('user|subscriber|admin')
 							@if (config('settings.voiceover_feature_user') == 'allow')				
 								<div class="col-lg col-md-6 col-sm-6 dashboard-border-right mt-auto mb-auto">
-									<h6 class="fs-14 mt-3 font-weight-bold">{{ __('Characters Left') }}</h6>
-									<h4 class="mb-3 font-weight-800 text-primary fs-20">@if(auth()->user()->available_chars == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->available_chars + auth()->user()->available_chars_prepaid) }} @endif</h4>										
+									<h6 class="fs-12 mt-3 font-weight-bold">{{ __('Characters Left') }}</h6>
+									<h4 class="mb-3 font-weight-800 text-primary fs-20">@if(auth()->user()->characters == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->characters + auth()->user()->characters_prepaid) }} @endif</h4>										
 								</div>
 							@endif
 						@endrole
 						@role('user|subscriber|admin')
 							@if (config('settings.whisper_feature_user') == 'allow')
 								<div class="col-lg col-md-6 col-sm-6 mt-auto mb-auto">
-									<h6 class="fs-14 mt-3 font-weight-bold">{{ __('Minutes Left') }}</h6>
-									<h4 class="mb-3 font-weight-800 text-primary fs-20">@if(auth()->user()->available_minutes == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->available_minutes + auth()->user()->available_minutes_prepaid) }} @endif</h4>										
+									<h6 class="fs-12 mt-3 font-weight-bold">{{ __('Minutes Left') }}</h6>
+									<h4 class="mb-3 font-weight-800 text-primary fs-20">@if(auth()->user()->minutes == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->minutes + auth()->user()->minutes_prepaid) }} @endif</h4>										
 								</div>
 							@endif
 						@endrole
@@ -626,7 +559,6 @@
 	{{-- <script src="{{URL::asset('plugins/chart/chart.min.js')}}"></script> --}}
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 	<script src="{{URL::asset('plugins/sweetalert/sweetalert2.all.min.js')}}"></script>
-	<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 	<script>
 		$(function() {
 	
@@ -859,41 +791,6 @@
 				}
 			})
 		}
-		$('.lazy').slick({
-			lazyLoad: 'ondemand',
-			// slidesToShow: 3,
-			slidesToScroll: 1,
-			prevArrow: '<button class="slide-arrow prev-arrow"></button>',
-			nextArrow: '<button class="slide-arrow next-arrow"></button>',
-			autoplay: true,
-    		autoplaySpeed: 3000, 
-		});
-	
-		$('.slider').on('click', '.image img', function () {
-			var bannerType = $(this).data('type');
-			var bannerUrl = $(this).data('url');
-			if (bannerType === 'video') {
-				if (isYouTubeUrl(bannerUrl)) {
-					$('#media-container').html('<iframe width="560" height="450" src="' + convertToEmbeddedUrl(bannerUrl) + '" frameborder="0" allowfullscreen></iframe>');
-				} else {
-					$('#media-container').html('<video width="560" height="450" controls autoplay><source src="' + bannerUrl + '" type="video/mp4"></video>');
-				}
-				$('#videoModal').modal('show');
-			} else if (bannerType === 'website') {
-				window.open(bannerUrl, '_blank');
-			}
-		});
-        function isYouTubeUrl(url) {
-            return url.includes('youtube.com') || url.includes('youtu.be');
-        }
-        function convertToEmbeddedUrl(url) {
-            var videoId = url.match(/(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\d\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-            if (videoId && videoId[1]) {
-                return 'https://www.youtube.com/embed/' + videoId[1];
-            } else {
-                return url;
-            }
-        }
 
 	</script>
 @endsection
