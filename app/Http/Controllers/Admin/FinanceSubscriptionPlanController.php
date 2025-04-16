@@ -392,7 +392,12 @@ class FinanceSubscriptionPlanController extends Controller
             $team_member = false;
         }
 
-
+        if (request('smart_ads_feature') == 'on') {
+            $smart_ads_feature = 1; 
+        } else {
+            $smart_ads_feature = 0;
+        }
+        
 
         $voiceover_vendors = '';
         if (!is_null(request('voiceover_vendors'))) {
@@ -530,6 +535,7 @@ class FinanceSubscriptionPlanController extends Controller
                 'chatbot_external_quantity' => request('chatbot_external_quantity'),
                 'chatbot_external_domains' => request('chatbot_external_domains'),
                 'team_member_feature' => $team_member,
+                'smart_ads_feature' => $smart_ads_feature,
 
             ]); 
                    
@@ -877,6 +883,12 @@ class FinanceSubscriptionPlanController extends Controller
             $team_member = false;
         }
 
+        if (request('smart_ads_feature') == 'on') {
+            $smart_ads_feature = 1; 
+        } else {
+            $smart_ads_feature = 0;
+        }
+
 
         $voiceover_vendors = '';
         if (!is_null(request('voiceover_vendors'))) {
@@ -1014,6 +1026,7 @@ class FinanceSubscriptionPlanController extends Controller
                 'chatbot_external_quantity' => request('chatbot_external_quantity'),
                 'chatbot_external_domains' => request('chatbot_external_domains'),
                 'team_member_feature' => $team_member,
+                'smart_ads_feature' => $smart_ads_feature,
     
             ]); 
             

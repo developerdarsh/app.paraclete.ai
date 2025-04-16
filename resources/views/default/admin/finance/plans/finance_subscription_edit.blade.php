@@ -562,7 +562,19 @@
 												</label>
 											</div>
 										</div>
-									</div>
+
+                                        <div class="col-lg-6 col-md-6 col-sm-12">
+											<div class="input-box">
+												<h6>{{ __('Smart Ads Feature') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+												<div class="form-group mt-3">
+													<label class="custom-switch">
+														<input type="checkbox" id="smart_ads_feature" name="smart_ads_feature" class="custom-switch-input" @if ($id->smart_ads_feature == 1) checked @endif>
+														<span class="custom-switch-indicator"></span>
+													</label>
+												</div>
+											</div>
+										</div>
+
 
 									<div class="col-lg-6 col-md-6 col-sm-12">
 										<div class="input-box">
