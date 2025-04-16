@@ -94,12 +94,14 @@ class FinanceController extends Controller
                     ->addColumn('actions', function($row){
                         if ($row["gateway"] == 'BankTransfer') {
                             $actionBtn = '<div>                                            
+                                            <a href="'. route("user.payments.invoice.transfer", $row["order_id"] ). '" target="_blank"><i class="fa-solid fa-list table-action-buttons view-action-button" title="'. __('Download Invoice') .'"></i></a>                          
                                             <a href="'. route("admin.finance.transaction.show", $row["id"] ). '"><i class="fa-solid fa-file-invoice-dollar table-action-buttons edit-action-button" title="'. __('View Transaction') .'"></i></a>
                                             <a href="'. route("admin.finance.transaction.edit", $row["id"] ). '"><i class="fa-solid fa-file-pen table-action-buttons view-action-button" title="'. __('Update Transaction') .'"></i></a>
                                             <a class="deleteTransactionButton" id="'. $row["id"] .'" href="#"><i class="fa-solid fa-trash-xmark table-action-buttons delete-action-button" title="'. __('Delete Transaction') .'"></i></a>
                                         </div>';
                         } else {
-                            $actionBtn = '<div>                                            
+                            $actionBtn = '<div>              
+                                            <a href="'. route("user.payments.invoice.show", $row["order_id"] ). '" target="_blank"><i class="fa-solid fa-list table-action-buttons edit-action-button" title="'. __('Download Invoice') .'"></i></a>                                                        
                                             <a href="'. route("admin.finance.transaction.show", $row["id"] ). '"><i class="fa-solid fa-file-invoice-dollar table-action-buttons view-action-button" title="'. __('View Transaction') .'"></i></a>
                                             <a class="deleteTransactionButton" id="'. $row["id"] .'" href="#"><i class="fa-solid fa-trash-xmark table-action-buttons delete-action-button" title="'. __('Delete Transaction') .'"></i></a>
                                         </div>';

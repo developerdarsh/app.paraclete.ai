@@ -3,6 +3,18 @@
 <?php $__env->startSection('css'); ?>
 	<!-- Sweet Alert CSS -->
 	<link href="<?php echo e(URL::asset('plugins/sweetalert/sweetalert2.min.css')); ?>" rel="stylesheet" />
+	<style>
+ 	.info-btn-alt {
+ 		font-size: 15px;
+ 		background-color: rgb(126, 34, 206);
+ 		color: rgb(255, 255, 255);
+ 		padding-top: 0.5rem;
+ 		padding-bottom: 0.5rem;
+ 		padding-left: 1rem;
+ 		padding-right: 1rem;
+ 		border-radius: 0.5rem;
+ 	}
+ 	</style>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -12,6 +24,7 @@
 			<div class="  templates-nav-header">
 				<div class="card-body">
 					<div>
+						<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
 						<h3 class="card-title mb-3 ml-2 fs-24 super-strong"><?php echo e(__('AI Writer')); ?></h3>
 						<h6 class="text-muted mb-4 ml-2"><?php echo e(__('Seeking that perfect content? Look no further! Get ready to explore our fantastic lineup of templates')); ?></h6>
 						<?php if(config('settings.custom_templates') == 'anyone'): ?>
@@ -571,6 +584,23 @@
 		</div>
 
 	</div>
+	<div class="modal fade" id="info-alert-model" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog">
+ 		<div class="modal-dialog modal-dialog-centered modal-xl">
+ 			<div class="modal-content">
+ 				<div class="modal-header">
+ 					<h2></h2>
+ 					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+ 					<span aria-hidden="true">&times;</span>
+ 					</button>
+ 				</div>
+ 				<div class="modal-body">
+ 					<div class="row">
+ 					<!--ARCADE EMBED START--><div style="position: relative; padding-bottom: calc(56.25% + 41px); height: 0; width: 100%;"><iframe src="https://demo.arcade.software/yM2D11k9RszxTPWEIAEr?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true" title="Paraclete AI Templates" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; color-scheme: light;" ></iframe></div><!--ARCADE EMBED END-->
+ 					</div>
+ 				</div>
+ 			</div>
+ 		</div>
+ 	</div>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('js'); ?>

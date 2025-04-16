@@ -32,11 +32,13 @@ class PurchaseHistoryController extends Controller
                     ->addColumn('actions', function($row){
                         if ($row["gateway"] == 'BankTransfer') {
                             $actionBtn = '<div>                                            
+                                        <a href="'. route("user.payments.invoice.show", $row["order_id"] ). '" target="_blank"><i class="fa-solid fa-list table-action-buttons edit-action-button" title="'. __('Download Invoice') .'"></i></a>
                                         <a href="'. route("user.purchases.show", $row["id"] ). '"><i class="fa-solid fa-file-invoice-dollar table-action-buttons view-action-button" title="'. __('View Transaction') .'"></i></a>
                                         <a class="uploadConfirmation" id="' . $row["id"] . '" href="#"><i class="fa-solid fa-file-upload table-action-buttons edit-action-button" title="'. __('Upload Confirmation') .'"></i></a>
                                     </div>';
                         } else {
-                            $actionBtn = '<div>                                            
+                            $actionBtn = '<div>                  
+                                        <a href="'. route("user.payments.invoice.show", $row["order_id"] ). '" target="_blank"><i class="fa-solid fa-list table-action-buttons edit-action-button" title="'. __('Download Invoice') .'"></i></a>                          
                                         <a href="'. route("user.purchases.show", $row["id"] ). '"><i class="fa-solid fa-file-invoice-dollar table-action-buttons view-action-button" title="'. __('View Transaction') .'"></i></a>
                                     </div>';
                         }

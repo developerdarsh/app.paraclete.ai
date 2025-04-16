@@ -1,0 +1,16 @@
+{
+    "extension_name": "Open Router",
+    "version": "1.0",
+    "controllers": [
+      "app/Http/Controllers/Admin/Extensions/OpenRouterController.php",
+      "app/Services/OpenRouter.php"
+    ],
+    "views": [
+      "resources/views/default/admin/davinci/configuration/extension/open-router/index.blade.php"
+    ],
+    "routes": "routes/open_router_route.php",
+    "migrations": {
+        "install": [],
+        "uninstall": []
+    }
+}

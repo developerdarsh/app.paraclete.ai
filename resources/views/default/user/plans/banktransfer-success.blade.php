@@ -32,7 +32,7 @@
 							<pre class="text-muted fs-12 mb-4">{{ $bank['bank_requisites'] }}</pre>
 						</div>						
 						<div class="text-center pt-2 pb-4">
-							<a href="{{ route('user.payments.invoice.transfer', $orderID) }}" id="invoice-button" class="btn btn-primary pl-6 pr-6 mr-2">{{ __('Get Bank Requisites') }}</a>
+							<a href="{{ route('user.payments.invoice.transfer', $orderID) }}" target="_blank" id="invoice-button" class="btn btn-primary pl-6 pr-6 mr-2">{{ __('Get Bank Requisites') }}</a>
 							<a href="{{ route('user.dashboard') }}" id="payment-button" class="btn btn-primary pl-6 pr-6">{{ __('My Dashboard') }}</a>							
 						</div>
 					</div>

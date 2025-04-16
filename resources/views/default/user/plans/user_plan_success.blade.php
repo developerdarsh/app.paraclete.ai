@@ -28,7 +28,7 @@
 						</div>						
 					
 						<div class="text-center pt-2 pb-4">
-							<a href="{{ route('user.payments.invoice', $order_id) }}" id="invoice-button" class="btn btn-primary pl-6 pr-6 mr-2">{{ __('Get Invoice') }}</a>
+							<a href="{{ route('user.payments.invoice', $order_id) }}" id="invoice-button" class="btn btn-primary pl-6 pr-6 mr-2" target="_blank">{{ __('Get Invoice') }}</a>
 							<a href="{{ route('user.dashboard') }}" id="payment-button" class="btn btn-primary pl-6 pr-6">{{ __('Start Usage') }}</a>							
 						</div>
 					</div>

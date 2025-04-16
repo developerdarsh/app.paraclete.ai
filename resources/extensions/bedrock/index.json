@@ -1,0 +1,16 @@
+{
+    "extension_name": "Amazon Bedrock",
+    "version": "1.0",
+    "controllers": [
+      "app/Http/Controllers/Admin/Extensions/AmazonBedrockController.php",
+      "app/Services/AmazonBedrock.php"
+    ],
+    "views": [
+      "resources/views/default/admin/davinci/configuration/extension/bedrock/setting.blade.php"
+    ],
+    "routes": "routes/bedrock_route.php",
+    "migrations": {
+        "install": [],
+        "uninstall": []
+    }
+}

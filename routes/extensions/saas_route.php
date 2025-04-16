@@ -115,6 +115,32 @@ Route::group(['prefix' => 'admin', 'middleware' => ['verified', '2fa.verify', 'r
     Route::controller(FinanceSettingController::class)->group(function() {
         Route::get('/finance/settings', 'index')->name('admin.finance.settings');
         Route::post('/finance/settings', 'store')->name('admin.finance.settings.store');
+        Route::get('/finance/settings/paypal', 'showPaypal');
+        Route::post('/finance/settings/paypal', 'storePaypal')->name('admin.finance.settings.paypal.store');
+        Route::get('/finance/settings/stripe', 'showStripe');
+        Route::post('/finance/settings/stripe', 'storeStripe')->name('admin.finance.settings.stripe.store');
+        Route::get('/finance/settings/paystack', 'showPaystack');
+        Route::post('/finance/settings/paystack', 'storePaystack')->name('admin.finance.settings.paystack.store');
+        Route::get('/finance/settings/razorpay', 'showRazorpay');
+        Route::post('/finance/settings/razorpay', 'storeRazorpay')->name('admin.finance.settings.razorpay.store');
+        Route::get('/finance/settings/mollie', 'showMollie');
+        Route::post('/finance/settings/mollie', 'storeMollie')->name('admin.finance.settings.mollie.store');
+        Route::get('/finance/settings/flutterwave', 'showFlutterwave');
+        Route::post('/finance/settings/flutterwave', 'storeFlutterwave')->name('admin.finance.settings.flutterwave.store');
+        Route::get('/finance/settings/yookassa', 'showYookassa');
+        Route::post('/finance/settings/yookassa', 'storeYookassa')->name('admin.finance.settings.yookassa.store');
+        Route::get('/finance/settings/paddle', 'showPaddle');
+        Route::post('/finance/settings/paddle', 'storePaddle')->name('admin.finance.settings.paddle.store');
+        Route::get('/finance/settings/braintree', 'showBraintree');
+        Route::post('/finance/settings/braintree', 'storeBraintree')->name('admin.finance.settings.braintree.store');
+        Route::get('/finance/settings/iyzico', 'showIyzico');
+        Route::post('/finance/settings/iyzico', 'storeIyzico')->name('admin.finance.settings.iyzico.store');
+        Route::get('/finance/settings/midtrans', 'showMidtrans');
+        Route::post('/finance/settings/midtrans', 'storeMidtrans')->name('admin.finance.settings.midtrans.store');
+        Route::get('/finance/settings/coinbase', 'showCoinbase');
+        Route::post('/finance/settings/coinbase', 'storeCoinbase')->name('admin.finance.settings.coinbase.store');
+        Route::get('/finance/settings/bank', 'showBank');
+        Route::post('/finance/settings/bank', 'storeBank')->name('admin.finance.settings.bank.store');
         Route::get('/finance/settings/costs', 'showCosts')->name('admin.finance.settings.costs');
         Route::post('/finance/settings/costs/store', 'storeCosts')->name('admin.finance.settings.costs.store');
     });
@@ -152,7 +178,8 @@ Route::group(['prefix' => 'user', 'middleware' => ['verified', '2fa.verify', 'ro
     // USER INVOICE ROUTES
     Route::controller(PaymentController::class)->group(function() {
         Route::get('/payments/invoice/{order_id}/generate', 'generatePaymentInvoice')->name('user.payments.invoice');
-        Route::get('/payments/invoice/{id}/show', 'showPaymentInvoice')->name('user.payments.invoice.show');
+        Route::get('/payments/invoice/{order_id}/show', 'showPaymentInvoice')->name('user.payments.invoice.show');
+        Route::get('/payments/invoice/{order_id}/send', 'sendPaymentInvoice')->name('user.payments.invoice.send');
         Route::get('/payments/invoice/{order_id}/transfer', 'bankTransferPaymentInvoice')->name('user.payments.invoice.transfer');
     });
 

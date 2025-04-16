@@ -392,6 +392,8 @@ class FinanceSubscriptionPlanController extends Controller
             $team_member = false;
         }
 
+
+
         $voiceover_vendors = '';
         if (!is_null(request('voiceover_vendors'))) {
             foreach (request('voiceover_vendors') as $key => $value) {
@@ -528,6 +530,7 @@ class FinanceSubscriptionPlanController extends Controller
                 'chatbot_external_quantity' => request('chatbot_external_quantity'),
                 'chatbot_external_domains' => request('chatbot_external_domains'),
                 'team_member_feature' => $team_member,
+
             ]); 
                    
             $plan->save();            
@@ -874,6 +877,7 @@ class FinanceSubscriptionPlanController extends Controller
             $team_member = false;
         }
 
+
         $voiceover_vendors = '';
         if (!is_null(request('voiceover_vendors'))) {
             foreach (request('voiceover_vendors') as $key => $value) {
@@ -1010,6 +1014,7 @@ class FinanceSubscriptionPlanController extends Controller
                 'chatbot_external_quantity' => request('chatbot_external_quantity'),
                 'chatbot_external_domains' => request('chatbot_external_domains'),
                 'team_member_feature' => $team_member,
+    
             ]); 
             
             toastr()->success(__('Selected plan has been updated successfully'));

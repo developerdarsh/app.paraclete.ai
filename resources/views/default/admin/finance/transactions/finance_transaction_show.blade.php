@@ -32,7 +32,7 @@
 						</div>
 						<div class="col-lg-4 col-md-4 col-12">
 							<h6 class="font-weight-bold mb-1">{{ __('Total Price') }}: </h6>
-							<span class="fs-14">{!! config('payment.default_system_currency_symbol') !!}{{ ucfirst($id->price) }}</span>
+							<span class="fs-14">{{ ucfirst($id->price) }} {{ $id->currency }}</span>
 						</div>
 						<div class="col-lg-4 col-md-4 col-12">
 							<h6 class="font-weight-bold mb-1">{{ __('Payment Status') }}: </h6>
@@ -46,14 +46,10 @@
 							<span class="fs-14">{{ ucfirst($id->plan_name) }}</span>
 						</div>
 						<div class="col-lg-4 col-md-4 col-12">
-							<h6 class="font-weight-bold mb-1">{{ __('Words Included') }}: </h6>
-							<span class="fs-14">{{ number_format($id->words) }}</span>
-						</div>
-						<div class="col-lg-4 col-md-4 col-12">
 							<h6 class="font-weight-bold mb-1">{{ __('Payment Gateway') }}: </h6>
 							<span class="fs-14">{{ $id->gateway }}</span>
 						</div>
-						<div class="col-lg-4 col-md-4 col-12 pt-5">
+						<div class="col-lg-4 col-md-4 col-12">
 							<h6 class="font-weight-bold mb-1">{{ __('Payment Frequency') }}: </h6>
 							<span class="fs-14">{{ ucfirst($id->frequency)}}</span>
 						</div>
@@ -65,16 +61,13 @@
 							<h6 class="font-weight-bold mb-1">{{ __('User Email') }}: </h6>
 							<span class="fs-14">{{ $user->email }}</span>
 						</div>
-						<div class="col-lg-4 col-md-4 col-12 pt-5">
-							<h6 class="font-weight-bold mb-1">{{ __('Country') }}: </h6>
-							<span class="fs-14">{{ $user->country }}</span>
-						</div>
 					</div>	
 
 					<div class="row pt-7 pb-5">
 						<div class="col-md-6 col-12">
 							<h6 class="font-weight-bold mb-2">{{ __('Transaction Invoice') }}: </h6>
-							<a href="{{ route('user.payments.invoice.show', $id) }}" class="btn btn-primary pl-5 pr-5">{{ __('Download Invoice') }}</a>						
+							<a href="{{ route('user.payments.invoice.show', $id->order_id) }}" target="_blank" class="btn btn-primary pl-5 pr-5" style="width: 200px">{{ __('Download Invoice') }}</a><br>						
+							<a href="{{ route('user.payments.invoice.send', $id->order_id) }}" class="btn btn-primary pl-5 pr-5 mt-3" style="width: 200px">{{ __('Send Invoice') }}</a>						
 						</div>
 						@if ($id->gateway == 'BankTransfer')
 							<div class="col-md-6 col-12">

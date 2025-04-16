@@ -593,11 +593,13 @@
 												<option value="gpt-4o" @foreach ($model_templates as $key=>$value) @if($value == 'gpt-4o') selected @endif @endforeach>{{ __('OpenAI GPT 4o') }}</option>
 												<option value="gpt-4o-mini" @foreach ($model_templates as $key=>$value) @if($value == 'gpt-4o-mini') selected @endif @endforeach>{{ __('OpenAI GPT 4o mini') }}</option>
 												<option value="gpt-4-0125-preview" @foreach ($model_templates as $key=>$value) @if($value == 'gpt-4-0125-preview') selected @endif @endforeach>{{ __('OpenAI GPT 4 Turbo') }}</option>	
+												<option value="gpt-4.5-preview" @foreach ($model_templates as $key=>$value) @if($value == 'gpt-4.5-preview') selected @endif @endforeach>{{ __('OpenAI GPT 4.5') }}</option>	
 												<option value="o1" @foreach ($model_templates as $key=>$value) @if($value == 'o1') selected @endif @endforeach>{{ __('OpenAI o1') }} </option>	
 												<option value="o1-mini" @foreach ($model_templates as $key=>$value) @if($value == 'o1-mini') selected @endif @endforeach>{{ __('OpenAI o1 mini') }} </option>	
 												<option value="o3-mini" @foreach ($model_templates as $key=>$value) @if($value == 'o3-mini') selected @endif @endforeach>{{ __('OpenAI o3 mini') }} </option>	
 												<option value='claude-3-opus-20240229' @foreach ($model_templates as $key=>$value) @if($value == 'claude-3-opus-20240229') selected @endif @endforeach>{{ __('Claude 3 Opus') }}</option>																																																																																																																											
-												<option value='claude-3-5-sonnet-20241022' @foreach ($model_templates as $key=>$value) @if($value == 'claude-3-5-sonnet-20241022') selected @endif @endforeach>{{ __('Claude 3.5 Sonnet') }}</option>																																																																																																																											
+												<option value='claude-3-7-sonnet-20250219' @foreach ($model_templates as $key=>$value) @if($value == 'claude-3-7-sonnet-20250219') selected @endif @endforeach>{{ __('Claude 3.7 Sonnet') }}</option>
+												<option value='claude-3-5-sonnet-20241022' @foreach ($model_templates as $key=>$value) @if($value == 'claude-3-5-sonnet-20241022') selected @endif @endforeach>{{ __('Claude 3.5 Sonnet') }}</option>
 												<option value='claude-3-5-haiku-20241022' @foreach ($model_templates as $key=>$value) @if($value == 'claude-3-5-haiku-20241022') selected @endif @endforeach>{{ __('Claude 3.5 Haiku') }}</option>																																																																																																																										
 												<option value='gemini-1.5-pro' @foreach ($model_templates as $key=>$value) @if($value == 'gemini-1.5-pro') selected @endif @endforeach>{{ __('Gemini 1.5 Pro') }}</option>																																																																																																																										
 												<option value='gemini-1.5-flash' @foreach ($model_templates as $key=>$value) @if($value == 'gemini-1.5-flash') selected @endif @endforeach>{{ __('Gemini 1.5 Flash') }}</option>																																																																																																																										
@@ -611,6 +613,11 @@
 													<option value="sonar-pro" @foreach ($model_templates as $key=>$value) @if($value == 'sonar-pro') selected @endif @endforeach>{{ __('Perplexity Sonar Pro') }}</option>
 													<option value="sonar-reasoning" @foreach ($model_templates as $key=>$value) @if($value == 'sonar-reasoning') selected @endif @endforeach>{{ __('Perplexity Sonar Reasoning') }}</option>
 													<option value="sonar-reasoning-pro" @foreach ($model_templates as $key=>$value) @if($value == 'sonar-reasoning-pro') selected @endif @endforeach>{{ __('Perplexity Sonar Reasoning Pro') }}</option>
+												@endif	
+												@if (App\Services\HelperService::extensionAmazonBedrock())	
+													<option value="us.amazon.nova-micro-v1:0" @foreach ($model_templates as $key=>$value) @if($value == 'us.amazon.nova-micro-v1:0') selected @endif @endforeach>{{ __('Nova Micro') }}</option>
+													<option value="us.amazon.nova-lite-v1:0" @foreach ($model_templates as $key=>$value) @if($value == 'us.amazon.nova-lite-v1:0') selected @endif @endforeach>{{ __('Nova Lite') }}</option>
+													<option value="us.amazon.nova-pro-v1:0" @foreach ($model_templates as $key=>$value) @if($value == 'us.amazon.nova-pro-v1:0') selected @endif @endforeach>{{ __('Nova Pro') }}</option>
 												@endif	
 												@foreach ($models as $model)
 													<option value="{{ $model->model }}" @foreach ($model_templates as $key=>$value) @if($value == $model->model) selected @endif @endforeach>{{ $model->description }} ({{ __('Fine Tune Model')}})</option>
@@ -627,11 +634,13 @@
 												<option value="gpt-4" @foreach ($model_chats as $key=>$value) @if($value == 'gpt-4') selected @endif @endforeach>{{ __('OpenAI GPT 4') }}</option>												
 												<option value="gpt-4o" @foreach ($model_chats as $key=>$value) @if($value == 'gpt-4o') selected @endif @endforeach>{{ __('OpenAI GPT 4o') }}</option>	
 												<option value="gpt-4o-mini" @foreach ($model_chats as $key=>$value) @if($value == 'gpt-4o-mini') selected @endif @endforeach>{{ __('OpenAI GPT 4o mini') }}</option>	
-												<option value="gpt-4-0125-preview" @foreach ($model_chats as $key=>$value) @if($value == 'gpt-4-0125-preview') selected @endif @endforeach>{{ __('OpenAI GPT 4 Turbo') }}</option>																																																																																																																						
+												<option value="gpt-4-0125-preview" @foreach ($model_chats as $key=>$value) @if($value == 'gpt-4-0125-preview') selected @endif @endforeach>{{ __('OpenAI GPT 4 Turbo') }}</option>
+												<option value="gpt-4.5-preview" @foreach ($model_chats as $key=>$value) @if($value == 'gpt-4.5-preview') selected @endif @endforeach>{{ __('OpenAI GPT 4.5') }}</option>
 												<option value="o1" @foreach ($model_chats as $key=>$value) @if($value == 'o1') selected @endif @endforeach>{{ __('OpenAI o1') }} </option>	
 												<option value="o1-mini" @foreach ($model_chats as $key=>$value) @if($value == 'o1-mini') selected @endif @endforeach>{{ __('OpenAI o1 mini') }} </option>	
 												<option value="o3-mini" @foreach ($model_chats as $key=>$value) @if($value == 'o3-mini') selected @endif @endforeach>{{ __('OpenAI o3 mini') }} </option>	
-												<option value='claude-3-opus-20240229' @foreach ($model_chats as $key=>$value) @if($value == 'claude-3-opus-20240229') selected @endif @endforeach>{{ __('Claude 3 Opus') }}</option>																																																																																																																											
+												<option value='claude-3-opus-20240229' @foreach ($model_chats as $key=>$value) @if($value == 'claude-3-opus-20240229') selected @endif @endforeach>{{ __('Claude 3 Opus') }}</option>
+												<option value='claude-3-7-sonnet-20250219' @foreach ($model_chats as $key=>$value) @if($value == 'claude-3-7-sonnet-20250219') selected @endif @endforeach>{{ __('Claude 3.7 Sonnet') }}</option>																																																																																																																											
 												<option value='claude-3-5-sonnet-20241022' @foreach ($model_chats as $key=>$value) @if($value == 'claude-3-5-sonnet-20241022') selected @endif @endforeach>{{ __('Claude 3.5 Sonnet') }}</option>																																																																																																																											
 												<option value='claude-3-5-haiku-20241022' @foreach ($model_chats as $key=>$value) @if($value == 'claude-3-5-haiku-20241022') selected @endif @endforeach>{{ __('Claude 3.5 Haiku') }}</option>
 												<option value='gemini-1.5-pro' @foreach ($model_chats as $key=>$value) @if($value == 'gemini-1.5-pro') selected @endif @endforeach>{{ __('Gemini 1.5 Pro') }}</option>
@@ -646,6 +655,11 @@
 													<option value="sonar-pro" @foreach ($model_chats as $key=>$value) @if($value == 'sonar-pro') selected @endif @endforeach>{{ __('Perplexity Sonar Pro') }}</option>
 													<option value="sonar-reasoning" @foreach ($model_chats as $key=>$value) @if($value == 'sonar-reasoning') selected @endif @endforeach>{{ __('Perplexity Sonar Reasoning') }}</option>
 													<option value="sonar-reasoning-pro" @foreach ($model_chats as $key=>$value) @if($value == 'sonar-reasoning-pro') selected @endif @endforeach>{{ __('Perplexity Sonar Reasoning Pro') }}</option>
+												@endif
+												@if (App\Services\HelperService::extensionAmazonBedrock())	
+													<option value="us.amazon.nova-micro-v1:0" @foreach ($model_chats as $key=>$value) @if($value == 'us.amazon.nova-micro-v1:0') selected @endif @endforeach>{{ __('Nova Micro') }}</option>
+													<option value="us.amazon.nova-lite-v1:0" @foreach ($model_chats as $key=>$value) @if($value == 'us.amazon.nova-lite-v1:0') selected @endif @endforeach>{{ __('Nova Lite') }}</option>
+													<option value="us.amazon.nova-pro-v1:0" @foreach ($model_chats as $key=>$value) @if($value == 'us.amazon.nova-pro-v1:0') selected @endif @endforeach>{{ __('Nova Pro') }}</option>
 												@endif
 												@foreach ($models as $model)
 													<option value="{{ $model->model }}" @foreach ($model_chats as $key=>$value) @if($value == $model->model) selected @endif @endforeach>{{ $model->description }} ({{ __('Fine Tune Model')}})</option>
@@ -1293,6 +1307,8 @@
 										</div>
 									</div>	
 								@endif
+
+
 							</div>
 						</div>
 

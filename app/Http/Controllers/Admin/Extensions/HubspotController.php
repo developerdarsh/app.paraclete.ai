@@ -15,14 +15,6 @@ class HubspotController extends Controller
 {
     private $hubspot;
 
-    public function __construct()
-    {
-        $extension = ExtensionSetting::first();
-
-        $this->hubspot = Factory::createWithAccessToken($extension->hubspot_access_token);
-    }
-
-
     public function index()
     {
         $extension = ExtensionSetting::first();        
@@ -37,10 +29,12 @@ class HubspotController extends Controller
 
         if (request('users') == 'on') {
             $this->createUsers('user');
+            toastr()->success(__('Users have been successfully synchronized'));
         }
 
         if (request('subscribers') == 'on') {
             $this->createUsers('subscriber');
+            toastr()->success(__('Users have been successfully synchronized'));
         }
 
         toastr()->success(__('Settings have been saved successfully'));
@@ -50,6 +44,10 @@ class HubspotController extends Controller
 
     public function createUsers($group)
     {
+        $extension = ExtensionSetting::first();
+
+        $this->hubspot = Factory::createWithAccessToken($extension->hubspot_access_token);
+
         $users = User::where('group', $group)->get();
 
         if ($users) {
@@ -67,9 +65,27 @@ class HubspotController extends Controller
         
                 try {
 
-                    $response = $this->hubspot->crm()->contacts()->basicApi()->create($contactData);
+                    $filter = [
+                        'filterGroups' => [[
+                            'filters' => [[
+                                'propertyName' => 'email',
+                                'operator' => 'EQ',
+                                'value' => $user->email
+                            ]]
+                        ]]
+                    ];
 
-                    \Log::info($response);
+                    $searchResponse = $this->hubspot->crm()->contacts()->searchApi()->doSearch($filter);
+                    $results = $searchResponse->getResults();
+
+                    if (empty($results)) {
+                        $response = $this->hubspot->crm()->contacts()->basicApi()->create($contactData);
+                    } else {
+                        // Contact exists, you can update it if needed
+                        $contact = $results[0];
+                        $contactId = $contact->getId();
+                        $response = $this->hubspot->crm()->contacts()->basicApi()->update($contactId, $contactData);
+                    }
 
                 } catch (Exception $e) {
                     \Log::info($e->getMessage());

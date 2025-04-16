@@ -590,10 +590,12 @@
 												<option value='gpt-4o'>{{ __('OpenAI GPT 4o') }}</option>																																																																																																																																																																																																																																																					
 												<option value='gpt-4o-mini'>{{ __('OpenAI GPT 4o mini') }}</option>																																																																																																																																																																																																																																																					
 												<option value='gpt-4-0125-preview'>{{ __('OpenAI GPT 4 Turbo') }}</option>																																																																																																																																																																																																																																																																																															
+												<option value='gpt-4.5-preview'>{{ __('OpenAI GPT 4.5') }}</option>																																																																																																																																																																																																																																																																																															
 												<option value='o1'>{{ __('OpenAI o1') }}</option>																																																																																																																																																																																																																																																						
 												<option value='o1-mini'>{{ __('OpenAI o1 mini') }}</option>																																																																																																																																																																																																																																																						
 												<option value='o3-mini'>{{ __('OpenAI o3 mini') }}</option>																																																																																																																																																																																																																																																						
 												<option value='claude-3-opus-20240229'>{{ __('Claude 3 Opus') }}</option>																																																																																																																											
+												<option value='claude-3-7-sonnet-20250219'>{{ __('Claude 3.7 Sonnet') }}</option>																																																																																																																											
 												<option value='claude-3-5-sonnet-20241022'>{{ __('Claude 3.5 Sonnet') }}</option>																																																																																																																											
 												<option value='claude-3-5-haiku-20241022'>{{ __('Claude 3.5 Haiku') }}</option>																																																																																																																											
 												<option value='gemini-1.5-pro'>{{ __('Gemini 1.5 Pro') }}</option>																																																																																																																											
@@ -608,7 +610,12 @@
 													<option value="sonar-pro">{{ __('Perplexity Sonar Pro') }}</option>
 													<option value="sonar-reasoning">{{ __('Perplexity Sonar Reasoning') }}</option>
 													<option value="sonar-reasoning-pro">{{ __('Perplexity Sonar Reasoning Pro') }}</option>
-												@endif																																																																																																																											
+												@endif	
+												@if (App\Services\HelperService::extensionAmazonBedrock())	
+													<option value="us.amazon.nova-micro-v1:0">{{ __('Nova Micro') }}</option>
+													<option value="us.amazon.nova-lite-v1:0">{{ __('Nova Lite') }}</option>
+													<option value="us.amazon.nova-pro-v1:0">{{ __('Nova Pro') }}</option>
+												@endif																																																																																																																										
 												@foreach ($models as $model)
 													<option value="{{ $model->model }}"> {{ $model->description }} ({{ __('Fine Tune Model')}})</option>
 												@endforeach
@@ -625,10 +632,12 @@
 												<option value='gpt-4o'>{{ __('OpenAI GPT 4o') }}</option>																																																																																																																																																																																																																																																					
 												<option value='gpt-4o-mini'>{{ __('OpenAI GPT 4o mini') }}</option>																																																																																																																																																																																																																																																					
 												<option value='gpt-4-0125-preview'>{{ __('OpenAI GPT 4 Turbo') }}</option>																																																																																																																																																																																																																																																																																															
+												<option value='gpt-4.5-preview'>{{ __('OpenAI GPT 4.5') }}</option>																																																																																																																																																																																																																																																																																															
 												<option value='o1'>{{ __('OpenAI o1') }}</option>																																																																																																																																																																																																																																																						
 												<option value='o1-mini'>{{ __('OpenAI o1 mini') }}</option>																																																																																																																																																																																																																																																						
 												<option value='o3-mini'>{{ __('OpenAI o3 mini') }}</option>																																																																																																																																																																																																																																																						
-												<option value='claude-3-opus-20240229'>{{ __('Claude 3 Opus') }}</option>																																																																																																																											
+												<option value='claude-3-opus-20240229'>{{ __('Claude 3 Opus') }}</option>	
+												<option value='claude-3-7-sonnet-20250219'>{{ __('Claude 3.7 Sonnet') }}</option>																																																																																																																											
 												<option value='claude-3-5-sonnet-20241022'>{{ __('Claude 3.5 Sonnet') }}</option>																																																																																																																											
 												<option value='claude-3-5-haiku-20241022'>{{ __('Claude 3.5 Haiku') }}</option>																																																																																																																											
 												<option value='gemini-1.5-pro'>{{ __('Gemini 1.5 Pro') }}</option>																																																																																																																											
@@ -643,6 +652,11 @@
 													<option value="sonar-pro">{{ __('Perplexity Sonar Pro') }}</option>
 													<option value="sonar-reasoning">{{ __('Perplexity Sonar Reasoning') }}</option>
 													<option value="sonar-reasoning-pro">{{ __('Perplexity Sonar Reasoning Pro') }}</option>
+												@endif	
+												@if (App\Services\HelperService::extensionAmazonBedrock())	
+													<option value="us.amazon.nova-micro-v1:0">{{ __('Nova Micro') }}</option>
+													<option value="us.amazon.nova-lite-v1:0">{{ __('Nova Lite') }}</option>
+													<option value="us.amazon.nova-pro-v1:0">{{ __('Nova Pro') }}</option>
 												@endif																																																																																																																											
 												@foreach ($models as $model)
 													<option value="{{ $model->model }}"> {{ $model->description }} ({{ __('Fine Tune Model')}})</option>
@@ -1288,6 +1302,8 @@
 										</div>
 									</div>	
 								@endif
+
+
 							</div>
 						</div>
 

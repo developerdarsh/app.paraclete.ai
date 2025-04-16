@@ -17,6 +17,7 @@ use App\Models\PrepaidPlan;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\SendInvoice;
 use App\Mail\PaymentSuccess;
 use App\Mail\NewPaymentNotification;
 use Exception;
@@ -578,6 +579,8 @@ class PaymentController extends Controller
             $record_payment->billing_vat_number = session()->get('billing_vat_number');
         }
         $record_payment->save(); 
+
+        //$xero = \App\Http\Controllers\User\XeroController::class; 
         
         $group = ($user->hasRole('admin'))? 'admin' : 'subscriber';
 
@@ -593,6 +596,29 @@ class PaymentController extends Controller
         $user->save();       
 
         event(new PaymentProcessed(auth()->user()));
+
+        if (\App\Services\HelperService::extensionXero()) {
+            $invoiceData = [
+                'line_items' => [
+                    [
+                        'Description' => $plan->plan_name . ' ' . 'plan',
+                        'Quantity' => 1,
+                        'UnitAmount' => $plan->price, // Amount per unit/hour
+                        'AccountCode' => '200', // Your Xero account code for sales
+                        'TaxType' => 'OUTPUT', // Or your appropriate tax type
+                        'LineAmount' => $total_price, // Optional: Quantity * UnitAmount
+                    ],
+                ],
+                'reference' => 'PO-'. $subscriptionID, // Your custom reference number
+                'due_date' => date('Y-m-d'), // Optional: Set due date
+            ];
+            try {
+                $result = \App\Services\XeroService::xeroInvoice($invoiceData);
+            } catch (Exception $e) {
+                \Log::error('Xero invoice error: ' . $e->getMessage());
+            } 
+        }
+    
 
         try {
             $admin = User::where('group', 'admin')->first();
@@ -611,7 +637,7 @@ class PaymentController extends Controller
      */
     public function generatePaymentInvoice($order_id)
     {              
-        $this->generateInvoice($order_id);
+        return $this->generateInvoice($order_id);
     }
 
 
@@ -620,19 +646,45 @@ class PaymentController extends Controller
      */
     public function bankTransferPaymentInvoice($order_id)
     {
-        $this->bankTransferInvoice($order_id);
+        return $this->bankTransferInvoice($order_id);
     }
 
 
     /**
      * Show invoice for past payments
      */
-    public function showPaymentInvoice(Payment $id)
+    public function showPaymentInvoice($order_id)
     {   
-        if ($id->gateway == 'BankTransfer' && $id->status != 'completed') {
-            $this->bankTransferInvoice($id->order_id);
+        $order = Payment::where('order_id', $order_id)->first();
+        if ($order->gateway == 'BankTransfer' && $order->status != 'completed') {
+            return $this->bankTransferInvoice($order_id);
         } else {          
-            $this->showInvoice($id);
+            return $this->showInvoice($order_id);
+        }
+    }
+
+
+    public function sendPaymentInvoice($order_id) 
+    {
+        try {
+            $order = Payment::where('order_id', $order_id)->first();
+            if ($order) {
+                $user = User::where('id', $order->user_id)->first();
+                if ($user) {
+                    Mail::to($user)->send(new SendInvoice($order));
+                    toastr()->success(__('Invoice has been sent to the user successfully'));
+                    return redirect()->back();
+                } else {
+                    toastr()->error(__('User was not found'));
+                    return redirect()->back();
+                }
+            } else {
+                toastr()->error(__('Order transaction was not found'));
+                return redirect()->back();
+            }
+            
+        } catch (Exception $e) {
+            \Log::info('SMTP settings are not setup to send payment notifications via email');
         }
     }
 

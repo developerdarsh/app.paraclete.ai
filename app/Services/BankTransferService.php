@@ -24,6 +24,7 @@ class BankTransferService
 
     public function handlePaymentSubscription(Request $request, SubscriptionPlan $id)
     {   
+        $orderID = '';
         if (session()->has('bank_order_id')) {
             $orderID = session()->get('bank_order_id');
             session()->forget('bank_order_id');
