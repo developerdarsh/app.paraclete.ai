@@ -655,8 +655,7 @@ class TemplateController extends Controller
 	*/
 	public function process(Request $request) 
     {
-
-        # Get Settings
+		# Get Settings
         $settings = MainSetting::first();
         $extension = ExtensionSetting::first();
         
@@ -751,7 +750,6 @@ class TemplateController extends Controller
             } else {
                 $anthropic_api = config('anthropic.api_key'); 
             }
-
             if (is_null($anthropic_api) || $anthropic_api == '') {
                 return response()->stream(function () {
                     echo 'data: Anthropic Notification: <span class="font-weight-bold">Missing Anthropic API key</span>. Please contact support team.';

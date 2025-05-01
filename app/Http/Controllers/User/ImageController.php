@@ -211,7 +211,6 @@ class ImageController extends Controller
                 $prompt .= ', ' . $request->mood; 
             }
 
-
             if ($request->vendor == 'openai') {
 
                 $multi_image = 1;
@@ -449,12 +448,9 @@ class ImageController extends Controller
                 $total = $max_results;
 
                 if ($sd_model != 'core' && $sd_model != 'ultra' && $sd_model != 'sd3.5-large' && $sd_model != 'sd3.5-large-turbo' && $sd_model != 'sd3.5-medium') {
-                    
                     $url = 'https://api.stability.ai/v1/generation/' . $sd_model;
                     $output = '';
-
                     if ($request->task != 'none' && $request->task != "sd-multi-prompting" && $request->task != "sd-negative-prompt") {
-                        
                         if ($request->task == 'sd-image-to-image') {
     
                             $url .= '/image-to-image';
@@ -628,17 +624,28 @@ class ImageController extends Controller
     
                         }
                     } else {
-    
                         $url .= '/text-to-image';
-    
+                        
                         $headers = [
                             'Authorization:' . $stable_diffusion,
                             'Content-Type: application/json',
                         ];
-                      
+
                         $resolutions = explode('x', $request->resolution);
                         $width = $resolutions[0];
                         $height = $resolutions[1];
+                        
+                        /*  if (strpos($request->resolution, ':') !== false) {
+                            $resolutions = explode(':', $request->resolution); 
+                            $width = $resolutions[0];
+                            $height = $resolutions[1];
+                        } else {
+                            // handle error or set default resolution
+                            $width = 512;
+                            $height = 512;
+                        }
+                        */
+                        
                         $data['text_prompts'][0]['text'] = $prompt;
                         $data['text_prompts'][0]['weight'] = 1;
                      
@@ -782,7 +789,6 @@ class ImageController extends Controller
                     }
 
                 } else {
-
                     $sd_mode = ($sd_model == 'core' || $sd_model == 'ultra') ? $sd_model : 'sd3';
 
                     $url = 'https://api.stability.ai/v2beta/stable-image/generate/' . $sd_mode;
