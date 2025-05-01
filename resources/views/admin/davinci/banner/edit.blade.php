@@ -13,7 +13,7 @@
 		<ol class="breadcrumb mb-2">
 			<li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}"><i class="fa-solid fa-microchip-ai mr-2 fs-12"></i>{{ __('Admin') }}</a></li>
 			<li class="breadcrumb-item" aria-current="page"><a href="{{ route('admin.davinci.dashboard') }}"> {{ __('AI Management') }}</a></li>
-			<li class="breadcrumb-item active" aria-current="page"><a href="#"> {{ __('Edit Banner') }}</a></li>
+			<li class="breadcrumb-item active" aria-current="page"><a href="#"> {{ __('Edit Banner') }}</a></li> 
 		</ol>
 	</div>
 	
