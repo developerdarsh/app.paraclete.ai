@@ -782,7 +782,7 @@
 
 										<div class="col-lg-6 col-md-6 col-sm-12">
 											<div class="input-box">
-												<h6>{{ __('Supported AI Voiceover Vendors') }} <i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('Only listed TTS voices of the listed vendors will be available for the subscriber. Make sure to include respective vendor API keys in the Davinci settings page.') }}."></i></h6>
+												<h6>{{ __('Supported AI Voiceover Vendors') }} <i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('Only listed TTS voices of the listed vendors will be available for the subscriber. Make sure to include respective vendor API keys in the Paraclete settings page.') }}."></i></h6>
 												<select class="form-select" id="voiceover-vendors" name="voiceover_vendors[]" data-placeholder="{{ __('Choose Voiceover vendors') }}" multiple>
 													<option value='aws' @foreach ($vendors as $key=>$value) @if($value == 'aws') selected @endif @endforeach>{{ __('AWS') }}</option>																															
 													<option value='azure' @foreach ($vendors as $key=>$value) @if($value == 'azure') selected @endif @endforeach>{{ __('Azure') }}</option>																																																														
@@ -809,7 +809,7 @@
 
 											<div class="col-lg-6 col-md-6 col-sm-12">
 												<div class="input-box">
-													<h6>{{ __('Included AI Image Vendors') }} <i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('Only listed AI Image vendors models will be available for the subscriber. Make sure to include respective vendor API keys in the Davinci settings page.') }}."></i></h6>
+													<h6>{{ __('Included AI Image Vendors') }} <i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('Only listed AI Image vendors models will be available for the subscriber. Make sure to include respective vendor API keys in the Paraclete settings page.') }}."></i></h6>
 													<select class="form-select" id="image-vendors" name="image_vendors[]" data-placeholder="{{ __('Choose AI Image vendors') }}" multiple>
 														<option value='openai' @foreach ($images as $key=>$value) @if($value == 'openai') selected @endif @endforeach>{{ __('OpenAI') }}</option>																															
 														<option value='sd' @foreach ($images as $key=>$value) @if($value == 'sd') selected @endif @endforeach> {{ __('Stable Diffusion') }}</option>																															
