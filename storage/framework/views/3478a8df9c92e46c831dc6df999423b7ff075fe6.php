@@ -2,47 +2,41 @@
 <?php $__env->startSection('css'); ?>
 	<!-- Sweet Alert CSS -->
 	<link href="<?php echo e(URL::asset('plugins/sweetalert/sweetalert2.min.css')); ?>" rel="stylesheet" />
-	<style>
- 	.info-btn-alt {
- 		font-size: 15px;
- 		background-color: rgb(126, 34, 206);
- 		color: rgb(255, 255, 255);
- 		padding-top: 0.5rem;
- 		padding-bottom: 0.5rem;
- 		padding-left: 1rem;
- 		padding-right: 1rem;
- 		border-radius: 0.5rem;
- 	}
+	<style>	
+ 		.info-btn-alt {
+ 			font-size: 15px;
+ 			background-color: rgb(126, 34, 206);
+ 			color: rgb(255, 255, 255);
+ 			padding-top: 0.5rem;
+ 			padding-bottom: 0.5rem;
+ 			padding-left: 1rem;
+ 			padding-right: 1rem;
+ 			border-radius: 0.5rem;
+ 		}
  	</style>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
 
-<form id="openai-form" action="" method="post" enctype="multipart/form-data" class="mt-24"> 		
+<form id="rss-form" action="" method="post" enctype="multipart/form-data" class="mt-24"> 		
 	<?php echo csrf_field(); ?>
 	<div class="row">	
-		<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
+		<div class="col-lg-5 col-md-12 col-sm-12">
 			<div class="card border-0" id="template-input">
 				<div class="card-body p-5 pb-0">
-					<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
+					<div class="text-center my-5"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
 					<div class="row">
 						<div class="template-view">
-							<div class="template-icon mb-2 d-flex">
+							<div class="template-icon mb-2">
 								<div>
-									<i class="fa-solid fa-pen-line rewriter-icon"></i>
-								</div>
-								<div>
-									<h6 class="mt-2 ml-3 fs-16 number-font"><?php echo e(__('AI ReWriter')); ?> 										
-									</h6>
+									<h6 class="page-title"><?php echo e(__('AI RSS')); ?></h6>
+									<p class="fs-12 text-muted mb-4"><?php echo e(__('Generate creative and unique content with your RSS Feed')); ?></p>
 								</div>									
 							</div>								
-							<div class="template-info">
-								<p class="fs-12 text-muted mb-4"><?php echo e(__('Rewrite and improve your content with the help of AI in just a second')); ?></p>
-							</div>
 						</div>
 					</div>
 
-					<div class="row">
+					<div class="row right-border">
 						<div class="col-sm-12">
 							<div class="text-left mb-4" id="balance-status">
 								<?php if (isset($component)) { $__componentOriginale3df425532980655235957ec92e7e3b72c498067 = $component; } ?>
@@ -75,25 +69,44 @@
 									</div>
 								</div>								
 							</div>	
+
+							<div class="col-sm-12 brand-details">
+								<div class="form-group mb-5">	
+									<h6 class="fs-11 mb-2 font-weight-semibold"><?php echo e(__('Select Company')); ?></h6>								
+									<select id="company" name="company" class="form-select"  onchange="updateService(this)">		
+										<option value="none"> <?php echo e(__('Select your Company / Brand')); ?></option>
+										<?php $__currentLoopData = $brands; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $brand): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+											<option value="<?php echo e($brand->id); ?>"> <?php echo e(__($brand->name)); ?></option>
+										<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>									
+									</select>
+								</div>
+							</div>
+
+							<div class="col-sm-12 brand-details">
+								<div class="form-group mb-5">
+									<h6 class="fs-11 mb-2 font-weight-semibold"><?php echo e(__('Select Product / Service')); ?> </h6>
+									<select id="service" name="service" class="form-select">
+										<option value="none"><?php echo e(__('Select your Product / Service')); ?></option>
+									</select>
+								</div>
+							</div>
 						<?php endif; ?>							
 
-						<div class="col-sm-12 brand-details">
-							<div class="form-group mb-5">	
-								<h6 class="fs-11 mb-2 font-weight-semibold"><?php echo e(__('Select Company')); ?></h6>								
-								<select id="company" name="company" class="form-select"  onchange="updateService(this)">		
-									<option value="none"> <?php echo e(__('Select your Company / Brand')); ?></option>
-									<?php $__currentLoopData = $brands; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $brand): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-										<option value="<?php echo e($brand->id); ?>"> <?php echo e(__($brand->name)); ?></option>
-									<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>									
-								</select>
-							</div>
+						<div class="col-sm-12">
+							<div class="input-box">	
+								<h6 class="fs-11 mb-2 font-weight-semibold"><?php echo e(__('RSS URL')); ?>  <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>									
+								<div class="form-group relative">						    
+									<input class="form-control" id="url" name="url" placeholder="<?php echo e(__('Enter RSS URL to Fetch')); ?>" required />
+									<button class="btn btn-primary locale-action-button" type="button" style="right: 8px; border-radius: 0.5rem" id="fetch"><?php echo e(__('Fetch RSS')); ?></button>
+								</div> 
+							</div> 
 						</div>
 
-						<div class="col-sm-12 brand-details">
-							<div class="form-group mb-5">
-								<h6 class="fs-11 mb-2 font-weight-semibold"><?php echo e(__('Select Product / Service')); ?> </h6>
-								<select id="service" name="service" class="form-select">
-									<option value="none"><?php echo e(__('Select your Product / Service')); ?></option>
+						<div class="col-sm-12 mb-5">
+							<div id="form-group">
+								<h6 class="fs-11 mb-2 font-weight-semibold"><?php echo e(__('Fetched RSS Titles')); ?></h6>
+								<select id="titles" name="titles" class="form-select">
+									<option></option>																																							
 								</select>
 							</div>
 						</div>
@@ -103,7 +116,7 @@
 								<h6 class="fs-11 mb-2 font-weight-semibold"><?php echo e(__('Language')); ?></h6>								
 								<select id="language" name="language" class="form-select" data-placeholder="<?php echo e(__('Select input language')); ?>">		
 									<?php $__currentLoopData = $languages; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $language): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-										<option value="<?php echo e($language->language_code); ?>" data-img="<?php echo e(theme_url($language->language_flag)); ?>" <?php if(auth()->user()->default_template_language == $language->language_code): ?> selected <?php endif; ?>> <?php echo e(__($language->language)); ?></option>
+										<option value="<?php echo e($language->language_code); ?>" data-img="<?php echo e(theme_url($language->language_flag)); ?>" <?php if(auth()->user()->default_template_language == $language->language_code): ?> selected <?php endif; ?>> <?php echo e($language->language); ?></option>
 									<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>									
 								</select>
 								<?php $__errorArgs = ['language'];
@@ -118,32 +131,6 @@ endif;
 unset($__errorArgs, $__bag); ?>	
 							</div>
 						</div>
-
-						<div class="col-sm-12">
-							<div class="input-box">	
-								<h6 class="fs-11 mb-2 font-weight-semibold"><?php echo e(__('Target Text')); ?>  <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>									
-								<div class="form-group">						    
-									<textarea rows="15" cols="50" type="text" class="form-control <?php $__errorArgs = ['prompt'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-danger <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" id="prompt" name="prompt" placeholder="<?php echo e(__('Paste your text that you wish to rewrite or improve...')); ?>" required></textarea>
-									<?php $__errorArgs = ['prompt'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-										<p class="text-danger"><?php echo e($errors->first('prompt')); ?></p>
-									<?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-								</div> 
-							</div> 
-						</div>	
 						
 						<div class="col-sm-12">
 							<div class="form-group">	
@@ -253,7 +240,7 @@ unset($__errorArgs, $__bag); ?>
 					<div class="card-footer border-0 text-center p-0">						
 						<div class="w-100 pt-2 pb-2">
 							<div class="text-center">
-								<button type="submit" name="submit" class="btn btn-primary  pl-9 pr-9 fs-11 pt-2 pb-2" id="generate"><?php echo e(__('Rewrite')); ?></button>
+								<button type="submit" name="submit" class="btn btn-primary  pl-9 pr-9 fs-11 pt-2 pb-2" id="generate"><?php echo e(__('Generate')); ?></button>
 							</div>
 						</div>							
 					</div>	
@@ -262,9 +249,9 @@ unset($__errorArgs, $__bag); ?>
 			</div>			
 		</div>
 
-		<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
+		<div class="col-lg-7 col-md-12 col-sm-12">
 			<div class="card border-0" id="template-output">
-				<div class="card-body p-5">
+				<div class="card-body p-5 pt-7">
 					<div class="row">						
 						<div class="col-lg-4 col-md-12 col-sm-12">								
 							<div class="input-box mb-2">								
@@ -333,19 +320,21 @@ unset($__errorArgs, $__bag); ?>
 	</div>
 </form>
 <div class="modal fade" id="info-alert-model" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog">
- 	<div class="modal-dialog modal-dialog-centered modal-xl">
- 		<div class="modal-content">
- 			<div class="modal-header">
+ 		<div class="modal-dialog modal-dialog-centered modal-xl">
+ 			<div class="modal-content">
+ 				<div class="modal-header">
  				<h2></h2>
  				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
  				<span aria-hidden="true">&times;</span>
  				</button>
- 			</div>
+ 				</div>
  			<div class="modal-body">
  				<div class="row">
- 					<!--ARCADE EMBED START-->
- 					<div style="position: relative; padding-bottom: calc(56.25% + 41px); height: 0; width: 100%;"><iframe src="https://demo.arcade.software/LXPGxacwr53fmSauZH3R?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true" title="AI ReWriter" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; color-scheme: light;" ></iframe></div>
- 					<!--ARCADE EMBED END-->
+ 					<div style="position: relative; padding-bottom: calc(46.925329428989755% + 41px); height: 0; width: 100%">
+ 						<!--ARCADE EMBED START-->
+ 							<div style="position: relative; padding-bottom: calc(56.25% + 41px); height: 0; width: 100%;"><iframe src="https://demo.arcade.software/ZVpWII01twCvBWK6BN86?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true" title="AI RSS" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; color-scheme: light;" ></iframe></div>
+ 						<!--ARCADE EMBED END-->						
+ 					</div>
  				</div>
  			</div>
  		</div>
@@ -400,13 +389,13 @@ unset($__errorArgs, $__bag); ?>
 							formData.append( 'prompt', $(event.srcElement).val() );
 							formData.append( 'content', editor.selection.getContent() );
 							let language = document.getElementById('language').value;
-							 formData.append( 'language', language );
+							formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 							document.querySelector('#loader-line')?.classList?.remove('hidden'); 
 							$.ajax( {
 								headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 								type: "post",
-								url: "/app/user/rewriter/custom",
+								url: "/app/app/user/rewriter/custom",
 								data: formData,
 								contentType: false,
 								processData: false,
@@ -441,7 +430,7 @@ unset($__errorArgs, $__bag); ?>
 							formData.append( 'prompt', 'Rewrite the following text');
 							formData.append( 'content', editor.selection.getContent() );
 							let language = document.getElementById('language').value;
-							 formData.append( 'language', language );
+							formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 							document.querySelector('#loader-line')?.classList?.remove('opacity-on');
 							$.ajax( {
@@ -485,7 +474,7 @@ unset($__errorArgs, $__bag); ?>
 							formData.append( 'prompt', 'Summarize below content professionally' );
 							formData.append( 'content', editor.selection.getContent() );
 							let language = document.getElementById('language').value;
-							 formData.append( 'language', language );
+							formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 							document.querySelector('#loader-line')?.classList?.remove('hidden');
 							$.ajax( {
@@ -529,7 +518,7 @@ unset($__errorArgs, $__bag); ?>
 							formData.append( 'prompt', 'Rewrite below content professionally' );
 							formData.append( 'content', editor.selection.getContent() );
 							let language = document.getElementById('language').value;
-							 formData.append( 'language', language );
+							formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 							document.querySelector('#loader-line')?.classList?.remove('hidden');
 							$.ajax( {
@@ -573,9 +562,7 @@ unset($__errorArgs, $__bag); ?>
 							formData.append( 'prompt', 'Simplify the content below with basic words and make it clear' );
 							formData.append( 'content', editor.selection.getContent() );
 							let language = document.getElementById('language').value;
-							  formData.append( 'language', language );
-							formData.append('model', document.getElementById("model").value);
-							formData.append('model', document.getElementById("model").value);
+							formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 							document.querySelector('#loader-line')?.classList?.remove('hidden');
 							$.ajax( {
@@ -619,8 +606,7 @@ unset($__errorArgs, $__bag); ?>
 							formData.append( 'prompt', 'Make below content longer' );
 							formData.append( 'content', editor.selection.getContent() );
 							let language = document.getElementById('language').value;
-							  formData.append( 'language', language );
-							formData.append('model', document.getElementById("model").value);
+							formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 							document.querySelector('#loader-line')?.classList?.remove('hidden');
 							$.ajax( {
@@ -664,7 +650,7 @@ unset($__errorArgs, $__bag); ?>
 							formData.append( 'prompt', 'Make below content shorter' );
 							formData.append( 'content', editor.selection.getContent() );
 							let language = document.getElementById('language').value;
-							 formData.append( 'language', language );
+							formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 							document.querySelector('#loader-line')?.classList?.remove('hidden');
 							$.ajax( {
@@ -708,7 +694,7 @@ unset($__errorArgs, $__bag); ?>
 							formData.append( 'prompt', 'Fix grammatical mistakes in below content' );
 							formData.append( 'content', editor.selection.getContent() );
 							let language = document.getElementById('language').value;
-							 formData.append( 'language', language );
+							formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 							document.querySelector('#loader-line')?.classList?.remove('hidden');
 							$.ajax( {
@@ -758,7 +744,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in professional tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -802,7 +788,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in casual tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -846,7 +832,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in exciting tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -890,7 +876,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in friendly tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -934,7 +920,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in witty tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -978,7 +964,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in humorous tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1022,7 +1008,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in convincing tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1066,7 +1052,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in empathetic tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1110,7 +1096,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in inspiring tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1154,7 +1140,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in supportive tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1198,7 +1184,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in trusting tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1242,7 +1228,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in playful tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1286,7 +1272,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in positive tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1330,7 +1316,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in negative tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1374,7 +1360,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in engaging tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1418,7 +1404,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in worried tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1462,7 +1448,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in urgent tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1506,7 +1492,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in passionate tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1550,7 +1536,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in informative tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1594,7 +1580,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in funny tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1638,7 +1624,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in sarcastic tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1682,7 +1668,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below in dramatic tone' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1735,7 +1721,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below using business style of writing' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1779,7 +1765,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below using legal style of writing' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1823,7 +1809,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below using journalist style of writing' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1867,7 +1853,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below using medical style of writing' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -1911,7 +1897,7 @@ unset($__errorArgs, $__bag); ?>
 									formData.append( 'prompt', 'Rewrite the content below using poetic style of writing' );
 									formData.append( 'content', editor.selection.getContent() );
 									let language = document.getElementById('language').value;
-									 formData.append( 'language', language );
+									formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 									document.querySelector('#loader-line')?.classList?.remove('hidden');
 									$.ajax( {
@@ -3913,7 +3899,7 @@ unset($__errorArgs, $__bag); ?>
 						formData.append( 'prompt', data.user_prompt);
 						formData.append( 'content', tinymce.activeEditor.getContent( { format: 'text' } ) );
 						let language = document.getElementById('language').value;
-						 formData.append( 'language', language );
+						formData.append( 'language', language );
 							formData.append('model', document.getElementById("model").value);
 						document.querySelector('#loader-line')?.classList?.remove('opacity-on');
 
@@ -4012,9 +3998,57 @@ unset($__errorArgs, $__bag); ?>
 
 		tinyMCE.init( tinymceOptions );
 
+		
+		// FETCH RSS
+		$('#fetch').on('click', function(e) {
+
+			e.preventDefault();
+
+			let url = document.getElementById("url");
+			if (url == null || url.value === "") {
+				toastr.warning('<?php echo e(__("Please provide RSS URL first")); ?>');
+			} else {
+
+				$.ajax({
+				headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+				method: 'POST',
+				url: '/app/user/rss/fetch',
+				data: {'url': url.value},
+				beforeSend: function() {					
+					$('#fetch').prop('disabled', true);
+					let btn = document.getElementById('fetch');					
+					btn.innerHTML = loading;  
+					document.querySelector('#loader-line')?.classList?.remove('opacity-on');
+				},			
+				success: function (data) {	
+
+					if (data['status'] == 'error') {
+						toastr.warning(data['message']);
+					} else {					
+						$('#titles').empty();
+                        $('#titles').append(data['options']);
+                        toastr.success('<?php echo e(__('RSS Fetched Successifuly')); ?>');
+					}
+
+					$('#fetch').prop('disabled', false);
+					let btn = document.getElementById('fetch');					
+					btn.innerHTML = '<?php echo e(__('Fetch RSS')); ?>';
+					document.querySelector('#loader-line')?.classList?.add('hidden'); 
+				},
+				
+				error: function(data) {
+					$('#fetch').prop('disabled', false);
+					$('#fetch').html('<?php echo e(__('Fetch RSS')); ?>'); 
+					document.querySelector('#loader-line')?.classList?.add('hidden'); 
+					console.log(data)
+				}
+			});	
+			}
+		});
+
 
 		// SUBMIT FORM
-		$('#openai-form').on('submit', function(e) {
+		$('#rss-form').on('submit', function(e) {
 
 			e.preventDefault();
 
@@ -4023,7 +4057,7 @@ unset($__errorArgs, $__bag); ?>
 			$.ajax({
 				headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 				method: 'POST',
-				url: '/app/user/rewriter/generate',
+				url: '/app/user/rss/generate',
 				data: form.serialize(),
 				beforeSend: function() {					
 					$('#generate').prop('disabled', true);
@@ -4036,11 +4070,11 @@ unset($__errorArgs, $__bag); ?>
 					if (data['status'] == 'error') {
 						$('#generate').prop('disabled', false);
 						let btn = document.getElementById('generate');					
-						btn.innerHTML = '<?php echo e(__('Rewrite')); ?>';
+						btn.innerHTML = '<?php echo e(__('Generate')); ?>';
 						toastr.warning(data['message']);
 						document.querySelector('#loader-line')?.classList?.add('hidden'); 
 					} else {					
-						const eventSource = new EventSource( "/app/user/rewriter/process?content_id=" + data.id+"&max_results=" + data.max_results + "&temperature=" + data.temperature + "&language=" + data.language);
+						const eventSource = new EventSource( "/app/user/rss/process?content_id=" + data.id+"&model=" + data.model + "&temperature=" + data.temperature + "&language=" + data.language);
 
 						let save = document.getElementById('save-button-template');
 						save.setAttribute('target', data['id']);
@@ -4051,7 +4085,7 @@ unset($__errorArgs, $__bag); ?>
 								eventSource.close();
 								$('#generate').prop('disabled', false);
 								let btn = document.getElementById('generate');					
-								btn.innerHTML = '<?php echo e(__('Rewrite')); ?>'; 
+								btn.innerHTML = '<?php echo e(__('Generate')); ?>'; 
 								var $body = $(tinymce.activeEditor.getBody());
 								$body.find('p:last').append('<br><br>');
 								document.querySelector('#loader-line')?.classList?.add('hidden');  
@@ -4061,7 +4095,7 @@ unset($__errorArgs, $__bag); ?>
 								console.log(e.data)
 								$('#generate').prop('disabled', false);
 								let btn = document.getElementById('generate');					
-								btn.innerHTML = '<?php echo e(__('Rewrite')); ?>'; 
+								btn.innerHTML = '<?php echo e(__('Generate')); ?>'; 
 								document.querySelector('#loader-line')?.classList?.add('hidden');   
 							} else {
 
@@ -4084,7 +4118,7 @@ unset($__errorArgs, $__bag); ?>
 							eventSource.close();
 							$('#generate').prop('disabled', false);
 							let btn = document.getElementById('generate');					
-							btn.innerHTML = '<?php echo e(__('Rewrite')); ?>';  
+							btn.innerHTML = '<?php echo e(__('Generate')); ?>';  
 							document.querySelector('#loader-line')?.classList?.add('hidden'); 
 						};
 					}
@@ -4092,7 +4126,7 @@ unset($__errorArgs, $__bag); ?>
 				
 				error: function(data) {
 					$('#generate').prop('disabled', false);
-					$('#generate').html('<?php echo e(__('Rewrite')); ?>'); 
+					$('#generate').html('<?php echo e(__('Generate')); ?>'); 
 					document.querySelector('#loader-line')?.classList?.add('hidden'); 
 					console.log(data)
 				}
@@ -4139,7 +4173,7 @@ unset($__errorArgs, $__bag); ?>
 			$.ajax({
 				headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
 				method: 'POST',
-				url: '/app/user/rewriter/save',
+				url: '/app/user/rss/save',
 				data: { 'id': event.target, 'text': textarea, 'workbook': workbook, 'language': language.value, 'title': title},
 				success: function (data) {					
 					if (data['status'] == 'success') {
@@ -4324,4 +4358,4 @@ unset($__errorArgs, $__bag); ?>
 
 </script>
 <?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /home/customer/www/staging.paraclete.ai/public_html/resources/views/default/user/rewriter/index.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /home/customer/www/staging.paraclete.ai/public_html/resources/views/classic/user/rss/index.blade.php ENDPATH**/ ?>

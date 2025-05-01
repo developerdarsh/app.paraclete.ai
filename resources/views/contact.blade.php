@@ -63,7 +63,7 @@
                                             <p>{{ __('Drop us an email and you will receive a reply within a short time.') }}</p>
                                         </div>
                                         <div class="contact-info">
-                                            <a class="text-muted fs-12" href="mailto:info@davinci.ai" rel="nofollow">info@davinci.ai</a>
+                                            <a class="text-muted fs-12" href="mailto:info@davinci.ai" rel="nofollow">info@davinci.aijd</a>
                                         </div>
                                     </div>
                                 </div>

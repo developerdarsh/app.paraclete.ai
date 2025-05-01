@@ -350,7 +350,6 @@ class ChatController extends Controller
                         $openai_api = config('services.openai.key');
                     }
                 }
-    
                 if (is_null($openai_api) || $openai_api == '') {
                     return response()->stream(function () {
                         echo 'data: OpenAI Notification: <span class="font-weight-bold">Missing OpenAI API key</span>. Please contact support team.';
@@ -653,7 +652,7 @@ class ChatController extends Controller
                         'include_usage' => true,
                     ]
                 ]);
-
+				Log::info('StreamResponse received', ['type' => $stream]);
                 foreach ($stream as $result) {
 
                     if (isset($result->choices[0]->delta->content)) {
@@ -3078,9 +3077,47 @@ class ChatController extends Controller
         
     }
 
-    public function audioConvert(Request $request)
+     public function saveAudio(Request $request)
     {
-        $conversation_id = $request->conversation_id;
+        $audio = $request->file('audio');
+        $format = $audio->getClientOriginalExtension();
+        $file_name = $audio->getClientOriginalName();
+        $size = $audio->getSize();
+        $name = Str::random(10) . '.' . $format;
+        if (config('settings.whisper_default_storage') == 'local') {
+            $audio_url = $audio->store('transcribe','public');
+        } elseif (config('settings.whisper_default_storage') == 'aws') {
+            Storage::disk('s3')->put($name, file_get_contents($audio));
+            $audio_url = Storage::disk('s3')->url($name);
+        } elseif (config('settings.whisper_default_storage') == 'wasabi') {
+            Storage::disk('wasabi')->put($name, file_get_contents($audio));
+            $audio_url = Storage::disk('wasabi')->url($name);
+        }
+        
+        if (config('settings.whisper_default_storage') == 'local') {
+            $file = curl_file_create($audio_url);
+        } else {
+            $curl = curl_init();
+            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+            curl_setopt($curl, CURLOPT_URL, $audio_url);
+            $content = curl_exec($curl);
+            Storage::disk('public')->put('transcribe/' . $file_name, $content);
+            $file = curl_file_create('transcribe/' . $file_name);
+            curl_close($curl);
+            
+        }
+		$open_ai = new OpenAi(config('services.openai.key')); 
+       	$complete = $open_ai->translate([
+			'model' => 'whisper-1',
+			'file' => $file,
+			'prompt' => "",
+		]);
+        $response = json_decode($complete , true);
+		
+		return response()->json(['response' => $response, 'message' => 'Audio recorded successfully']);
+    }
+    public function audioConvert(Request $request){
+		$conversation_id = $request->conversation_id;
         $chat_message = ChatHistory::where('conversation_id', $conversation_id)->orderBy('created_at', 'desc')->first();
         $messages = $chat_message->response;
         $chat_conversation = ChatConversation::where('conversation_id', $conversation_id)->first();
@@ -3089,24 +3126,22 @@ class ChatController extends Controller
         // $i = count($messages)-1;
         $lastAssistantData['voice_code'] = $voice_code->voice_code;
         $lastAssistantData['data'] = $messages;
-        return $lastAssistantData;
+        return  $lastAssistantData;
     }
-
     public function convertTextToAudio(Request $request)
     {
         // language_code , voice_id
-        $text = $request->text;
-        if ($request->voiceCode == 1) {
-            $voice = Voice::where('id', 208)->first();
-        } else {
-            $voice = Voice::where('id', 424)->first();
-        }
-
+		$text = $request->text;
+		if($request->voiceCode == 1){
+			$voice = Voice::where('id', 208)->first();
+		} else {
+			$voice = Voice::where('id', 424)->first();
+		}
+        
         $format = 'mp3';
         $file_name = 'LISTEN--' . Str::random(10) . '.mp3';
         $azure = new AzureTTSService();
         return $azure->synthesizeSpeech($voice, $text, $format, $file_name);
-    }
-
+    } 
 
 }
