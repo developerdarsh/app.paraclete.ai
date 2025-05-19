@@ -72,11 +72,94 @@
 
 				<div class="changelog">
 					<div class="changelog-version mt-5">
-						<span class="version-name">{{ __('Version') }} 7.1</span> - <span class="fs-14 font-weight-semibold">06.04.2025</span>
+						<span class="version-name">{{ __('Version') }} 7.5</span> - <span class="fs-14 font-weight-semibold">12.05.2025</span>
 					</div>   
 					<div class="changelog-description mt-6">     
 						<ul>	 	 				     
-							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">AI Speech to Text Pro extension added (Paid)</span></li>	
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">AI Speech to Text Pro (Paid)</span></span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Gift System has been updated</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Saas Business extension updated (v2.1)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Wordpress Integration extension updated (v1.2)</span></li>
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
+						<span class="version-name">{{ __('Version') }} 7.4</span> - <span class="fs-14 font-weight-semibold">10.05.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Wallet System added (Free)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Gift Card System added</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Wallet Balance transfer option between users added</span></span></li>										
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Saas Business extension updated (v2.0)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Modern theme updated (v1.3)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Sonic theme updated (v1.7)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Classic theme updated (v1.7)</span></li>
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
+						<span class="version-name">{{ __('Version') }} 7.3</span> - <span class="fs-14 font-weight-semibold">5.05.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New OpenAI o4 mini | o3 | GPT 4.1 | GPT 4.1 mini | GPT 4.1 nano models added</span></li>	
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New OpenAI GPT 4o Search Preview | GPT 4o mini Search Preview models with Web Search capabilities added</span></li>	
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Saas Business extension updated (v1.9)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Chat Share extension updated (v1.2)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Faceswap extension updated (v1.2)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Custom template creation feature updated</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Writer results saving improved</span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">AI Writer result view issue fixed</span></li>											
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Documents results view minor issue fixed</span></li>											
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
+						<span class="version-name">{{ __('Version') }} 7.2</span> - <span class="fs-14 font-weight-semibold">28.04.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Coinremitter cryptocurrency payment gateway added (Paid)</span></li>	
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">TikTok added to Social Media Suite</span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Premium Support package option added</span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Premium Extension package option added</span></li>							
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Stripe Free Trial days option added</span></li>	
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New Documentation v2 released</span></li>								
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Social Media Suite updated (1.3)</span></li>											
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">API Credit Management mechanism updated</span></li>																		
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">User can set default Image model as well now for AI Images feature</span></li>				
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Youtube feature improved</span></li>	
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Saas Business Extension updated (v1.8)</span></li>																																					
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">o1 mini model response issue fixed</span></li>						
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Claude models credit calculations fixed</span></li>												
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">AI Vision credit consumption improved</span></li>						
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Smart Editor credit consumption improved</span></li>						
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Chat share extension installation fixed (v1.1)</span></li>											
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
+						<span class="version-name">{{ __('Version') }} 7.1</span> - <span class="fs-14 font-weight-semibold">14.04.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     	
 							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Xero integration extension added (Free)</span></li>
 							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Amazon Bedrock extension added (Free)</span></li>
 							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Azure OpenAI extension added (Free)</span></li>
@@ -131,8 +214,7 @@
 					<div class="changelog-description mt-6"> 
 						<ul>								
 							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">External Chatbots extension added (Paid)</span></li>														
-							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">AI Realtime Voice Chat extension added (Paid)</span></li>														
-							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">SEO Tool extension added (Paid)</span></li>														
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">AI Realtime Voice Chat extension added (Paid)</span></li>																												
 							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">AI Textract extension added (Paid)</span></li>																															
 							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Hubspot extension added (Free)</span></li>														
 							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Mailchimp extension added (Free)</span></li>														

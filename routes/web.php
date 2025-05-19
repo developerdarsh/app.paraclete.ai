@@ -101,7 +101,7 @@ Route::middleware(['middleware' => 'PreventBackHistory'])->group(function () {
 Route::get('/pdf',function(){
      return view('user.resume.pdf');
  });
-  
+
 Route::group(['prefix' => 'user', 'middleware' => ['verified', 'cors' , '2fa.verify', 'role:user|admin|subscriber', 'PreventBackHistory']], function() {
     Route::get('/elementor', [TrainingVideoController::class, 'viewElementor'])->name('user.elementor');
 });
@@ -142,7 +142,9 @@ Route::controller(ActivationController::class)->group(function() {
 
 Route::controller(ChatController::class)->group(function() {
     Route::get('/app/chat/share/{uuid}', 'showChatShare')->name('app.chat.share');
-    Route::post('/app/chat/process', 'processChatShare');
+    Route::post('/app/chat/share/process', 'processChatShare');
+    Route::get('/app/chat/share', 'generateChatShare');
+    Route::post('/app/chat/history', 'sharedHistory'); 
 });
 
 Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']], function () {
@@ -556,6 +558,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 Route::post('/marketplace/purchase/install/{slug}', 'installExtension')->name('admin.extension.install');
                 Route::get('/marketplace/purchase/{slug}', 'showExtension')->name('admin.extension.show');
                 Route::post('/marketplace/purchase/{slug}', 'purchaseExtension')->name('admin.extension.purchase');
+                Route::get('/marketplace/purchase/package/{slug}', 'purchasePackage')->name('admin.extension.purchase.package');
                 Route::get('/marketplace/activate/{slug}', 'activateExtension')->name('admin.extension.activate');
             });
     
@@ -691,7 +694,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 Route::get('/chat/generate/custom', 'generateCustomChat');   
                 Route::get('/chat/ephemeral', 'getEphemeralKey')->name('user.chat.ephemeral');             
                 Route::post('/chat/conversation', 'conversation');                
-                Route::post('/chat/history', 'history');                
+                Route::post('/chat/history', 'history');                                  
                 Route::post('/chat/model', 'model');                
                 Route::post('/chat/rename', 'rename');
                 Route::post('/chat/listen', 'listen');
@@ -704,7 +707,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 Route::post('/chat/update-words', 'updateWords');
                 Route::get('chat/convert-text-to-audio', 'convertTextToAudio')->name('convert-text-to-audio');
                 Route::post('/chat/storeRealtime', 'storeRealtimeMessage');
-                Route::post('/chat/storeChatShare', 'storeChatShare');
+                Route::post('/chat/share/generate', 'storeChatShare');
             });
 
             // USER SPEECH TO TEXT ROUTES
@@ -889,7 +892,11 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 Route::put('/profile/update/defaults', 'updateDefaults')->name('user.profile.update.defaults'); 
                 Route::post('/profile/change/referral', 'updateReferral');     
                 Route::post('/profile/settings', 'themeSetting');     
-                Route::post('/profile/email', 'emailNewsletter');     
+                Route::post('/profile/email', 'emailNewsletter');
+                Route::get('/profile/wallet', 'showWallet')->name('user.wallet');     
+                Route::put('/profile/wallet/store', 'storeWallet')->name('user.wallet.store');    
+                Route::post('/profile/wallet/transfer', 'transferWallet')->name('user.wallet.transfer');    
+                Route::get('/profile/wallet/transfer/list', 'transferList')->name('user.wallet.transfer.list'); 
             });      
 
             // USER TEAM MANAGEMENT ROUTES
@@ -927,7 +934,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
             });    
 
             // USER SEARCH ROUTES
-            Route::any('/search', [SearchController::class, 'index'])->name('search'); 
+            Route::any('/search', [SearchController::class, 'index'])->name('search');
 
             // USER TRAINING VIDEO ROUTES
             Route::controller(TrainingVideoController::class)->group(function () {
@@ -949,8 +956,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 Route::get('/videos/download', 'videoDownload')->name('user.videos.download');
                 Route::get('/videos/pdfdownload', 'pdfDownload')->name('user.videos.pdfdownload');
                 Route::get('/smart-ads', [TrainingVideoController::class, 'viewSmartAds'])->name('user.smart.ads');
-            });
- 
+            }); 
+
             //AI RESUME
             Route::controller(AiResumeController::class)->group(function () {
                 Route::get('/resume', 'index')->name('user.resume');

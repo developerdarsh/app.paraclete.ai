@@ -60,7 +60,7 @@
 				"lengthMenu": [[25, 50, 100, -1], [25, 50, 100, "All"]],
 				responsive: true,
 				colReorder: true,
-				"order": [[ 3, "desc" ]],	
+				"order": [[ 4, "desc" ]],	
 				language: {
 					"emptyTable": "<div><img id='no-results-img' src='{{ theme_url('img/files/no-result.png') }}'><br>{{ __('There are no saved documents yet') }}</div>",
 					"info": "{{ __('Showing page') }} _PAGE_ {{ __('of') }} _PAGES_",
@@ -110,8 +110,8 @@
 						searchable: true
 					},
 					{
-						data: 'tokens',
-						name: 'tokens',
+						data: 'cost',
+						name: 'cost',
 						orderable: true,
 						searchable: true
 					},										

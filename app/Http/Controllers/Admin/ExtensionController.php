@@ -60,22 +60,28 @@ class ExtensionController extends Controller
             $status = $response->json('status');
             $data = $response->json('data');
 
-            $extension = Extension::where('slug', $slug)->first();
+            if ($slug == 'premier') {
+                return $status == 'succeeded' ? $data : [];
+            } elseif ($slug == 'support') {
+                return $status == 'active' ? $data : [];
+            } else {
+                $extension = Extension::where('slug', $slug)->first();
             
-            if ($status == 'succeeded') {
+                if ($status != 'succeeded') {
+                    return [];
+                }
+
                 $extension->purchased = true;
                 $extension->save();
-
+                
                 return array_merge($data, [
                     'latest_version' => $extension?->version,
                     'installed' => (bool) $extension?->installed,
                     'upgradable' => $extension?->version !== $data['version'],
                     'purchased' => true
                 ]);
-
-            } else {
-                return [];
             }
+            
             
         }
 

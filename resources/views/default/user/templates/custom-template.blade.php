@@ -146,12 +146,8 @@
 
 						<div class="col-sm-12">
 							<div class="form-group">	
-								<h6 class="fs-11 mb-2 font-weight-semibold">{{ __('AI Model') }}</h6>	
-									@if ($template->model_mode == 'fixed')
-										<x-custom-template-models :template="$template"/>
-									@else
-										<x-original-template-models />
-									@endif																
+								<h6 class="fs-11 mb-2 font-weight-semibold">{{ __('AI Model') }}</h6>
+									<x-original-template-models />															
 								</select>	
 							</div>
 						</div>
@@ -329,9 +325,6 @@
 					<div>						
 						<div id="template-textarea">						
 							<textarea class="form-control" id="tinymce-editor" rows="25"></textarea>
-							<div>
-								<p class="text-muted fs-12 total-words-templates-box">{{ __('Total Words') }}: <span id="total-words-templates"></span></p>
-							</div>
 						</div>	
 				</div>
 			</div>
@@ -345,6 +338,9 @@
 <script src="{{URL::asset('plugins/character-count/jquery-simple-txt-counter.min.js')}}"></script>
 <script src="{{URL::asset('plugins/tinymce/tinymce.min.js')}}"></script>
 <script src="{{URL::asset('plugins/markdown/markdown-it.min.js') }}"></script>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/2.4.0/purify.min.js"></script>  
+<script src="https://cdn.jsdelivr.net/npm/prismjs/prism.js"></script>
 <script src="{{theme_url('js/export.js')}}"></script>
 <script type="text/javascript">
 	let loading = `<span class="loading">
@@ -364,6 +360,12 @@
 
 		const tinymceOptions = {
 			selector: '#tinymce-editor',
+			content_style: `
+				body h1 { font-size: 20px}
+				body h2 { font-size: 18px }
+				body h3, h4, h5 { font-size: 16px }
+				body p { font-size: 14px; }
+			`,
 			menubar: false,
 			statusbar: false,
 			toolbar_sticky: true,
@@ -446,9 +448,7 @@
 										editor.selection.setContent( data.message );
 										document.querySelector('#loader-line')?.classList?.add('hidden'); 
 										//calculateCredits();  
-										let count = tinymce.activeEditor.plugins.wordcount.getCount();
-										let words = document.getElementById('total-words-templates');
-										words.innerHTML = count;
+										  
 									} else {
 										toastr.warning(data.message);
 										document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -490,9 +490,7 @@
 										editor.selection.setContent( data.message );
 										document.querySelector('#loader-line')?.classList?.add('hidden');
 										//calculateCredits();   
-										let count = tinymce.activeEditor.plugins.wordcount.getCount();
-										let words = document.getElementById('total-words-templates');
-										words.innerHTML = count;
+										  
 									} else {
 										toastr.warning(data.message);
 										document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -534,9 +532,7 @@
 										editor.selection.setContent( data.message );
 										document.querySelector('#loader-line')?.classList?.add('hidden'); 
 										//calculateCredits();  
-										let count = tinymce.activeEditor.plugins.wordcount.getCount();
-										let words = document.getElementById('total-words-templates');
-										words.innerHTML = count;
+										  
 									} else {
 										toastr.warning(data.message);
 										document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -578,9 +574,7 @@
 										editor.selection.setContent( data.message );
 										document.querySelector('#loader-line')?.classList?.add('hidden'); 
 										//calculateCredits(); 
-										let count = tinymce.activeEditor.plugins.wordcount.getCount();
-										let words = document.getElementById('total-words-templates');
-										words.innerHTML = count; 
+										   
 									} else {
 										toastr.warning(data.message);
 										document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -622,9 +616,7 @@
 										editor.selection.setContent( data.message );
 										document.querySelector('#loader-line')?.classList?.add('hidden'); 
 										//calculateCredits();  
-										let count = tinymce.activeEditor.plugins.wordcount.getCount();
-										let words = document.getElementById('total-words-templates');
-										words.innerHTML = count;
+										  
 									} else {
 										toastr.warning(data.message);
 										document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -666,9 +658,7 @@
 										editor.selection.setContent( data.message );
 										document.querySelector('#loader-line')?.classList?.add('hidden'); 
 										//calculateCredits(); 
-										let count = tinymce.activeEditor.plugins.wordcount.getCount();
-										let words = document.getElementById('total-words-templates');
-										words.innerHTML = count; 
+										   
 									} else {
 										toastr.warning(data.message);
 										document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -710,9 +700,7 @@
 										editor.selection.setContent( data.message );
 										document.querySelector('#loader-line')?.classList?.add('hidden'); 
 										//calculateCredits();  
-										let count = tinymce.activeEditor.plugins.wordcount.getCount();
-										let words = document.getElementById('total-words-templates');
-										words.innerHTML = count;
+										  
 									} else {
 										toastr.warning(data.message);
 										document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -760,9 +748,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -804,9 +790,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -848,9 +832,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -892,9 +874,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden');
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count; 
+												   
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -936,9 +916,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -980,9 +958,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1024,9 +1000,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden');
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count; 
+												   
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1068,9 +1042,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1112,9 +1084,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1156,9 +1126,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1200,9 +1168,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1244,9 +1210,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden');
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count; 
+												   
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1288,9 +1252,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1332,9 +1294,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1376,9 +1336,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1420,9 +1378,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1464,9 +1420,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden');
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count; 
+												   
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1508,9 +1462,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1552,9 +1504,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1596,9 +1546,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1640,9 +1588,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden');
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count; 
+												   
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1684,9 +1630,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden');
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count; 
+												   
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1737,9 +1681,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1781,9 +1723,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1825,9 +1765,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden');
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count; 
+												   
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1869,9 +1807,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1913,9 +1849,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -1963,9 +1897,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2004,9 +1936,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2045,9 +1975,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden');
 												//calculateCredits();   
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2086,9 +2014,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2127,9 +2053,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2167,9 +2091,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2208,9 +2130,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2249,9 +2169,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2290,9 +2208,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2331,9 +2247,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2372,9 +2286,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2413,9 +2325,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2454,9 +2364,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2495,9 +2403,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits(); 
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count; 
+												   
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2536,9 +2442,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2577,9 +2481,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2618,9 +2520,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2659,9 +2559,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2700,9 +2598,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2741,9 +2637,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2782,9 +2676,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2823,9 +2715,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2864,9 +2754,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2905,9 +2793,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2946,9 +2832,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -2987,9 +2871,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3028,9 +2910,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3069,9 +2949,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3109,9 +2987,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3150,9 +3026,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden');
 												//calculateCredits();   
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3191,9 +3065,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3232,9 +3104,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3273,9 +3143,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3314,9 +3182,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits(); 
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count; 
+												   
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3355,9 +3221,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3395,9 +3259,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3436,9 +3298,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden');
 												//calculateCredits();   
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3477,9 +3337,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3518,9 +3376,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3559,9 +3415,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits(); 
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count; 
+												   
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3600,9 +3454,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits(); 
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count; 
+												   
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3641,9 +3493,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3682,9 +3532,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3723,9 +3571,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3764,9 +3610,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits();  
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3805,9 +3649,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden');
 												//calculateCredits();   
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count;
+												  
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3846,9 +3688,7 @@
 												editor.selection.setContent( data.message );
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
 												//calculateCredits(); 
-												let count = tinymce.activeEditor.plugins.wordcount.getCount();
-												let words = document.getElementById('total-words-templates');
-												words.innerHTML = count; 
+												   
 											} else {
 												toastr.warning(data.message);
 												document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -3916,9 +3756,7 @@
 										tinymce.activeEditor.setContent( data.message );
 										document.querySelector('#loader-line')?.classList?.add('hidden'); 
 										//calculateCredits();  
-										let count = tinymce.activeEditor.plugins.wordcount.getCount();
-										let words = document.getElementById('total-words-templates');
-										words.innerHTML = count;
+										  
 									} else {
 										toastr.warning(data.message);
 										document.querySelector('#loader-line')?.classList?.add('hidden'); 
@@ -4027,8 +3865,20 @@
 		$('#openai-form').on('submit', function(e) {
 
 			e.preventDefault();
-
 			let form = $(this);
+
+			marked.setOptions({
+				breaks: true,
+				gfm: true,
+				headerIds: false,
+				mangle: false,
+				highlight: function(code, lang) {
+					if (typeof Prism !== 'undefined' && Prism.languages[lang]) {
+						return Prism.highlight(code, Prism.languages[lang], lang);
+					}
+					return code;
+				}
+			});
 
 			$.ajax({
 				headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -4051,6 +3901,12 @@
 						document.querySelector('#loader-line')?.classList?.add('hidden'); 
 
 					} else {
+						const editor = tinymce.activeEditor;
+                        const streamId = `stream-${data.id}`;
+						editor.insertContent(`<div id="${streamId}"></div>`);
+						const streamDiv = editor.dom.select(`#${streamId}`)[0];
+
+						let streamBuffer = ''; // Accumulate raw markdown text
 					
 						const eventSource = new EventSource( "/app/user/templates/original-template/process?content_id=" + data.id+"&max_results=" + data.max_results + "&max_words=" + data.max_words + "&temperature=" + data.temperature);
 
@@ -4062,19 +3918,15 @@
 		
 							if ( e.data == '[DONE]' ) {	
 								eventSource.close();
-								$('#generate').prop('disabled', false);
-								let btn = document.getElementById('generate');					
-								btn.innerHTML = '{{ __('Generate') }}'; 
-								var $body = $(tinymce.activeEditor.getBody());
-								$body.find('p:last').append('<br><br>');
-								document.querySelector('#loader-line')?.classList?.add('hidden');  
-								//calculateCredits();  
+                                $('#generate').prop('disabled', false);
+                                document.getElementById('generate').innerHTML = 'Generate';
+                                document.querySelector('#loader-line').classList.add('hidden');
 
-								let content = tinymce.activeEditor.getContent()
-								console.log(content)
-								let finalResult = content?.replace(/<p>|<\/p>/g, '')?.replace(/<br>|<br\/>/g, '\n');
+								let finalResult = streamBuffer?.replace(/<p>|<\/p>/g, '')?.replace(/<br>|<br\/>/g, '\n');
 								let formattedText = markdownRenderer.render(markdownRenderer.utils.unescapeAll(finalResult));
-								tinyMCE.activeEditor.setContent( formattedText || finalResult );
+
+								renderStream(formattedText, streamDiv, true);
+								editor.insertContent('<br><br>');
 								
 							} else if (e.data == '[ERROR]') {
 								console.log(e.data)
@@ -4082,19 +3934,10 @@
 								let btn = document.getElementById('generate');					
 								btn.innerHTML = '{{ __('Generate') }}'; 
 								document.querySelector('#loader-line')?.classList?.add('hidden');
+
 							}  else {
-
-								let stream = e.data
-								if ( stream && stream !== '[DONE]') {							
-									var $body = $(tinymce.activeEditor.getBody());
-									$body.find('p:last').append(stream);
-								}
-
-								let count = tinymce.activeEditor.plugins.wordcount.getCount();
-								let words = document.getElementById('total-words-templates');
-								words.innerHTML = count;
-
-								//editor.scrollTop += 100;
+								streamBuffer += e.data;
+								renderStream(streamBuffer, streamDiv, false);
 							}
 							
 						};
@@ -4117,6 +3960,42 @@
 			});
 		});
 	});
+
+	function renderStream(text, streamDiv, isFinal = false) {
+		if (!streamDiv) {
+			console.error('streamDiv is not available');
+			return;
+		}
+
+		try {
+			// Normalize line endings to prevent parsing issues
+			let normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+
+			// Parse the entire buffer as markdown
+			let htmlContent = marked.parse(normalizedText);
+
+			// Update TinyMCE editor
+			const editor = tinymce.activeEditor;
+			editor.dom.setHTML(streamDiv, text);
+
+			// Apply syntax highlighting
+			const codeBlocks = editor.dom.select('pre code', streamDiv);
+			if (codeBlocks.length > 0 && typeof Prism !== 'undefined') {
+				codeBlocks.forEach(block => {
+					Prism.highlightElement(block);
+				});
+			}
+
+			// Ensure TinyMCE updates its internal state
+			if (isFinal) {
+				editor.nodeChanged();
+			}
+		} catch (error) {
+			console.error('Error in renderStream:', error);
+			const editor = tinymce.activeEditor;
+			editor.dom.setHTML(streamDiv, `<p>${DOMPurify.sanitize(text)}</p>`);
+		}
+	}
 
 	function favoriteStatus(id) {
 

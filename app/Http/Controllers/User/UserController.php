@@ -13,8 +13,13 @@ use Illuminate\Http\UploadedFile;
 use App\Models\SubscriptionPlan;
 use App\Models\Subscriber;
 use App\Models\Language;
+use App\Models\MainSetting;
 use App\Models\User;
+use App\Models\GiftCard;
+use App\Models\GiftCardUsage;
+use App\Models\GiftCardTransfer;
 use Carbon\Carbon;
+use DataTables;
 use DB;
 
 
@@ -133,7 +138,28 @@ class UserController extends Controller
 
         $check_api_feature = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
 
-        return view('user.profile.default', compact('languages', 'voices', 'template_languages', 'check_api_feature', 'models'));
+        $settings = MainSetting::first();
+
+        if (auth()->user()->plan_id) {
+            $plan = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
+            if ($plan) {
+                if (!is_null($plan->image_vendors)) {
+                    $vendors = explode(',', $plan->image_vendors); 
+                } else {
+                    $vendors = ['openai'];
+                }
+            } else {
+                $vendors = ['openai'];
+            }
+        } else {
+            if (!is_null($settings->image_vendors)) {
+                $vendors = explode(',', $settings->image_vendors);
+            } else {
+                $vendors = ['openai'];
+            }
+        }     
+
+        return view('user.profile.default', compact('languages', 'voices', 'template_languages', 'check_api_feature', 'models', 'vendors'));
     }
 
 
@@ -216,6 +242,7 @@ class UserController extends Controller
             'default_template_language' => 'nullable|string|max:255',
             'default_model_template' => 'nullable|string|max:255',
             'default_model_chat' => 'nullable|string|max:255',
+            'default_image_model' => 'nullable|string|max:255',
         ]));
 
         $user->save();
@@ -387,4 +414,200 @@ class UserController extends Controller
             return $data;
         }  
     }
+
+
+    public function showWallet(Request $request)
+    {           
+        if ($request->ajax()) {
+            $data = GiftCardUsage::where('user_id', auth()->user()->id)->orderBy('created_at', 'DESC')->get();        
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('created-on', function($row){
+                        $created_on = '<span>'.date_format($row["created_at"], 'M d Y').'</span><br><span class="text-muted">'.date_format($row["created_at"], 'H:i A').'</span>';
+                        return $created_on;
+                    })
+                    ->addColumn('custom-code', function($row){
+                        $name = '<span class="font-weight-bold text-info">'.$row['code'].'</span>';
+                        return $name;
+                    })
+                    ->addColumn('custom-value', function($row){
+                        $name = '<span class="font-weight-bold">'.$row['amount']. config('payment.default_system_currency') . '</span>';
+                        return $name;
+                    })
+                    ->addColumn('custom-status', function($row){
+                        $status = ($row['status']) ? 'redeemed' : 'failed';
+                        $custom_priority = '<span class="cell-box gift-'.strtolower($status).'">'.ucfirst($status).'</span>';
+                        return $custom_priority;
+                    })
+                    ->rawColumns(['custom-status', 'custom-code', 'created-on', 'custom-value'])
+                    ->make(true);
+                    
+        }
+
+        $total = GiftCardUsage::where('user_id', auth()->user()->id)->count();
+        $data = [];
+        $data['total'] = $total;
+        $data['amount'] = $total;
+
+        return view('user.profile.wallet', compact('data'));  
+    }
+
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function storeWallet(Request $request)
+    {           
+        $gift_code = GiftCard::where('code', $request->code)->first();
+
+        if($gift_code) {
+            if (!$gift_code->status) {
+                toastr()->warning(__('This gift code is currently disabled, please use another one'));
+                return redirect()->back();
+            }
+
+            if ($gift_code->valid_until->isPast()) {
+                toastr()->warning(__('This gift code is already expired and cannot be used, please provide a valid one'));
+                return redirect()->back();
+            }
+
+            if ($gift_code->usages_left == 0) {
+                toastr()->warning(__('This gift code is already depleted, please provide a valid one'));
+                return redirect()->back();
+            }
+
+            if (!$gift_code->reusable) {
+                $usage = GiftCardUsage::where('user_id', auth()->user()->id)->where('code', $request->code)->first();
+                if($usage) {
+                    toastr()->warning(__('You have already used this gift code, please provide a new one'));
+                    return redirect()->back();
+                }
+            }
+
+            GiftCardUsage::create([
+                'user_id' => auth()->user()->id,
+                'username' => auth()->user()->name,
+                'email' => auth()->user()->email,
+                'code' => $gift_code->code,
+                'amount' => $gift_code->amount,
+                'status' => true
+            ]);
+
+            $user = User::where('id', auth()->user()->id)->first();
+            $user->wallet = $user->wallet + $gift_code->amount;
+            $user->save();
+
+            $gift_code->usages_left = $gift_code->usages_left - 1;
+            $gift_code->save();
+
+            toastr()->success(__('Gift code has been successfully redeemed!'));
+            return redirect()->back();
+
+        } else {
+            toastr()->error(__('Invalid gift code provided, please provide a valid one'));
+            return redirect()->back();
+        }
+           
+    }
+
+
+    public function transferWallet(Request $request)
+    {        
+        if ($request->ajax()) {   
+            request()->validate([
+                'email' => 'required|string|email',
+                'amount' => 'required|numeric|min:1'
+            ]);
+
+            $target_user = User::where('email', $request->email)->first();
+
+            if($target_user) {
+
+                if ($target_user->id == auth()->user()->id) {
+                    return response()->json([
+                        'status' => 400,
+                        'message' => __('You cannot transfer to yourself')
+                    ]); 
+                }
+
+                if ($request->amount > auth()->user()->wallet) {
+                    return response()->json([
+                        'status' => 400,
+                        'message' => __('You are trying to transfer more than what you have, make sure to set a lower value')
+                    ]); 
+                }
+
+                $target_user->wallet = $target_user->wallet + $request->amount;
+                $target_user->save();
+                
+                $user = User::where('id', auth()->user()->id)->first();
+                $user->wallet = $user->wallet - $request->amount;
+                $user->save();
+
+                $transfer_id = strtoupper(Str::random(10));
+
+                GiftCardTransfer::create([
+                    'sender_user_id' => auth()->user()->id,
+                    'sender_username' => auth()->user()->name,
+                    'sender_email' => auth()->user()->email,
+                    'amount' => $request->amount,
+                    'transfer_id' => $transfer_id,
+                    'receiver_user_id' => $target_user->id,
+                    'receiver_username' => $target_user->name,
+                    'receiver_email' => $target_user->email,
+                ]);
+
+                return response()->json([
+                    'status' => 200,
+                    'message' => __('You have successfully transfered funds to your friend!')
+                ]); 
+                
+            } else {
+                return response()->json([
+                    'status' => 400,
+                    'message' => __('Looks like your friend did not yet register with us, let him know to sign up soon')
+                ]); 
+            }
+        }
+           
+    }
+
+
+    public function transferList(Request $request)
+    {
+        if ($request->ajax()) {
+            $data = GiftCardTransfer::where('sender_user_id', auth()->user()->id)->orderBy('created_at', 'DESC')->get();        
+            return Datatables::of($data)
+                    ->addIndexColumn()
+                    ->addColumn('created-on', function($row){
+                        $created_on = '<span>'.date_format($row["created_at"], 'M d Y').'</span><br><span class="text-muted">'.date_format($row["created_at"], 'H:i A').'</span>';
+                        return $created_on;
+                    })
+                    ->addColumn('receiver', function($row){
+                        $user = '<div class="d-flex">
+                                <div class="widget-user-name"><span class="font-weight-bold">'. $row['receiver_username'] .'</span> <br> <span class="text-muted">'.$row["receiver_email"].'</span></div>
+                            </div>';                        
+                        
+                        return $user;
+                    })
+                    ->addColumn('custom-value', function($row){
+                        $name = '<span class="font-weight-bold">'.$row['amount']. config('payment.default_system_currency') . '</span>';
+                        return $name;
+                    })
+                    ->addColumn('custom-status', function($row){
+                        $status = ($row['status']) ? 'transfered' : 'failed';
+                        $custom_priority = '<span class="cell-box gift-'.strtolower($status).'">'.ucfirst($status).'</span>';
+                        return $custom_priority;
+                    })
+                    ->rawColumns(['custom-status', 'created-on', 'custom-value', 'receiver'])
+                    ->make(true);
+                    
+        }
+    
+    }
+    
 }

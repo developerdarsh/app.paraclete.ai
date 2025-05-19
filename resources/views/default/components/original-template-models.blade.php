@@ -8,16 +8,32 @@
             <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | GPT 4o') }}</option>
         @elseif (trim($model) == 'gpt-4o-mini')
             <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | GPT 4o mini') }}</option>
+        @elseif (trim($model) == 'gpt-4o-search-preview')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | GPT 4o Search Preview') }}</option>
+        @elseif (trim($model) == 'gpt-4o-mini-search-preview')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | GPT 4o mini Search Preview') }}</option>
         @elseif (trim($model) == 'gpt-4-0125-preview')
             <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | GPT 4 Turbo') }}</option>
         @elseif (trim($model) == 'gpt-4.5-preview')
             <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | GPT 4.5') }}</option>
+        @elseif (trim($model) == 'gpt-4.1')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | GPT 4.1') }}</option>
+        @elseif (trim($model) == 'gpt-4.1-mini')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | GPT 4.1 mini') }}</option>
+        @elseif (trim($model) == 'gpt-4.1-nano')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | GPT 4.1 nano') }}</option>
         @elseif (trim($model) == 'o1')
             <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | o1') }}</option>
         @elseif (trim($model) == 'o1-mini')
             <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | o1 mini') }}</option>
+        @elseif (trim($model) == 'o1-pro')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | o1 pro') }}</option>
         @elseif (trim($model) == 'o3-mini')
             <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | o3 mini') }}</option>
+        @elseif (trim($model) == 'o3')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | o3') }}</option>
+        @elseif (trim($model) == 'o4-mini')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | o4 mini') }}</option>
         @elseif (trim($model) == 'claude-3-opus-20240229')
             <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('Anthropic | Claude 3 Opus') }}</option>
         @elseif (trim($model) == 'claude-3-7-sonnet-20250219')

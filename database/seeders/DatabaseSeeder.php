@@ -41,7 +41,7 @@ class DatabaseSeeder extends Seeder
             ExtensionSeeder::class,
             ImageCreditsSeeder::class,
             SocialMediaSeeder::class,
-            ApiCreditSeeder::class,
+            ApiManagementSeeder::class,
             MenuSeeder::class,
             AzureModelSeeder::class,
             CookiesSeeder::class,

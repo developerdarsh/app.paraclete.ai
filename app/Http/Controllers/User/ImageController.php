@@ -69,32 +69,27 @@ class ImageController extends Controller
             }
         }       
 
-        $selected_vendor = head($vendors);
-        switch ($selected_vendor) {
-            case 'openai':
-                $model = 'dall-e-3';
-                $model_name = 'OpenAI DALLE 3';
-                break;
-            case 'sd':
-                $model = 'sd3.5-large';
-                $model_name = 'Stable Diffusion 3.5 Large';
-                break;
-            case 'falai':
-                $model = 'flux-pro/new';
-                $model_name = 'FLUX.1 [pro]';
-                break;
-            case 'midjourney':
-                $model = 'midjourney/fast';
-                $model_name = 'Midjourney Fast';
-                break;
-            case 'clipdrop':
-                $model = 'clipdrop';
-                $model_name = 'Clipdrop';
-                break;
-            default:
-                $model = 'dall-e-3';
-                $model_name = 'OpenAI DALLE 3';
-                break;
+
+        switch (auth()->user()->default_image_model) {
+            case 'dall-e-2': $model = 'dall-e-2'; $model_name = 'Dalle 2'; break;
+            case 'dall-e-3': $model = 'dall-e-3'; $model_name = 'Dalle 3'; break;
+            case 'dall-e-3-hd': $model = 'dall-e-3-hd'; $model_name = 'Dalle 3 HD'; break;
+            case 'stable-diffusion-v1-6': $model = 'stable-diffusion-v1-6'; $model_name = 'Stable Diffusion v1.6'; break;
+            case 'stable-diffusion-xl-1024-v1-0': $model = 'stable-diffusion-xl-1024-v1-0'; $model_name = 'SDXL v1.0'; break;
+            case 'sd3.5-medium': $model = 'sd3.5-medium'; $model_name = 'SD 3.5 Medium'; break; 		
+            case 'sd3.5-large': $model = 'sd3.5-large'; $model_name = 'SD 3.5 Large'; break;
+            case 'sd3.5-large-turbo': $model = 'sd3.5-large-turbo'; $model_name = 'SD 3.5 Large Turbo'; break;		
+            case 'core': $model = 'core'; $model_name = 'Stable Image Core'; break;
+            case 'ultra': $model = 'ultra'; $model_name = 'Stable Image Ultra'; break;
+            case 'flux/dev': $model = 'flux/dev'; $image_engine = 'FLUX.1 [dev]'; break;
+            case 'flux/schnell': $model = 'flux/schnell'; $model_name = 'FLUX.1 [schnell]'; break;																															
+            case 'flux-pro/new': $model = 'flux-pro/new'; $model_name = 'FLUX.1 [pro]'; break;																															
+            case 'flux-realism': $model = 'flux-realism'; $model_name = 'FLUX Realism'; break;
+            case 'midjourney/fast': $model = 'midjourney/fast'; $model_name = 'Midjourney Fast'; break;
+            case 'midjourney/relax': $model = 'midjourney/relax'; $model_name = 'Midjourney Relax'; break;
+            case 'midjourney/turbo': $model = 'midjourney/turbo'; $model_name = 'Midjourney Turbo'; break;
+            case 'clipdrop': $model = 'clipdrop'; $model_name = 'Clipdrop'; break;
+            default: $model = 'dall-e-3'; $model_name = 'Dalle 3'; break;
         }
 
         $credits = ImageCredit::first();
@@ -210,6 +205,7 @@ class ImageController extends Controller
             if ($request->mood != 'none') {
                 $prompt .= ', ' . $request->mood; 
             }
+
 
             if ($request->vendor == 'openai') {
 
@@ -448,9 +444,12 @@ class ImageController extends Controller
                 $total = $max_results;
 
                 if ($sd_model != 'core' && $sd_model != 'ultra' && $sd_model != 'sd3.5-large' && $sd_model != 'sd3.5-large-turbo' && $sd_model != 'sd3.5-medium') {
+                    
                     $url = 'https://api.stability.ai/v1/generation/' . $sd_model;
                     $output = '';
+
                     if ($request->task != 'none' && $request->task != "sd-multi-prompting" && $request->task != "sd-negative-prompt") {
+                        
                         if ($request->task == 'sd-image-to-image') {
     
                             $url .= '/image-to-image';
@@ -624,28 +623,17 @@ class ImageController extends Controller
     
                         }
                     } else {
+    
                         $url .= '/text-to-image';
-                        
+    
                         $headers = [
                             'Authorization:' . $stable_diffusion,
                             'Content-Type: application/json',
                         ];
-
+                      
                         $resolutions = explode('x', $request->resolution);
                         $width = $resolutions[0];
                         $height = $resolutions[1];
-                        
-                        /*  if (strpos($request->resolution, ':') !== false) {
-                            $resolutions = explode(':', $request->resolution); 
-                            $width = $resolutions[0];
-                            $height = $resolutions[1];
-                        } else {
-                            // handle error or set default resolution
-                            $width = 512;
-                            $height = 512;
-                        }
-                        */
-                        
                         $data['text_prompts'][0]['text'] = $prompt;
                         $data['text_prompts'][0]['weight'] = 1;
                      
@@ -789,6 +777,7 @@ class ImageController extends Controller
                     }
 
                 } else {
+
                     $sd_mode = ($sd_model == 'core' || $sd_model == 'ultra') ? $sd_model : 'sd3';
 
                     $url = 'https://api.stability.ai/v2beta/stable-image/generate/' . $sd_mode;

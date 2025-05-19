@@ -17,12 +17,12 @@
 		</div>
 		<div class="col-lg-5 col-md-5 col-sm-12">
 			<div class="card border-0">
-				{{-- <div class="card-header pt-4 border-0">
-					<p class="fs-11 text-muted mb-0 text-left"><i class="fa-solid fa-bolt-lightning mr-2 text-primary"></i>{{ __('Your Balance is') }} <span class="font-weight-semibold" id="balance-number">@if (auth()->user()->available_chars == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->available_chars + auth()->user()->available_chars_prepaid) }}@endif {{ __('characters') }}</span></p>
-				</div> --}}
+				<div class="card-header pt-4 border-0">
+					<p class="fs-11 text-muted mb-0 text-left"><i class="fa-solid fa-bolt-lightning mr-2 text-primary"></i>{{ __('Your Balance is') }} <span class="font-weight-semibold" id="balance-number">@if (auth()->user()->image_credits == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->image_credits + auth()->user()->image_credits_prepaid) }}@endif {{ __('media credits') }}</span></p>
+				</div>
 				<form id="music-form" action="" method="POST" enctype="multipart/form-data">
 					@csrf
-					<div class="card-body pt-6 pl-6 pr-6 pb-5" id="">
+					<div class="card-body pt-1 pl-6 pr-6 pb-5" id="">
 
 						
 						<div class="row">
@@ -51,11 +51,11 @@
 								<div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">										
 									<a class="dropdown-item d-flex" href="#"  id="stable-audio" name="{{ __('Stable Audio') }}" icon="<i class='fa-solid fa-circle-video'></i>">
 										<span class="dropdown-item-icon mr-3 ml-1 text-muted"><i class="fa-solid fa-music"></i></span>
-										<h6 class="dropdown-item-title fs-12">{{ __('Stable Audio') }} <span class="fs-9 text-muted"></h6>										
+										<h6 class="dropdown-item-title fs-12">{{ __('Stable Audio') }} <span class="fs-9 text-muted">({{ $credits->music_stable }} {{ __('credits per music') }})</span></h6>										
 									</a>	
 									<a class="dropdown-item d-flex" href="#"  id="minimax-music" name="{{ __('Minimax Music') }}" icon="<i class='fa-solid fa-circle-video'></i>">
 										<span class="dropdown-item-icon mr-3 ml-1 text-muted"><i class="fa-solid fa-music"></i></span>
-										<h6 class="dropdown-item-title fs-12">{{ __('Minimax Music') }} <span class="fs-9 text-muted"></h6>										
+										<h6 class="dropdown-item-title fs-12">{{ __('Minimax Music') }} <span class="fs-9 text-muted">({{ $credits->music_minimax }} {{ __('credits per music') }})</span></h6>										
 									</a>	
 								</div>
 							</div>
@@ -119,7 +119,7 @@
 								<div class="card mb-5 border-0 p-4 avatar-voice-samples-box">
 									<div class="d-flex avatar-voice-samples">
 										<div class="flex">
-											<button type="button" class="result-play text-center mr-2" title="{{__('Play Audio')}}" onclick="resultPlay(this)" src="{{ URL::asset($result->url) }}" id="{{ $result->id}}"><i class="fa fa-play table-action-buttons view-action-button"></i></button>											
+											<button type="button" class="result-play text-center mr-2" title="{{__('Play Audio')}}" onclick="resultPlay(this)" src="{{ URL::asset('storage/' . $result->result_url) }}" id="{{ $result->id}}"><i class="fa fa-play table-action-buttons view-action-button"></i></button>											
 										</div>
 										<div class="flex mt-auto mb-auto">
 											<p class="mb-2 font-weight-bold fs-12">{{ $result->title }}</p>
@@ -127,7 +127,8 @@
 										<div class="btn-group dashboard-menu-button flex" style="top:1.4rem">
 											<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="export" data-bs-display="static" aria-expanded="false"><i class="fa-solid fa-ellipsis  table-action-buttons table-action-buttons-big edit-action-button" style="background: none"></i></button>
 											<div class="dropdown-menu" aria-labelledby="export" data-popper-placement="bottom-start">								
-												<a class="dropdown-item" href="{{ URL::asset($result->url) }}" download>{{ __('Download') }}</a>	
+												<a class="dropdown-item" href="{{ URL::asset('storage/' . $result->result_url) }}" download><i class="fa-solid fa-download mr-2"></i>{{ __('Download') }}</a>	
+												<a class="dropdown-item result-delete" href="#" data-id="{{$result->id}}"><i class="fa-solid fa-trash-xmark mr-2"></i>{{ __('Delete') }}</a>	
 											</div>
 										</div>											
 									</div>							

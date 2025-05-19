@@ -3,25 +3,12 @@
 	<!-- Sweet Alert CSS -->
 	<link href="{{URL::asset('plugins/sweetalert/sweetalert2.min.css')}}" rel="stylesheet" />
 	<link href="{{URL::asset('plugins/highlight/highlight.dark.min.css')}}" rel="stylesheet" />
-	<style>	
- 		.info-btn-alt {
- 			font-size: 15px;
- 			background-color: rgb(126, 34, 206);
- 			color: rgb(255, 255, 255);
- 			padding-top: 0.5rem;
- 			padding-bottom: 0.5rem;
- 			padding-left: 1rem;
- 			padding-right: 1rem;
- 			border-radius: 0.5rem;
- 		}
- 	</style>
 @endsection
 
 @section('content')
 	<form id="openai-form" action="" method="GET" enctype="multipart/form-data" class="mt-24">		
 		@csrf
-		<div class="row justify-content-md-center">
-			<div class="text-center my-5"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
+		<div class="row justify-content-md-center">	
 			<div class="col-sm-12 text-center">
 				<h3 class="card-title fs-20 mb-3 super-strong"><i class="fa-solid fa-globe mr-2 text-primary"></i>{{ __('AI Web Chat') }}</h3>
 				<h6 class="mb-0 fs-12 text-muted">{{ __('Turn Your Website into Intelligent Dynamic Conversations') }}</h6>
@@ -277,27 +264,7 @@
 		  	</div>
 		</div>
 	</div>
-	<div class="modal fade" id="info-alert-model" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog">
- 		<div class="modal-dialog modal-dialog-centered modal-xl">
- 			<div class="modal-content">
- 				<div class="modal-header">
- 				<h2></h2>
- 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
- 				<span aria-hidden="true">&times;</span>
- 				</button>
- 				</div>
- 				<div class="modal-body">
- 					<div class="row">
- 						<div style="position: relative; padding-bottom: calc(46.925329428989755% + 41px); height: 0; width: 100%">
- 							<!--ARCADE EMBED START-->
- 								<div style="position: relative; padding-bottom: calc(56.25% + 41px); height: 0; width: 100%;"><iframe src="https://demo.arcade.software/Lhm6YgcMg7e8Muk4V1pS?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true" title="Web Chat" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; color-scheme: light;" ></iframe></div>
- 							<!--ARCADE EMBED END-->						
- 						</div>
- 					</div>
- 				</div>
- 			</div>
- 		</div>
- 	</div>
+
 @endsection
 
 @section('js')

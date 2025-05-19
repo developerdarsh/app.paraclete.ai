@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\LicenseController;
 use App\Services\Statistics\UserService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Orhanerday\OpenAi\OpenAi;
@@ -23,6 +24,8 @@ use GuzzleHttp\Client;
 use App\Models\BrandVoice;
 use App\Models\FineTuneModel;
 use App\Services\HelperService;
+use App\Services\AIService;
+use Exception;
 
 
 class VisionController extends Controller
@@ -147,10 +150,6 @@ class VisionController extends Controller
         }
  
 
-        $settings = Setting::where('name', 'license')->first(); 
-        $uploading = new UserService();
-        $upload = $uploading->prompt();
-        if($settings->value != $upload['code']){return;} 
         $chat = new ChatHistory();
         $chat->user_id = auth()->user()->id;
         $chat->conversation_id = $request->conversation_id;
@@ -189,39 +188,7 @@ class VisionController extends Controller
 
         return response()->stream(function () use($conversation_id) {
 
-            if (config('settings.personal_openai_api') == 'allow') {
-                $open_ai = new OpenAi(auth()->user()->personal_openai_key); 
-                $openai_key = auth()->user()->personal_openai_key;       
-            } elseif (!is_null(auth()->user()->plan_id)) {
-                $check_api = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
-                if ($check_api->personal_openai_api) {
-                    $open_ai = new OpenAi(auth()->user()->personal_openai_key); 
-                    $openai_key = auth()->user()->personal_openai_key;              
-                } else {
-                    if (config('settings.openai_key_usage') !== 'main') {
-                       $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
-                       array_push($api_keys, config('services.openai.key'));
-                       $key = array_rand($api_keys, 1);
-                       $open_ai = new OpenAi($api_keys[$key]);
-                       $openai_key = $api_keys[$key];
-                   } else {
-                       $open_ai = new OpenAi(config('services.openai.key'));
-                       $openai_key = config('services.openai.key');
-                   }
-               }
-               
-            } else {
-                if (config('settings.openai_key_usage') !== 'main') {
-                    $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
-                    array_push($api_keys, config('services.openai.key'));
-                    $key = array_rand($api_keys, 1);
-                    $open_ai = new OpenAi($api_keys[$key]);
-                    $openai_key = $api_keys[$key];
-                } else {
-                    $open_ai = new OpenAi(config('services.openai.key'));
-                    $openai_key = config('services.openai.key');
-                }
-            }
+            $openai_key = AIService::getOpenAIKey();
     
             if (session()->has('chat_id')) {
                 $chat_id = session()->get('chat_id');
@@ -231,51 +198,12 @@ class VisionController extends Controller
             $chat_message = ChatHistory::where('id', $chat_id)->first();
             $text = "";
             $model = '';
+            $input_tokens = 0;
+            $output_tokens = 0;
 
             if (is_null($chat_message->images)) {
-                
-                $main_chat = Chat::where('chat_code', $chat_conversation->chat_code)->first();
-                $chat_messages = ChatHistory::where('conversation_id', $conversation_id)->orderBy('created_at', 'desc')->take(6)->get()->reverse();
 
-                $messages[] = ['role' => 'system', 'content' => $main_chat->prompt];
-                foreach ($chat_messages as $chat) {
-                    $messages[] = ['role' => 'user', 'content' => $chat['prompt']];
-                    if (!empty($chat['response'])) {
-                        $messages[] = ['role' => 'assistant', 'content' => $chat['response']];
-                    }
-                }
-
-                $model = $chat_message->model;
-
-                $opts = [
-                    'model' => $model,
-                    'messages' => $messages,
-                    'temperature' => 1.0,
-                    'frequency_penalty' => 0,
-                    'presence_penalty' => 0,
-                    'stream' => true
-                ];
-
-                $complete = $open_ai->chat($opts, function ($curl_info, $data) use (&$text) {
-                    if ($obj = json_decode($data) and $obj->error->message != "") {
-                        error_log(json_encode($obj->error->message));
-                    } else {
-                        echo $data;
-
-                        $array = explode('data: ', $data);
-                        foreach ($array as $response){
-                            $response = json_decode($response, true);
-                            if ($data != "data: [DONE]\n\n" and isset($response["choices"][0]["delta"]["content"])) {
-                                $text .= $response["choices"][0]["delta"]["content"];
-                            }
-                        }
-                    }
-
-                    echo PHP_EOL;
-                    ob_flush();
-                    flush();
-                    return strlen($data);
-                });
+                $this->handleTextChat($openai_key, $chat_conversation, $chat_message, $text);
 
             } else {
                 $guzzle_client = new Client();
@@ -294,7 +222,7 @@ class VisionController extends Controller
                                 [
                                 'role' => 'user',
                                 'content' => [
-                                            [
+                                            [ 
                                                 'type' => 'text',
                                                 'text' => $chat_message->prompt,
                                             ],
@@ -322,9 +250,9 @@ class VisionController extends Controller
                     echo "\n\n";
                     ob_flush();
                     flush();
-                    usleep(50000);
                 }
 
+        
                 foreach (explode("\n", $response->getBody()->getContents()) as $data) { 
                     if ($data != 'data: [DONE]') {
                         $array = explode('data: ', $data);
@@ -334,6 +262,7 @@ class VisionController extends Controller
                     
                     foreach ($array as $response){
                         $response = json_decode($response, true);
+                   
                         if ($data != "data: [DONE]\n\n" and isset($response["choices"][0]["delta"]["content"])) {
                             $text .= $response["choices"][0]["delta"]["content"];
                             $raw = $response['choices'][0]['delta']['content'];
@@ -347,21 +276,27 @@ class VisionController extends Controller
                     flush();
                     
                 }
+
+                if (!empty($text)) {
+                    Log::info('tut');
+                    # Update credit balance
+                    $words = count(explode(' ', ($text)));   
+                    $tokens = $this->estimateTokenUsage($chat_message->prompt, $text);
+                    Log::info($tokens);
+                    HelperService::updateBalance($words, $chat_message->model, $tokens['prompt_tokens'], $tokens['completion_tokens']); 
+        
+                    $chat_message->response = $text;
+                    $chat_message->words = $words;
+                    $chat_message->input_tokens = $input_tokens;
+                    $chat_message->output_tokens = $output_tokens;
+                    $chat_message->save();
+        
+                    $chat_conversation->words = ++$words;
+                    $chat_conversation->messages = $chat_conversation->messages + 1;
+                    $chat_conversation->save();
+                }
             }
 
-
-            # Update credit balance
-            $words = count(explode(' ', ($text)));
-            HelperService::updateBalance($words, $model);   
-
-            $current_chat = ChatHistory::where('id', $chat_id)->first();
-            $current_chat->response = $text;
-            $current_chat->words = $words;
-            $current_chat->save();
-
-            $chat_conversation->words = ++$words;
-            $chat_conversation->messages = $chat_conversation->messages + 1;
-            $chat_conversation->save();
 
         }, 200, [
             'Cache-Control' => 'no-cache',
@@ -370,6 +305,116 @@ class VisionController extends Controller
         ]);
         
     }
+
+
+    private function handleTextChat($openai_key, $chat_conversation, $chat_message, &$text)
+    {
+
+        $main_chat = Chat::where('chat_code', $chat_conversation->chat_code)->first();
+        $chat_messages = ChatHistory::where('conversation_id', $chat_conversation->conversation_id)
+            ->orderBy('created_at', 'desc')
+            ->take(3)
+            ->get()
+            ->reverse();
+
+        $input_tokens = 0;
+        $output_tokens = 0;
+
+        # Prepare chat history
+        if (strpos($chat_message->model, 'o1-') === 0) {
+            $first_message = $main_chat->prompt . "\n\nUser: " . $chat_message->prompt;
+            $messages[] = ['role' => 'user', 'content' => $first_message];
+
+        } else {
+
+            $messages[] = ['role' => 'system', 'content' => $main_chat->prompt];
+
+            foreach ($chat_messages as $chat) {
+                if (empty($chat['response']) || is_null($chat['response'])) {
+                    continue;
+                }
+
+                $messages[] = ['role' => 'user', 'content' => $chat['prompt']];
+                if (!empty($chat['response'])) {
+                    $messages[] = ['role' => 'assistant', 'content' => $chat['response']];
+                }
+            }                
+
+            $messages[] = ['role' => 'user', 'content' => $chat_message->prompt];   
+        }                       
+
+
+        try {
+
+            $openai_client = \OpenAI::client($openai_key);
+                
+            $stream = $openai_client->chat()->createStreamed([
+                'model' => $chat_message->model,
+                'messages' => $messages,
+                'frequency_penalty' => 0,
+                'presence_penalty' => 0,
+                'temperature' => 1,
+                'stream_options'=>[
+                    'include_usage' => true,
+                ]
+            ]);
+
+            foreach ($stream as $result) {
+
+                if (isset($result->choices[0]->delta->content)) {
+                    $raw = $result->choices[0]->delta->content;
+                    $clean = str_replace(["\r\n", "\r", "\n"], "<br/>", $raw);
+                    $text .= $raw;
+
+                    if (connection_aborted()) {
+                        break;
+                    }
+
+                    echo 'data: ' . $clean;
+                    echo "\n\n";
+                    ob_flush();
+                    flush();
+                }
+
+                if(isset($result->usage)){
+                    $input_tokens = $result->usage->promptTokens;
+                    $output_tokens = $result->usage->completionTokens; 
+                }
+            }
+            echo "event: stop\n";
+            echo 'data: [DONE]';
+            echo "\n\n";
+            ob_flush();
+            flush();
+
+        } catch (Exception $e) {
+            Log::error('OpenAI API Error: ' . $e->getMessage());
+            echo 'data: OpenAI Notification: <span class="font-weight-bold">' . $e->getMessage() . '</span>. Please contact support team.';
+            echo "\n\n";
+            echo 'data: [DONE]';
+            echo "\n\n";
+            ob_flush();
+            flush();
+        }
+
+        if (!empty($text)) {
+            # Update credit balance
+            $words = count(explode(' ', ($text)));
+            HelperService::updateBalance($words, $chat_message->model, $input_tokens, $output_tokens);   
+
+            $current_chat = ChatHistory::where('id', $chat_message->id)->first();
+            $current_chat->response = $text;
+            $current_chat->words = $words;
+            $current_chat->input_tokens = $input_tokens;
+            $current_chat->output_tokens = $output_tokens;
+            $current_chat->save();
+
+            $chat_conversation->words = ++$words;
+            $chat_conversation->messages = $chat_conversation->messages + 1;
+            $chat_conversation->save();
+        }
+    }
+
 
 
     /**
@@ -513,6 +558,45 @@ class VisionController extends Controller
         $replacements = array("\\\\", "\\/", "\\\"", "\\n", "\\r", "\\t", "\\f", "\\b");
         $result = str_replace($escapers, $replacements, $value);
         return $result;
+    }
+
+
+    /**
+     * Estimate token count for text using a simple approximation
+     * 
+     * @param string $text The text to count tokens for
+     * @return int Estimated token count
+     */
+    public function estimateTokenCount($text) {
+        // Simple approximation: 1 token ≈ 4 characters or 0.75 words
+        // This is a rough estimate and will vary by model and content
+        $charCount = mb_strlen($text);
+        $wordCount = count(preg_split('/\s+/', trim($text)));
+        
+        // Average of character-based and word-based estimates
+        $charBasedEstimate = $charCount / 4;
+        $wordBasedEstimate = $wordCount / 0.75;
+        
+        return (int)round(($charBasedEstimate + $wordBasedEstimate) / 2);
+    }
+
+
+    /**
+     * Estimate token usage for a set of messages
+     * 
+     * @param array $messages Array of message objects
+     * @param string $generatedText The text generated by the model
+     * @return array Token usage estimates
+     */
+    public function estimateTokenUsage($message, $generatedText) {
+
+        $promptTokens = $this->estimateTokenCount($message);
+        $completionTokens = $this->estimateTokenCount($generatedText);
+        
+        return [
+            'prompt_tokens' => $promptTokens,
+            'completion_tokens' => $completionTokens,
+        ];
     }
 
 }

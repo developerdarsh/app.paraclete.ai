@@ -174,6 +174,28 @@
 									</div>
 								</div>
 							</div>	
+
+							<div class="card shadow-0 card-body-gradient">
+								<div class="card-body p-6 ">
+									<p class="card-title fs-20 text-center card-header-gradient" >{{ __('Premier Package Bundle') }}</p>
+									<div class="text-center">
+										<h6 class="mb-2 fs-40 number-font" style="opacity: 0.8">$999</h6>
+										<h6 class="mb-2 fs-12 text-muted">{{ __('One-time cost. Price is in US dollar.') }}</h6>
+										<h6 class="mb-4 fs-12 text-muted">{{ __('Includes released and upcoming Extensions & Themes.') }}</h6>										
+									</div>
+									
+									<div class="row">
+										<div class="col-sm-12 text-center">
+											<h6 class="fs-14"><i class="fa-solid fa-circle-check card-header-gradient mr-1"></i> {{ __('Full access to all paid Themes') }}</h6>
+											<h6 class="fs-14"><i class="fa-solid fa-circle-check card-header-gradient mr-1"></i> {{ __('Full access to all paid Extensions') }}</h6>
+											<h6 class="fs-14"><i class="fa-solid fa-circle-check card-header-gradient mr-1"></i> {{ __('Forever access to Extension updates') }}</h6>
+											<h6 class="fs-14"><i class="fa-solid fa-circle-check card-header-gradient mr-1"></i> {{ __('Forever access to Theme updates') }}</h6>
+											<a href="{{ route('admin.extension.purchase.package', 'premier') }}" class="btn btn-primary ripple premier-button mt-3" style="width: 250px; text-transform: none; font-size: 11px; padding-top: 10px; padding-bottom: 10px;"><span class="card-header-gradient">{{ __('Buy Premier Bundle') }}</span></a>										
+										</div>	
+										
+									</div>
+								</div>
+							</div>
 							
 						</div>
 

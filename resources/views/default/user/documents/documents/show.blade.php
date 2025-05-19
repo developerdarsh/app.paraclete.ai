@@ -56,7 +56,7 @@
 						</div>					
 					</div>
 
-					<div class="row mt-4">						
+					<div class="row mt-7">						
 						<div class="col-lg-6 col-md-12 col-sm-12">								
 							<div class="input-box mb-2">								
 								<div class="form-group">							    
@@ -3653,6 +3653,20 @@
 		}
 
 		tinyMCE.init( tinymceOptions );
+
+
+		$(document).ready(function() {
+
+			const editor = tinymce.activeEditor;
+			const content = editor.getContent();
+			const finalResult = content?.replace(/<p>|<\/p>/g, '')?.replace(/<br>|<br\/>/g, '\n');
+			const markdownRenderer = window.markdownit();
+
+			let formattedText = markdownRenderer.render(markdownRenderer.utils.unescapeAll(finalResult));					
+
+			editor.setContent( formattedText );				
+
+		});
 
 
 	});

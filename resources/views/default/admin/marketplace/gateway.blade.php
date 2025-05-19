@@ -34,6 +34,7 @@
     </div>
     <script type="text/javascript">
         // Create an instance of the Stripe object with your publishable API key
+        
         var stripe = Stripe('pk_live_51PpWapLxxkFcPZh2Mb2WalpcI3173jsV0bUGG5rKRnPWlWzNi8nTLPOox2SIwPEZnCH2PrXZL50YDBCMDWaiBSN100C4pAlL6S');
         var checkoutButton = document.getElementById('checkout-buttons');
 

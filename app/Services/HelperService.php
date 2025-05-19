@@ -18,7 +18,7 @@ use App\Models\Setting;
 use App\Models\Extension;
 use App\Models\ExtensionSetting;
 use App\Models\ImageCredit;
-use App\Models\ApiCredit;
+use App\Models\ApiManagement;
 use Carbon\Carbon;
 use Exception;
 
@@ -182,31 +182,62 @@ class HelperService
 	* @return - confirmation
 	*
 	*/
-    public static function creditCheck($model, $max_tokens)
+    public static function creditCheck($model, $max_tokens, $user = null)
     {
-        if (auth()->user()->tokens != -1) {
-            if ((auth()->user()->tokens + auth()->user()->tokens_prepaid) < $max_tokens) {
-                if (!is_null(auth()->user()->member_of)) {
-                    if (auth()->user()->member_use_credits_template) {
-                        $member = User::where('id', auth()->user()->member_of)->first();
-                        if (($member->tokens + $member->tokens_prepaid) < $max_tokens) {
+        if (is_null($user)) {
+            if (auth()->user()->tokens != -1) {
+                if ((auth()->user()->tokens + auth()->user()->tokens_prepaid) < $max_tokens) {
+                    if (!is_null(auth()->user()->member_of)) {
+                        if (auth()->user()->member_use_credits_template) {
+                            $member = User::where('id', auth()->user()->member_of)->first();
+                            if (($member->tokens + $member->tokens_prepaid) < $max_tokens) {
+                                $data['status'] = 'error';
+                                $data['message'] = __('Not enough balance to proceed, subscribe or top up');
+                                return $data;
+                            }
+                        } else {
                             $data['status'] = 'error';
                             $data['message'] = __('Not enough balance to proceed, subscribe or top up');
                             return $data;
                         }
+                        
                     } else {
                         $data['status'] = 'error';
                         $data['message'] = __('Not enough balance to proceed, subscribe or top up');
                         return $data;
+                    } 
+                }
+            }
+        } else {
+            $target_user = User::where('id', $user)->first();
+
+            if ($target_user) {
+                if ($target_user->tokens != -1) {
+                    if (($target_user->tokens + $target_user->tokens_prepaid) < $max_tokens) {
+                        if (!is_null($target_user->member_of)) {
+                            if ($target_user->member_use_credits_template) {
+                                $member = User::where('id', $target_user->member_of)->first();
+                                if (($member->tokens + $member->tokens_prepaid) < $max_tokens) {
+                                    $data['status'] = 'error';
+                                    $data['message'] = __('Not enough balance to proceed, subscribe or top up');
+                                    return $data;
+                                }
+                            } else {
+                                $data['status'] = 'error';
+                                $data['message'] = __('Not enough balance to proceed, subscribe or top up');
+                                return $data;
+                            }
+                            
+                        } else {
+                            $data['status'] = 'error';
+                            $data['message'] = __('Not enough balance to proceed, subscribe or top up');
+                            return $data;
+                        } 
                     }
-                    
-                } else {
-                    $data['status'] = 'error';
-                    $data['message'] = __('Not enough balance to proceed, subscribe or top up');
-                    return $data;
-                } 
+                }
             }
         }
+        
 
     }
 
@@ -218,330 +249,140 @@ class HelperService
 	* @return - confirmation
 	*
 	*/
-    public static function updateBalance($words = 0, $model, $input_tokens = 0, $output_tokens = 0) {
+    public static function updateBalance($words = 0, $model = 'gpt-4o', $input_tokens = 0, $output_tokens = 0, $user_id = null) {
 
         $setting = MainSetting::first();
-        $user = User::find(Auth::user()->id);
         $usage = 0;
-
         $usage = self::modelCreditMultiplier($model, $setting->model_charge_type, $input_tokens, $output_tokens);
 
-        if (auth()->user()->tokens != -1) {
+        if (is_null($user_id)) {
+            $user = User::find(Auth::user()->id);        
 
-            if (Auth::user()->tokens > $usage) {
+            if (auth()->user()->tokens != -1) {
 
-                $total_usage =  $user->tokens - $usage;
-                $user->tokens = ($total_usage < 0) ? 0 : $total_usage;
-                $user->save();
-    
-            } elseif (Auth::user()->tokens_prepaid > $usage) {
-    
-                $total_usage_prepaid =  $user->tokens_prepaid - $usage;
-                $user->tokens_prepaid = ($total_usage_prepaid < 0) ? 0 : $total_usage_prepaid;
-                $user->save();
-    
-            } elseif ((Auth::user()->tokens + Auth::user()->tokens_prepaid) == $usage) {
-    
-                $user->tokens = 0;
-                $user->tokens_prepaid = 0;
-                $user->save();
-    
-            } else {
-    
-                if (!is_null(Auth::user()->member_of)) {
-    
-                    $member = User::where('id', Auth::user()->member_of)->first();
-    
-                    if ($member->tokens > $usage) {
-    
-                        $total_usage = $member->tokens - $usage;
-                        $member->tokens = ($total_usage < 0) ? 0 : $total_usage;
+                if (Auth::user()->tokens > $usage) {
+
+                    $total_usage =  $user->tokens - $usage;
+                    $user->tokens = ($total_usage < 0) ? 0 : $total_usage;
+                    $user->save();
+        
+                } elseif (Auth::user()->tokens_prepaid > $usage) {
+        
+                    $total_usage_prepaid =  $user->tokens_prepaid - $usage;
+                    $user->tokens_prepaid = ($total_usage_prepaid < 0) ? 0 : $total_usage_prepaid;
+                    $user->save();
+        
+                } elseif ((Auth::user()->tokens + Auth::user()->tokens_prepaid) == $usage) {
+        
+                    $user->tokens = 0;
+                    $user->tokens_prepaid = 0;
+                    $user->save();
+        
+                } else {
+        
+                    if (!is_null(Auth::user()->member_of)) {
+        
+                        $member = User::where('id', Auth::user()->member_of)->first();
+        
+                        if ($member->tokens > $usage) {
+        
+                            $total_usage = $member->tokens - $usage;
+                            $member->tokens = ($total_usage < 0) ? 0 : $total_usage;
+                
+                        } elseif ($member->tokens_prepaid > $usage) {
+                
+                            $total_usage_prepaid = $member->tokens_prepaid - $usage;
+                            $member->tokens_prepaid = ($total_usage_prepaid < 0) ? 0 : $total_usage_prepaid;
+                
+                        } elseif (($member->tokens + $member->tokens_prepaid) == $usage) {
+                
+                            $member->tokens = 0;
+                            $member->tokens_prepaid = 0;
+                
+                        } else {
+                            $remaining = $usage - $member->tokens;
+                            $member->tokens = 0;
             
-                    } elseif ($member->tokens_prepaid > $usage) {
+                            $prepaid_left = $member->tokens_prepaid - $remaining;
+                            $member->tokens_prepaid = ($prepaid_left < 0) ? 0 : $prepaid_left;
+                        }
+        
+                        $member->update();
+        
+                    } else {
+                        $remaining = $usage - Auth::user()->tokens;
+                        $user->tokens = 0;
+        
+                        $prepaid_left = Auth::user()->tokens_prepaid - $remaining;
+                        $user->tokens_prepaid = ($prepaid_left < 0) ? 0 : $prepaid_left;
+                        $user->update();
+                    }
+                }
+            } 
+        } else {
+
+            $user = User::where('id', $user_id)->first();
+
+            if ($user) {
+                if ($user->tokens != -1) {
+
+                    if ($user->tokens > $usage) {
+    
+                        $total_usage =  $user->tokens - $usage;
+                        $user->tokens = ($total_usage < 0) ? 0 : $total_usage;
+                        $user->save();
             
-                        $total_usage_prepaid = $member->tokens_prepaid - $usage;
-                        $member->tokens_prepaid = ($total_usage_prepaid < 0) ? 0 : $total_usage_prepaid;
+                    } elseif ($user->tokens_prepaid > $usage) {
             
-                    } elseif (($member->tokens + $member->tokens_prepaid) == $usage) {
+                        $total_usage_prepaid =  $user->tokens_prepaid - $usage;
+                        $user->tokens_prepaid = ($total_usage_prepaid < 0) ? 0 : $total_usage_prepaid;
+                        $user->save();
             
-                        $member->tokens = 0;
-                        $member->tokens_prepaid = 0;
+                    } elseif (($user->tokens + $user->tokens_prepaid) == $usage) {
+            
+                        $user->tokens = 0;
+                        $user->tokens_prepaid = 0;
+                        $user->save();
             
                     } else {
-                        $remaining = $usage - $member->tokens;
-                        $member->tokens = 0;
+    
+                        $remaining = $usage - $user->tokens;
+                        $user->tokens = 0;
         
-                        $prepaid_left = $member->tokens_prepaid - $remaining;
-                        $member->tokens_prepaid = ($prepaid_left < 0) ? 0 : $prepaid_left;
+                        $prepaid_left = $user->tokens_prepaid - $remaining;
+                        $user->tokens_prepaid = ($prepaid_left < 0) ? 0 : $prepaid_left;
+                        $user->update();
+                        
                     }
-    
-                    $member->update();
-    
-                } else {
-                    $remaining = $usage - Auth::user()->tokens;
-                    $user->tokens = 0;
-    
-                    $prepaid_left = Auth::user()->tokens_prepaid - $remaining;
-                    $user->tokens_prepaid = ($prepaid_left < 0) ? 0 : $prepaid_left;
-                    $user->update();
-                }
-            }
-        } 
-
+                } 
+            }            
+        }
+        
         return true;
-
     }
 
 
     private static function modelCreditMultiplier($model, $charge_type, $input_tokens = 0, $output_tokens = 0)
     {
-        $api = ApiCredit::first();
+        $api = ApiManagement::where('model', $model)->first();
         $total = 0;
 
-        switch ($model) {
-            case 'o3-mini': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->o3_mini_input_token * $input_tokens) + ($api->o3_mini_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->o3_mini_input_token * $input_tokens;
-                    } else {
-                        $total = $api->o3_mini_output_token * $output_tokens;
-                    }
-                break;
-            case 'o1': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->o1_input_token * $input_tokens) + ($api->o1_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->o1_input_token * $input_tokens;
-                    } else {
-                        $total = $api->o1_output_token * $output_tokens;
-                    }
-                break;
-            case 'o1-mini': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->o1_mini_input_token * $input_tokens) + ($api->o1_mini_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->o1_mini_input_token * $input_tokens;
-                    } else {
-                        $total = $api->o1_mini_output_token * $output_tokens;
-                    }
-                break;
-            case 'gpt-4.5-preview': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->gpt_45_input_token * $input_tokens) + ($api->gpt_45_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->gpt_45_input_token * $input_tokens;
-                    } else {
-                        $total = $api->gpt_45_output_token * $output_tokens;
-                    }
-                break;
-            case 'gpt-4': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->gpt_4_input_token * $input_tokens) + ($api->gpt_4_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->gpt_4_input_token * $input_tokens;
-                    } else {
-                        $total = $api->gpt_4_output_token * $output_tokens;
-                    }
-                break;
-            case 'gpt-4-0125-preview': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->gpt_4_turbo_input_token * $input_tokens) + ($api->gpt_4_turbo_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->gpt_4_turbo_input_token * $input_tokens;
-                    } else {
-                        $total = $api->gpt_4_turbo_output_token * $output_tokens;
-                    }
-                break;
-            case 'gpt-4o': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->gpt_4o_input_token * $input_tokens) + ($api->gpt_4o_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->gpt_4o_input_token * $input_tokens;
-                    } else {
-                        $total = $api->gpt_4o_output_token * $output_tokens;
-                    }
-                break;
-            case 'gpt-4o-mini': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->gpt_4o_mini_input_token * $input_tokens) + ($api->gpt_4o_mini_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->gpt_4o_mini_input_token * $input_tokens;
-                    } else {
-                        $total = $api->gpt_4o_mini_output_token * $output_tokens;
-                    }
-                break;
-            case 'gpt-3.5-turbo-0125': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->gpt_35_turbo_input_token * $input_tokens) + ($api->gpt_35_turbo_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->gpt_35_turbo_input_token * $input_tokens;
-                    } else {
-                        $total = $api->gpt_35_turbo_output_token * $output_tokens;
-                    }
-                break;
-            case 'claude-3-opus-20240229': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->claude_3_opus_input_token * $input_tokens) + ($api->claude_3_opus_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->claude_3_opus_input_token * $input_tokens;
-                    } else {
-                        $total = $api->claude_3_opus_output_token * $output_tokens;
-                    }
-                break;
-            case 'claude-3-5-sonnet-20241022': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->claude_35_sonnet_input_token * $input_tokens) + ($api->claude_35_sonnet_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->claude_35_sonnet_input_token * $input_tokens;
-                    } else {
-                        $total = $api->claude_35_sonnet_output_token * $output_tokens;
-                    }
-                break;
-            case 'claude-3-7-sonnet-20250219': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->claude_37_sonnet_input_token * $input_tokens) + ($api->claude_37_sonnet_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->claude_37_sonnet_input_token * $input_tokens;
-                    } else {
-                        $total = $api->claude_37_sonnet_output_token * $output_tokens;
-                    }
-                break;
-            case 'claude-3-5-haiku-20241022': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->claude_35_haiku_input_token * $input_tokens) + ($api->claude_35_haiku_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->claude_35_haiku_input_token * $input_tokens;
-                    } else {
-                        $total = $api->claude_35_haiku_output_token * $output_tokens;
-                    }
-                break;
-            case 'gemini-2.0-flash': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->gemini_20_flash_input_token * $input_tokens) + ($api->gemini_20_flash_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->gemini_20_flash_input_token * $input_tokens;
-                    } else {
-                        $total = $api->gemini_20_flash_output_token * $output_tokens;
-                    }
-                break;
-            case 'gemini-1.5-flash': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->gemini_15_flash_input_token * $input_tokens) + ($api->gemini_15_flash_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->gemini_15_flash_input_token * $input_tokens;
-                    } else {
-                        $total = $api->gemini_15_flash_output_token * $output_tokens;
-                    }
-                break;
-            case 'gemini-1.5-pro': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->gemini_15_pro_input_token * $input_tokens) + ($api->gemini_15_pro_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->gemini_15_pro_input_token * $input_tokens;
-                    } else {
-                        $total = $api->gemini_15_pro_output_token * $output_tokens;
-                    }
-                break;
-            case 'deepseek-reasoner': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->deepseek_r1_input_token * $input_tokens) + ($api->deepseek_r1_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->deepseek_r1_input_token * $input_tokens;
-                    } else {
-                        $total = $api->deepseek_r1_output_token * $output_tokens;
-                    }
-                break;
-            case 'deepseek-chat': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->deepseek_v3_input_token * $input_tokens) + ($api->deepseek_v3_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->deepseek_v3_input_token * $input_tokens;
-                    } else {
-                        $total = $api->deepseek_v3_output_token * $output_tokens;
-                    }
-                break;
-            case 'grok-2-1212': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->grok_2_input_token * $input_tokens) + ($api->grok_2_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->grok_2_input_token * $input_tokens;
-                    } else {
-                        $total = $api->grok_2_output_token * $output_tokens;
-                    }
-                break;
-            case 'grok-2-vision-1212': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->grok_2_vision_input_token * $input_tokens) + ($api->grok_2_vision_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->grok_2_vision_input_token * $input_tokens;
-                    } else {
-                        $total = $api->grok_2_vision_output_token * $output_tokens;
-                    }
-                break;
-            case 'sonar-reasoning-pro': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->sonar_reasoning_pro_input_token * $input_tokens) + ($api->sonar_reasoning_pro_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->sonar_reasoning_pro_input_token * $input_tokens;
-                    } else {
-                        $total = $api->sonar_reasoning_pro_output_token * $output_tokens;
-                    }
-                break;
-            case 'sonar-reasoning': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->sonar_reasoning_input_token * $input_tokens) + ($api->sonar_reasoning_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->sonar_reasoning_input_token * $input_tokens;
-                    } else {
-                        $total = $api->sonar_reasoning_output_token * $output_tokens;
-                    }
-                break;
-            case 'sonar-pro': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->sonar_pro_input_token * $input_tokens) + ($api->sonar_pro_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->sonar_pro_input_token * $input_tokens;
-                    } else {
-                        $total = $api->sonar_pro_output_token * $output_tokens;
-                    }
-                break;
-            case 'sonar': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->sonar_input_token * $input_tokens) + ($api->sonar_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->sonar_input_token * $input_tokens;
-                    } else {
-                        $total = $api->sonar_output_token * $output_tokens;
-                    }
-                break;  
-            case 'us.amazon.nova-micro-v1:0': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->nova_micro_input_token * $input_tokens) + ($api->nova_micro_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->nova_micro_input_token * $input_tokens;
-                    } else {
-                        $total = $api->nova_micro_output_token * $output_tokens;
-                    }
-                break;  
-            case 'us.amazon.nova-lite-v1:0': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->nova_lite_input_token * $input_tokens) + ($api->nova_lite_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->nova_lite_input_token * $input_tokens;
-                    } else {
-                        $total = $api->nova_lite_output_token * $output_tokens;
-                    }
-                break;  
-            case 'us.amazon.nova-pro-v1:0': 
-                    if ($charge_type == 'both') {
-                        $total = ($api->nova_pro_input_token * $input_tokens) + ($api->nova_pro_output_token * $output_tokens);
-                    } elseif ($charge_type == 'input') {
-                        $total = $api->nova_pro_input_token * $input_tokens;
-                    } else {
-                        $total = $api->nova_pro_output_token * $output_tokens;
-                    }
-                break;             
+        if ($api) {
+            if ($charge_type == 'both') {
+                $total = ($api->input_token * $input_tokens) + ($api->output_token * $output_tokens);
+            } elseif ($charge_type == 'input') {
+                $total = $api->input_token * $input_tokens;
+            } else {
+                $total = $api->output_token * $output_tokens;
+            }
+        } else {
+            if ($charge_type == 'both') {
+                $total = $input_tokens + $output_tokens;
+            } elseif ($charge_type == 'input') {
+                $total = $input_tokens;
+            } else {
+                $total = $output_tokens;
+            }
         }
 
         return $total;
@@ -1053,8 +894,7 @@ class HelperService
             case 'ai_avatar': return self::checkAvatarAccess(); break;            
             case 'voice_isolator': return self::checkVoiceIsolatorAccess(); break;            
             case 'team_members': return self::checkTeamMemberAccess(); break;
-            case 'subscription_plans':
-            case 'affiliate_program': 
+            case 'subscription_plans':            
             case 'finance_management': 
             case 'finance_dashboard': 
             case 'transactions': 
@@ -1062,10 +902,12 @@ class HelperService
             case 'prepaid_plans': 
             case 'subscribers': 
             case 'promocodes': 
+            case 'gift_cards': 
             case 'referral_system': 
             case 'referral_payouts': 
             case 'invoice_settings': 
             case 'payment_settings': return self::checkSaaSAccess(); break;
+            case 'affiliate_program': return self::checkReferralAccess(); break;
             case 'menu_builder': return self::checkMenuAccess(); break;
             case 'ai_speech_to_text_pro': return self::checkSpeechProAccess(); break;
             default:
@@ -1567,6 +1409,7 @@ class HelperService
     // ===================================================================================
     public static function checkRealtimeChatAccess()
     {   
+
         if (self::extensionRealtimeChat()) {
             return self::checkRealtimeChatFeature();
         } else {
@@ -1823,6 +1666,24 @@ class HelperService
     {   
 
         return self::extensionSaaS();
+
+    }
+    // ===================================================================================
+
+
+    // SAAS FEATURE
+    // ===================================================================================
+    public static function checkReferralAccess()
+    {   
+        if (self::extensionSaaS()) {
+            if (config('payment.referral.enabled') == 'on') {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            return false;
+        }
 
     }
     // ===================================================================================
@@ -2969,6 +2830,36 @@ class HelperService
     public static function extensionOpenRouter()
     {   
         $extension = Extension::where('slug', 'open-router')->first();
+
+        if ($extension) {
+            return ($extension->installed) ? true : false;
+        } else {
+            return false;
+        }
+    }
+    // ===================================================================================
+
+
+    // COINREMITTER EXTENSION
+    // ===================================================================================
+    public static function extensionCoinremitter()
+    {   
+        $extension = Extension::where('slug', 'coinremitter')->first();
+
+        if ($extension) {
+            return ($extension->installed) ? true : false;
+        } else {
+            return false;
+        }
+    }
+    // ===================================================================================
+
+
+    // WALLET EXTENSION
+    // ===================================================================================
+    public static function extensionWallet()
+    {   
+        $extension = Extension::where('slug', 'wallet')->first();
 
         if ($extension) {
             return ($extension->installed) ? true : false;

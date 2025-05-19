@@ -13,7 +13,7 @@ use App\Models\MainSetting;
 use App\Models\FineTune;
 use App\Models\FineTuneModel;
 use App\Models\ImageCredit;
-use App\Models\ApiCredit;
+use App\Models\ApiManagement;
 use Yajra\DataTables\DataTables;
 use OpenAI\Laravel\Facades\OpenAI;
 use Exception;
@@ -248,10 +248,10 @@ class DavinciConfigController extends Controller
      */
     public function showAPICredit(Request $request)
     {
-        $credits = ApiCredit::first();
+        $models = ApiManagement::get();
         $config = MainSetting::first();
 
-        return view('admin.davinci.configuration.api', compact('credits', 'config'));
+        return view('admin.davinci.configuration.api', compact('models', 'config'));
     }
 
 
@@ -267,137 +267,9 @@ class DavinciConfigController extends Controller
         $this->storeValues(request('model_credit_name'), 'model_credit_name');
         $this->storeValues(request('model_disabled_vendors'), 'model_disabled_vendors');
 
-        $this->storeCreditCheckbox(request('o3_mini_new'), 'o3_mini_new');
-        $this->storeCreditValues(request('o3_mini_title'), 'o3_mini_title');
-        $this->storeCreditValues(request('o3_mini_description'), 'o3_mini_description');
-        $this->storeCreditValues(request('o3_mini_input_token'), 'o3_mini_input_token');
-        $this->storeCreditValues(request('o3_mini_output_token'), 'o3_mini_output_token');
+        $values = array_slice($request->all(), 4);
 
-        $this->storeCreditCheckbox(request('o1_new'), 'o1_new');
-        $this->storeCreditValues(request('o1_title'), 'o1_title');
-        $this->storeCreditValues(request('o1_description'), 'o1_description');
-        $this->storeCreditValues(request('o1_input_token'), 'o1_input_token');
-        $this->storeCreditValues(request('o1_output_token'), 'o1_output_token');
-
-        $this->storeCreditCheckbox(request('o1_mini_new'), 'o1_mini_new');
-        $this->storeCreditValues(request('o1_mini_title'), 'o1_mini_title');
-        $this->storeCreditValues(request('o1_mini_description'), 'o1_mini_description');
-        $this->storeCreditValues(request('o1_mini_input_token'), 'o1_mini_input_token');
-        $this->storeCreditValues(request('o1_mini_output_token'), 'o1_mini_output_token');
-
-        $this->storeCreditCheckbox(request('gpt_45_new'), 'gpt_45_new');
-        $this->storeCreditValues(request('gpt_45_title'), 'gpt_45_title');
-        $this->storeCreditValues(request('gpt_45_description'), 'gpt_45_description');
-        $this->storeCreditValues(request('gpt_45_input_token'), 'gpt_45_input_token');
-        $this->storeCreditValues(request('gpt_45_output_token'), 'gpt_45_output_token');
-
-        $this->storeCreditCheckbox(request('gpt_4_new'), 'gpt_4_new');
-        $this->storeCreditValues(request('gpt_4_title'), 'gpt_4_title');
-        $this->storeCreditValues(request('gpt_4_description'), 'gpt_4_description');
-        $this->storeCreditValues(request('gpt_4_input_token'), 'gpt_4_input_token');
-        $this->storeCreditValues(request('gpt_4_output_token'), 'gpt_4_output_token');
-
-        $this->storeCreditCheckbox(request('gpt_4_turbo_new'), 'gpt_4_turbo_new');
-        $this->storeCreditValues(request('gpt_4_turbo_title'), 'gpt_4_turbo_title');
-        $this->storeCreditValues(request('gpt_4_turbo_description'), 'gpt_4_turbo_description');
-        $this->storeCreditValues(request('gpt_4_turbo_input_token'), 'gpt_4_turbo_input_token');
-        $this->storeCreditValues(request('gpt_4_turbo_output_token'), 'gpt_4_turbo_output_token');
-
-        $this->storeCreditCheckbox(request('gpt_4o_new'), 'gpt_4o_new');
-        $this->storeCreditValues(request('gpt_4o_title'), 'gpt_4o_title');
-        $this->storeCreditValues(request('gpt_4o_description'), 'gpt_4o_description');
-        $this->storeCreditValues(request('gpt_4o_input_token'), 'gpt_4o_input_token');
-        $this->storeCreditValues(request('gpt_4o_output_token'), 'gpt_4o_output_token');
-
-        $this->storeCreditCheckbox(request('gpt_4o_mini_new'), 'gpt_4o_mini_new');
-        $this->storeCreditValues(request('gpt_4o_mini_title'), 'gpt_4o_mini_title');
-        $this->storeCreditValues(request('gpt_4o_mini_description'), 'gpt_4o_mini_description');
-        $this->storeCreditValues(request('gpt_4o_mini_input_token'), 'gpt_4o_mini_input_token');
-        $this->storeCreditValues(request('gpt_4o_mini_output_token'), 'gpt_4o_mini_output_token');
-
-        $this->storeCreditCheckbox(request('gpt_4o_realtime_new'), 'gpt_4o_realtime_new');
-        $this->storeCreditValues(request('gpt_4o_realtime_title'), 'gpt_4o_realtime_title');
-        $this->storeCreditValues(request('gpt_4o_realtime_description'), 'gpt_4o_realtime_description');
-        $this->storeCreditValues(request('gpt_4o_realtime_input_token'), 'gpt_4o_realtime_input_token');
-        $this->storeCreditValues(request('gpt_4o_realtime_output_token'), 'gpt_4o_realtime_output_token');
-
-        $this->storeCreditCheckbox(request('gpt_4o_mini_realtime_new'), 'gpt_4o_mini_realtime_new');
-        $this->storeCreditValues(request('gpt_4o_mini_realtime_title'), 'gpt_4o_mini_realtime_title');
-        $this->storeCreditValues(request('gpt_4o_mini_realtime_description'), 'gpt_4o_mini_realtime_description');
-        $this->storeCreditValues(request('gpt_4o_mini_realtime_input_token'), 'gpt_4o_mini_realtime_input_token');
-        $this->storeCreditValues(request('gpt_4o_mini_realtime_output_token'), 'gpt_4o_mini_realtime_output_token');
-
-        $this->storeCreditCheckbox(request('gpt_35_turbo_new'), 'gpt_35_turbo_new');
-        $this->storeCreditValues(request('gpt_35_turbo_title'), 'gpt_35_turbo_title');
-        $this->storeCreditValues(request('gpt_35_turbo_description'), 'gpt_35_turbo_description');
-        $this->storeCreditValues(request('gpt_35_turbo_input_token'), 'gpt_35_turbo_input_token');
-        $this->storeCreditValues(request('gpt_35_turbo_output_token'), 'gpt_35_turbo_output_token');
-
-        $this->storeCreditCheckbox(request('claude_3_opus_new'), 'claude_3_opus_new');
-        $this->storeCreditValues(request('claude_3_opus_title'), 'claude_3_opus_title');
-        $this->storeCreditValues(request('claude_3_opus_description'), 'claude_3_opus_description');
-        $this->storeCreditValues(request('claude_3_opus_input_token'), 'claude_3_opus_input_token');
-        $this->storeCreditValues(request('claude_3_opus_output_token'), 'claude_3_opus_output_token');
-
-        $this->storeCreditCheckbox(request('claude_37_sonnet_new'), 'claude_37_sonnet_new');
-        $this->storeCreditValues(request('claude_37_sonnet_title'), 'claude_37_sonnet_title');
-        $this->storeCreditValues(request('claude_37_sonnet_description'), 'claude_37_sonnet_description');
-        $this->storeCreditValues(request('claude_37_sonnet_input_token'), 'claude_37_sonnet_input_token');
-        $this->storeCreditValues(request('claude_37_sonnet_output_token'), 'claude_37_sonnet_output_token');
-
-        $this->storeCreditCheckbox(request('claude_35_sonnet_new'), 'claude_35_sonnet_new');
-        $this->storeCreditValues(request('claude_35_sonnet_title'), 'claude_35_sonnet_title');
-        $this->storeCreditValues(request('claude_35_sonnet_description'), 'claude_35_sonnet_description');
-        $this->storeCreditValues(request('claude_35_sonnet_input_token'), 'claude_35_sonnet_input_token');
-        $this->storeCreditValues(request('claude_35_sonnet_output_token'), 'claude_35_sonnet_output_token');
-
-        $this->storeCreditCheckbox(request('claude_35_haiku_new'), 'claude_35_haiku_new');
-        $this->storeCreditValues(request('claude_35_haiku_title'), 'claude_35_haiku_title');
-        $this->storeCreditValues(request('claude_35_haiku_description'), 'claude_35_haiku_description');
-        $this->storeCreditValues(request('claude_35_haiku_input_token'), 'claude_35_haiku_input_token');
-        $this->storeCreditValues(request('claude_35_haiku_output_token'), 'claude_35_haiku_output_token');
-
-        $this->storeCreditCheckbox(request('gemini_20_flash_new'), 'gemini_20_flash_new');
-        $this->storeCreditValues(request('gemini_20_flash_title'), 'gemini_20_flash_title');
-        $this->storeCreditValues(request('gemini_20_flash_description'), 'gemini_20_flash_description');
-        $this->storeCreditValues(request('gemini_20_flash_input_token'), 'gemini_20_flash_input_token');
-        $this->storeCreditValues(request('gemini_20_flash_output_token'), 'gemini_20_flash_output_token');
-
-        $this->storeCreditCheckbox(request('gemini_15_flash_new'), 'gemini_15_flash_new');
-        $this->storeCreditValues(request('gemini_15_flash_title'), 'gemini_15_flash_title');
-        $this->storeCreditValues(request('gemini_15_flash_description'), 'gemini_15_flash_description');
-        $this->storeCreditValues(request('gemini_15_flash_input_token'), 'gemini_15_flash_input_token');
-        $this->storeCreditValues(request('gemini_15_flash_output_token'), 'gemini_15_flash_output_token');
-
-        $this->storeCreditCheckbox(request('gemini_15_pro_new'), 'gemini_15_pro_new');
-        $this->storeCreditValues(request('gemini_15_pro_title'), 'gemini_15_pro_title');
-        $this->storeCreditValues(request('gemini_15_pro_description'), 'gemini_15_pro_description');
-        $this->storeCreditValues(request('gemini_15_pro_input_token'), 'gemini_15_pro_input_token');
-        $this->storeCreditValues(request('gemini_15_pro_output_token'), 'gemini_15_pro_output_token');
-
-        $this->storeCreditCheckbox(request('deepseek_r1_new'), 'deepseek_r1_new');
-        $this->storeCreditValues(request('deepseek_r1_title'), 'deepseek_r1_title');
-        $this->storeCreditValues(request('deepseek_r1_description'), 'deepseek_r1_description');
-        $this->storeCreditValues(request('deepseek_r1_input_token'), 'deepseek_r1_input_token');
-        $this->storeCreditValues(request('deepseek_r1_output_token'), 'deepseek_r1_output_token');
-
-        $this->storeCreditCheckbox(request('deepseek_v3_new'), 'deepseek_v3_new');
-        $this->storeCreditValues(request('deepseek_v3_title'), 'deepseek_v3_title');
-        $this->storeCreditValues(request('deepseek_v3_description'), 'deepseek_v3_description');
-        $this->storeCreditValues(request('deepseek_v3_input_token'), 'deepseek_v3_input_token');
-        $this->storeCreditValues(request('deepseek_v3_output_token'), 'deepseek_v3_output_token');
-
-        $this->storeCreditCheckbox(request('grok_2_new'), 'grok_2_new');
-        $this->storeCreditValues(request('grok_2_title'), 'grok_2_title');
-        $this->storeCreditValues(request('grok_2_description'), 'grok_2_description');
-        $this->storeCreditValues(request('grok_2_input_token'), 'grok_2_input_token');
-        $this->storeCreditValues(request('grok_2_output_token'), 'grok_2_output_token');
-
-        $this->storeCreditCheckbox(request('grok_2_vision_new'), 'grok_2_vision_new');
-        $this->storeCreditValues(request('grok_2_vision_title'), 'grok_2_vision_title');
-        $this->storeCreditValues(request('grok_2_vision_description'), 'grok_2_vision_description');
-        $this->storeCreditValues(request('grok_2_vision_input_token'), 'grok_2_vision_input_token');
-        $this->storeCreditValues(request('grok_2_vision_output_token'), 'grok_2_vision_output_token');
+        $this->storeCreditValues($values);
 
         toastr()->success(__('Settings have been saved successfully'));
         return redirect()->back();  
@@ -1027,27 +899,27 @@ class DavinciConfigController extends Controller
     }
 
 
-    private function storeCreditValues($value, $field_name)
+    private function storeCreditValues($values)
     {
-        $settings = ApiCredit::first();
-        $settings->update([
-            $field_name => $value
-        ]);
-    }
+        foreach ($values as $key => $value) {
+            $key = explode('__', $key);
+            $model = str_replace('_', '.', $key[0]);
+            $api = ApiManagement::where('model', $model)->first();
 
-
-    private function storeCreditCheckbox($checkbox, $field_name)
-    {
-        if ($checkbox == 'on') {
-            $status = true; 
-        } else {
-            $status = false;
+            if ($api) {
+                if (end($key) != 'new') {
+                    $api->update([
+                        end($key) => $value
+                    ]);
+                } else {
+                    $status = ($value == 'on') ? true : false;
+    
+                    $api->update([
+                        end($key) => $status
+                    ]);
+                }
+            }       
         }
-
-        $settings = ApiCredit::first();
-        $settings->update([
-            $field_name => $status
-        ]);
     }
 
 

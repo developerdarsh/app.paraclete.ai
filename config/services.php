@@ -47,50 +47,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | GETRESPONSE
-    |--------------------------------------------------------------------------
-    */
-    'getResponse' => [
-        'key' => env('GETRESPONSE_API_KEY'),
-        'list_id' => env('GETRESPONSE_LIST_ID'),
-    ],
-    /*
-    |--------------------------------------------------------------------------
-    | ADOBE EDITOR
-    |--------------------------------------------------------------------------
-    */
-    'adobe' => [
-        'client_id' => env('ADOBE_CLIENT_ID'),
-        'appName' => env('ADOBE_APP_NAME'),
-    ],
-    /*
-    |--------------------------------------------------------------------------
-    | VIRAL RSS FEED
-    |--------------------------------------------------------------------------
-    */
-    'feed' => [
-        'key' => env('RSS_API_KEY'),
-        'secret' => env('RSS_API_SECRET'),
-    ],
-    /*
-    |--------------------------------------------------------------------------
-    | Social media 
-    |--------------------------------------------------------------------------
-    */
-    'youtube' => [
-        'key' => env('YOUTUBE_API_KEY'),
-    ],
-    /*
-    |--------------------------------------------------------------------------
-    | Captions api key
-    |--------------------------------------------------------------------------
-    */
-    'caption' => [
-        'key' => env('CAPTIONS_API_KEY'),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Cloud Vendors
     |--------------------------------------------------------------------------
     */
@@ -127,14 +83,6 @@ return [
 
     'serper' => [
         'key' => env('SERPER_API_KEY'),
-    ],
-
-    'plagiarism' => [
-        'key' => env('PLAGIARISM_API_TOKEN'),
-    ],
-
-    'copyleaks' => [
-        'key' => env('COPYLEAKS_API_KEY'),
     ],
 
     'storj' => [
@@ -335,6 +283,14 @@ return [
         'secret_key' => env('IYZICO_SECRET_KEY'),
         'sandbox' => env('IYZICO_SANDBOX'),
         'class' => App\Services\IyzicoService::class,
+    ],
+
+    'coinremitter' => [
+        'class' => App\Services\CoinremitterService::class,
+    ],
+
+    'wallet' => [
+        'class' => App\Services\WalletService::class,
     ],
 
     '2checkout' => [

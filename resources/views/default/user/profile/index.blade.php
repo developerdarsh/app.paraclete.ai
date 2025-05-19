@@ -37,6 +37,13 @@
 				
 				<div class="card-footer p-0">
 					<div class="row" id="profile-pages">
+						@if (App\Services\HelperService::extensionSaaS())
+							<div class="col-sm-12">
+								<div class="text-center pt-4">
+									<a href="{{ route('user.wallet') }}" class="fs-13"><i class="fa-solid fa-wallet mr-1"></i> {{ __('My Wallet') }}</a>
+								</div>
+							</div>
+						@endif
 						<div class="col-sm-12">
 							<div class="text-center pt-4">
 								<a href="{{ route('user.profile.edit') }}" class="fs-13"><i class="fa fa-calendar-lines-pen mr-1"></i> {{ __('Update Profile') }}</a>
