@@ -562,19 +562,7 @@
 												</label>
 											</div>
 										</div>
-
-                                        <div class="col-lg-6 col-md-6 col-sm-12">
-											<div class="input-box">
-												<h6>{{ __('Smart Ads Feature') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-												<div class="form-group mt-3">
-													<label class="custom-switch">
-														<input type="checkbox" id="smart_ads_feature" name="smart_ads_feature" class="custom-switch-input" @if ($id->smart_ads_feature == 1) checked @endif>
-														<span class="custom-switch-indicator"></span>
-													</label>
-												</div>
-											</div>
-										</div>
-
+									</div>
 
 									<div class="col-lg-6 col-md-6 col-sm-12">
 										<div class="input-box">
@@ -604,11 +592,19 @@
 												<option value="gpt-4" @foreach ($model_templates as $key=>$value) @if($value == 'gpt-4') selected @endif @endforeach>{{ __('OpenAI GPT 4') }}</option>
 												<option value="gpt-4o" @foreach ($model_templates as $key=>$value) @if($value == 'gpt-4o') selected @endif @endforeach>{{ __('OpenAI GPT 4o') }}</option>
 												<option value="gpt-4o-mini" @foreach ($model_templates as $key=>$value) @if($value == 'gpt-4o-mini') selected @endif @endforeach>{{ __('OpenAI GPT 4o mini') }}</option>
+												<option value="gpt-4o-search-preview" @foreach ($model_templates as $key=>$value) @if($value == 'gpt-4o-search-preview') selected @endif @endforeach>{{ __('OpenAI GPT 4o Search Preview') }}</option>
+												<option value="gpt-4o-mini-search-preview" @foreach ($model_templates as $key=>$value) @if($value == 'gpt-4o-mini-search-preview') selected @endif @endforeach>{{ __('OpenAI GPT 4o mini Search Preview') }}</option>
 												<option value="gpt-4-0125-preview" @foreach ($model_templates as $key=>$value) @if($value == 'gpt-4-0125-preview') selected @endif @endforeach>{{ __('OpenAI GPT 4 Turbo') }}</option>	
 												<option value="gpt-4.5-preview" @foreach ($model_templates as $key=>$value) @if($value == 'gpt-4.5-preview') selected @endif @endforeach>{{ __('OpenAI GPT 4.5') }}</option>	
+												<option value="gpt-4.1" @foreach ($model_templates as $key=>$value) @if($value == 'gpt-4.1') selected @endif @endforeach>{{ __('OpenAI GPT 4.1') }}</option>	
+												<option value="gpt-4.1-mini" @foreach ($model_templates as $key=>$value) @if($value == 'gpt-4.1-mini') selected @endif @endforeach>{{ __('OpenAI GPT 4.1 mini') }}</option>	
+												<option value="gpt-4.1-nano" @foreach ($model_templates as $key=>$value) @if($value == 'gpt-4.1-nano') selected @endif @endforeach>{{ __('OpenAI GPT 4.1 nano') }}</option>	
 												<option value="o1" @foreach ($model_templates as $key=>$value) @if($value == 'o1') selected @endif @endforeach>{{ __('OpenAI o1') }} </option>	
 												<option value="o1-mini" @foreach ($model_templates as $key=>$value) @if($value == 'o1-mini') selected @endif @endforeach>{{ __('OpenAI o1 mini') }} </option>	
+												<option value="o1-pro" @foreach ($model_templates as $key=>$value) @if($value == 'o1-pro') selected @endif @endforeach>{{ __('OpenAI o1 pro') }} </option>	
 												<option value="o3-mini" @foreach ($model_templates as $key=>$value) @if($value == 'o3-mini') selected @endif @endforeach>{{ __('OpenAI o3 mini') }} </option>	
+												<option value="o3" @foreach ($model_templates as $key=>$value) @if($value == 'o3') selected @endif @endforeach>{{ __('OpenAI o3') }} </option>	
+												<option value="o4-mini" @foreach ($model_templates as $key=>$value) @if($value == 'o4-mini') selected @endif @endforeach>{{ __('OpenAI o4 mini') }} </option>	
 												<option value='claude-3-opus-20240229' @foreach ($model_templates as $key=>$value) @if($value == 'claude-3-opus-20240229') selected @endif @endforeach>{{ __('Claude 3 Opus') }}</option>																																																																																																																											
 												<option value='claude-3-7-sonnet-20250219' @foreach ($model_templates as $key=>$value) @if($value == 'claude-3-7-sonnet-20250219') selected @endif @endforeach>{{ __('Claude 3.7 Sonnet') }}</option>
 												<option value='claude-3-5-sonnet-20241022' @foreach ($model_templates as $key=>$value) @if($value == 'claude-3-5-sonnet-20241022') selected @endif @endforeach>{{ __('Claude 3.5 Sonnet') }}</option>
@@ -646,11 +642,19 @@
 												<option value="gpt-4" @foreach ($model_chats as $key=>$value) @if($value == 'gpt-4') selected @endif @endforeach>{{ __('OpenAI GPT 4') }}</option>												
 												<option value="gpt-4o" @foreach ($model_chats as $key=>$value) @if($value == 'gpt-4o') selected @endif @endforeach>{{ __('OpenAI GPT 4o') }}</option>	
 												<option value="gpt-4o-mini" @foreach ($model_chats as $key=>$value) @if($value == 'gpt-4o-mini') selected @endif @endforeach>{{ __('OpenAI GPT 4o mini') }}</option>	
+												<option value="gpt-4o-search-preview" @foreach ($model_chats as $key=>$value) @if($value == 'gpt-4o-search-preview') selected @endif @endforeach>{{ __('OpenAI GPT 4o Search Preview') }}</option>	
+												<option value="gpt-4o-mini-search-preview" @foreach ($model_chats as $key=>$value) @if($value == 'gpt-4o-mini-search-preview') selected @endif @endforeach>{{ __('OpenAI GPT 4o mini Search Preview') }}</option>	
 												<option value="gpt-4-0125-preview" @foreach ($model_chats as $key=>$value) @if($value == 'gpt-4-0125-preview') selected @endif @endforeach>{{ __('OpenAI GPT 4 Turbo') }}</option>
 												<option value="gpt-4.5-preview" @foreach ($model_chats as $key=>$value) @if($value == 'gpt-4.5-preview') selected @endif @endforeach>{{ __('OpenAI GPT 4.5') }}</option>
+												<option value="gpt-4.1" @foreach ($model_chats as $key=>$value) @if($value == 'gpt-4.1') selected @endif @endforeach>{{ __('OpenAI GPT 4.1') }}</option>
+												<option value="gpt-4.1-mini" @foreach ($model_chats as $key=>$value) @if($value == 'gpt-4.1-mini') selected @endif @endforeach>{{ __('OpenAI GPT 4.1 mini') }}</option>
+												<option value="gpt-4.1-nano" @foreach ($model_chats as $key=>$value) @if($value == 'gpt-4.1-nano') selected @endif @endforeach>{{ __('OpenAI GPT 4.1 nano') }}</option>
 												<option value="o1" @foreach ($model_chats as $key=>$value) @if($value == 'o1') selected @endif @endforeach>{{ __('OpenAI o1') }} </option>	
 												<option value="o1-mini" @foreach ($model_chats as $key=>$value) @if($value == 'o1-mini') selected @endif @endforeach>{{ __('OpenAI o1 mini') }} </option>	
+												<option value="o1-pro" @foreach ($model_chats as $key=>$value) @if($value == 'o1-pro') selected @endif @endforeach>{{ __('OpenAI o1 pro') }} </option>	
 												<option value="o3-mini" @foreach ($model_chats as $key=>$value) @if($value == 'o3-mini') selected @endif @endforeach>{{ __('OpenAI o3 mini') }} </option>	
+												<option value="o3" @foreach ($model_chats as $key=>$value) @if($value == 'o3') selected @endif @endforeach>{{ __('OpenAI o3') }} </option>	
+												<option value="o4-mini" @foreach ($model_chats as $key=>$value) @if($value == 'o4-mini') selected @endif @endforeach>{{ __('OpenAI o4 mini') }} </option>	
 												<option value='claude-3-opus-20240229' @foreach ($model_chats as $key=>$value) @if($value == 'claude-3-opus-20240229') selected @endif @endforeach>{{ __('Claude 3 Opus') }}</option>
 												<option value='claude-3-7-sonnet-20250219' @foreach ($model_chats as $key=>$value) @if($value == 'claude-3-7-sonnet-20250219') selected @endif @endforeach>{{ __('Claude 3.7 Sonnet') }}</option>																																																																																																																											
 												<option value='claude-3-5-sonnet-20241022' @foreach ($model_chats as $key=>$value) @if($value == 'claude-3-5-sonnet-20241022') selected @endif @endforeach>{{ __('Claude 3.5 Sonnet') }}</option>																																																																																																																											
@@ -709,7 +713,7 @@
 
 									<div class="col-lg-6 col-md-6 col-sm-12">
 										<div class="input-box">
-											<h6>{{ __('Supported AI Voiceover Vendors') }} <i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('Only listed TTS voices of the listed vendors will be available for the subscriber. Make sure to include respective vendor API keys in the Paraclete settings page.') }}."></i></h6>
+											<h6>{{ __('Supported AI Voiceover Vendors') }} <i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('Only listed TTS voices of the listed vendors will be available for the subscriber. Make sure to include respective vendor API keys in the Davinci settings page.') }}."></i></h6>
 											<select class="form-select" id="voiceover-vendors" name="voiceover_vendors[]" data-placeholder="{{ __('Choose Voiceover vendors') }}" multiple>
 												<option value='aws' @foreach ($vendors as $key=>$value) @if($value == 'aws') selected @endif @endforeach>{{ __('AWS') }}</option>																															
 												<option value='azure' @foreach ($vendors as $key=>$value) @if($value == 'azure') selected @endif @endforeach>{{ __('Azure') }}</option>																																																														
@@ -739,7 +743,7 @@
 
 										<div class="col-lg-6 col-md-6 col-sm-12">
 											<div class="input-box">
-												<h6>{{ __('Included AI Image Vendors') }} <i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('Only listed AI Image vendors models will be available for the subscriber. Make sure to include respective vendor API keys in the Paraclete settings page.') }}."></i></h6>
+												<h6>{{ __('Included AI Image Vendors') }} <i class="ml-3 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('Only listed AI Image vendors models will be available for the subscriber. Make sure to include respective vendor API keys in the Davinci settings page.') }}."></i></h6>
 												<select class="form-select" id="image-vendors" name="image_vendors[]" data-placeholder="{{ __('Choose AI Image vendors') }}" multiple>
 													<option value='openai' @foreach ($images as $key=>$value) @if($value == 'openai') selected @endif @endforeach>{{ __('OpenAI') }}</option>																															
 													<option value='sd' @foreach ($images as $key=>$value) @if($value == 'sd') selected @endif @endforeach> {{ __('Stable Diffusion') }}</option>																															
@@ -1320,7 +1324,23 @@
 									</div>	
 								@endif
 
+								@if (App\Services\HelperService::extensionSpeechToTextPro())
+									<div class="row subscription-extension-row">	
+										<h6 class="fs-12 mb-5 text-muted">{{ __('Speech to Text Pro Extension') }}</h6>
 
+										<div class="col-lg-6 col-md-6 col-sm-12">
+											<div class="input-box">
+												<h6>{{ __('Speech To Text Pro Feature') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+												<div class="form-group mt-3">
+													<label class="custom-switch">
+														<input type="checkbox" name="speech_text_pro_feature" class="custom-switch-input" @if ($id->speech_text_pro_feature == true) checked @endif>
+														<span class="custom-switch-indicator"></span>
+													</label>
+												</div>
+											</div>
+										</div>	
+									</div>	
+								@endif
 							</div>
 						</div>
 

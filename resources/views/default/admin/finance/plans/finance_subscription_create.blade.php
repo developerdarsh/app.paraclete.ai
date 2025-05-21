@@ -561,18 +561,6 @@
 										</div>
 									</div>
 
-                                    <div class="col-lg-6 col-md-6 col-sm-12">
-                                        <div class="input-box">
-                                            <h6>{{ __('Smart Ads Feature') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-                                            <div class="form-group mt-3">
-                                                <label class="custom-switch">
-                                                    <input type="checkbox" id="smart_ads_feature" name="smart_ads_feature" class="custom-switch-input">
-                                                    <span class="custom-switch-indicator"></span>
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-
 									<div class="col-lg-6 col-md-6 col-sm-12">
 										<div class="input-box">
 											<h6>{{ __('Integration Feature') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
@@ -601,11 +589,18 @@
 												<option value='gpt-4'>{{ __('OpenAI GPT 4') }}</option>																																																																																																																																																																																																																																																							
 												<option value='gpt-4o'>{{ __('OpenAI GPT 4o') }}</option>																																																																																																																																																																																																																																																					
 												<option value='gpt-4o-mini'>{{ __('OpenAI GPT 4o mini') }}</option>																																																																																																																																																																																																																																																					
+												<option value='gpt-4o-search-preview'>{{ __('OpenAI GPT 4o Search Preview') }}</option>																																																																																																																																																																																																																																																					
+												<option value='gpt-4o-mini-search-preview'>{{ __('OpenAI GPT 4o mini Search Preview') }}</option>																																																																																																																																																																																																																																																					
 												<option value='gpt-4-0125-preview'>{{ __('OpenAI GPT 4 Turbo') }}</option>																																																																																																																																																																																																																																																																																															
 												<option value='gpt-4.5-preview'>{{ __('OpenAI GPT 4.5') }}</option>																																																																																																																																																																																																																																																																																															
+												<option value='gpt-4.1'>{{ __('OpenAI GPT 4.1') }}</option>																																																																																																																																																																																																																																																																																															
+												<option value='gpt-4.1-mini'>{{ __('OpenAI GPT 4.1 mini') }}</option>																																																																																																																																																																																																																																																																																															
+												<option value='gpt-4.1-nano'>{{ __('OpenAI GPT 4.1 nano') }}</option>																																																																																																																																																																																																																																																																																															
 												<option value='o1'>{{ __('OpenAI o1') }}</option>																																																																																																																																																																																																																																																						
-												<option value='o1-mini'>{{ __('OpenAI o1 mini') }}</option>																																																																																																																																																																																																																																																						
+												<option value='o1-mini'>{{ __('OpenAI o1 mini') }}</option>																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																												
 												<option value='o3-mini'>{{ __('OpenAI o3 mini') }}</option>																																																																																																																																																																																																																																																						
+												<option value='o3'>{{ __('OpenAI o3') }}</option>																																																																																																																																																																																																																																																						
+												<option value='o4-mini'>{{ __('OpenAI o4 mini') }}</option>																																																																																																																																																																																																																																																						
 												<option value='claude-3-opus-20240229'>{{ __('Claude 3 Opus') }}</option>																																																																																																																											
 												<option value='claude-3-7-sonnet-20250219'>{{ __('Claude 3.7 Sonnet') }}</option>																																																																																																																											
 												<option value='claude-3-5-sonnet-20241022'>{{ __('Claude 3.5 Sonnet') }}</option>																																																																																																																											
@@ -643,11 +638,18 @@
 												<option value='gpt-4'>{{ __('OpenAI GPT 4') }}</option>																																																																																																																																																																																																																																																							
 												<option value='gpt-4o'>{{ __('OpenAI GPT 4o') }}</option>																																																																																																																																																																																																																																																					
 												<option value='gpt-4o-mini'>{{ __('OpenAI GPT 4o mini') }}</option>																																																																																																																																																																																																																																																					
+												<option value='gpt-4o-search-preview'>{{ __('OpenAI GPT 4o Search Preview') }}</option>																																																																																																																																																																																																																																																					
+												<option value='gpt-4o-mini-search-preview'>{{ __('OpenAI GPT 4o mini Search Preview') }}</option>																																																																																																																																																																																																																																																					
 												<option value='gpt-4-0125-preview'>{{ __('OpenAI GPT 4 Turbo') }}</option>																																																																																																																																																																																																																																																																																															
 												<option value='gpt-4.5-preview'>{{ __('OpenAI GPT 4.5') }}</option>																																																																																																																																																																																																																																																																																															
+												<option value='gpt-4.1'>{{ __('OpenAI GPT 4.1') }}</option>																																																																																																																																																																																																																																																																																															
+												<option value='gpt-4.1-mini'>{{ __('OpenAI GPT 4.1 mini') }}</option>																																																																																																																																																																																																																																																																																															
+												<option value='gpt-4.1-nano'>{{ __('OpenAI GPT 4.1 nano') }}</option>																																																																																																																																																																																																																																																																																															
 												<option value='o1'>{{ __('OpenAI o1') }}</option>																																																																																																																																																																																																																																																						
-												<option value='o1-mini'>{{ __('OpenAI o1 mini') }}</option>																																																																																																																																																																																																																																																						
+												<option value='o1-mini'>{{ __('OpenAI o1 mini') }}</option>																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											
 												<option value='o3-mini'>{{ __('OpenAI o3 mini') }}</option>																																																																																																																																																																																																																																																						
+												<option value='o3'>{{ __('OpenAI o3') }}</option>																																																																																																																																																																																																																																																						
+												<option value='o4-mini'>{{ __('OpenAI o4 mini') }}</option>																																																																																																																																																																																																																																																					
 												<option value='claude-3-opus-20240229'>{{ __('Claude 3 Opus') }}</option>	
 												<option value='claude-3-7-sonnet-20250219'>{{ __('Claude 3.7 Sonnet') }}</option>																																																																																																																											
 												<option value='claude-3-5-sonnet-20241022'>{{ __('Claude 3.5 Sonnet') }}</option>																																																																																																																											
@@ -1315,7 +1317,23 @@
 									</div>	
 								@endif
 
+								@if (App\Services\HelperService::extensionSpeechToTextPro())
+									<div class="row subscription-extension-row">	
+										<h6 class="fs-12 mb-5 text-muted">{{ __('Speech to Text Pro Extension') }}</h6>
 
+										<div class="col-lg-6 col-md-6 col-sm-12">
+											<div class="input-box">
+												<h6>{{ __('Speech To Text Pro Feature') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+												<div class="form-group mt-3">
+													<label class="custom-switch">
+														<input type="checkbox" name="speech_text_pro_feature" class="custom-switch-input">
+														<span class="custom-switch-indicator"></span>
+													</label>
+												</div>
+											</div>
+										</div>	
+									</div>	
+								@endif
 							</div>
 						</div>
 

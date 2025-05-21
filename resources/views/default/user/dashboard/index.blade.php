@@ -3,6 +3,50 @@
 @section('css')
 	<!-- Sweet Alert CSS -->
 	<link href="{{URL::asset('plugins/sweetalert/sweetalert2.min.css')}}" rel="stylesheet" />
+	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <style>
+ 		.slide-arrow{
+ 			position: absolute;
+ 			top: 50%;
+ 			margin-top: -15px;
+ 		}
+ 		.prev-arrow{
+ 			left: -30px;
+ 			width: 0;
+ 			height: 0;
+ 			border-left: 0 solid transparent;
+ 			border-right: 15px solid #113463;
+ 			border-top: 10px solid transparent;
+ 			border-bottom: 10px solid transparent;
+ 			background: none;
+ 		}
+ 		.next-arrow{
+ 			right: -30px;
+ 			width: 0;
+ 			height: 0;
+ 			border-right: 0 solid transparent;
+ 			border-left: 15px solid #113463;
+ 			border-top: 10px solid transparent;
+ 			border-bottom: 10px solid transparent;
+ 			background: none;
+ 		}
+ 		/** Dev. Slider CSS **/
+ 		.slick-slide img {
+ 			display: block;
+ 			height: auto;
+ 			width: 100%;
+ 		}  
+ 		/* Styles for the media controller */
+ 		#media-container iframe,
+ 		#media-container video {
+ 			width: 100%;
+ 			height: 300px;
+ 		}
+ 		#videoModal .modalbody {
+ 				padding: 1rem;
+ 		}
+ 		/** End Dev. Slider CSS **/
+ 	</style>
 @endsection
 
 @section('page-header')
@@ -22,6 +66,33 @@
 @section('content')
 	<!-- USER PROFILE PAGE -->
 	<div class="row">
+		<div class="card-body pt-5 pb-5">
+ 			<div class="col-lg-12 col-md-12">
+ 				<div class="card border-0">
+ 					<div class="card-body pt-5 pb-5">
+ 						<div class="slider lazy">
+ 							@foreach($BannerModel as $value)
+ 								<div>
+ 									<div class="image">
+ 										<img data-lazy="{{asset('banner/'.$value['image'])}}" data-type="{{ $value['type'] }}" data-url="{{ $value['url'] }}" />
+ 									</div>
+ 								</div>
+ 							@endforeach
+ 						</div>
+ 					</div>
+ 				</div>
+ 			</div>
+ 		</div>
+ 		<!-- Bootstrap modal structure -->
+ 		<div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModalLabel" aria-hidden="true">
+ 			<div class="modal-dialog modal-xs modal-dialog-centered" role="document">
+ 				<div class="modal-content">
+ 					<div class="modal-body">
+ 						<div id="media-container"></div>
+ 					</div>
+ 				</div>
+ 			</div>
+ 		</div>
 		<div class="@if (App\Services\HelperService::extensionSaaS()) col-lg-5 @else col-lg @endif col-md-12">
 			<div class="card border-0">
 				<div class="card-body pt-4 pb-4 pl-6 pr-6 custom-banner-bg" @if (!App\Services\HelperService::extensionSaaS()) style="height: 165px" @endif>
@@ -563,6 +634,7 @@
 	{{-- <script src="{{URL::asset('plugins/chart/chart.min.js')}}"></script> --}}
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 	<script src="{{URL::asset('plugins/sweetalert/sweetalert2.all.min.js')}}"></script>
+	<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 	<script>
 		$(function() {
 	
@@ -794,6 +866,44 @@
 					Swal.fire('Oops...','Something went wrong!', 'error')
 				}
 			})
+		}
+
+		$('.lazy').slick({
+ 			lazyLoad: 'ondemand',
+ 			// slidesToShow: 3,
+ 			slidesToScroll: 1,
+ 			prevArrow: '<button class="slide-arrow prev-arrow"></button>',
+ 			nextArrow: '<button class="slide-arrow next-arrow"></button>',
+ 			autoplay: true,
+     		autoplaySpeed: 3000, 
+ 		});
+ 	
+ 		$('.slider').on('click', '.image img', function () {
+ 			var bannerType = $(this).data('type');
+ 			var bannerUrl = $(this).data('url');
+ 			if (bannerType === 'video') {
+ 				if (isYouTubeUrl(bannerUrl)) {
+ 					$('#media-container').html('<iframe width="560" height="450" src="' + convertToEmbeddedUrl(bannerUrl) + '" frameborder="0" allowfullscreen></iframe>');
+ 				} else {
+ 					$('#media-container').html('<video width="560" height="450" controls autoplay><source src="' + bannerUrl + '" type="video/mp4"></video>');
+ 				}
+ 				$('#videoModal').modal('show');
+ 			} else if (bannerType === 'website') {
+ 				window.open(bannerUrl, '_blank');
+ 			}
+ 		});
+
+		function isYouTubeUrl(url) {
+			return url.includes('youtube.com') || url.includes('youtu.be');
+		}
+		
+		function convertToEmbeddedUrl(url) {
+			var videoId = url.match(/(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\d\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+			if (videoId && videoId[1]) {
+				return 'https://www.youtube.com/embed/' + videoId[1];
+			} else {
+				return url;
+			}
 		}
 
 	</script>

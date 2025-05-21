@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\PaymentPlatform;
 use App\Models\Setting;
 use App\Models\VendorPrice;
+use App\Models\PaymentGateway;
 use Carbon\Carbon;
 
 
@@ -773,6 +774,136 @@ class FinanceSettingController extends Controller
             $stripe = PaymentPlatform::where('name', 'Coinbase')->first();
             $stripe->enabled = 0;
             $stripe->save();
+        }
+
+        toastr()->success(__('Payment gateway settings successfully updated'));
+        return redirect()->back();
+    }
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showCoinremitter(Request $request)
+    {
+        $finance = PaymentGateway::where('name', 'coinremitter')->first();
+        return view('admin.finance.settings.gateways.finance_setting_coinremitter', compact('finance'));
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeCoinremitter(Request $request)
+    {                   
+       $gateway = PaymentGateway::where('name', 'coinremitter')->first();
+
+       if ($gateway) {
+            $gateway->prepaid_plans = request('coinremitter_prepaid') == 'on' ? 1 : 0;
+            $gateway->subscription_plans = request('coinremitter_subscription') == 'on' ? 1 : 0;
+            $gateway->live_api_key = request('coinremitter_api_key');
+            $gateway->live_api_secret = request('coinremitter_password');
+            $gateway->base_url = request('coinremitter_base_url');
+            $gateway->webhook_url = request('coinremitter_webhook_url');
+            $gateway->save();
+        } else {
+            $gateway = new PaymentGateway();
+            $gateway->name = 'coinremitter';
+            $gateway->prepaid_plans = request('coinremitter_prepaid') == 'on' ? 1 : 0;
+            $gateway->subscription_plans = request('coinremitter_subscription') == 'on' ? 1 : 0;
+            $gateway->live_api_key = request('coinremitter_api_key');
+            $gateway->live_api_secret = request('coinremitter_password');
+            $gateway->base_url = request('coinremitter_base_url');
+            $gateway->webhook_url = request('coinremitter_webhook_url');
+            $gateway->save();
+        }
+
+        if (request('coinremitter_prepaid') == 'on') {
+            $gateway = PaymentPlatform::where('name', 'Coinremitter')->first();
+            $gateway->enabled = 1;
+            $gateway->save();
+
+        } else {
+            $gateway = PaymentPlatform::where('name', 'Coinremitter')->first();
+            $gateway->enabled = 0;
+            $gateway->save();
+        }
+
+        if (request('coinremitter_subscription') == 'on') {
+            $yookassa = PaymentPlatform::where('name', 'Coinremitter')->first();
+            $yookassa->subscriptions_enabled = 1;
+            $yookassa->save();
+        } else {
+            $yookassa = PaymentPlatform::where('name', 'Coinremitter')->first();
+            $yookassa->subscriptions_enabled = 0;
+            $yookassa->save();
+        }
+
+        toastr()->success(__('Payment gateway settings successfully updated'));
+        return redirect()->back();
+    }
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function showWallet(Request $request)
+    {
+        $finance = PaymentGateway::where('name', 'wallet')->first();
+        return view('admin.finance.settings.gateways.finance_setting_wallet', compact('finance'));
+    }
+
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function storeWallet(Request $request)
+    {                   
+       $gateway = PaymentGateway::where('name', 'wallet')->first();
+
+       if ($gateway) {
+            $gateway->prepaid_plans = request('wallet_prepaid') == 'on' ? 1 : 0;
+            $gateway->subscription_plans = request('wallet_subscription') == 'on' ? 1 : 0;
+            $gateway->save();
+        } else {
+            $gateway = new PaymentGateway();
+            $gateway->name = 'wallet';
+            $gateway->prepaid_plans = request('wallet_prepaid') == 'on' ? 1 : 0;
+            $gateway->subscription_plans = request('wallet_subscription') == 'on' ? 1 : 0;
+            $gateway->save();
+        }
+
+        if (request('wallet_prepaid') == 'on') {
+            $gateway = PaymentPlatform::where('name', 'Wallet')->first();
+            $gateway->enabled = 1;
+            $gateway->save();
+
+        } else {
+            $gateway = PaymentPlatform::where('name', 'Wallet')->first();
+            $gateway->enabled = 0;
+            $gateway->save();
+        }
+
+        if (request('wallet_subscription') == 'on') {
+            $yookassa = PaymentPlatform::where('name', 'Wallet')->first();
+            $yookassa->subscriptions_enabled = 1;
+            $yookassa->save();
+        } else {
+            $yookassa = PaymentPlatform::where('name', 'Wallet')->first();
+            $yookassa->subscriptions_enabled = 0;
+            $yookassa->save();
         }
 
         toastr()->success(__('Payment gateway settings successfully updated'));

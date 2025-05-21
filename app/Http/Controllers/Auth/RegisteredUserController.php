@@ -21,6 +21,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\WelcomeMessage;
 use Exception;
+use Http;
 
 use Spatie\Permission\Traits\HasRoles;
 
@@ -205,6 +206,7 @@ class RegisteredUserController extends Controller
         $user->referral_id = strtoupper(Str::random(15));
         $user->referred_by = $referrer_id;
         $user->email_opt_in = $email_opt_in;
+        $this->addToGetResponse($request->name, $request->email);
         $user->save();     
 
         Auth::login($user, true);
@@ -249,6 +251,21 @@ class RegisteredUserController extends Controller
      
     }
 
+    protected function addToGetResponse($name, $email)
+    {
+         $apiKey = config('services.getResponse.key');
+         $listId = config('services.getResponse.list_id');
+         $response = Http::withHeaders([
+             "X-Auth-Token" => "api-key " . $apiKey,
+             "Content-Type" => "application/json", 
+         ])->post('https://api.getresponse.com/v3/contacts', [
+             "name" => $name,
+             "email" => $email,
+             "campaign" => [
+                 "campaignId" => $listId
+             ]
+         ]);
+    }
 
     /**
      * Validate reCaptcha (if enabled)

@@ -171,6 +171,7 @@
 																		 @elseif ($payment_platform->name == 'Iyzico') payment-image-iyzico
 																		 @elseif ($payment_platform->name == 'Paddle') payment-image-paddle
 																		 @elseif ($payment_platform->name == 'Flutterwave') payment-image-flutterwave
+																		 @elseif ($payment_platform->name == 'Wallet') payment-image-paddle
 																		 @endif" alt="{{ $payment_platform->name }}">
 																</label>
 															</div>										

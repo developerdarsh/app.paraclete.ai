@@ -2,6 +2,242 @@
 @section('css')
 	<link href="{{URL::asset('plugins/sweetalert/sweetalert2.min.css')}}" rel="stylesheet" />
 	<link href="{{URL::asset('plugins/highlight/highlight.dark.min.css')}}" rel="stylesheet" />
+	<style>
+ 		.chat-main-container .card-footer {
+ 			height: 75px;
+ 			padding-top: 0;
+ 			padding-bottom: 0;
+ 		}
+ 		.chat-controllers {
+ 			display: flex;
+ 			align-items: center;
+ 			justify-content: center;
+ 			padding-bottom: 10px;
+ 
+ 		}
+ 		.chat-message-container .d-flex .form-switch{
+ 			max-height: 1rem;
+ 		}
+ 		.audio_search a{
+ 			padding:0px 2px;
+ 		}
+ 		#audioPlayer{
+ 			display: block;
+ 		}
+ 		.audio_search .fa{
+ 			font-size:1.3rem;
+ 			cursor:pointer;
+ 		}
+ 		.chats-input-b .form-group {
+ 			position: relative;
+ 			display: flex;
+ 			flex-wrap: inherit;
+ 			align-items: center;
+ 			flex-direction: row;
+ 			width: 100%;
+ 		}
+ 		.chats-input-b .input-group-btn {
+ 			position: relative;
+ 		}
+ 		.chats-input-b .microphone-voice {
+ 			margin: 0px 10px !IMPORTANT;
+ 		}
+ 		.chats-input-b .microphone-voice i {
+ 			width: 40px;
+ 			height: 40px;
+ 			line-height: 40px;
+ 			background: #7111ef;
+ 			color: #ffffff;
+ 			font-size: 18px;
+ 			text-align: center;
+ 			border-radius: 100%;
+ 		}
+ 		.chats-input-b .microphone-voice .active:after {
+ 			content: '';
+ 			width: 12px;
+ 			height: 12px;
+ 			background: red;
+ 			position: absolute;
+ 			border-radius: 100%;
+ 			top: 2px;
+ 		}
+ 		.audio_search a i {
+ 			width: 24px;
+ 			height: 24px;
+ 			line-height: 24px;
+ 			text-align: center;
+ 			background: #520cae;
+ 			color: #fff;
+ 			border-radius: 100%;
+ 			font-size: 12px;
+ 		}
+ 		.card-footer .dropdown-selected {
+ 			margin: 15px 0;
+ 		}
+ 		.card-footer .dropdown-selected .btn:focus {
+ 			box-shadow: none;
+ 		}
+ 		.card-footer .dropdown-selected .btn {
+ 			min-width: 100%;
+ 			border: 1px solid #ddd;
+ 			padding: 8px 40px;
+ 			background: #4987f8c2;
+ 			color: #ffffff;
+ 		}
+ 		.chat-main-container .card-footer {
+ 			min-height: auto !important;
+ 			height: auto !important;
+ 		}
+ 		.input-box.chats-input-b .form-control {
+ 			border-color: #007BFF;
+ 		}
+ 		.card-footer .dropdown-selected .s-dropdown-menu {
+ 			width: calc(100% - 24px); 
+ 			padding: 10px 30px 10px;
+ 			overflow-y: auto;
+ 			max-height: 340px;
+ 			height: max-content;
+ 		}
+ 		.card-footer .dropdown-selected .s-dropdown-menu li {
+ 			font-size: 14px;
+ 			line-height: 24px;
+ 			font-weight: 400;
+ 			list-style: number;
+ 		} 
+ 		.card.balance-view {
+ 			background: #f5f9fc;
+ 		}
+ 		.chage-x {
+ 			background: #f4f4f6;
+ 			padding: 5px;
+ 			border-radius: 4px;
+ 		}
+ 		.chage-x span.bold-f {
+ 			font-weight: 600;
+ 			color: #222222;
+ 		}
+ 		.card.balance-view p {
+ 			font-size: 14px;
+ 		}
+ 		.card.balance-view p span {
+ 			background: #75a4fa;
+ 			color: #ffffff;
+ 			font-weight: bold;
+ 			padding: 2px 6px;
+ 			border-radius: 2px;
+ 			font-size: 14px;
+ 		}
+ 		.chat-card-header {
+ 			min-height: 5rem;
+ 		}
+ 
+ 		.chat-sidebar-search {
+ 			max-height: 79px;
+ 			font-size: 16px;
+ 			margin: 0;
+ 			padding: 1.2rem 1.5rem;
+ 			color: #333;
+ 			display: block;
+ 			position: relative;
+ 			min-height: 3.5rem;
+ 			border-bottom: 1px solid #ebecf1;
+ 		}
+ 		.chat-sidebar-search .chat-search-icon {
+ 			position: absolute;
+ 			right: 1rem;
+ 			top: 35%;
+ 		}
+ 		#chat-search {
+ 			border-radius: 1rem;
+ 		}
+ 		.chat-controllers {
+ 			align-self: flex-end;
+ 			gap: 1rem !important;
+ 			display: flex;
+ 			flex-direction: row;
+ 			justify-content: space-between;
+ 		}
+ 		.chat-controllers .text-input {
+ 			flex: 1;
+ 		}
+ 		.chat-controllers .action-0btn {
+ 			display: flex;
+ 			gap: 10px;
+ 			margin-bottom: 20px;
+ 		}
+ 		.chat-controllers #message {
+ 			background-color: transparent;
+ 			border: none;
+ 			resize: none;
+ 		}
+ 		.chat-controllers .chat-button {
+ 			font-size: 12px;
+ 			min-width: 100px;
+ 			padding: 0.6rem 10px;
+ 			border-radius: 35px;
+ 			color: #fff;
+ 			background-color: #007BFF;
+ 			border-color: #007BFF;
+ 			box-shadow: 0 1px 3px 0 rgba(50, 50, 50, 0.2), 0 2px 1px -1px rgba(50, 50, 50, 0.12), 0 1px 1px 0 rgba(50, 50, 50, 0.14);
+ 		}
+ 		.chat-controllers .chat-button:hover {
+ 			background-color: #1e1e2d;
+ 			border-color: #1e1e2d;
+ 		}
+ 		.chat-controllers .chat-button-icon {
+ 			color: #007BFF;
+ 			border-radius: 50%;
+ 			padding: 0.5rem 0.8rem;
+ 			width: 43px;
+ 			background-color: #E1F0FF;
+ 			outline: none !important;
+ 			text-decoration: none !important;
+ 		}
+ 		.chat-controllers .chat-button-icon:hover {
+ 			color: #1e1e2d;
+ 			background-color: #D1D3E0;
+ 		}
+ 		.chat-controllers .special-action-color {
+ 			border-color: #E1F0FF;
+ 			color: #007BFF;
+ 			background-color: #E1F0FF;
+ 			box-shadow: none;
+ 		}
+ 		.chat-controllers .special-action-color:hover {
+ 			color: #FFF;
+ 		}
+ 		#new-chat-button {
+ 			padding: 0.6rem 10px;
+ 			text-transform: none;
+ 		}
+ 		@media (max-width: 991px) {
+ 			.chat-controllers .action-0btn {
+ 				margin-bottom: 0px;
+ 			}
+ 			.chat-controllers .text-input {
+ 				flex: inherit;
+ 				width: 100%;
+ 			}
+ 			#chat-system #chat-container {
+ 				height: auto;
+ 			}
+ 	
+ 			.chat-controllers {
+ 				flex-direction: column;
+ 				align-items: flex-start;
+ 			}
+ 		}
+ 		/* 16-05-2024 CSS start */
+ 		.card-footer .dropdown-selected .btn.cs-btn {
+ 			border: none;
+ 			background: transparent;
+ 		 	min-width: auto;
+ 		    padding: .375rem .75rem;
+ 		}
+ 		.chat-main-container {
+ 			max-height: 820px !important;
+ 		}
+ 	</style>
 @endsection
 
 @section('page-header')
@@ -114,7 +350,25 @@
 					<div class="card-footer">
 						<div class="row">						
 							<div class="col-sm-12">	
-								
+								<div class='d-lg-flex justify-content-between align-items-center mt-4'>
+ 									<div class="form-check form-switch" style="display:none">
+ 										<input class="form-check-input" type="checkbox" id="web_access_button">
+ 										<label class="form-check-label" for="web-access-button">Web access</label>
+ 									</div>
+ 									<div class="text-black-3 font-medium bg-gray-3 px-1.5 rounded-lg" style="display:none">
+ 										<div class="flex gap-0.5 items-center text-xs whitespace-nowrap">
+ 											<p class="chage-x"><svg data-toggle="tooltip" data-placement="top" title="When Web access is highlighted, you will be deducted double the amount of words from your account. Note: Web access is for research purposes only" class="me-1" xmlns="http://www.w3.org/2000/svg" width="17" height="16" fill="none"><path stroke="#6B7280" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" d="M8.5 14a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z"/><path stroke="#6B7280" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" d="M8 7.5h.5V11H9"/><path fill="#6B7280" stroke="#6B7280" stroke-width="125" d="M9.063 5.25a.687.687 0 1 1-1.375 0 .687.687 0 0 1 1.375 0Z"/></svg><span class="bold-f">Charge: <span class="charge-count">1</span> * output words</span></p>
+ 										</div>
+ 									</div>
+ 									<div class="form-check form-switch d-flex">
+ 										<div class="audio_search">
+ 										<audio id="audioPlayer" controls style="visibility:hidden"></audio>
+ 										<input type="hidden" id="isAudioSearch" value="0">
+ 										<p id="status"></p>
+ 										</div>
+ 										
+ 									</div>
+                                </div>
 								<div class="input-box mb-0">								
 									<div class="chat-controllers">										
 										<textarea type="message" class="form-control @error('message') is-danger @enderror" rows="1" id="message" name="message" placeholder="{{ __('Type your message here...') }}"></textarea>
@@ -130,7 +384,7 @@
 										@if ($brands_feature)
 											<a class="btn btn-primary-chat fs-11 text-muted mb-2" href="javascript:void(0)" id="brand-voice" data-bs-toggle="modal" data-bs-target="#brandVoice"><i class="fa-solid fa-signature mr-1"></i> <span>{{ __('Brand Voice') }}</span></a>
 										@endif	
-										<a class="btn btn-primary-chat fs-11 text-muted mb-2" href="javascript:void(0)" id="prompt-button-main" data-bs-toggle="modal" data-bs-target="#promptModal"><i class="fa-solid fa-notebook"></i> <span>{{ __('Prompt Library') }}</span></a>
+										<a class="btn btn-primary-chat fs-11 text-muted mb-2" href="javascript:void(0)" id="prompt-button-main" data-bs-toggle="modal" data-bs-target="#promptModal"><i class="fa-solid fa-notebook"></i> <span>{{ __('Conversational Starters') }}</span></a>
 										@if (config('settings.vision_for_chat_feature_user') == 'allow')
 											<input type="file" id="image-input" style="display: none;" accept="image/png, image/jpeg, image/webp">
 											<a class="btn btn-primary-chat fs-11 text-muted mb-2" href="javascript:void(0)" id="upload-button-main"><i class="fa-solid fa-image"></i> <span>{{ __('Upload Image') }}</span></a>
@@ -155,7 +409,7 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body pl-5 pr-5">
-					<h6 class="text-center font-weight-extra-bold fs-16"><i class="fa-solid fa-notebook text-primary mr-2"></i> {{ __('Prompt Library') }}</h6>
+					<h6 class="text-center font-weight-extra-bold fs-16"><i class="fa-solid fa-notebook text-primary mr-2"></i> {{ __('Conversational Starters') }}</h6>
 
 					<div class="row">
 						<div class="col-lg-12 col-md-12 col-sm-12 p-4">
@@ -320,8 +574,14 @@
     <span style="background-color: #1e1e2d;"></span>
     </span>`;
 
+	const domainUrl = window.location.origin;
+
 	// Process deault conversation
 	$(document).ready(function() {
+
+		$('[data-toggle="tooltip"]').tooltip();
+ 		$('#audio-player').hide();
+
 		$(".chat-sidebar-message").first().focus().trigger('click');
 
 		let check_messages = document.querySelectorAll('.chat-sidebar-message').length;
@@ -362,6 +622,16 @@
 				}
 			});
 		}
+
+		/* web access button click */
+ 
+ 		$("#web_access_button").click(function() {
+ 			if ($(this).is(":checked")) {
+ 				$(".charge-count").text("2");
+ 			} else {
+ 				$(".charge-count").text("1");
+ 			}
+ 		});
 
 		let model = '';
 		let logo = '';
@@ -724,6 +994,20 @@
 				eventSource.onmessage = function (e) {
 
 					if (e.data == "[DONE]") {
+						if( $('#isAudioSearch').val() == '1'){
+ 							fetch("/app/user/chat/audio-convert", { 
+ 								headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+ 								method: 'post',
+ 								 body: formData
+ 							 })
+                             .then(function(response){
+ 								return response.text();
+ 							})
+ 							.then(function(result){
+ 								const parsedResult = JSON.parse(result);
+ 								convertTextToSpeech(parsedResult.data, parsedResult.voice_code);
+ 							})
+                        }
 						msgerSendBtn.disabled = false
 						eventSource.close();
 						$msg_txt.html(escape_html(msg));
@@ -1350,6 +1634,89 @@
 		});
 
 	}
+
+	const recordButton = document.getElementById('mic-button');
+ 	const statusElement = document.getElementById('status');
+ 	let mediaRecorder;
+ 	let audioChunks = [];
+ 	recordButton.addEventListener('click', toggleRecording);
+ 	function toggleRecording() {
+ 		if (mediaRecorder && mediaRecorder.state === 'recording') {
+ 			stopRecording();
+ 		} else {
+ 			$('#isAudioSearch').val(1);
+ 			startRecording();
+ 		}
+ 	}
+ 	
+ 	function startRecording() {
+ 		navigator.mediaDevices.getUserMedia({ audio: true })
+ 		.then(function (stream) {
+ 		mediaRecorder = new MediaRecorder(stream);
+ 		mediaRecorder.addEventListener('dataavailable', function (event) {
+ 			audioChunks.push(event.data);
+ 		});
+ 		mediaRecorder.addEventListener('stop', function () {
+ 			const audioBlob = new Blob(audioChunks);
+ 			const formData = new FormData();
+ 			formData.append('audio', audioBlob, 'recorded_audio.wav');
+ 			fetch('/app/user/chat/save-audio', {
+ 				headers: {
+ 				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+ 				},
+ 				method: 'POST',
+ 				body: formData
+ 			})
+ 			.then(response => response.json())
+ 			.then(data => {
+ 				if (data.response) {
+ 				$('#message').val(data.response.text);
+ 				$('#chat-button').click();
+ 				} else {
+ 				console.log('Error saving audio');
+ 				}
+ 			})
+ 			.catch(error => {
+ 				console.error('Error:', error);
+ 			});
+ 			audioChunks = [];
+ 		});
+ 		mediaRecorder.start();
+ 		recordButton.innerHTML = '<i class="fa-solid fa-stop active"></i>';
+ 		})
+ 		.catch(function (error) {
+ 		console.error('Error:', error);
+ 		});
+ 	}
+ 	function stopRecording() {
+ 		if (mediaRecorder) {
+ 			mediaRecorder.stop();
+ 			recordButton.innerHTML = '<i class="fa-regular fa-microphone"></i>';
+ 		}
+ 	}
+ 		
+ 	function convertTextToSpeech(text, code){
+ 		$.get('{{ route("convert-text-to-audio") }}', { text: text, voiceCode: code })
+ 		.done(function (voices) {
+ 			console.log(voices);
+ 			$('#audioPlayer').css('visibility','inherit');  
+ 			const audioUrl = domainUrl + voices.result_url;
+ 			const audioPlayer = document.getElementById('audioPlayer');
+ 			audioPlayer.src = audioUrl;
+ 			audioPlayer.play();
+             $('#isAudioSearch').val(0);
+ 		})
+ 		.fail(function (error) {
+ 			console.error('Error fetching voices:', error);
+ 		});
+ 	}
+ 
+	$('.s-dropdown-menu li').on('click', function () {
+		var selectedTemplateText = $(this).text();
+		$('#message').val(selectedTemplateText);
+		$('#message').text(selectedTemplateText);
+
+	});  
 
 
 </script>

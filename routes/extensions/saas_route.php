@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\FinanceController;
 use App\Http\Controllers\Admin\FinanceSubscriptionPlanController;
 use App\Http\Controllers\Admin\FinancePrepaidPlanController;
 use App\Http\Controllers\Admin\FinancePromocodeController;
+use App\Http\Controllers\Admin\FinanceGiftCardController;
 use App\Http\Controllers\Admin\ReferralSystemController;
 use App\Http\Controllers\Admin\FinanceSettingController;
 use App\Http\Controllers\Admin\InvoiceController;
@@ -96,6 +97,21 @@ Route::group(['prefix' => 'admin', 'middleware' => ['verified', '2fa.verify', 'r
         Route::put('/finance/promocodes/{id}', 'update')->name('admin.finance.promocodes.update');
         Route::delete('/finance/promocodes/{id}', 'destroy')->name('admin.finance.promocodes.destroy');
         Route::get('/finance/promocodes/{id}', 'delete')->name('admin.finance.promocodes.delete');
+    });
+
+    // ADMIN FINANCE - GIFT CARD ROUTES
+    Route::controller(FinanceGiftCardController::class)->group(function() {
+        Route::get('/finance/gift-cards', 'index')->name('admin.finance.gifts');
+        Route::get('/finance/gift-cards/redeemed', 'redeemed')->name('admin.finance.gifts.redeemed');
+        Route::get('/finance/gift-cards/transfer', 'transfer')->name('admin.finance.gifts.transfer');
+        Route::post('/finance/gift-cards/store', 'store')->name('admin.finance.gifts.store');
+        Route::get('/finance/gift-cards/create', 'create')->name('admin.finance.gifts.create');
+        Route::get('/finance/gift-cards/{id}/show', 'show')->name('admin.finance.gifts.show');
+        Route::get('/finance/gift-cards/{id}/edit', 'edit')->name('admin.finance.gifts.edit');
+        Route::put('/finance/gift-cards/{id}', 'update')->name('admin.finance.gifts.update');
+        Route::get('/finance/gift-cards/{id}/transfer/show', 'showTransfer')->name('admin.finance.gifts.transfer.show');
+        Route::post('/finance/gift-card/delete', 'delete');
+        Route::post('/finance/gift-card/redeemed/delete', 'deleteRedeemed');
     });
 
     // ADMIN FINANCE - REFERRAL ROUTES

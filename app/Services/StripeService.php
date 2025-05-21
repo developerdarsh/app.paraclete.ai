@@ -121,16 +121,31 @@ class StripeService
                 }
 
             } else {
-               
-                $session = \Stripe\Checkout\Session::create([
-                    'line_items' => [[ 
-                        'price' => $sub->stripe_gateway_plan_id, 
-                        'quantity' => 1
-                    ]], 
-                    'mode' => 'subscription',
-                    'success_url' => route('user.payments.subscription.stripe', ['plan_id' => $sub->id]),
-                    'cancel_url' => route('user.payments.stripe.cancel'),
-                ]);
+               if (is_null($sub->days) || $sub->days == 0) {
+                    $session = \Stripe\Checkout\Session::create([
+                        'line_items' => [[ 
+                            'price' => $sub->stripe_gateway_plan_id, 
+                            'quantity' => 1
+                        ]], 
+                        'mode' => 'subscription',
+                        'success_url' => route('user.payments.subscription.stripe', ['plan_id' => $sub->id]),
+                        'cancel_url' => route('user.payments.stripe.cancel'),
+                    ]);
+               } else {
+                    $session = \Stripe\Checkout\Session::create([
+                        'line_items' => [[ 
+                            'price' => $sub->stripe_gateway_plan_id, 
+                            'quantity' => 1
+                        ]], 
+                        'mode' => 'subscription',
+                        'subscription_data' => [
+                            'trial_period_days' => $sub->days, 
+                        ],
+                        'success_url' => route('user.payments.subscription.stripe', ['plan_id' => $sub->id]),
+                        'cancel_url' => route('user.payments.stripe.cancel'),
+                    ]);
+               }
+                
 
                 session()->put('subscriptionID', $session->id);
 

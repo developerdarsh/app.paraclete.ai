@@ -24,7 +24,8 @@ class Chat extends Model
         'category',
         'type',
         'prompt',
-        'group', 
+        'group',
+        'voice_code',
         'model',
         'model_mode'
     ];

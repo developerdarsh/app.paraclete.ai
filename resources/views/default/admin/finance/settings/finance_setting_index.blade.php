@@ -293,6 +293,42 @@
 									</div>							
 								</div>
 							</div>
+
+							@if (App\Services\HelperService::extensionCoinremitter())
+								<div class="col-md-6 col-sm-12">
+									<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/finance/settings/coinremitter')}}'">
+										<div class="card-body p-5 d-flex">
+											<div class="extension-icon">
+												<img src="{{theme_url('img/payments/coinremitter.webp')}}" class="mr-4" alt="" style="width: 40px;">												
+											</div>
+											<div class="extension-title">
+												<div class="d-flex">
+													<h6 class="fs-15 font-weight-bold mb-3">{{ __('Coinremitter') }}</h6>
+												</div>
+												<p class="fs-12 mb-0 text-muted">{{ __('Coinremitter API settings and configuration')}}</p>
+											</div>
+										</div>							
+									</div>
+								</div>
+							@endif
+
+							@if (App\Services\HelperService::extensionWallet())
+								<div class="col-md-6 col-sm-12">
+									<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/finance/settings/wallet')}}'">
+										<div class="card-body p-5 d-flex">
+											<div class="extension-icon">
+												<img src="{{theme_url('img/payments/wallet.avif')}}" class="mr-4" alt="" style="width: 40px;">												
+											</div>
+											<div class="extension-title">
+												<div class="d-flex">
+													<h6 class="fs-15 font-weight-bold mb-3">{{ __('Wallet') }}</h6>
+												</div>
+												<p class="fs-12 mb-0 text-muted">{{ __('Wallet settings and configuration')}}</p>
+											</div>
+										</div>							
+									</div>
+								</div>
+							@endif
 						</div>
 					</div>
 				</div>		

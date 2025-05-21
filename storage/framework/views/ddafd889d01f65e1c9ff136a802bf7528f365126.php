@@ -2,6 +2,7 @@
 <?php $__env->startSection('css'); ?>
 	<link href="<?php echo e(URL::asset('plugins/sweetalert/sweetalert2.min.css')); ?>" rel="stylesheet" />
 	<link href="<?php echo e(URL::asset('plugins/highlight/highlight.dark.min.css')); ?>" rel="stylesheet" />
+	<link href="<?php echo e(URL::asset('plugins/air-datepicker/air-datepicker.css')); ?>" rel="stylesheet" />
 	<style>
  		.chat-main-container .card-footer {
  			height: 75px;
@@ -627,42 +628,54 @@ unset($__errorArgs, $__bag); ?>
 				<div class="modal-header">
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<div class="modal-body pl-5 pr-5">
+				<div class="modal-body pl-5 pr-5 pb-0">
 					<h6 class="text-center font-weight-bold fs-16 mb-4"><?php echo e(__('Chat Share')); ?></h6>			
 					
-					<div class="prompts-panel">
-			
-						<div class="tab-content" id="myTabContent">
-			
-							<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
-								<div class="row" id="templates-panel">			
-									<div class="col-sm-12">
-										<div class="form-group mb-5">	
-											<h6 class="fs-11 mb-2 font-weight-semibold"><?php echo e(__('Select Company')); ?></h6>								
-											<select id="company" name="company" class="form-select"  onchange="updateService(this)">		
-												<option value="none"> <?php echo e(__('Select your Company / Brand')); ?></option>
-												<?php $__currentLoopData = $brands; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $brand): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-													<option value="<?php echo e($brand->id); ?>"> <?php echo e(__($brand->name)); ?></option>
-												<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>									
+					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12 p-4">
+							<div id="chat-search-panel">
+								<div class="chat-share-copy">
+									<div class="input-box">								
+										<div class="form-group prompt-search-bar-dark">							    
+											<div class="input-group">
+												<input type="text" class="form-control" id="chat-url" placeholder="<?php echo e(__('Chat share url...')); ?>" readonly>
+												<button class="btn btn-copy" onclick="copyUrl()">
+													<i class="fas fa-copy"></i>
+												</button>												
+											</div>
+
+											<h6 class="text-muted mt-3 pt-1 mb-4 text-center"><?php echo e(__('Additional Settings')); ?></h6>
+											<select id="chat-share-permission" name="chat-share-permission" class="form-select">
+												<option value="read" selected><?php echo e(__('Read Only Chat Permission')); ?></option>
+												<option value="chat"><?php echo e(__('Full Chat Permission')); ?></option>													
 											</select>
-										</div>
-									</div>
-		
-									<div class="col-sm-12">
-										<div class="form-group mb-5">
-											<h6 class="fs-11 mb-2 font-weight-semibold"><?php echo e(__('Select Product / Service')); ?> </h6>
-											<select id="service" name="service" class="form-select">
-												<option value="none"><?php echo e(__('Select your Product / Service')); ?></option>
-											</select>
-										</div>
-									</div>
+
+											<select id="chat-share-time" name="chat-share-time" class="form-select mt-4" onchange="setAvailableOption()">
+												<option value="always" selected><?php echo e(__('Always available')); ?></option>
+												<option value="limited"><?php echo e(__('Available until specified time')); ?></option>													
+											</select>	
+											
+											<div id="schedule-time" class="mt-3 pt-3 hidden">
+												<div class="row">
+													<div class="col-sm-12">
+														<div class="input-box mb-2">
+															<h6 class="mb-2"><?php echo e(__('Available Until')); ?></h6>
+															<input type="text" id="schedule_date" name="limited_date" class="form-control">
+														</div>
+													</div>
+												</div>		
+											</div>
+
+											<div class="text-center mt-4">	
+												<button type="button" class="btn-cancel ripple btn pl-7 pr-7" style="min-width: 200px; height: 40px" data-bs-dismiss="modal"><?php echo e(__('Cancel')); ?></button>
+												<button type="button" class="btn-primary ripple btn pl-7 pr-7" style="min-width: 200px; height: 40px" id="generate-new-url"><?php echo e(__('Generate New URL')); ?></button>
+											</div>
+										</div> 
+									</div> 
 								</div>
 							</div>
-							<div class="text-center">	
-								<button type="button" class="btn-primary ripple btn pl-7 pr-7" data-bs-dismiss="modal"><?php echo e(__('Share')); ?></button>
-							</div>							
-						</div>
-					</div>
+						</div>	
+					</div>	
 					
 				</div>
 		  	</div>
@@ -678,6 +691,7 @@ unset($__errorArgs, $__bag); ?>
 <script src="<?php echo e(URL::asset('plugins/highlight/highlight.min.js')); ?>"></script>
 <script src="<?php echo e(URL::asset('plugins/highlight/showdown.min.js')); ?>"></script>
 <script src="<?php echo e(URL::asset('plugins/markdown/markdown-it.min.js')); ?>"></script>
+<script src="<?php echo e(URL::asset('plugins/air-datepicker/air-datepicker.js')); ?>"></script>
 <?php if(App\Services\HelperService::extensionRealtimeChat()): ?>							
 	<?php if(App\Services\HelperService::checkRealtimeChatFeature()): ?>
 		<script src="<?php echo e(theme_url('js/script.js')); ?>"></script>
@@ -711,8 +725,18 @@ unset($__errorArgs, $__bag); ?>
     <span style="background-color: #1e1e2d;"></span>
     <span style="background-color: #1e1e2d;"></span>
     </span>`;
-
 	const domainUrl = window.location.origin;
+	new AirDatepicker('#schedule_date', {
+		dateFormat: 'dd/MM/yyyy',
+		navTitles: {
+			days: '<strong>yyyy</strong> <i>MMMM</i>',
+			months: 'Select month of <strong>yyyy</strong>'    
+		},
+		selectedDates: [new Date()],
+		minDate: [new Date()],
+		timepicker: true,
+	});
+	
 
 	// Process deault conversation
 	$(document).ready(function() {
@@ -982,41 +1006,6 @@ unset($__errorArgs, $__bag); ?>
 					toastr.warning('<?php echo e(__('There was an issue while retrieving chat history')); ?>');
 				}
 			});
-	});
-
-
-	// Show chat share page
-	$(document).on('click', ".share", function (e) { 
-
-		let uuid = active_id;
-
-		$.ajax({
-				headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-				method: 'POST',
-				url: '/app/user/chat/history',
-				data: { 'conversation_id': active_id,},
-				success: function (data) {
-
-					$('#dynamic-inputs').html('');
-					$('#generating-status').removeClass('show-chat-loader');
-
-					for (const key in data) {
-
-						if(data[key]['prompt']) {
-							appendMessage(user_avatar, "right", data[key]['prompt'], '', data[key]['images']);
-						}
-
-						if (data[key]['response']) {
-							appendMessageSpecial(bot_avatar, "left", data[key]['response'], code);
-						}
-					}		
-					
-					hljs.highlightAll();
-				},
-				error: function(data) {
-					toastr.warning('<?php echo e(__('There was an issue while retrieving chat history')); ?>');
-				}
-		});
 	});
 
 
@@ -2004,8 +1993,121 @@ unset($__errorArgs, $__bag); ?>
 		$('#message').val(selectedTemplateText);
 		$('#message').text(selectedTemplateText);
 
-	});  
+	});
+
+	function copyUrl() {
+		const urlInput = document.getElementById('chat-url');
+		const copyBtn = document.querySelector('.btn-copy');
+		
+		// Check if input is empty or contains only whitespace
+		if (!urlInput.value.trim()) {
+			copyBtn.style.color = '#dc3545'; // Error color
+			
+			// Shake animation for error feedback
+			copyBtn.style.animation = 'shake 0.5s';
+			setTimeout(() => {
+				copyBtn.style.color = '#6c757d';
+				copyBtn.style.animation = 'none';
+			}, 1500);
+
+			toastr.error('<?php echo e(__('Please generate a chat share link first')); ?>');
+
+			return;
+		}
+		
+		navigator.clipboard.writeText(urlInput.value).then(() => {
+			// Visual feedback on button
+			const originalIcon = copyBtn.innerHTML;
+			
+			// Change to check icon
+			copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+			copyBtn.style.color = '#198754'; // Success color
+
+			toastr.success('<?php echo e(__('Chat share link has been copied')); ?>');
+			
+			// Revert back after 1.5 seconds
+			setTimeout(() => {
+				copyBtn.innerHTML = originalIcon;
+				copyBtn.style.color = '#6c757d';
+			}, 1500);
+		}).catch(err => {
+			console.error('Failed to copy text: ', err);
+		});
+	}
+
+
+	function setAvailableOption() {
+		var select = document.getElementById("chat-share-time").value;
+	
+		switch (select) {
+			case 'always':
+				$('#schedule-time').addClass('hidden');
+				break;
+			case 'limited':
+				$('#schedule-time').removeClass('hidden');
+				break;
+			default:
+				$('#schedule-time').addClass('hidden');
+				break;
+		}
+	}
+
+	$('#generate-new-url').on('click', function() {
+
+		// Collect all form values from the modal
+        const sharePermission = $('#chat-share-permission').val();
+        const shareTime = $('#chat-share-time').val();
+        const limitedDate = (shareTime == 'limited') ? $('#schedule_date').val() : '';
+        console.log(limitedDate)
+        // Show loading state on button
+        const originalButtonText = $(this).text();
+        $(this).html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${originalButtonText}`);
+        $(this).prop('disabled', true);
+        
+        // Make AJAX request
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            method: 'POST',
+            url: '/app/user/chat/share/generate',
+            data: {
+				'conversation_id': active_id,
+                'chat_code': chat_code,
+                'permission': sharePermission,
+                'availability': shareTime,
+                'expiry_date': limitedDate
+            },
+            success: function(response) {
+                // Reset button state
+                $('#generate-new-url').html(originalButtonText);
+                $('#generate-new-url').prop('disabled', false);
+                
+                if (response.status === 200) {
+                    // Update the URL input field with the new URL
+                    $('#chat-url').val(response.url);
+                    toastr.success('<?php echo e(__('URL has been successfully generated')); ?>');
+                } else {
+					toastr.error('<?php echo e(__('There was an issue generating your url, please contact support')); ?>');
+                }
+            },
+            error: function(xhr) {
+                // Reset button state
+                $('#generate-new-url').html(originalButtonText);
+                $('#generate-new-url').prop('disabled', false); 
+				toastr.error('<?php echo e(__('There was an issue generating your url')); ?>');               
+                console.error('Error:', xhr.responseText);
+            }
+        });
+
+	});
 
 </script>
+
+<style>
+	@keyframes shake {
+		0%, 100% { transform: translateY(-50%) translateX(0); }
+		25% { transform: translateY(-50%) translateX(-4px); }
+		75% { transform: translateY(-50%) translateX(4px); }
+	}
+	</style>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /home/customer/www/staging.paraclete.ai/public_html/resources/views/default/user/chat/view.blade.php ENDPATH**/ ?>

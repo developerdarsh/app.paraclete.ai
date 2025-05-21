@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\SendInvoice;
 use App\Mail\PaymentSuccess;
 use App\Mail\NewPaymentNotification;
+use App\Services\HelperService;
 use Exception;
 
 use KingFlamez\Rave\Facades\Rave as Flutterwave;
@@ -62,27 +63,45 @@ class PaymentController extends Controller
 
         } else {
 
-            $rules = [
-                'payment_platform' => ['required', 'exists:payment_platforms,id'],
-            ];
+            $payment_platform = PaymentPlatform::where('id', $request->payment_platform)->first();
 
-            $request->validate($rules);
+            if (isset($payment_platform) && $payment_platform->name == 'Wallet') {
+                $process = $this->handleWalletPayment($request, $id->id, 'subscription');
+                if ($process['status'] == 'success') {
+                    $order_id = $process['order_id'];
+                    $plan = SubscriptionPlan::where('id', $id->id)->first();
+                    toastr()->success(__('You have successfully subscribed to the subscription plan'));
+                    return view('user.plans.user_plan_success', compact('plan', 'order_id'));
+                } else {
+                    toastr()->error(__($process['message']));
+                    return redirect()->back();
+                }
 
-            $paymentPlatform = $this->paymentPlatformResolver->resolveService($request->payment_platform);
+            } else {
 
-            session()->put('subscriptionPlatformID', $request->payment_platform);
-            session()->put('gatewayID', $request->payment_platform);
-            session()->put('billing_first_name', $request->name);
-            session()->put('billing_last_name', $request->lastname);
-            session()->put('billing_email', $request->email);
-            session()->put('billing_phone', $request->phone_number);
-            session()->put('billing_city', $request->city);
-            session()->put('billing_postal_code', $request->postal_code);
-            session()->put('billing_country', $request->country);
-            session()->put('billing_address', $request->address);
-            session()->put('billing_vat_number', $request->vat);
-            
-            return $paymentPlatform->handlePaymentSubscription($request, $id);
+                $rules = [
+                    'payment_platform' => ['required', 'exists:payment_platforms,id'],
+                ];
+
+                $request->validate($rules);
+
+                $paymentPlatform = $this->paymentPlatformResolver->resolveService($request->payment_platform);
+
+                session()->put('subscriptionPlatformID', $request->payment_platform);
+                session()->put('gatewayID', $request->payment_platform);
+                session()->put('billing_first_name', $request->name);
+                session()->put('billing_last_name', $request->lastname);
+                session()->put('billing_email', $request->email);
+                session()->put('billing_phone', $request->phone_number);
+                session()->put('billing_city', $request->city);
+                session()->put('billing_postal_code', $request->postal_code);
+                session()->put('billing_country', $request->country);
+                session()->put('billing_address', $request->address);
+                session()->put('billing_vat_number', $request->vat);
+
+                return $paymentPlatform->handlePaymentSubscription($request, $id);
+            }
+               
         }
     }
 
@@ -110,7 +129,7 @@ class PaymentController extends Controller
             } else {
                 $plan = PrepaidPlan::where('id', $request->id)->first();                
                 auth()->user()->tokens_prepaid = auth()->user()->tokens_prepaid + $plan->tokens;
-                auth()->user()->image_prepaid = auth()->user()->image_prepaid + $plan->images;
+                auth()->user()->images_prepaid = auth()->user()->images_prepaid + $plan->images;
                 auth()->user()->characters_prepaid = auth()->user()->characters_prepaid + $plan->characters;
                 auth()->user()->minutes_prepaid = auth()->user()->minutes_prepaid + $plan->minutes;
                 auth()->user()->save();   
@@ -119,18 +138,34 @@ class PaymentController extends Controller
             }
             
         }
-        
-        $rules = [
-            'payment_platform' => ['required', 'exists:payment_platforms,id'],
-        ];
 
-        $request->validate($rules);
+        $payment_platform = PaymentPlatform::where('id', $request->payment_platform)->first();
 
-        $paymentPlatform = $this->paymentPlatformResolver->resolveService($request->payment_platform);           
+        if (isset($payment_platform) && $payment_platform->name == 'Wallet') {
+            $process = $this->handleWalletPayment($request, $id->id, $request->type);
+            if ($process['status'] == 'success') {
+                $order_id = $process['order_id'];
+                $plan = $process['plan'];
+                toastr()->success(__('Prepaid credits successfully added to your account'));
+                return view('user.plans.user_plan_success', compact('plan', 'order_id'));
+            } else {
+                toastr()->error(__($process['message']));
+                return redirect()->back();
+            }
 
-        session()->put('paymentPlatformID', $request->payment_platform);
+        } else {
+            $rules = [
+                'payment_platform' => ['required', 'exists:payment_platforms,id'],
+            ];
     
-        return $paymentPlatform->handlePaymentPrePaid($request, $id->id, $type);       
+            $request->validate($rules);
+    
+            $paymentPlatform = $this->paymentPlatformResolver->resolveService($request->payment_platform);           
+    
+            session()->put('paymentPlatformID', $request->payment_platform);
+        
+            return $paymentPlatform->handlePaymentPrePaid($request, $id->id, $type);  
+        }         
     }
 
     /**
@@ -1142,4 +1177,106 @@ class PaymentController extends Controller
         
         return $order_id;
     } 
+
+
+    private function handleWalletPayment(Request $request, $id, $type)
+    {
+        $data = [];
+        $order_id = strtoupper(Str::random(10));
+
+        if ($type == 'subscription') {
+            $plan = SubscriptionPlan::where('id', $id)->first();
+
+            if (auth()->user()->wallet < $request->value) {                
+                $data['status'] = 'error';
+                $data['message'] = 'Insufficient wallet balance on your account to process the payment';
+                return $data;
+            } else {
+                $user = User::where('id', auth()->user()->id)->first();
+                if($user) {
+                    $user->wallet = $user->wallet - $request->value;
+                    $user->save();
+
+                    $duration = $plan->payment_frequency;
+                    $days = ($duration == 'monthly') ? 30 : 365;
+
+                    $current_subscription = Subscriber::where('user_id', $user->id)->where('status', 'Active')->first();
+
+                    if ($current_subscription) {
+                        $this->stopPreviousSubscription($current_subscription->id);
+                    }
+
+                    $subscription = Subscriber::create([
+                        'user_id' => $user->id,
+                        'plan_id' => $plan->id,
+                        'status' => 'Active',
+                        'created_at' => now(),
+                        'gateway' => 'Wallet',
+                        'frequency' => $plan->payment_frequency,
+                        'plan_name' => $plan->plan_name,                    
+                        'tokens' => $plan->token_credits,
+                        'images' => $plan->image_credits,
+                        'characters' => $plan->characters,
+                        'minutes' => $plan->minutes,
+                        'subscription_id' => $order_id,
+                        'active_until' => Carbon::now()->addDays($days),
+                    ]);       
+
+                    $this->registerSubscriptionPayment($plan, $user, $order_id, 'Wallet');               
+
+                    $data['status'] = 'success';
+                    $data['order_id'] = $order_id;
+                    return $data;
+                }
+            }
+
+        } else {
+
+            if ($type == 'lifetime') {
+                $plan = SubscriptionPlan::where('id', $id)->first();
+            } else {
+                $plan = PrepaidPlan::where('id', $id)->first();
+            }
+
+            if (auth()->user()->wallet < $request->value) {                
+                $data['status'] = 'error';
+                $data['message'] = 'Insufficient wallet balance on your account to process the payment';
+                return $data;
+            } else {
+                $user = User::where('id', auth()->user()->id)->first();
+                if($user) {
+                    $user->wallet = $user->wallet - $request->value;
+                    $user->save();
+
+                    if ($type == 'lifetime') {
+
+                        $days = 18250;
+            
+                        HelperService::registerSubscriber($plan, 'Wallet', 'Active', $order_id, $days);
+                    }
+            
+                    $payment = HelperService::registerPayment($type, $plan->id, $order_id, $request->value, 'Wallet', 'completed');
+            
+                    HelperService::registerCredits($type, $plan->id);
+            
+                    event(new PaymentProcessed(auth()->user()));
+            
+                    try {
+                        $admin = User::where('group', 'admin')->first();
+                        
+                        Mail::to($admin)->send(new NewPaymentNotification($payment));
+                        Mail::to($request->user())->send(new PaymentSuccess($payment));
+                    } catch (Exception $e) {
+                        \Log::info('SMTP settings are not setup to send payment notifications via email');
+                    }
+       
+                    $data['status'] = 'success';
+                    $data['order_id'] = $order_id;
+                    $data['plan'] = $plan;
+                    return $data;
+                }
+            }
+        }
+
+    }
 }

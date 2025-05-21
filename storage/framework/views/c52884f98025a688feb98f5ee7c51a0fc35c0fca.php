@@ -4,7 +4,7 @@
 	<link href="<?php echo e(URL::asset('plugins/datatable/datatables.min.css')); ?>" rel="stylesheet" />
 	<!-- Sweet Alert CSS -->
 	<link href="<?php echo e(URL::asset('plugins/sweetalert/sweetalert2.min.css')); ?>" rel="stylesheet" />
-	<style>
+  <style>
  	.info-btn-alt {
  		font-size: 15px;
  		background-color: rgb(126, 34, 206);
@@ -21,7 +21,7 @@
 <!-- PAGE HEADER -->
 <div class="page-header mt-5-7 justify-content-center">
 	<div class="page-leftheader text-center">
-		<a class="info-btn-alt mt-4" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a>
+  <a class="info-btn-alt mt-4" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a>
 		<h4 class="page-title mb-0"><?php echo e(__('Brand Voice')); ?></h4>
 		<h6 class="text-muted"><?php echo e(__('Create unique AI-generated content tailored specifically for your brand, eliminating the need for repetitive company introductions.')); ?></h6>
 		<ol class="breadcrumb mb-2 justify-content-center">
@@ -57,7 +57,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="modal fade" id="info-alert-model" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog">
+  <div class="modal fade" id="info-alert-model" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog">
  		<div class="modal-dialog modal-dialog-centered modal-xl">
  			<div class="modal-content">
  				<div class="modal-header">

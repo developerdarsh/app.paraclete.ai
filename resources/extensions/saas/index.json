@@ -1,9 +1,10 @@
 {
     "extension_name": "SaaS",
-    "version": "1.7",
+    "version": "2.1",
     "controllers": [
       "app/Http/Controllers/Admin/Extensions/SaaSController.php",
       "app/Http/Controllers/Admin/FinanceController.php",
+      "app/Http/Controllers/Admin/FinanceGiftCardController.php",
       "app/Http/Controllers/Admin/FinanceSubscriptionPlanController.php",
       "app/Http/Controllers/Admin/FinancePrepaidPlanController.php",
       "app/Http/Controllers/Admin/FinancePromocodeController.php",
@@ -85,6 +86,11 @@
       "resources/views/default/admin/finance/settings/gateways/finance_setting_razorpay.blade.php",
       "resources/views/default/admin/finance/settings/gateways/finance_setting_stripe.blade.php",
       "resources/views/default/admin/finance/settings/gateways/finance_setting_yookassa.blade.php",
+      "resources/views/default/admin/finance/gifts/finance_gift_create.blade.php",
+      "resources/views/default/admin/finance/gifts/finance_gift_edit.blade.php",
+      "resources/views/default/admin/finance/gifts/finance_gift_index.blade.php",
+      "resources/views/default/admin/finance/gifts/finance_gift_show.blade.php",
+      "resources/views/default/admin/finance/gifts/finance_gift_transfer_show.blade.php",
       "resources/views/default/user/purchase/user_purchase_index.blade.php",
       "resources/views/default/user/purchase/user_purchase_subscription.blade.php",
       "resources/views/default/user/purchase/user_purchase_show.blade.php",
