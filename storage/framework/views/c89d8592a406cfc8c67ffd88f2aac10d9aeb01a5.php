@@ -59,43 +59,45 @@
             <?php endif; ?>
         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
-        <?php $__currentLoopData = $menuAdminItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-            <?php if($item['type'] == 'label'): ?>
-                <li class="side-item side-item-category mt-4 mb-3"><?php echo e(__($item['label'])); ?></li>
-            <?php elseif($item['type'] == 'divider'): ?>
-                <hr class="w-90 text-center ml-auto mr-auto mt-3">
-            <?php else: ?>
-                <?php if($item['has_access']): ?>
-                    <li class="slide">
-                        <?php if(!empty($item['children'])): ?>
-                            <a class="side-menu__item" data-toggle="slide" href="<?php echo e($item['url'] ?? '#'); ?>">
-                                <span class="side-menu__icon <?php echo e($item['icon']); ?>"></span>                    
-                                <span class="side-menu__label"><?php echo e(__($item['label'])); ?></span>
-                                <?php if(!empty($item['badge_text'])): ?>
-                                    <span class="badge badge-<?php echo e($item['badge_type'] ?? 'primary'); ?>"><?php echo e($item['badge_text']); ?></span>
-                                <?php endif; ?>
-                                <i class="angle fa fa-angle-right"></i>
-                            </a>
-                            <ul class="slide-menu">
-                                <?php $__currentLoopData = $item['children']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $child): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <li>
-                                        <a href="<?php echo e($child['route'] ? route($child['route']) : $child['url']); ?>" class="slide-item"><?php if(!is_null($child['icon'])): ?> <i class="slide-child-icon <?php echo e($child['icon']); ?>"></i> <?php endif; ?><?php echo e(__($child['label'])); ?></a>
-                                    </li>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            </ul>
-                        <?php else: ?>
-                            <a class="side-menu__item" href="<?php echo e($item['route'] ? route($item['route']) : $item['url']); ?>">
-                                <span class="side-menu__icon <?php echo e($item['icon']); ?>"></span>                        
-                                <span class="side-menu__label"><?php echo e(__($item['label'])); ?></span>
-                                <?php if(!empty($item['badge_text'])): ?>
-                                    <span class="badge badge-<?php echo e($item['badge_type'] ?? 'primary'); ?>"><?php echo e($item['badge_text']); ?></span>
-                                <?php endif; ?>
-                            </a>
-                        <?php endif; ?>
-                    </li>
-                <?php endif; ?>                
-            <?php endif; ?>
-        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        <?php if(\Spatie\Permission\PermissionServiceProvider::bladeMethodWrapper('hasRole', 'admin')): ?>
+            <?php $__currentLoopData = $menuAdminItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                <?php if($item['type'] == 'label'): ?>
+                    <li class="side-item side-item-category mt-4 mb-3"><?php echo e(__($item['label'])); ?></li>
+                <?php elseif($item['type'] == 'divider'): ?>
+                    <hr class="w-90 text-center ml-auto mr-auto mt-3">
+                <?php else: ?>
+                    <?php if($item['has_access']): ?>
+                        <li class="slide">
+                            <?php if(!empty($item['children'])): ?>
+                                <a class="side-menu__item" data-toggle="slide" href="<?php echo e($item['url'] ?? '#'); ?>">
+                                    <span class="side-menu__icon <?php echo e($item['icon']); ?>"></span>                    
+                                    <span class="side-menu__label"><?php echo e(__($item['label'])); ?></span>
+                                    <?php if(!empty($item['badge_text'])): ?>
+                                        <span class="badge badge-<?php echo e($item['badge_type'] ?? 'primary'); ?>"><?php echo e($item['badge_text']); ?></span>
+                                    <?php endif; ?>
+                                    <i class="angle fa fa-angle-right"></i>
+                                </a>
+                                <ul class="slide-menu">
+                                    <?php $__currentLoopData = $item['children']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $child): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                        <li>
+                                            <a href="<?php echo e($child['route'] ? route($child['route']) : $child['url']); ?>" class="slide-item"><?php if(!is_null($child['icon'])): ?> <i class="slide-child-icon <?php echo e($child['icon']); ?>"></i> <?php endif; ?><?php echo e(__($child['label'])); ?></a>
+                                        </li>
+                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                </ul>
+                            <?php else: ?>
+                                <a class="side-menu__item" href="<?php echo e($item['route'] ? route($item['route']) : $item['url']); ?>">
+                                    <span class="side-menu__icon <?php echo e($item['icon']); ?>"></span>                        
+                                    <span class="side-menu__label"><?php echo e(__($item['label'])); ?></span>
+                                    <?php if(!empty($item['badge_text'])): ?>
+                                        <span class="badge badge-<?php echo e($item['badge_type'] ?? 'primary'); ?>"><?php echo e($item['badge_text']); ?></span>
+                                    <?php endif; ?>
+                                </a>
+                            <?php endif; ?>
+                        </li>
+                    <?php endif; ?>                
+                <?php endif; ?>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+        <?php endif; ?>
 
         <hr class="w-90 text-center ml-auto mr-auto mt-3">
         

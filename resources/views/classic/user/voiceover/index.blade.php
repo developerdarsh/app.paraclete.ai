@@ -6,27 +6,14 @@
 	<link href="{{ URL::asset('plugins/audio-player/green-audio-player.css') }}" rel="stylesheet" />
 	<!-- Sweet Alert CSS -->
 	<link href="{{URL::asset('plugins/sweetalert/sweetalert2.min.css')}}" rel="stylesheet" />
-	<style>
- 	.info-btn-alt {
- 		font-size: 15px;
- 		background-color: rgb(126, 34, 206);
- 		color: rgb(255, 255, 255);
- 		padding-top: 0.5rem;
- 		padding-bottom: 0.5rem;
- 		padding-left: 1rem;
- 		padding-right: 1rem;
- 		border-radius: 0.5rem;
- 	}
- 	</style>
 @endsection
 
 @section('content')
 	<div class="row mt-24">
 		<div class="col-lg-12 col-md-12 col-xm-12">
-			<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
 			<div class="card border-0">
 				<div class="card-header pt-4 border-0" id="voiceover-character-counter-top">
-					<h3 class="page-title ml-5">{{ __('AI Voiceover Studio') }} </h3>
+					<h3 class="card-title"><i class="   fa-solid fa-waveform-lines mr-4 text-info"></i>{{ __('AI Voiceover Studio') }} </h3>
 					<span class="fs-11 text-muted pl-3" id="voiceover-character-counter"><i class="   fa-solid fa-bolt-lightning mr-2 text-primary"></i>{{ __('Your Balance is') }} <span class="font-weight-semibold" id="balance-number">@if (auth()->user()->characters == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->characters + auth()->user()->characters_prepaid) }} {{ __('Characters') }} @endif</span></span>
 				</div>
 				<div class="card-body pt-2 pl-7 pr-7 pb-4" id="tts-body-minify">
@@ -383,7 +370,7 @@
 
 	<div class="row mt-4" id="results-header">
 		<div class="col-lg-12 col-md-12 col-xm-12">
-			<div class="card">
+			<div class="card border-0">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('AI Voiceover Results') }} <span class="text-muted">({{ __('Current Day') }})</span></h3>
 				</div>
@@ -410,23 +397,6 @@
 			</div>
 		</div>
 	</div>
-</div>
-<div class="modal fade" id="info-alert-model" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog">
- 	<div class="modal-dialog modal-dialog-centered modal-xl">
- 		<div class="modal-content">
- 			<div class="modal-header">
- 				<h2></h2>
- 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
- 				<span aria-hidden="true">&times;</span>
- 				</button>
- 			</div>
- 			<div class="modal-body">
- 				<div class="row">
- 					<!--ARCADE EMBED START--><div style="position: relative; padding-bottom: calc(56.25% + 41px); height: 0; width: 100%;"><iframe src="https://demo.arcade.software/gV1Bjfd4UVJAuoSYt0N0?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true" title="AI Voiceover Studio" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; color-scheme: light;" ></iframe></div><!--ARCADE EMBED END-->
- 				</div>
- 			</div>
- 		</div>
- 	</div>
 </div>
 @endsection
 @section('js')

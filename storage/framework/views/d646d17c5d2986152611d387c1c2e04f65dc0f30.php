@@ -48,8 +48,6 @@
 <!-- Custom js-->
 <script src="<?php echo e(theme_url('js/custom.js')); ?>"></script>
 
-<!-- multiselect select  -->
-<script src="<?php echo e(URL::asset('plugins/bootstrap-5.0.2/js/bootstrap-multiselect.min.js')); ?>"></script>
 
 <!-- Google Analytics -->
 <?php if(config('services.google.analytics.enable') == 'on'): ?>

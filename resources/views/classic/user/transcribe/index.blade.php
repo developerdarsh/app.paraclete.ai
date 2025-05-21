@@ -8,18 +8,6 @@
 	<link href="{{URL::asset('plugins/filepond/filepond.css')}}" rel="stylesheet" />
 	<!-- Green Audio Players CSS -->
 	<link href="{{ URL::asset('plugins/audio-player/green-audio-player.css') }}" rel="stylesheet" />
-	<style>
- 	.info-btn-alt {
- 		font-size: 15px;
- 		background-color: rgb(126, 34, 206);
- 		color: rgb(255, 255, 255);
- 		padding-top: 0.5rem;
- 		padding-bottom: 0.5rem;
- 		padding-left: 1rem;
- 		padding-right: 1rem;
- 		border-radius: 0.5rem;
- 	}
- 	</style>
 @endsection
 
 @section('content')
@@ -27,25 +15,30 @@
 <form id="openai-form" action="" method="post" enctype="multipart/form-data" class="mt-24">		
 	@csrf
 	<div class="row">	
-		<div class="col-lg-5 col-md-12 col-sm-12">
+		<div class="col-lg-4 col-md-12 col-sm-12">
 			<div class="card border-0" id="template-input">
 				<div class="card-body p-5 pb-0">
-					<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
+
 					<div class="row">
 						<div class="template-view">
-							<div class="template-icon mb-2">
+							<div class="template-icon mb-2 d-flex">
 								<div>
-									<h6 class="page-title">{{ __('AI Speech to Text') }}</h6>
-									<p class="fs-12 text-muted mb-4">{{ __('Transcribe your audio files and translate them to English') }}</p>
+									<i class="fa-solid fa-folder-music blog-icon"></i>
+								</div>
+								<div>
+									<h6 class="mt-1 ml-3 fs-16 number-font">{{ __('AI Speech to Text') }}</h6>
 								</div>									
 							</div>								
+							<div class="template-info">
+								<p class="fs-12 text-muted mb-4">{{ __('Transcribe your audio files and translate them to English') }}</p>
+							</div>
 						</div>
 					</div>
 
-					<div class="row right-border">
+					<div class="row">
 						<div class="col-sm-12">
 							<div class="text-left mb-5" id="balance-status">
-								<span class="fs-11 text-muted pl-3"><i class="   fa-solid fa-bolt-lightning mr-2 text-primary"></i>{{ __('Your Balance is') }} <span class="font-weight-semibold" id="balance-number">@if (auth()->user()->available_minutes == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->available_minutes + auth()->user()->available_minutes_prepaid) }} {{ __('Minutes') }} @endif</span></span>
+								<span class="fs-11 text-muted pl-3"><i class="   fa-solid fa-bolt-lightning mr-2 text-primary"></i>{{ __('Your Balance is') }} <span class="font-weight-semibold" id="balance-number">@if (auth()->user()->minutes == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->minutes + auth()->user()->minutes_prepaid) }} {{ __('Minutes') }} @endif</span></span>
 							</div>							
 						</div>	
 						<div class="col-sm-12">								
@@ -67,63 +60,63 @@
 								<h6 class="fs-11 mb-2 font-weight-semibold">{{ __('Audio Language') }} <span class="text-muted">({{ __('Optional') }})</span></h6>								
 								<select id="language" name="language" class="form-select" data-placeholder="{{ __('Specify Audio language') }}">
 									<option value="" selected> {{ __('Auto Detect') }}</option>							
-									<option value="af" data-img="/img/flags/za.svg"> {{ __('Afrikaans') }}</option>							
-									<option value="ar" data-img="/img/flags/ae.svg"> {{ __('Arabic') }}</option>							
-									<option value="hy" data-img="/img/flags/am.svg"> {{ __('Armenian') }}</option>							
-									<option value="az" data-img="/img/flags/az.svg"> {{ __('Azerbaijani') }}</option>							
-									<option value="be" data-img="/img/flags/by.svg"> {{ __('Belarusian') }}</option>							
-									<option value="bs" data-img="/img/flags/ba.svg"> {{ __('Bosnian') }}</option>							
-									<option value="bg" data-img="/img/flags/bg.svg"> {{ __('Bulgarian') }}</option>							
-									<option value="ca" data-img="/img/flags/es.svg"> {{ __('Catalan') }}</option>							
-									<option value="zh" data-img="/img/flags/cn.svg"> {{ __('Chinese') }}</option>							
-									<option value="hr" data-img="/img/flags/hr.svg"> {{ __('Croatian') }}</option>							
-									<option value="cs" data-img="/img/flags/cz.svg"> {{ __('Czech') }}</option>							
-									<option value="da" data-img="/img/flags/dk.svg"> {{ __('Danish') }}</option>							
-									<option value="nl" data-img="/img/flags/nl.svg"> {{ __('Dutch') }}</option>							
-									<option value="en" data-img="/img/flags/us.svg"> {{ __('English') }}</option>							
-									<option value="et" data-img="/img/flags/ee.svg"> {{ __('Estonian') }}</option>							
-									<option value="fi" data-img="/img/flags/fi.svg"> {{ __('Finnish') }}</option>							
-									<option value="fr" data-img="/img/flags/fr.svg"> {{ __('French') }}</option>							
-									<option value="gl" data-img="/img/flags/es.svg"> {{ __('Galician') }}</option>							
-									<option value="de" data-img="/img/flags/de.svg"> {{ __('German') }}</option>							
-									<option value="el" data-img="/img/flags/gr.svg"> {{ __('Greek') }}</option>							
-									<option value="he" data-img="/img/flags/il.svg"> {{ __('Hebrew') }}</option>							
-									<option value="hi" data-img="/img/flags/in.svg"> {{ __('Hindi') }}</option>							
-									<option value="hu" data-img="/img/flags/hu.svg"> {{ __('Hungarian') }}</option>							
-									<option value="is" data-img="/img/flags/is.svg"> {{ __('Icelandic') }}</option>							
-									<option value="id" data-img="/img/flags/id.svg"> {{ __('Indonesian') }}</option>							
-									<option value="it" data-img="/img/flags/it.svg"> {{ __('Italian') }}</option>							
-									<option value="ja" data-img="/img/flags/jp.svg"> {{ __('Japanese') }}</option>							
-									<option value="kn" data-img="/img/flags/in.svg"> {{ __('Kannada') }}</option>							
-									<option value="kk" data-img="/img/flags/kz.svg"> {{ __('Kazakh') }}</option>							
-									<option value="ko" data-img="/img/flags/kr.svg"> {{ __('Korean') }}</option>							
-									<option value="lv" data-img="/img/flags/lv.svg"> {{ __('Latvian') }}</option>							
-									<option value="lt" data-img="/img/flags/lt.svg"> {{ __('Lithuanian') }}</option>							
-									<option value="mk" data-img="/img/flags/mk.svg"> {{ __('Macedonian') }}</option>							
-									<option value="ms" data-img="/img/flags/my.svg"> {{ __('Malay') }}</option>							
-									<option value="mr" data-img="/img/flags/in.svg"> {{ __('Marathi') }}</option>							
-									<option value="mi" data-img="/img/flags/nz.svg"> {{ __('Maori') }}</option>							
-									<option value="ne" data-img="/img/flags/np.svg"> {{ __('Nepali') }}</option>							
-									<option value="no" data-img="/img/flags/no.svg"> {{ __('Norwegian') }}</option>							
-									<option value="fa" data-img="/img/flags/ir.svg"> {{ __('Persian') }}</option>							
-									<option value="pl" data-img="/img/flags/pl.svg"> {{ __('Polish') }}</option>							
-									<option value="pt" data-img="/img/flags/pt.svg"> {{ __('Portuguese') }}</option>							
-									<option value="ro" data-img="/img/flags/ro.svg"> {{ __('Romanian') }}</option>							
-									<option value="ru" data-img="/img/flags/ru.svg"> {{ __('Russian') }}</option>							
-									<option value="sr" data-img="/img/flags/rs.svg"> {{ __('Serbian') }}</option>							
-									<option value="sk" data-img="/img/flags/sk.svg"> {{ __('Slovak') }}</option>							
-									<option value="sl" data-img="/img/flags/si.svg"> {{ __('Slovenian') }}</option>							
-									<option value="es" data-img="/img/flags/es.svg"> {{ __('Spanish') }}</option>							
-									<option value="sw" data-img="/img/flags/ke.svg"> {{ __('Swahili') }}</option>							
-									<option value="sv" data-img="/img/flags/se.svg"> {{ __('Swedish') }}</option>							
-									<option value="tl" data-img="/img/flags/ph.svg"> {{ __('Tagalog') }}</option>							
-									<option value="ta" data-img="/img/flags/in.svg"> {{ __('Tamil') }}</option>							
-									<option value="th" data-img="/img/flags/th.svg"> {{ __('Thai') }}</option>							
-									<option value="tr" data-img="/img/flags/tr.svg"> {{ __('Turkish') }}</option>							
-									<option value="uk" data-img="/img/flags/ua.svg"> {{ __('Ukrainian') }}</option>							
-									<option value="ur" data-img="/img/flags/in.svg"> {{ __('Urdu') }}</option>							
-									<option value="vi" data-img="/img/flags/vn.svg"> {{ __('Vietnamese') }}</option>							
-									<option value="cy" data-img="/img/flags/gb-wls.svg"> {{ __('Welsh') }}</option>							
+									<option value="af" data-img="{{theme_url('img/flags/za.svg')}}"> {{ __('Afrikaans') }}</option>							
+									<option value="ar" data-img="{{theme_url('img/flags/ae.svg')}}"> {{ __('Arabic') }}</option>							
+									<option value="hy" data-img="{{theme_url('img/flags/am.svg')}}"> {{ __('Armenian') }}</option>							
+									<option value="az" data-img="{{theme_url('img/flags/az.svg')}}"> {{ __('Azerbaijani') }}</option>							
+									<option value="be" data-img="{{theme_url('img/flags/by.svg')}}"> {{ __('Belarusian') }}</option>							
+									<option value="bs" data-img="{{theme_url('img/flags/ba.svg')}}"> {{ __('Bosnian') }}</option>							
+									<option value="bg" data-img="{{theme_url('img/flags/bg.svg')}}"> {{ __('Bulgarian') }}</option>							
+									<option value="ca" data-img="{{theme_url('img/flags/es.svg')}}"> {{ __('Catalan') }}</option>							
+									<option value="zh" data-img="{{theme_url('img/flags/cn.svg')}}"> {{ __('Chinese') }}</option>							
+									<option value="hr" data-img="{{theme_url('img/flags/hr.svg')}}"> {{ __('Croatian') }}</option>							
+									<option value="cs" data-img="{{theme_url('img/flags/cz.svg')}}"> {{ __('Czech') }}</option>							
+									<option value="da" data-img="{{theme_url('img/flags/dk.svg')}}"> {{ __('Danish') }}</option>							
+									<option value="nl" data-img="{{theme_url('img/flags/nl.svg')}}"> {{ __('Dutch') }}</option>							
+									<option value="en" data-img="{{theme_url('img/flags/us.svg')}}"> {{ __('English') }}</option>							
+									<option value="et" data-img="{{theme_url('img/flags/ee.svg')}}"> {{ __('Estonian') }}</option>							
+									<option value="fi" data-img="{{theme_url('img/flags/fi.svg')}}"> {{ __('Finnish') }}</option>							
+									<option value="fr" data-img="{{theme_url('img/flags/fr.svg')}}"> {{ __('French') }}</option>							
+									<option value="gl" data-img="{{theme_url('img/flags/es.svg')}}"> {{ __('Galician') }}</option>							
+									<option value="de" data-img="{{theme_url('img/flags/de.svg')}}"> {{ __('German') }}</option>							
+									<option value="el" data-img="{{theme_url('img/flags/gr.svg')}}"> {{ __('Greek') }}</option>							
+									<option value="he" data-img="{{theme_url('img/flags/il.svg')}}"> {{ __('Hebrew') }}</option>							
+									<option value="hi" data-img="{{theme_url('img/flags/in.svg')}}"> {{ __('Hindi') }}</option>							
+									<option value="hu" data-img="{{theme_url('img/flags/hu.svg')}}"> {{ __('Hungarian') }}</option>							
+									<option value="is" data-img="{{theme_url('img/flags/is.svg')}}"> {{ __('Icelandic') }}</option>							
+									<option value="id" data-img="{{theme_url('img/flags/id.svg')}}"> {{ __('Indonesian') }}</option>							
+									<option value="it" data-img="{{theme_url('img/flags/it.svg')}}"> {{ __('Italian') }}</option>							
+									<option value="ja" data-img="{{theme_url('img/flags/jp.svg')}}"> {{ __('Japanese') }}</option>							
+									<option value="kn" data-img="{{theme_url('img/flags/in.svg')}}"> {{ __('Kannada') }}</option>							
+									<option value="kk" data-img="{{theme_url('img/flags/kz.svg')}}"> {{ __('Kazakh') }}</option>							
+									<option value="ko" data-img="{{theme_url('img/flags/kr.svg')}}"> {{ __('Korean') }}</option>							
+									<option value="lv" data-img="{{theme_url('img/flags/lv.svg')}}"> {{ __('Latvian') }}</option>							
+									<option value="lt" data-img="{{theme_url('img/flags/lt.svg')}}"> {{ __('Lithuanian') }}</option>							
+									<option value="mk" data-img="{{theme_url('img/flags/mk.svg')}}"> {{ __('Macedonian') }}</option>							
+									<option value="ms" data-img="{{theme_url('img/flags/my.svg')}}"> {{ __('Malay') }}</option>							
+									<option value="mr" data-img="{{theme_url('img/flags/in.svg')}}"> {{ __('Marathi') }}</option>							
+									<option value="mi" data-img="{{theme_url('img/flags/nz.svg')}}"> {{ __('Maori') }}</option>							
+									<option value="ne" data-img="{{theme_url('img/flags/np.svg')}}"> {{ __('Nepali') }}</option>							
+									<option value="no" data-img="{{theme_url('img/flags/no.svg')}}"> {{ __('Norwegian') }}</option>							
+									<option value="fa" data-img="{{theme_url('img/flags/ir.svg')}}"> {{ __('Persian') }}</option>							
+									<option value="pl" data-img="{{theme_url('img/flags/pl.svg')}}"> {{ __('Polish') }}</option>							
+									<option value="pt" data-img="{{theme_url('img/flags/pt.svg')}}"> {{ __('Portuguese') }}</option>							
+									<option value="ro" data-img="{{theme_url('img/flags/ro.svg')}}"> {{ __('Romanian') }}</option>							
+									<option value="ru" data-img="{{theme_url('img/flags/ru.svg')}}"> {{ __('Russian') }}</option>							
+									<option value="sr" data-img="{{theme_url('img/flags/rs.svg')}}"> {{ __('Serbian') }}</option>							
+									<option value="sk" data-img="{{theme_url('img/flags/sk.svg')}}"> {{ __('Slovak') }}</option>							
+									<option value="sl" data-img="{{theme_url('img/flags/si.svg')}}"> {{ __('Slovenian') }}</option>							
+									<option value="es" data-img="{{theme_url('img/flags/es.svg')}}"> {{ __('Spanish') }}</option>							
+									<option value="sw" data-img="{{theme_url('img/flags/ke.svg')}}"> {{ __('Swahili') }}</option>							
+									<option value="sv" data-img="{{theme_url('img/flags/se.svg')}}"> {{ __('Swedish') }}</option>							
+									<option value="tl" data-img="{{theme_url('img/flags/ph.svg')}}"> {{ __('Tagalog') }}</option>							
+									<option value="ta" data-img="{{theme_url('img/flags/in.svg')}}"> {{ __('Tamil') }}</option>							
+									<option value="th" data-img="{{theme_url('img/flags/th.svg')}}"> {{ __('Thai') }}</option>							
+									<option value="tr" data-img="{{theme_url('img/flags/tr.svg')}}"> {{ __('Turkish') }}</option>							
+									<option value="uk" data-img="{{theme_url('img/flags/ua.svg')}}"> {{ __('Ukrainian') }}</option>							
+									<option value="ur" data-img="{{theme_url('img/flags/in.svg')}}"> {{ __('Urdu') }}</option>							
+									<option value="vi" data-img="{{theme_url('img/flags/vn.svg')}}"> {{ __('Vietnamese') }}</option>							
+									<option value="cy" data-img="{{theme_url('img/flags/gb-wls.svg')}}"> {{ __('Welsh') }}</option>							
 								</select>
 								@error('language')
 									<p class="text-danger">{{ $errors->first('language') }}</p>
@@ -165,8 +158,8 @@
 			</div>			
 		</div>
 
-		<div class="col-lg-7 col-md-12 col-sm-12">
-			<div class="card mb-5-7 mb-0">
+		<div class="col-lg-8 col-md-12 col-sm-12">
+			<div class="card border-0">
 				<div class="card-body pb-2">
 					<div class="row">						
 						<div class="col-lg-4 col-md-12 col-sm-12">								
@@ -239,23 +232,6 @@
 		</div>
 	</div>
 </form>
-<div class="modal fade" id="info-alert-model" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog">
- 	<div class="modal-dialog modal-dialog-centered modal-xl">
- 		<div class="modal-content">
- 			<div class="modal-header">
- 				<h2></h2>
- 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
- 				<span aria-hidden="true">&times;</span>
- 				</button>
- 			</div>
- 			<div class="modal-body">
- 				<div class="row">
- 					<!--ARCADE EMBED START--><div style="position: relative; padding-bottom: calc(56.25% + 41px); height: 0; width: 100%;"><iframe src="https://demo.arcade.software/AUbEbBp126cjTDoI9DH8?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true" title="AI Speech to Text" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; color-scheme: light;" ></iframe></div><!--ARCADE EMBED END-->
- 				</div>
- 			</div>
- 		</div>
- 	</div>
- </div>
 @endsection
 
 @section('js')
@@ -472,6 +448,7 @@
 					processData: false,
 					cache: false,
 					beforeSend: function() {
+						document.querySelector('#loader-line')?.classList?.remove('hidden'); 
 						$('#waveform-box').slideUp('slow')  
 						document.getElementById("generating-message").style.display="none";				
 						document.getElementById("generating-status").style.display="block";	
@@ -482,6 +459,7 @@
 						$('#processing').hide();          
 					},
 					complete: function() {
+						document.querySelector('#loader-line')?.classList?.add('hidden');
 						$('#generate').prop('disabled', false);
 						document.getElementById("generating-status").style.display="none";	
 						document.getElementById("template-textarea").style.opacity=1;
@@ -505,7 +483,7 @@
 
 							toastr.success('{{ __('Audio Transcript generated successfully') }}');
 						
-							animateValue("balance-number", data['old'], data['current'], 300);
+							//animateValue("balance-number", data['old'], data['current'], 300);
 
 							if (pond.getFiles().length != 0) {
 								for (var j = 0; j <= pond.getFiles().length - 1; j++) {
@@ -518,6 +496,7 @@
 
 					},
 					error: function(data) {
+						document.querySelector('#loader-line')?.classList?.add('hidden');
 						$('#waveform-box').slideUp('slow')  
 						$('#generate').prop('disabled', false);
 						$('#generate').html('Transcribe'); 

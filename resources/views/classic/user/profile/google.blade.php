@@ -20,7 +20,7 @@
 	<div class="row">
 
 		<div class="col-xl-3 col-lg-3 col-md-12">
-			<div class="card border-0" id="dashboard-background">
+			<div class="card  " id="dashboard-background">
 				<div class="widget-user-image overflow-hidden mx-auto mt-5"><img alt="User Avatar" class="rounded-circle" src="@if(auth()->user()->profile_photo_path){{ asset(auth()->user()->profile_photo_path) }} @else {{ theme_url('img/users/avatar.jpg') }} @endif"></div>
 				<div class="card-body text-center">
 					<div>
@@ -90,7 +90,7 @@
 
 		<div class="col-xl-9 col-lg-9 col-md-12">
 			@if (auth()->user()->google2fa_enabled == false)
-				<div class="card border-0">
+				<div class="card  ">
 					<div class="card-header">
 						<h3 class="card-title"><i class="fa-solid fa-shield-check mr-2 text-success"></i>{{ __('Activate 2FA Authentication') }}</h3>
 					</div>
@@ -138,7 +138,7 @@
 										</div>
 									</div>
 
-									<div class="card-footer border-0 p-0 text-center">
+									<div class="card-footer   p-0 text-center">
 										<button type="submit" class="btn btn-primary pl-6 pr-6">{{ __('Activate') }}</button>							
 									</div>	
 								</form>	
@@ -147,7 +147,7 @@
 					</div>				
 				</div>
 			@elseif (auth()->user()->google2fa_enabled == true)
-				<div class="card border-0">
+				<div class="card  ">
 					<div class="card-header">
 						<h3 class="card-title"><i class="fa-solid fa-shield-check mr-2 text-danger"></i>{{ __('Deactivate 2FA Authentication') }}</h3>
 					</div>
@@ -170,7 +170,7 @@
 										</div>
 									</div>
 
-									<div class="card-footer border-0 p-0 text-center mb-3">
+									<div class="card-footer   p-0 text-center mb-3">
 										<button type="submit" class="btn btn-primary pl-6 pr-6">{{ __('Deactivate') }}</button>							
 									</div>	
 								</form>	

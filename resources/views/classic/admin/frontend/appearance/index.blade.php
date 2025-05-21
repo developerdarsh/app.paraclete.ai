@@ -6,7 +6,7 @@
 		<div class="page-leftheader text-center">
 			<h4 class="page-title mb-0"> {{ __('Logos Manager') }}</h4>
 			<ol class="breadcrumb mb-2">
-				<li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">{{ __('Admin') }}</a></li>
+				<li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}"><i class="fa fa-globe mr-2 fs-12"></i>{{ __('Admin') }}</a></li>
 				<li class="breadcrumb-item" aria-current="page"><a href="{{url('#')}}"> {{ __('Frontend Management') }}</a></li>
 				<li class="breadcrumb-item active" aria-current="page"><a href="{{url('#')}}"> {{ __('Logos') }}</a></li>
 			</ol>
