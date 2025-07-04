@@ -941,7 +941,6 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 Route::get('/videos', 'index')->name('user.videos');
                 Route::get('/media-editor', 'mediaEditor')->name('user.media-editor');
                 Route::get('/rss-feed', 'rssFeed')->name('user.rss-feed');
-                Route::get('/automation', 'automation')->name('user.automation');
                 Route::get('/agentAi', 'agentAi')->name('user.agentAi');        
                 Route::get('/agentIframe', 'iframe')->name('user.agentIframe');        
                 Route::post('/agentAiCreate', 'agentAiCreate')->name('user.agentAiCreate');
@@ -957,6 +956,28 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 Route::get('/videos/pdfdownload', 'pdfDownload')->name('user.videos.pdfdownload');
                 Route::get('/smart-ads', [TrainingVideoController::class, 'viewSmartAds'])->name('user.smart.ads');
             }); 
+
+            
+            // USER AI AVATAR VIDEO ROUTES
+            Route::controller(AiUGCVideoController::class)->group(function () {
+                Route::get('/ai-avatar', 'index')->name('user.avatar');
+                Route::get('/create-avatars','create')->name('avatars.create');
+                Route::get('/create-avatars-video','avatar_video_creation')->name('avatars.video.creation');
+                Route::get('/all-product-template','all_product_template')->name('avatars.product.templete');
+                Route::get('/all-anyshoot-template','all_anyshoot_templete')->name('avatars.anyshoot.templete');
+                Route::get('/anyshoot/templates-ajax', 'loadMoreAnyshootTemplates')->name('avatars.anyshoot.templete.ajax');
+                // Route::get('/get-avatars/{categoryId}','getProductsByCategory')->name('category.products');
+                // Route::get('/get-avatars/{categoryId}/{pageNo?}', 'getProductsByCategory')->name('category.products');
+                Route::get('/get-avatars/{categoryId?}/{pageNo?}','getProductsByCategory')->name('category.products');
+                Route::post('/generate-avatar-template', 'generateAvatarTemplate')->name('avatar.generate.template');
+                Route::post('/upload-product-image', 'uploadProductImg')->name('product.image.upload');
+                Route::get('/avatars/list', 'getPaginatedAvatars')->name('aiavatar.list');
+                Route::post('/generate-avatar-video', 'generateAvatarVideo')->name('generate.avatar.video');
+                Route::get('/check-video-status/{taskId}','checkVideoStatus')->name('check.video.status');
+                Route::post('/generate-marketing-video','generateMarketingVideo')->name('generate.marketing.video');
+                Route::get('/all-project','allProject')->name('all.project');
+
+            });
 
             //AI RESUME
             Route::controller(AiResumeController::class)->group(function () {

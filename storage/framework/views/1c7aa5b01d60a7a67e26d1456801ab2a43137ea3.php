@@ -1,0 +1,834 @@
+
+<?php $__env->startSection('css'); ?>
+	<!-- Sweet Alert CSS -->
+	<link href="<?php echo e(URL::asset('plugins/sweetalert/sweetalert2.min.css')); ?>" rel="stylesheet" />
+	<link href="<?php echo e(URL::asset('plugins/highlight/highlight.dark.min.css')); ?>" rel="stylesheet" />
+    <!-- Slick CSS -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+  
+	<style>
+
+     @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
+
+    .sidebar {
+        background: rgba(245, 249, 252, 0.1);
+        backdrop-filter: blur(10px);
+        border-right: 1px solid rgba(245, 249, 252, 0.2);
+        height: 100vh;
+        position: fixed;
+        width: 250px;
+        padding: 30px 0;
+    }
+
+       .sidebar .logo {
+            display: flex;
+            align-items: center;
+            padding: 0 20px 30px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+       .sidebar .logo::before {
+            content: '';
+            width: 25px;
+            height: 25px;
+            background: linear-gradient(45deg, #533afd, #6c5ce7);
+            border-radius: 4px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+       .sidebar .navbar .nav-item {
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 5px 10px;
+            border-radius: 8px;
+            width: 100%;
+        }
+        .sidebar .navbar .nav-item a { 
+            font-size: 14px;
+            line-height: 18px
+        }
+         .sidebar .navbar .nav-item.active {
+             background: #301fd5;
+         }
+          .sidebar .navbar .nav-item:hover a,
+          .sidebar .navbar .nav-item.active a {
+             color: #ffffff;
+         }
+
+        .sidebar .navbar .nav-item:hover {
+            background: #301fd5;
+        }
+
+         .sidebar .navbar .nav-item i {
+            width: 20px;
+            margin-right: 4px;
+        }
+
+        .sidebar .nav-section {
+            margin-top: 30px;
+            padding: 0 20px;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .topview-content {
+            margin-left: 250px;
+            padding: 30px;
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 40px;
+            background: linear-gradient(135deg, #533afd 0%, #3d28e6 50%, #2a1acc 100%);
+            padding: 40px;
+            border-radius: 20px;
+        }
+
+        .header-title {
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #f5f9fc, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .url-input-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .url-input-section .url-input {
+            background: rgba(245, 249, 252, 0.1);
+            border: 1px solid rgba(245, 249, 252, 0.3);
+            border-radius: 50px;
+            padding: 15px 25px;
+            color: white;
+            width: 400px;
+            backdrop-filter: blur(10px);
+        }
+
+       .url-input-section .url-input::placeholder {
+            color: rgba(245, 249, 252, 0.7);
+        }
+
+       .url-input-section .btn-sample {
+            background: rgba(138, 43, 226, 0.3);
+            border: 1px solid rgba(138, 43, 226, 0.5);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+       .url-input-section .btn-sample:hover {
+            background: rgba(138, 43, 226, 0.5);
+            color: white;
+        }
+
+       .url-input-section .btn-create {
+            background: linear-gradient(135deg, #533afd 0%, #6c5ce7 100%);
+            border: none;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .url-input-section .btn-create:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(83, 58, 253, 0.4);
+        }
+
+       .url-input-section .btn-upload {
+            background: rgba(245, 249, 252, 0.1);
+            border: 1px solid rgba(245, 249, 252, 0.3);
+            color: white;
+            padding: 15px 30px;
+            border-radius: 25px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+       .url-input-section .btn-upload:hover {
+            background: rgba(245, 249, 252, 0.2);
+            color: white;
+        }
+
+       .ai-tools-section .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .tools-grid {
+            margin-bottom: 50px;
+        }
+
+        .tools-slider .tool-card {
+            background: rgba(245, 249, 252, 0.08);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(245, 249, 252, 1);
+            border-radius: 15px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+       .tools-slider .tool-card:hover {
+            transform: translateY(-5px);
+            background: rgba(245, 249, 252, 0.15);
+            box-shadow: 0 10px 30px rgba(83, 58, 253, 0.2);
+        }
+
+       .tools-slider .tool-preview {
+            width: 100%;
+            height: 150px;
+            background: linear-gradient(135deg, #533afd 0%, #6c5ce7 100%);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+       .tools-slider .tool-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+      .tools-slider .tool-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+       .tools-slider .tool-description {
+            font-size: 0.9rem;
+            color: #444444;
+            line-height: 1.4;
+        }
+
+       .tools-slider .free-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #533afd;
+            color: #f5f9fc;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 1;
+        }
+
+        .templates-section {
+            margin-top: 50px;
+        }
+
+        .templates-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .view-all {
+            color: #000;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .view-all:hover {
+            color: #222;
+        }
+
+       .templates-slider .template-card {
+            position: relative;
+            margin: 0 10px;
+        }
+
+        /* .template-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(83, 58, 253, 0.25);
+        } */
+
+       .templates-slider .template-preview:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 15px rgba(83, 58, 253, 0.15);
+        }
+        .template-preview {
+            width: 100%;
+            height: 280px;
+            background: linear-gradient(135deg, #533afd 0%, #6c5ce7 100%);
+            position: relative;
+            overflow: hidden;
+             background: rgba(245, 249, 252, 0.08);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .template-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+       .template-preview  .crown-icon {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #533afd;
+            font-size: 20px;
+        }
+
+       .tools-slider .tool-card {
+           margin: 0 10px;
+        }
+        .slick-prev::before,
+        .slick-next::before {
+            display: none;
+        }
+        .slick-prev,
+        .slick-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            width: 40px;
+            height: 40px;
+            background-color: #5a43f7;
+            border-radius: 50%;
+            cursor: pointer;
+            border: none;
+            outline: none;
+        }
+
+        .slick-prev::after,
+        .slick-next::after {
+        font-family: "Font Awesome 5 Free";
+        font-weight: 900;
+        font-size: 16px;
+        color: #fff;
+        display: block;
+        text-align: center;
+        line-height: 40px;
+        }
+
+        /* Left arrow: fa-chevron-left */
+        .slick-prev {
+        left: -25px;
+        }
+        .slick-prev::after {
+        content: "\f104";
+        }
+
+        /* Right arrow: fa-chevron-right */
+        .slick-next {
+        right: -25px;
+        }
+        .slick-next::after {
+        content: "\f105";
+        }
+        .slick-prev:hover, 
+         .slick-prev:focus, 
+          .slick-next:hover, 
+           .slick-next:focus {
+            color: #ffffff;
+            outline: none;
+            background: #000000;
+        }
+
+    .css-1oi6e1a {
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 32px;
+        height: 18px;
+        line-height: 16px;
+        text-align: center;
+        border-radius: 6px;
+        border: 1px solid rgb(255, 255, 255);
+        font-size: 10px;
+        font-weight: 500;
+        backdrop-filter: blur(3px);
+        color: rgb(255, 255, 255);
+        background: var(--chakra-colors-transparent)
+    transparent
+    ;
+}
+// === Responsive CSS === //
+
+    @media (max-width: 768px) {
+        .sidebar {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .topview-content {
+            margin-left: 0;
+            padding: 20px;
+        }
+        
+        .url-input-section {
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .url-input {
+            width: 100%;
+            max-width: 400px;
+        }
+    }
+ 	</style>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('content'); ?>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            AI Avatar
+        </div>
+        <div class="navbar">
+        <div class="nav-item active">
+           <a href="#"> <i class="fas fa-th-large"></i>
+            Dashboard </a>
+        </div>
+        
+      <!--  <div class="nav-item">
+          <a href="#"> <i class="fas fa-folder"></i>
+            Projects </a>
+        </div>
+        
+        <div class="nav-item">
+           <a href="#"> <i class="fas fa-images"></i>
+            Assets </a>
+        </div>
+        
+        <div class="nav-item">
+          <a href="#"> <i class="fas fa-palette"></i>
+            Brand Kit </a>
+        </div> -->
+        
+        <div class="nav-section">Create</div>
+        
+        <div class="nav-item">
+          <a href="<?php echo e(route('avatars.product.templete')); ?>"> <i class="fas fa-user"></i>
+            Create Avatars </a>
+        </div>
+        <div class="nav-item">
+          <a href="<?php echo e(route('avatars.create')); ?>"> <i class="fas fa-user"></i>
+            Create Marketing Video </a>
+        </div>
+        
+        <div class="nav-item">
+          <a href="<?php echo e(route('avatars.video.creation')); ?>"> <i class="fas fa-video"></i>
+            Create Avatar Videos </a>
+        </div>
+
+        <div class="nav-item">
+          <a href="<?php echo e(route('all.project')); ?>"> <i class="fas fa-book"></i>
+            My Project </a>
+        </div>
+        
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="topview-content">
+        <!-- Header Section -->
+        <div class="header-section">
+            <h1 class="header-title">Create marketing videos from links or materials</h1>
+            
+            <div class="url-input-section">
+                <input type="text" class="form-control url-input" placeholder="Amazon/Shopify/TikTok/Ebay/Mercado...">
+                <a href="#" class="btn-sample">Try Sample</a>
+                 <a href="#" class="btn btn-create">Create Video</a>
+                <span style="color: rgba(255,255,255,0.5);">or</span>
+                <a href="#" class="btn btn-upload">Upload file</a>
+            </div>
+        </div>
+
+        <!-- AI Creation Tools Start-->
+        <div class="ai-tools-section">
+            <h2 class="section-title">AI Creation Tools</h2>
+            <div class="tools-slider">
+                <a href="#" class="tool-card">
+                    <div class="tool-preview">
+                        <div style="background: linear-gradient(135deg, #533afd 0%, #6c5ce7 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-video" style="font-size: 2rem; opacity: 0.7; color: #f5f9fc;"></i>
+                        </div>
+                    </div>
+                    <div class="tool-title">Avatar Marketing Video</div>
+                    <div class="tool-description">Create marketing video ads from link or local materials</div>
+                </a>
+                
+                <a href="#" class="tool-card">
+                    <div class="tool-preview">
+                        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user-circle" style="font-size: 2rem; opacity: 0.7;"></i>
+                        </div>
+                    </div>
+                    <div class="tool-title">Video Avatar</div>
+                    <div class="tool-description">Create avatar videos or clone your avatar from a video</div>
+                </a>
+                
+                 <a href="#" class="tool-card">
+                    <div class="tool-preview">
+                        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-box" style="font-size: 2rem; opacity: 0.7;"></i>
+                        </div>
+                    </div>
+                    <div class="tool-title">Product Avatar</div>
+                    <div class="tool-description">Create an avatar holding your product with one image</div>
+                 </a>
+                
+                <a href="#" class="tool-card">
+                    <div class="free-badge">Limited Free</div>
+                    <div class="tool-preview">
+                        <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-camera" style="font-size: 2rem; opacity: 0.7;"></i>
+                        </div>
+                    </div>
+                    <div class="tool-title">Product AnyShoot</div>
+                    <div class="tool-description">Fit any product anywhere, perfect for try-ons and product showcases</div>
+                </a>
+                
+                <a href="#" class="tool-card">
+                    <div class="tool-preview">
+                        <div style="background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-magic" style="font-size: 2rem; opacity: 0.7;"></i>
+                        </div>
+                    </div>
+                    <div class="tool-title">Prompt to Avatar</div>
+                    <div class="tool-description">Create an avatar from a text description</div>
+                </a>
+                
+                 <a href="#" class="tool-card">
+                    <div class="tool-preview">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-exchange-alt" style="font-size: 2rem; opacity: 0.7;"></i>
+                        </div>
+                    </div>
+                    <div class="tool-title">Face Swap</div>
+                    <div class="tool-description">Swap the face in images</div>
+                </a>
+
+                <a href="#" class="tool-card">
+                    <div class="tool-preview">
+                        <div style="background: linear-gradient(135deg, #c471f5 0%, #fa71cd 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-link" style="font-size: 2rem; opacity: 0.7; color: #fff;"></i>
+                        </div>
+                    </div>
+                    <div class="tool-title">Batch Link-to-Video</div>
+                    <div class="tool-description">Up to 3000 videos can be created at once</div>
+                </a>
+
+                 <a href="#" class="tool-card">
+                    <div class="tool-preview">
+                        <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-user-circle" style="font-size: 2rem; opacity: 0.7; color: #fff;"></i>
+                        </div>
+                    </div>
+                    <div class="tool-title">Photo Avatar</div>
+                    <div class="tool-description">Make the picture talk</div>
+                </a>
+
+                 <a href="#" class="tool-card">
+                    <div class="tool-preview">
+                        <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-image" style="font-size: 2rem; opacity: 0.7; color: #fff;"></i>
+                        </div>
+                    </div>
+                    <div class="tool-title">Text to Image</div>
+                    <div class="tool-description">Enter prompts to generate UGC/pro style images</div>
+                </a>
+
+                 <a href="#" class="tool-card">
+                    <div class="tool-preview">
+                        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-video" style="font-size: 2rem; opacity: 0.7; color: #fff;"></i>
+                        </div>
+                    </div>
+                    <div class="tool-title">Image/Text to Video</div>
+                    <div class="tool-description">Generate videos from an image or text, supporting lip sync</div>
+                </a>
+
+                 <a href="#" class="tool-card">
+                    <div class="tool-preview">
+                        <div style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-volume-up" style="font-size: 2rem; opacity: 0.7; color: #fff;"></i>
+                        </div>
+                    </div>
+                    <div class="tool-title">AI Voice Generator</div>
+                    <div class="tool-description">Transfer text to speech</div>
+                </a>
+
+            </div>
+        </div> 
+        <!-- AI Creation Tools End-->
+
+        <!-- Product Avatar Templates Start -->
+        <div class="templates-section">
+            <div class="templates-header d-flex justify-content-between align-items-center">
+                <h2 class="section-title">Product Avatar Templates</h2>
+                <a href="<?php echo e(route('avatars.product.templete')); ?>" class="view-all" >View All</a>
+                <!-- <a href="<?php echo e(route('avatars.product.templete')); ?>" class="view-all" data-bs-toggle="modal" data-bs-target="#allAvatarsModal">View All</a> -->
+            </div>
+
+            <!-- Display First 6 Avatars -->
+            <div class="templates-slider row">
+                <?php $__currentLoopData = array_slice($product_avatar_temp['result']['data'], 0, 6); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $template): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <div class="col-6 col-md-4 col-lg-2 mb-3 px-2">
+                        <a href="<?php echo e(route('avatars.product.templete')); ?>?avatarId=<?php echo e($template['avatarId']); ?>&image=<?php echo e(urlencode($template['coverUrl'] ?? $template['avatarImagePath'])); ?>" class="template-card d-block mx-0 text-center">
+                            <div class="template-preview mb-2">
+                                <img src="<?php echo e($template['coverUrl'] ?? $template['avatarImagePath']); ?>" alt="" class="img-fluid rounded" />
+                            </div>
+                            <div class="template-info small">
+                                <p class="mb-0"><?php echo e($template['templateCategoryList'][0]['categoryName'] ?? ($template['avatarCategoryList'][0]['categoryName'] ?? '')); ?></p>
+                            </div>
+                        </a>
+                    </div>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+            </div>
+        </div>
+        <!-- Modal to Show All Avatars -->
+        <div class="modal fade" id="allAvatarsModal" tabindex="-1" aria-labelledby="allAvatarsModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="allAvatarsModalLabel">All Product Avatars</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <?php $__currentLoopData = $product_avatar_temp['result']['data']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $template): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <div class="col-6 col-md-3 col-lg-2 mb-3">
+                                    <a href="#" class="template-card d-block text-center">
+                                        <div class="template-preview mb-2">
+                                            <img src="<?php echo e($template['coverUrl'] ?? $template['avatarImagePath']); ?>" alt="" class="img-fluid rounded" />
+                                        </div>
+                                        <div class="template-info small">
+                                            <p class="mb-0"><?php echo e($template['templateCategoryList'][0]['categoryName'] ?? ($template['avatarCategoryList'][0]['categoryName'] ?? '')); ?></p>
+                                        </div>
+                                    </a>
+                                </div>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Product Avatar Templates End -->
+
+         <!-- Product Avatar Templates Start -->
+        <div class="templates-section">
+            <div class="templates-header">
+                <h2 class="section-title">AnyShoot Templates</h2>
+                <a href="<?php echo e(route('avatars.anyshoot.templete')); ?>" class="view-all" data-bs-toggle="modal" data-bs-target="#allTemplatesModal">View All</a>
+                <a href="<?php echo e(route('avatars.anyshoot.templete')); ?>" class="view-all">View All</a>
+            </div>
+            
+            <div class="templates-slider" id="anyshoot-carousel">
+                <?php $__currentLoopData = array_slice($product_anyShoot_template['result']['data'], 0, 6); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $template): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                    <a href="#" class="template-card">
+                        <div class="template-preview">
+                            <img src="<?php echo e($template['coverUrl']); ?>" alt="Template Preview" />
+                        </div>
+                        <div class="template-info">
+                            <p><?php echo e($template['templateCategoryList'][0]['categoryName'] ?? ''); ?></p>
+                        </div>
+                    </a>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                <!-- <a href="#" class="template-card">
+                    <div class="template-preview">
+                        <img src="<?php echo e(URL::asset('img/ai-avtar/qXA4SA7dfG.webp')); ?>" alt="" />
+                    </div>
+                    <div class="template-info">
+                        <p>Women's top</p>
+                    </div>
+                </a>
+                
+                 <a href="#" class="template-card">
+                    <div class="template-preview">
+                     <div class="css-1oi6e1a">UGC</div>
+                        <img src="<?php echo e(URL::asset('img/ai-avtar/D2R6sPcSIy.webp')); ?>" alt="" />
+                    </div>
+                    <div class="template-info">
+                        <p>Women's bottoms</p>
+                    </div>
+                </a>
+                
+                <a href="#" class="template-card">
+                    <div class="template-preview">
+                        <img src="<?php echo e(URL::asset('img/ai-avtar/ceSBOG40ah.webp')); ?>" alt="" /> 
+                    </div>
+                     <div class="template-info">
+                        <p>Men's top</p>
+                    </div>
+                </a>
+                
+                 <a href="#" class="template-card">
+                    <div class="template-preview">
+                       <div class="css-1oi6e1a">UGC</div>
+                       <img src="<?php echo e(URL::asset('img/ai-avtar/8v4gKY9y1S.webp')); ?>" alt="" /> 
+                    </div>
+                     <div class="template-info">
+                        <p>Necklace</p>
+                    </div>
+                </a>
+                
+                <a href="#" class="template-card">
+                    <div class="template-preview">
+                       <img src="<?php echo e(URL::asset('img/ai-avtar/DcZ7MFwYa1.webp')); ?>" alt="" /> 
+                    </div>
+                     <div class="template-info">
+                        <p>Creative templates</p>
+                    </div>
+                </a>
+                
+                <a href="#" class="template-card">
+                   <div class="template-preview">
+                       <img src="<?php echo e(URL::asset('img/ai-avtar/fqE7BqO9IH.webp')); ?>" alt="" /> 
+                    </div>
+                     <div class="template-info">
+                        <p>Food</p>
+                    </div>
+                </a>
+                
+               <a href="#" class="template-card">
+                    <div class="template-preview">
+                       <img src="<?php echo e(URL::asset('img/ai-avtar/AZY47D6xHu.webp')); ?>" alt="" /> 
+                    </div>
+                     <div class="template-info">
+                        <p>Home Decor </p>
+                    </div>
+                </a>
+                
+                 <a href="#" class="template-card">
+                     <div class="template-preview">
+                       <img src="<?php echo e(URL::asset('img/ai-avtar/iJGhwDF2i7.webp')); ?>" alt="" /> 
+                    </div>
+                     <div class="template-info">
+                        <p>Personal Care Products </p>
+                    </div>
+                </a>
+
+                 <a href="#" class="template-card">
+                     <div class="template-preview">
+                       <img src="<?php echo e(URL::asset('img/ai-avtar/htVABcor6U.webp')); ?>" alt="" /> 
+                    </div>
+                     <div class="template-info">
+                        <p>Maternal & Infant Products </p>
+                    </div>
+                </a>
+
+                 <a href="#" class="template-card">
+                     <div class="template-preview">
+                       <img src="<?php echo e(URL::asset('img/ai-avtar/8RMlUV4E92.webp')); ?>" alt="" /> 
+                    </div>
+                     <div class="template-info">
+                        <p>Glasses </p>
+                    </div>
+                </a> -->
+
+            </div>
+        </div> 
+        <!-- Product Avatar Templates End -->
+
+    </div>
+<!-- Modal to Show All Templates -->
+<div class="modal fade" id="allTemplatesModal" tabindex="-1" aria-labelledby="allTemplatesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="allTemplatesModalLabel">All Templates</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <?php $__currentLoopData = $product_anyShoot_template['result']['data']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $template): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="col-6 col-md-3 col-lg-2 mb-3">
+                            <a href="#" class="template-card d-block text-center">
+                                <div class="template-preview mb-2">
+                                    <img src="<?php echo e($template['coverUrl']); ?>" alt="" class="img-fluid rounded" />
+                                </div>
+                                <div class="template-info small">
+                                    <p class="mb-0"><?php echo e($template['templateCategoryList'][0]['categoryName'] ?? ''); ?></p>
+                                </div>
+                            </a>
+                        </div>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('js'); ?>
+
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script src="<?php echo e(URL::asset('plugins/sweetalert/sweetalert2.all.min.js')); ?>"></script>
+<script src="<?php echo e(URL::asset('plugins/pdf/html2canvas.min.js')); ?>"></script>
+<script src="<?php echo e(URL::asset('plugins/pdf/jspdf.umd.min.js')); ?>"></script>
+<script src="<?php echo e(URL::asset('plugins/highlight/highlight.min.js')); ?>"></script>
+<script src="<?php echo e(URL::asset('plugins/highlight/showdown.min.js')); ?>"></script>
+<script src="<?php echo e(theme_url('js/export-chat.js')); ?>"></script>
+<!-- Slick JS -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
+<script>
+
+ $('.tools-slider').slick({
+  slidesToShow: 3,
+  arrows: true,
+  dots: false,
+  responsive: [
+    { breakpoint: 991, settings: { slidesToShow: 2 } },
+    { breakpoint: 576, settings: { slidesToShow: 1 } }
+  ]
+});
+
+ $('#templates-carousel, #anyshoot-carousel').slick({
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    arrows: true,
+    dots: false,
+    responsive: [
+      { breakpoint: 1200, settings: { slidesToShow: 3 } },
+      { breakpoint: 991, settings: { slidesToShow: 2 } },
+      { breakpoint: 576, settings: { slidesToShow: 1 } }
+    ]
+  });
+
+</script>
+
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /home/customer/www/staging.paraclete.ai/public_html/resources/views/classic/user/topview/index.blade.php ENDPATH**/ ?>
