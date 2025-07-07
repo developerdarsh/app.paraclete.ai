@@ -120,3 +120,18 @@ Route::middleware('auth:api')->group(function () {
 
     });
 });
+
+Route::group(['prefix' => 'v2/external/chatbot', 'namespace' => 'App\Http\Controllers\Api\V2'], function() {
+    Route::controller(ExternalChatbot::class)->group(function () {
+        Route::post('/chat/{uuid}', 'chat');
+        Route::get('/models/{uuid}', 'models');
+    });
+});
+
+Route::group(['prefix' => 'v2/external/chatbot/conversations', 'namespace' => 'App\Http\Controllers\Api\V2\External'], function() {
+    Route::controller(ChatbotConversationController::class)->group(function () {
+        Route::get('/{uuid}', 'index');
+        Route::post('/{uuid}', 'store');
+        Route::get('/{uuid}/{conversationId}', 'show');
+    });
+});

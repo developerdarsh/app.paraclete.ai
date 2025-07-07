@@ -20,7 +20,7 @@
 	<!-- USER PROFILE PAGE -->
 	<div class="row">
 		<div class="col-xl-3 col-lg-3 col-md-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('Personal Information') }}</h3>
 				</div>
@@ -161,7 +161,7 @@
 								</tr>
 							</tbody>
 						</table>
-						<div class="border-0 text-right mb-2 mt-2">
+						<div class="border-0 text-center mb-2 mt-2">
 							<a href="{{ route('admin.user.list') }}" class="btn btn-primary">{{ __('Return') }}</a>
 						</div>
 					</div>
@@ -176,7 +176,7 @@
 					<div class="col-lg-12 col-md-12 col-sm-12">
 						<div class="row">
 							<div class="col-lg-6 col-md-12 col-sm-12">
-								<div class="card overflow-hidden border-0">
+								<div class="card">
 									<div class="card-body d-flex">
 										<div class="usage-info w-100">
 											<p class=" mb-3 fs-12 font-weight-bold">{{ __('Words Generated') }}</p>
@@ -189,7 +189,7 @@
 								</div>
 							</div>
 							<div class="col-lg-6 col-md-12 col-sm-12">
-								<div class="card overflow-hidden border-0">
+								<div class="card">
 									<div class="card-body d-flex">
 										<div class="usage-info w-100">
 											<p class=" mb-3 fs-12 font-weight-bold">{{ __('Images Created') }}</p>
@@ -202,7 +202,7 @@
 								</div>
 							</div>
 							<div class="col-lg-6 col-md-12 col-sm-12">
-								<div class="card overflow-hidden border-0">
+								<div class="card">
 									<div class="card-body d-flex">
 										<div class="usage-info w-100">
 											<p class=" mb-3 fs-12 font-weight-bold">{{ __('Characters Synthesized') }}</p>
@@ -215,7 +215,7 @@
 								</div>
 							</div>
 							<div class="col-lg-6 col-md-12 col-sm-12">
-								<div class="card overflow-hidden border-0">
+								<div class="card">
 									<div class="card-body d-flex">
 										<div class="usage-info w-100">
 											<p class=" mb-3 fs-12 font-weight-bold">{{ __('Minutes Transcribed') }}</p>
@@ -287,10 +287,10 @@
 				</div>
 
 				<div class="col-lg-12 col-md-12 col-sm-12">
-					<div class="card border-0">
-						<div class="card-header d-inline border-0">
+					<div class="card">
+						<div class="mt-5">
 							<div>
-								<h3 class="card-title fs-16 mt-3 mb-4"><i class="fa-solid fa-scroll-old mr-4 text-info"></i>{{ __('Words & Images Generated') }} <span class="text-muted">({{ __('Current Year') }})</span></h3>
+								<h3 class="card-title fs-16 mt-3 mb-4 pl-5"><i class="fa-solid fa-scroll-old mr-4 text-info"></i>{{ __('Words & Images Generated') }} <span class="text-muted">({{ __('Current Year') }})</span></h3>
 							</div>
 						</div>
 						<div class="card-body">

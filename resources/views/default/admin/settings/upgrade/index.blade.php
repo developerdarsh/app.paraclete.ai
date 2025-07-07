@@ -18,49 +18,61 @@
 @section('content')
 	<div class="row justify-content-center">
 		<div class="col-lg-10 col-md-12 col-sm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-body p-5">
-					<form id="upgrade-form" method="POST" action="{{ route('admin.settings.upgrade.start', ['update_id' => $latest_version['update_id'], 'version' => $latest_version['version']]) }}" enctype="multipart/form-data">
+					<form id="upgrade-form" method="POST" action="@if($version_metadata){{ route('admin.settings.upgrade.start', ['update_id' => $latest_version['update_id'], 'version' => $latest_version['version']]) }}@else{{ route('admin.settings.upgrade.start', ['update_id' => $current_version, 'version' => $current_version]) }} @endif" enctype="multipart/form-data">
 						@csrf
 						
 						<div class="row">
-							<div class="col-sm-12 col-md-12">															
-								@if ($latest_version['status'])
-									<div class="text-center" id="not-installed-info">
-										<h1 class="fs-24"><i class="fa-solid fa-box-check fs-24 mr-2 text-cancel"></i> {{ __('New Update is Available') }}</h1>
-										<h6 class="fs-13 text-muted mt-4">{{ __('Current installed version') }}: <span class="text-info font-weight-bold">{{ $current_version }}</span></h6>	
-										<h6 class="fs-13 text-muted mb-4">{{ __('New available version') }}: <span class="text-info font-weight-bold"> {{ $latest_version['version'] }} </span> </h6>
-										<div id="audio-format" role="radiogroup">
-											<span  id="webm-format">							
-												<div class="radio-control">
-													<input type="checkbox" name="concent" class="input-control fs-13" id="concent">
-													<label for="concent" class="label-control text-muted fs-13" id="concent-label">{{  __('I confirm that I have read the Update tab in the documentation and will follow all steps there to finish the update') }} - <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">{{ __('Documentation Link') }}</a></label>
-												</div>	
-											</span>										
-										</div>	
-									</div>
-									<div id="installed-info">
-										<div class="text-center">
-											<h1 class="fs-24">{{ __('Update Installation Completed') }}</h1>
-											<h6 class="text-success fs-14 font-weight-bold mt-4 mb-5"><span> {{ $latest_version['version'] }} </span> {{ __('version was installed successfully') }}</h6>
-											<i class="fa-solid fa-box-check fs-50 text-success"></i>
-											<h6 class="text-danger fs-14 font-weight-bold mt-4">{{ __('Warning! Make sure to follow the instructions in the update tab in the') }} <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">documentation </a> {{ __('to finish the update process') }}</h6>
+							<div class="col-sm-12 col-md-12">
+								@if($version_metadata)															
+									@if ($latest_version['status'])
+										<div class="text-center" id="not-installed-info">
+											<h1 class="fs-24"><i class="fa-solid fa-box-check fs-24 mr-2 text-cancel"></i> {{ __('New Update is Available') }}</h1>
+											<h6 class="fs-13 text-muted mt-4">{{ __('Current installed version') }}: <span class="text-info font-weight-bold">{{ $current_version }}</span></h6>	
+											<h6 class="fs-13 text-muted mb-4">{{ __('New available version') }}: <span class="text-info font-weight-bold"> {{ $latest_version['version'] }} </span> </h6>
+											<div id="audio-format" role="radiogroup">
+												<span  id="webm-format">							
+													<div class="radio-control">
+														<input type="checkbox" name="concent" class="input-control fs-13" id="concent">
+														<label for="concent" class="label-control text-muted fs-13" id="concent-label">{{  __('I confirm that I have read the Update tab in the documentation and will follow all steps there to finish the update') }} - <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">{{ __('Documentation Link') }}</a></label>
+													</div>	
+												</span>										
+											</div>	
 										</div>
-									</div>														
+										<div id="installed-info">
+											<div class="text-center">
+												<h1 class="fs-24">{{ __('Update Installation Completed') }}</h1>
+												<h6 class="text-success fs-14 font-weight-bold mt-4 mb-5"><span> {{ $latest_version['version'] }} </span> {{ __('version was installed successfully') }}</h6>
+												<i class="fa-solid fa-box-check fs-50 text-success"></i>
+												<h6 class="text-danger fs-14 font-weight-bold mt-4">{{ __('Warning! To complete the update process follow all steps listed under') }} <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">update instructions </a> {{ __('in the docs') }}</h6>
+											</div>
+										</div>														
+									@else
+										<div class="text-center">
+											<h1 class="fs-24">{{ __('You have the Latest Version Installed') }}</h1>
+											<h1 class="fs-30 super-strong">{{ $current_version }}</h1>	
+											<h6 class="text-danger fs-14 font-weight-bold mt-4">{{ __('Warning! To complete the update process follow all steps listed under') }} <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">update instructions </a> {{ __('in the docs') }}</h6>									
+											
+										</div>
+									@endif
 								@else
 									<div class="text-center">
 										<h1 class="fs-24">{{ __('You have the Latest Version Installed') }}</h1>
-										<h6 class="text-success fs-14 font-weight-bold mt-4 mb-5">{{ __('Current version is the latest') }}</h6>
-										<i class="fa-solid fa-box-check fs-50 text-success"></i>	
-										<h6 class="text-danger fs-14 font-weight-bold mt-4">{{ __('Warning! Make sure to follow the instructions in the update tab in the') }} <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">documentation </a> {{ __('to finish the update process') }}</h6>									
-										
+										<h1 class="fs-30 super-strong">{{ $current_version }}</h1>	
+										<h6 class="text-danger fs-14 font-weight-bold mt-4">{{ __('Warning! To complete the update process follow all steps listed under') }} <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">update instructions </a> {{ __('in the docs') }}</h6>									
 									</div>
 								@endif								
 							</div>
 						</div>
-						<div class="card-footer text-center border-0 pb-2 pt-5">		
-							<span id="processing"><img src="{{ theme_url('img/svgs/upgrade.svg') }}" alt=""></span>												
-							<button id="upgrade" type="button" class="btn btn-primary">@if ($latest_version['status']) {{ __('Download & Install Upgrade') }} @else	{{ __('Check New Version') }} @endif</button>						
+						<div class="card-footer text-center border-0 pb-2 pt-5">
+							@if($version_metadata)			
+								<span id="processing"><img src="{{ theme_url('img/svgs/upgrade.svg') }}" alt=""></span>												
+								<button id="upgrade" type="button" class="btn btn-primary">@if ($latest_version['status']) {{ __('Download & Install Upgrade') }} @else	{{ __('Check New Version') }} @endif</button>					
+							@else
+								<span id="processing"><img src="{{ theme_url('img/svgs/upgrade.svg') }}" alt=""></span>												
+								<button id="update" type="button" class="btn btn-primary">{{ __('Check New Version') }}</button>					
+							@endif
 						</div>
 					</form>
 				</div>
@@ -72,11 +84,36 @@
 
 				<div class="changelog">
 					<div class="changelog-version mt-5">
+						<span class="version-name">{{ __('Version') }} 7.6</span> - <span class="fs-14 font-weight-semibold">08.06.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">External Chatbots (Paid)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Enhanced User Dashboard</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Revamped Admin Dashboard with Advanced User and Finance Analytics</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Advanced search feature</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Redesign of the Default Theme</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Export all Gift Codes to PDF | Excel feature added</span></span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">SaaS Business extension updated (v2.2)</span></span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">RTL css styles updated</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Email notifications for Wallet transfers added</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Dark mode for Default theme improved</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Theme switch performance improved</span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New openai models view fixed for AI Chat</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New openai models fixed for custom templates</span></span></li>
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
 						<span class="version-name">{{ __('Version') }} 7.5</span> - <span class="fs-14 font-weight-semibold">12.05.2025</span>
 					</div>   
 					<div class="changelog-description mt-6">     
 						<ul>	 	 				     
-							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">AI Speech to Text Pro (Paid)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">AI Speech to Text Pro extension (Paid)</span></span></li>
 							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Gift System has been updated</span></li>
 							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Saas Business extension updated (v2.1)</span></li>
 							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Wordpress Integration extension updated (v1.2)</span></li>

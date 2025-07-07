@@ -76,7 +76,7 @@ class GoogleAnalyticsService
 
     public function userCountries()
     {
-        $analyticsData = LaravelGoogleAnalytics::getMostUsersByCountry(Period::days(180), 20);
+        $analyticsData = LaravelGoogleAnalytics::getMostUsersByCountry(Period::days(180), 70);
         
         return $analyticsData;
     }
@@ -84,7 +84,7 @@ class GoogleAnalyticsService
 
     public function userCountriesTotal()
     {
-        $analyticsData = LaravelGoogleAnalytics::getMostUsersByCountry(Period::days(180), 20);
+        $analyticsData = LaravelGoogleAnalytics::getMostUsersByCountry(Period::days(180), 70);
         $total = 0;
 
         foreach ($analyticsData as $key=>$value) {

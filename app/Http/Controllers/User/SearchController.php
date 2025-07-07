@@ -3,55 +3,66 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\URL;
 use Illuminate\Http\Request;
+use Spatie\Searchable\Search;
+use App\Models\Chat;
 use App\Models\Content;
-use Yajra\DataTables\DataTables;
+use App\Models\Template;
+
 
 
 class SearchController extends Controller
 {
-    /**
-     * Show search results
-     */
-    public function index(Request $request)
+    public function search(Request $request)
     {
-        $results = Content::where('user_id', Auth::user()->id)->where( 'title', 'LIKE', '%' . $request->keyword . '%' )->orWhere( 'input_text', 'LIKE', '%' . $request->keyword . '%' )->orWhere( 'result_text', 'LIKE', '%' . $request->keyword . '%' )->latest()->get();
-
-        $data = Datatables::of($results)
-            ->addIndexColumn()
-            ->addColumn('actions', function($row){
-                $actionBtn = '<div>
-                                    <a href="'. route("user.documents.show", $row["id"] ). '"><i class="fa-solid fa-file-lines table-action-buttons edit-action-button" title="'. __('View Document') .'"></i></a>
-                                    <a class="deleteResultButton" id="'. $row["id"] .'" href="#"><i class="fa-solid fa-trash-xmark table-action-buttons delete-action-button" title="'. __('Delete Document') .'"></i></a> 
-                                </div>';
-                return $actionBtn;
-            })
-            ->addColumn('created-on', function($row){
-                $created_on = '<span class="font-weight-bold">'.date_format($row["created_at"], 'd M Y').'</span><br><span>'.date_format($row["created_at"], 'H:i A').'</span>';
-                return $created_on;
-            })
-            ->addColumn('custom-title', function($row){
-                $custom = '<a class="font-weight-bold" href="'. route("user.documents.show", $row["id"] ). '">'.ucfirst($row["title"]).'</a>'; 
-                return $custom;
-            })
-            ->addColumn('custom-template', function($row){
-                $custom = '<span class="font-weight-bold">'.ucfirst($row["template_name"]).'</span>';
-                return $custom;
-            })
-            ->addColumn('custom-language', function($row) {
-                $language = '<span class="vendor-image-sm overflow-hidden"><img class="mr-2" src="' . URL::asset($row['language_flag']) . '">'. $row['language_name'] .'</span> ';            
-                return $language;
-            })
-            ->rawColumns(['actions', 'created-on', 'custom-language', 'custom-title', 'template_name'])
-            ->make(true);
+        $query = $request->input('query');
         
-
-        $searchValue = $request->keyword;
-        $data = json_encode($data);
-
-        return view('user.search.index', compact('searchValue', 'data'));
+        if (empty($query)) {
+            return response()->json([]);
+        }
+        
+        $searchResults = (new Search())
+            ->registerModel(Chat::class, ['name', 'sub_name'])
+            ->registerModel(Content::class, ['title'])
+            ->registerModel(Template::class, ['name'])
+            ->search($query);
+        
+        $groupedResults = [
+            'chats' => [],
+            'contents' => [],
+            'templates' => []
+        ];
+        
+        foreach ($searchResults->groupByType() as $type => $modelSearchResults) {
+            foreach ($modelSearchResults as $searchResult) {
+                $modelType = class_basename($searchResult->searchable);
+                
+                if ($modelType === 'Chat') {
+                    $groupedResults['chats'][] = [
+                        'id' => $searchResult->searchable->id,
+                        'name' => $searchResult->searchable->name,
+                        'logo' => $searchResult->searchable->logo,
+                        'url' => url('/app/user/chats/' . $searchResult->searchable->chat_code)
+                    ];
+                } elseif ($modelType === 'Content') {
+                    $groupedResults['contents'][] = [
+                        'id' => $searchResult->searchable->id,
+                        'title' => $searchResult->searchable->title,
+                        'icon' => $searchResult->searchable->icon,
+                        'url' => url('/app/user/document/result/' . $searchResult->searchable->id . '/show')
+                    ];
+                } elseif ($modelType === 'Template') {
+                    $groupedResults['templates'][] = [
+                        'id' => $searchResult->searchable->id,
+                        'name' => $searchResult->searchable->name,
+                        'icon' => $searchResult->searchable->icon,
+                        'url' => url('/app/user/templates/original-template/' . $searchResult->searchable->slug)
+                    ];
+                }
+            }
+        }
+        
+        return response()->json($groupedResults);
     }
 
 }

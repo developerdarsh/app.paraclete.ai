@@ -28,7 +28,7 @@
 										</div>
 										<div class="col-lg-3 col-md-6 col-sm-12">
 											<div class="card shadow-0 text-center" style="height: 50px;">
-												<h6 class="mt-auto mb-auto fs-13 font-weight-semibold"><i class="fa-solid fa-badge-check mr-2 text-primary"></i>{{ __('Tested with DaVinci AI') }}</h6>
+												<h6 class="mt-auto mb-auto fs-13 font-weight-semibold"><i class="fa-solid fa-badge-check mr-2 text-primary"></i>{{ __('Fully Tested') }}</h6>
 											</div>
 										</div>
 										<div class="col-lg-3 col-md-6 col-sm-12">

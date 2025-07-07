@@ -3,60 +3,17 @@
 @section('css')
 	<!-- Sweet Alert CSS -->
 	<link href="{{URL::asset('plugins/sweetalert/sweetalert2.min.css')}}" rel="stylesheet" />
-	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
-    <style>
- 		.slide-arrow{
- 			position: absolute;
- 			top: 50%;
- 			margin-top: -15px;
- 		}
- 		.prev-arrow{
- 			left: -30px;
- 			width: 0;
- 			height: 0;
- 			border-left: 0 solid transparent;
- 			border-right: 15px solid #113463;
- 			border-top: 10px solid transparent;
- 			border-bottom: 10px solid transparent;
- 			background: none;
- 		}
- 		.next-arrow{
- 			right: -30px;
- 			width: 0;
- 			height: 0;
- 			border-right: 0 solid transparent;
- 			border-left: 15px solid #113463;
- 			border-top: 10px solid transparent;
- 			border-bottom: 10px solid transparent;
- 			background: none;
- 		}
- 		/** Dev. Slider CSS **/
- 		.slick-slide img {
- 			display: block;
- 			height: auto;
- 			width: 100%;
- 		}  
- 		/* Styles for the media controller */
- 		#media-container iframe,
- 		#media-container video {
- 			width: 100%;
- 			height: 300px;
- 		}
- 		#videoModal .modalbody {
- 				padding: 1rem;
- 		}
- 		/** End Dev. Slider CSS **/
- 	</style>
+	<link rel="stylesheet" href="{{ URL::asset('plugins/slick/slick.css') }}">
+	<link rel="stylesheet" href="{{ URL::asset('plugins/slick/slick-theme.css') }}">
 @endsection
 
 @section('page-header')
 	<!-- PAGE HEADER -->
 	<div class="page-header mt-5-7">
 		<div class="page-leftheader">
-			<h4 class="page-title mb-0">{{ __('Dashboard') }}</h4>
+			<h4 class="page-title mb-0 fs-30">{{ __('Welcome') }} {{auth()->user()->name}}</h4>
 			<ol class="breadcrumb">
-				<li class="breadcrumb-item"><a href="{{route('user.dashboard')}}"><i class="fa-solid fa-chart-tree-map mr-2 fs-12"></i>{{ __('AI Panel') }}</a></li>
-				<li class="breadcrumb-item active" aria-current="page"><a href="{{url('#')}}"> {{ __('Dashboard') }}</a></li>
+				<li class="breadcrumb-item"><a href="{{route('user.dashboard')}}"><i class="fa-solid fa-chart-tree-map mr-2 fs-12"></i>{{ __('User Dashboard') }}</a></li>
 			</ol>
 		</div>
 	</div>
@@ -64,113 +21,166 @@
 @endsection
 
 @section('content')
-	<!-- USER PROFILE PAGE -->
-	<div class="row">
-		<div class="card-body pt-5 pb-5">
- 			<div class="col-lg-12 col-md-12">
- 				<div class="card border-0">
- 					<div class="card-body pt-5 pb-5">
- 						<div class="slider lazy">
- 							@foreach($BannerModel as $value)
- 								<div>
- 									<div class="image">
- 										<img data-lazy="{{asset('banner/'.$value['image'])}}" data-type="{{ $value['type'] }}" data-url="{{ $value['url'] }}" />
- 									</div>
- 								</div>
- 							@endforeach
- 						</div>
- 					</div>
- 				</div>
- 			</div>
- 		</div>
- 		<!-- Bootstrap modal structure -->
- 		<div class="modal fade" id="videoModal" tabindex="-1" role="dialog" aria-labelledby="videoModalLabel" aria-hidden="true">
- 			<div class="modal-dialog modal-xs modal-dialog-centered" role="document">
- 				<div class="modal-content">
- 					<div class="modal-body">
- 						<div id="media-container"></div>
- 					</div>
- 				</div>
- 			</div>
- 		</div>
-		<div class="@if (App\Services\HelperService::extensionSaaS()) col-lg-5 @else col-lg @endif col-md-12">
-			<div class="card border-0">
-				<div class="card-body pt-4 pb-4 pl-6 pr-6 custom-banner-bg" @if (!App\Services\HelperService::extensionSaaS()) style="height: 165px" @endif>
+	<div class="row mb-6">		
+		<div class="col-lg-3 col-md-12">
+			<div class="card border-0" style="height: 100%;">
+				<div class="card-body pt-4 pb-0 pl-6 pr-6 custom-banner-bg" @if (!App\Services\HelperService::extensionSaaS()) style="height: 165px" @endif>
 					<div class="custom-banner-bg-image"></div>
 					<div class="row">
-						<div class="col-md-8 col-sm-12">
-							<span class="fs-10"><i class="fa-solid fa-calendar mr-2"></i> {{ now()->format('M d, Y H:i A'); }}</span>
-							<h4 class="mb-4 mt-2 font-weight-800 fs-24">{{ __('Welcome') }}, {{ auth()->user()->name }}</h4>
+						<div class="col-sm-12">
+							<span class="fs-10"><i class="fa-solid fa-calendar mr-2"></i> {{ now()->format('d M, Y H:i A'); }}</span>
 							@if (App\Services\HelperService::extensionSaaS())
-								<span class="fs-10 custom-span">{{ __('Current Plan') }}</span>
+								<p class="fs-10 custom-span mt-2 mb-3">{{ __('Current Plan') }}</p>
 								@if (is_null(auth()->user()->plan_id))
 									<h4 class="mb-2 mt-2 font-weight-800 fs-24">{{ __('No Active Plan') }}</h4>						
-									<h6 class="fs-12">{{ __('You do not have an active subscription') }}</h6>
+									<h6 class="fs-12" style="line-height: 1.5">{{ __('You do not have an active subscription plan. Please select a subscription plan or a prepaid plan') }}</h6>
 								@else
 									<h4 class="mb-2 mt-2 font-weight-800 fs-24">{{ $subscription }} {{ __('Plan') }}</h4>
+									<h6 class="fs-12" style="line-height: 1.5">{{ __('You can always upgrade your subscription plan for more premium plans') }}</h6>
 								@endif
+							@else
+								<p class="fs-10 custom-span mt-2 mb-3">{{ __('Current Available Credits') }}</p>
 							@endif
-						</div>
-						@if (App\Services\HelperService::extensionSaaS())
-							<div class="col-md-4 col-sm-12 d-flex align-items-end justify-content-end">
-								<div class="text-center">
-									@if (!is_null($price))
-										@if ($term == 'lifetime')
-											<h4 class="mb-2 mt-2 font-weight-bold fs-18">{{ __('Lifetime Plan') }}</h4>		
-										@else
-											<h4 class="mb-2 mt-2 font-weight-bold fs-18">{!! config('payment.default_system_currency_symbol') !!}{{ $price }} / @if ($term == 'monthly'){{ __('month') }} @else {{ __('year') }} @endif</h4>		
-										@endif									
-									@else
-										<h4 class="mb-2 mt-2 font-weight-bold fs-18">{!! config('payment.default_system_currency_symbol') !!}0 / {{ __('month') }}</h4>
-									@endif								
-									<a href="{{ route('user.plans') }}" class="btn btn-primary yellow mt-2 custom-pricing-plan-button mb-2">{{ __('See Pricing Plans') }} <i class="fa-regular fa-chevron-right fs-8 ml-1"></i></a>
-								</div>								
+							<div>
+								<div style="position: relative">
+									<canvas id="userDoughnut" style="width: 100%; height: 160px;"></canvas>									
+								</div>	
 							</div>
+						</div>		
+						@if (App\Services\HelperService::extensionSaaS())					
+							<a href="{{ route('user.plans') }}" class="btn btn-primary yellow mt-2 custom-pricing-plan-button">{{ __('Upgrade Your Plan') }} <i class="fa-regular fa-chevron-right fs-8 ml-1"></i></a>
 						@endif
-					</div>
-					
-					
-					
+					</div>					
 				</div>
 			</div>
 		</div>
 
-		@if (App\Services\HelperService::extensionSaaS())			
-			<div class="col-lg col-md-12 d-flex align-items-stretch">
-				<div class="card border-0">
-					<div class="card-body p-6 align-items-center">
+		<div class="col-lg-3 col-md-12">
+			@if (App\Services\HelperService::extensionSaaS())			
+				<div class="col-sm-12">
+					<div class="card mb-3"  style="height: 100%;">
+						<div class="card-body p-4">
+							<div class="row" style="height: 100%">
+								<div class="col-sm-12 text-center mt-auto mb-auto">
+									<h6 class="fs-14 text-muted"><i class="fa-solid fa-badge-dollar mr-2"></i>{{ __('Your Wallet Balance') }}</h6>
+									<h4 class="mb-3 fs-20 font-weight-800 text-muted">{{ number_format(auth()->user()->wallet) }} {!! config('payment.default_system_currency_symbol') !!}</h4>
+									<a href="{{ route('user.wallet') }}" class="btn btn-primary custom-pricing-plan-button" style="text-transform: none;">{{ __('My Wallet') }} <i class="fa-regular fa-chevron-right fs-8 ml-1"></i></a>
+								</div>							
+							</div>		
+						</div>
+					</div>
+				</div>	
+				@if (config('payment.referral.enabled') == 'on')
+					<div class="col-sm-12">
+						<div class="card mb-3">
+							<div class="card-body p-4 ">
+								<div class="row" style="height: 100%">
+									<div class="col-sm-12 text-center mt-auto mb-auto">
+										<h6 class="fs-14 text-muted"><i class="fa-solid fa-badge-dollar mr-2"></i>{{ __('Total Referral Earnings') }}</h6>
+										<h4 class="mb-3 fs-20 font-weight-800 text-muted">{{ number_format(auth()->user()->balance) }} {!! config('payment.default_system_currency_symbol') !!}</h4>
+										<a href="{{ route('user.referral') }}" class="btn btn-primary custom-pricing-plan-button" style="text-transform: none;">{{ __('Invite & Earn') }} <i class="fa-regular fa-chevron-right fs-8 ml-1"></i></a>
+									</div>							
+								</div>		
+							</div>
+						</div>
+					</div>	
+				@endif			
+			@endif
+			<div class="col-sm-12">
+				<div class="card mb-0">
+					<div class="card-body pb-0">
 						<div class="row" style="height: 100%">
-							<div class="col-md-6 col-sm-12 text-left mt-auto mb-auto">
-								<h6 class="fs-14 text-muted"><i class="fa-solid fa-badge-dollar mr-2"></i>{{ __('Your Wallet Balance') }}</h6>
-								<h4 class="mt-4 mb-5 font-weight-bold text-muted fs-30">{{ number_format(auth()->user()->wallet) }}{!! config('payment.default_system_currency_symbol') !!}</h4>
+							<div class="col-sm-12 text-center mt-auto mb-auto">
+								<h6 class="fs-14 text-muted"><i class="fa-solid fa-clock mr-2"></i>{{ __('Total Time Saved') }}</h6>
+								<h4 class="font-weight-800 fs-20 text-muted">{{ number_format($total_words) }} {{__('Hours')}}</h4>
 							</div>
-							<div class="d-flex">
-								<div class="col-md-6 col-sm-12 flex">
-									<a href="{{ route('user.wallet') }}" class="btn btn-primary yellow mt-2 mb-0 pl-6 pr-6" style="text-transform: none;">{{ __('My Wallet') }} <i class="fa-regular fa-chevron-right fs-8 ml-1"></i></a>
-								</div>
-								@if (config('payment.referral.enabled') == 'on')
-									<div class="col-md-6 col-sm-12 flex">
-										<a href="{{ route('user.referral') }}" class="btn btn-primary yellow mt-2 mb-0 pl-6 pr-6" style="text-transform: none;">{{ __('Invite & Earn') }} <i class="fa-regular fa-chevron-right fs-8 ml-1"></i></a>
-									</div>
-								@endif								
+							<div class="col-sm-12 d-flex align-items-end justify-content-end" style="margin-bottom: -5px">
+								<canvas id="hoursSavedChart" style="max-height: 50px"></canvas>
 							</div>
-						</div>		
+						</div>					
 					</div>
 				</div>
-			</div>					
-		@endif		
-
-		<div class="col-lg col-md-12 d-flex align-items-stretch">
-			<div class="card border-0">
-				<div class="card-body pr-0 pb-0">
-					<div class="row" style="height: 100%">
-						<div class="col-md-6 col-sm-12 justify-content-center mt-auto mb-auto">
-							<h6 class="fs-14 text-muted"><i class="fa-solid fa-clock mr-2"></i>{{ __('Time Saved') }}</h6>
-							<h4 class="mt-4 mb-5 font-weight-bold text-muted fs-30">{{ number_format($total_words) }}</h4>
-							<h6 class="fs-14 text-muted">{{ __('Total hours you saved') }}</h6>
+			</div>
+		</div>
+				
+		<div class="col-lg-6 col-md-12">
+			<div class="card"  style="height: 100%;">
+				<div class="card-header pt-4 pb-4 border-0">
+					<div class="mt-3">
+						<h3 class="card-title mb-2"><i class="fa-solid fa-grid-2-plus mr-2 text-muted"></i>{{ __('Add New') }}</h3>
+					</div>
+				</div>
+				<div class="card-body pt-2" style="height: 100%; max-height: 300px; overflow-y: scroll;">
+					<div class="row">
+						@if (App\Services\HelperService::extensionRealtimeChat())
+							<div class="col-md-6 col-sm-12">												
+								<div class="card dashboard-tool-box" onclick="window.location.href='{{ url('app/user/chats/realtime') }}/'">
+									<div class="card-body p-4 align-items-center">
+										<i class="fa-solid fa-waveform-lines fs-25 text-muted"></i>
+										<div class="tool-title align-items-center">
+											<h6 class="fs-14 font-weight-bold mb-1">{{__('Voice Chat')}}</h6> 
+											<h6 class="fs-13 text-muted mb-0">{{__('Start an instant voice conversation')}}</h6> 
+										</div>			
+									</div>
+								</div>													
+							</div>
+						@endif
+						<div class="col-md-6 col-sm-12">												
+							<div class="card dashboard-tool-box" onclick="window.location.href='{{ url('app/user/chat/custom') }}/'">
+								<div class="card-body p-4 align-items-center">
+									<i class="fa-solid fa-message-captions fs-25 text-muted"></i>
+									<div class="tool-title align-items-center">
+										<h6 class="fs-14 font-weight-bold mb-1">{{__('Chat Assistant')}}</h6> 
+										<h6 class="fs-13 text-muted mb-0">{{__('Create your own chatbots')}}</h6> 
+									</div>			
+								</div>
+							</div>													
+						</div>						
+						<div class="col-md-6 col-sm-12">												
+							<div class="card dashboard-tool-box" onclick="window.location.href='{{ url('app/user/wizard') }}/'">
+								<div class="card-body p-4 align-items-center">
+									<i class="fa-solid fa-sparkles fs-25 text-muted"></i>
+									<div class="tool-title align-items-center">
+										<h6 class="fs-14 font-weight-bold mb-1">{{__('Blog Post')}}</h6> 
+										<h6 class="fs-13 text-muted mb-0">{{__('Write a long article with full control')}}</h6> 
+									</div>			
+								</div>
+							</div>													
 						</div>
-						<div class="col-md-6 col-sm-12 d-flex align-items-end justify-content-end" style="margin-bottom: -5px">
-							<canvas id="hoursSavedChart" style="max-height: 130px"></canvas>
+						@if (App\Services\HelperService::extensionSocialMedia())
+							<div class="col-md-6 col-sm-12">												
+								<div class="card dashboard-tool-box" onclick="window.location.href='{{ url('app/user/social-media') }}/'">
+									<div class="card-body p-4 align-items-center">
+										<i class="fa-solid fa-share-nodes fs-25 text-muted"></i>
+										<div class="tool-title align-items-center">
+											<h6 class="fs-14 font-weight-bold mb-1">{{__('Social Media Post')}}</h6> 
+											<h6 class="fs-13 text-muted mb-0">{{__('Create your next viral post')}}</h6> 
+										</div>			
+									</div>
+								</div>													
+							</div>
+						@endif
+						<div class="col-md-6 col-sm-12">												
+							<div class="card dashboard-tool-box" onclick="window.location.href='{{ url('app/user/templates/custom') }}/'">
+								<div class="card-body p-4 align-items-center">
+									<i class="fa-solid fa-microchip-ai fs-25 text-muted"></i>
+									<div class="tool-title align-items-center">
+										<h6 class="fs-14 font-weight-bold mb-1">{{__('Template')}}</h6> 
+										<h6 class="fs-13 text-muted mb-0">{{__('Create your own AI Writer template')}}</h6> 
+									</div>			
+								</div>
+							</div>													
+						</div>
+						<div class="col-md-6 col-sm-12">												
+							<div class="card dashboard-tool-box" onclick="window.location.href='{{ url('app/user/smart-editor') }}/'">
+								<div class="card-body p-4 align-items-center">
+									<i class="fa-solid fa-feather fs-25 text-muted"></i>
+									<div class="tool-title align-items-center">
+										<h6 class="fs-14 font-weight-bold mb-1">{{__('Content')}}</h6> 
+										<h6 class="fs-13 text-muted mb-0">{{__('Get creative and use them all')}}</h6> 
+									</div>			
+								</div>
+							</div>													
 						</div>
 					</div>					
 				</div>
@@ -178,10 +188,27 @@
 		</div>
 	</div>
 
-	<div class="row">
+	<div class="row mt-7">
+		<div class="col-sm-12">
+			<div class="card">
+				<div class="card-body p-6">
+					<h4 class="mb-4 mt-2 font-weight-700 fs-20"><i class="fa-solid fa-sparkles mr-2 text-primary"></i> {{ __('Hey, What can I do for you today?') }}</h4>	
+					<div id="search-bar" class="main-search-container mt-auto mb-3">
+						<div class="search-wrapper">
+							<i class="fa fa-search" id="search-icon-main"></i>
+							<input id="main-search-banner" type="text" class="form-control search-input" placeholder="{{__('Search for documents, templates and chatbots...')}}">
+							<span class="left-pan" id="mic-search"><i class="fa fa-microphone"></i></span>                      
+						</div>       
+					</div>
+					<a class="fs-12 main-search-action-button text-muted" href="{{ route('user.smart.editor') }}">{{ __('Create a Blank Document') }} <i class="fa-solid fa-plus ml-2"></i></a>				
+				</div>
+			</div>
+		</div>
+	</div>
 
-		<div class="col-lg-12 col-md-12 mt-3">
-			<div class="card border-0">
+	<div class="row mt-5">
+		<div class="col-sm-12">
+			<div class="card">
 				<div class="card-body pt-5 pb-5 pl-6 pr-6">
 					<div class="row text-center mb-4">
 						<div class="col-lg col-md-6 col-sm-6 dashboard-border-right mt-auto mb-auto">
@@ -309,13 +336,14 @@
 				</div>
 			</div>
 		</div>
+	</div>
 
-		<div class="col-lg col-md-12 col-sm-12 mt-3">
-			<div class="card border-0 pb-5" id="user-dashboard-panels">
+	<div class="row mt-5">
+		<div class="col-lg col-md-12 col-sm-12">
+			<div class="card pb-5" id="user-dashboard-panels">
 				<div class="card-header pt-4 pb-4 border-0">
 					<div class="mt-3">
 						<h3 class="card-title mb-2"><i class="fa-solid fa-message-captions mr-2 text-muted"></i>{{ __('Favorite AI Chat Assistants') }}</h3>
-						<h6 class="text-muted fs-13">{{ __('Have your favorite AI chat assistants handy anytime you need them') }}</h6>
 						<div class="btn-group dashboard-menu-button">
 							<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="export" data-bs-display="static" aria-expanded="false"><i class="fa-solid fa-ellipsis  table-action-buttons table-action-buttons-big edit-action-button"></i></button>
 							<div class="dropdown-menu" aria-labelledby="export" data-popper-placement="bottom-start">								
@@ -330,22 +358,23 @@
 						<div class="row" id="templates-panel">
 
 							@foreach ($favorite_chats as $chat)
-								<div class="col-sm-12" id="{{ $chat->chat_code }}">
+								<div class="col-md-6 col-sm-12" id="{{ $chat->chat_code }}">
 									<div class="chat-boxes-dasboard text-center">
 										<a id="{{ $chat->chat_code }}" @if($chat->favorite) data-tippy-content="{{ __('Remove from favorite') }}" @else data-tippy-content="{{ __('Select as favorite') }}" @endif onclick="favoriteChatStatus(this.id)"><i id="{{ $chat->chat_code }}-icon" class="@if($chat->favorite) fa-solid fa-stars @else fa-regular fa-star @endif star"></i></a>
 										<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats') }}/{{ $chat->chat_code }}'">
-											<div class="card-body pt-2 pb-2 d-flex">
-												<div class="widget-user-image overflow-hidden"><img alt="User Avatar" class="rounded-circle" src="{{ URL::asset($chat->logo) }}"></div>
-												<div class="template-title mt-auto mb-auto d-flex justify-content-center">
-													<h6 class="fs-13 font-weight-bold mb-0 ml-4 mt-auto mb-auto">{{ __($chat->name) }}</h6> <h6 class="mr-2 ml-2 text-muted mt-auto mb-auto">|</h6> <h6 class="fs-13 text-muted mb-0 mt-auto mb-auto">{{ __($chat->sub_name) }}</h6> 
-													@if($chat->category == 'professional') 
-														<h6 class="mr-2 ml-2 text-muted mt-auto mb-auto">|</h6> <p class="fs-8 btn package-badge btn-pro"><i class="   fa-solid fa-crown mr-2"></i>{{ __('Pro') }}</p> 
-													@elseif($chat->category == 'free')
-														<h6 class="mr-2 ml-2 text-muted mt-auto mb-auto">|</h6> <p class="fs-8 btn package-badge btn-free"><i class="   fa-solid fa-gift mr-2"></i>{{ __('Free') }}</p> 
-													@elseif($chat->category == 'premium')
-														<h6 class="mr-2 ml-2 text-muted mt-auto mb-auto">|</h6> <p class="fs-8 btn package-badge btn-premium"><i class="   fa-solid fa-gem mr-2"></i>{{ __('Premium') }}</p> 
-													@endif
-												</div>						
+											<div class="card-body p-4 d-flex align-items-center">
+												<div class="widget-user-image overflow-hidden mt-4 mb-4"><img alt="User Avatar" class="rounded-circle" src="{{ URL::asset($chat->logo) }}"></div>
+												<div class="template-title align-items-center">
+													<h6 class="fs-13 font-weight-bold mb-0">{{ __($chat->name) }}</h6> 
+													<h6 class="fs-13 text-muted mb-0">{{ __($chat->sub_name) }}</h6> 
+												</div>
+												@if($chat->category == 'professional') 
+													<p class="fs-8 btn package-badge btn-pro"><i class="   fa-solid fa-crown mr-2"></i>{{ __('Pro') }}</p> 
+												@elseif($chat->category == 'free')
+													<p class="fs-8 btn package-badge btn-free"><i class="   fa-solid fa-gift mr-2"></i>{{ __('Free') }}</p> 
+												@elseif($chat->category == 'premium')
+													<p class="fs-8 btn package-badge btn-premium"><i class="   fa-solid fa-gem mr-2"></i>{{ __('Premium') }}</p> 
+												@endif						
 											</div>
 										</div>
 									</div>							
@@ -357,18 +386,19 @@
 									<div class="chat-boxes-dasboard text-center">
 										<a id="{{ $chat->chat_code }}" @if($chat->favorite) data-tippy-content="{{ __('Remove from favorite') }}" @else data-tippy-content="{{ __('Select as favorite') }}" @endif onclick="favoriteChatStatus(this.id)"><i id="{{ $chat->chat_code }}-icon" class="@if($chat->favorite) fa-solid fa-stars @else fa-regular fa-star @endif star"></i></a>
 										<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats/custom') }}/{{ $chat->chat_code }}'">
-											<div class="card-body pt-2 pb-2 d-flex">
-												<div class="widget-user-image overflow-hidden"><img alt="User Avatar" class="rounded-circle" src="{{ URL::asset($chat->logo) }}"></div>
-												<div class="template-title mt-auto mb-auto d-flex justify-content-center">
-													<h6 class="fs-13 font-weight-bold mb-0 ml-4 mt-auto mb-auto">{{ __($chat->name) }}</h6> <h6 class="mr-2 ml-2 text-muted mt-auto mb-auto">|</h6> <h6 class="fs-13 text-muted mb-0 mt-auto mb-auto">{{ __($chat->sub_name) }}</h6> 
-													@if($chat->category == 'professional') 
-														<h6 class="mr-2 ml-2 text-muted mt-auto mb-auto">|</h6> <p class="fs-8 btn package-badge btn-pro"><i class="   fa-solid fa-crown mr-2"></i>{{ __('Pro') }}</p> 
-													@elseif($chat->category == 'free')
-														<h6 class="mr-2 ml-2 text-muted mt-auto mb-auto">|</h6> <p class="fs-8 btn package-badge btn-free"><i class="   fa-solid fa-gift mr-2"></i>{{ __('Free') }}</p> 
-													@elseif($chat->category == 'premium')
-														<h6 class="mr-2 ml-2 text-muted mt-auto mb-auto">|</h6> <p class="fs-8 btn package-badge btn-premium"><i class="   fa-solid fa-gem mr-2"></i>{{ __('Premium') }}</p> 
-													@endif
-												</div>						
+											<div class="card-body p-4 d-flex align-items-center">
+												<div class="widget-user-image overflow-hidden mt-4 mb-4"><img alt="User Avatar" class="rounded-circle" src="{{ URL::asset($chat->logo) }}"></div>
+												<div class="template-title align-items-center">
+													<h6 class="fs-13 font-weight-bold mb-0">{{ __($chat->name) }}</h6> 
+													<h6 class="fs-13 text-muted mb-0">{{ __($chat->sub_name) }}</h6> 
+												</div>
+												@if($chat->category == 'professional') 
+													<p class="fs-8 btn package-badge btn-pro"><i class="   fa-solid fa-crown mr-2"></i>{{ __('Pro') }}</p> 
+												@elseif($chat->category == 'free')
+													<p class="fs-8 btn package-badge btn-free"><i class="   fa-solid fa-gift mr-2"></i>{{ __('Free') }}</p> 
+												@elseif($chat->category == 'premium')
+													<p class="fs-8 btn package-badge btn-premium"><i class="   fa-solid fa-gem mr-2"></i>{{ __('Premium') }}</p> 
+												@endif						
 											</div>
 										</div>
 									</div>							
@@ -388,12 +418,11 @@
 			</div>
 		</div>
 		
-		<div class="col-lg col-md-12 col-sm-12 mt-3">
-			<div class="card border-0 pb-5" id="user-dashboard-panels">
+		<div class="col-lg col-md-12 col-sm-12">
+			<div class="card pb-5" id="user-dashboard-panels">
 				<div class="card-header pt-4 pb-4 border-0">
 					<div class="mt-3">
-						<h3 class="card-title mb-2"><i class="fa-solid fa-microchip-ai mr-2 text-muted"></i>{{ __('Favorite AI Writer Templates') }}</h3>
-						<h6 class="text-muted fs-13">{{ __('Always have your top favorite templates handy whenever you need them') }}</h6>
+						<h3 class="card-title mb-2"><i class="fa-solid fa-microchip-ai mr-2 text-muted"></i>{{ __('Favorite AI Templates') }}</h3>
 						<div class="btn-group dashboard-menu-button">
 							<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="export" data-bs-display="static" aria-expanded="false"><i class="fa-solid fa-ellipsis  table-action-buttons table-action-buttons-big edit-action-button"></i></button>
 							<div class="dropdown-menu" aria-labelledby="export" data-popper-placement="bottom-start">								
@@ -419,13 +448,6 @@
 												<div class="template-title ml-4">
 													<div class="d-flex">
 														<h6 class="fs-13 number-font mt-auto mb-auto">{{ __($template->name) }}</h6>
-														@if($template->package == 'professional') 
-															<h6 class="mr-2 ml-2 text-muted mt-auto mb-auto">|</h6> <p class="fs-8 btn package-badge btn-pro mb-0 mt-0"><i class="   fa-solid fa-crown mr-2"></i>{{ __('Pro') }}</p> 
-														@elseif($template->package == 'free')
-															<h6 class="mr-2 ml-2 text-muted mt-auto mb-auto">|</h6> <p class="fs-8 btn package-badge btn-free mb-0 mt-0"><i class="   fa-solid fa-gift mr-2"></i>{{ __('Free') }}</p> 
-														@elseif($template->package == 'premium')
-															<h6 class="mr-2 ml-2 text-muted mt-auto mb-auto">|</h6> <p class="fs-8 btn package-badge btn-premium mb-0 mt-0"><i class="   fa-solid fa-gem mr-2"></i>{{ __('Premium') }}</p> 
-														@endif
 													</div>
 													<p class="fs-12 mb-0 text-muted">{{ __($template->description) }}</p>
 												</div>
@@ -447,13 +469,6 @@
 												<div class="template-title ml-4">
 													<div class="d-flex">
 														<h6 class="fs-13 number-font mt-auto mb-auto">{{ __($template->name) }}</h6>
-														@if($template->package == 'professional') 
-															<h6 class="mr-2 ml-2 text-muted mt-auto mb-auto">|</h6> <p class="fs-8 btn package-badge btn-pro mb-0 mt-0"><i class="   fa-solid fa-crown mr-2"></i>{{ __('Pro') }}</p> 
-														@elseif($template->package == 'free')
-															<h6 class="mr-2 ml-2 text-muted mt-auto mb-auto">|</h6> <p class="fs-8 btn package-badge btn-free mb-0 mt-0"><i class="   fa-solid fa-gift mr-2"></i>{{ __('Free') }}</p> 
-														@elseif($template->package == 'premium')
-															<h6 class="mr-2 ml-2 text-muted mt-auto mb-auto">|</h6> <p class="fs-8 btn package-badge btn-premium mb-0 mt-0"><i class="   fa-solid fa-gem mr-2"></i>{{ __('Premium') }}</p> 
-														@endif
 													</div>
 													<p class="fs-12 mb-0 text-muted">{{ __($template->description) }}</p>
 												</div>
@@ -475,9 +490,63 @@
 				</div>
 			</div>
 		</div>
+	</div>
 
-		<div class="col-lg-12 col-md-12 col-sm-12 mt-3">
-			<div class="card border-0">
+	<div class="row mt-5">
+		<div class="col-lg col-md-12 col-sm-12">
+			<div class="card" id="user-dashboard-panels">
+				<div class="card-header pt-4 pb-4 border-0">
+					<div class="mt-3">
+						<h3 class="card-title mb-2"><i class="fa-solid fa-images mr-2 text-muted"></i>{{ __('Latest Images') }}</h3>
+						<div class="btn-group dashboard-menu-button">
+							<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="export" data-bs-display="static" aria-expanded="false"><i class="fa-solid fa-ellipsis table-action-buttons table-action-buttons-big edit-action-button"></i></button>
+							<div class="dropdown-menu" aria-labelledby="export" data-popper-placement="bottom-start">                                
+								<a class="dropdown-item" href="{{ route('user.images') }}">{{ __('View All') }}</a>    
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card-body pt-2 pb-6">
+					<div class="dashboard-image-carousel">
+						@foreach ($latest_images as $image)
+						<div class="carousel-item">
+							<div class="grid-image-wrapper">
+								<div class="flex grid-buttons text-center">
+									<a href="{{ url($image->image) }}" class="grid-image-view text-center" download><i class="   fa-solid fa-arrow-down-to-line" title="{{ __('Download Image') }}"></i></a>
+									<a href="#" class="grid-image-view text-center viewImageResult" id="{{ $image->id }}"><i class="   fa-solid fa-camera-viewfinder" title="{{ __('View Image') }}"></i></a>
+									<a href="#" class="grid-image-view text-center deleteResultButton" id="{{ $image->id }}"><i class="fa-solid fa-trash-xmark" title="{{ __('Delete Image') }}"></i></a>							
+								</div>
+								<div>
+									<span class="grid-image">
+										<img class="lazy" data-src="@if($image->storage == 'local') {{ URL::asset($image->image) }} @else {{ $image->image }} @endif" alt="" >
+										<noscript>
+											<img src="@if($image->storage == 'local') {{ URL::asset($image->image) }} @else {{ $image->image }} @endif" alt="">
+										</noscript>
+									</span>
+								</div>
+								<div class="grid-description">
+									<span class="fs-9 text-primary">
+										@if ($image->vendor == 'sd') {{ __('Stable Diffusion') }} 
+										@elseif ($image->vendor == 'openai') {{ __('Dalle') }} 
+										@elseif ($image->vendor == 'falai') {{ __('FLUX') }} 
+										@elseif ($image->vendor == 'midjourney') {{ __('Midjourney') }} 
+										@elseif ($image->vendor == 'clipdrop') {{ __('Clipdrop') }} 
+										@endif
+									</span>
+									<p class="fs-10 mb-0">{{ substr($image->description, 0, 63) }}...</p>
+								</div>
+							</div>
+						</div>
+						@endforeach
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row mt-5">
+		<div class="col-lg col-md-6 col-sm-12">
+			<div class="card" style="height: 100%;">
 				<div class="card-header pt-4 pb-0 border-0">
 					<div class="mt-3">
 						<h3 class="card-title mb-2"><i class="fa-solid fa-folder-bookmark mr-2 text-muted"></i>{{ __('Recent Documents') }}</h3>
@@ -489,14 +558,12 @@
 						</div>
 					</div>
 				</div>
-				<div class="card-body pt-2 responsive-dashboard-table">
+				<div class="card-body pt-2 responsive-dashboard-table dashboard-panel-400">
 					<table class="table table-hover" id="database-backup">
 						<thead>
 							<tr role="row">
 								<th class="fs-12 font-weight-700 border-top-0">{{ __('Document Name') }}</th>
-								<th class="fs-12 font-weight-700 border-top-0 text-right">{{ __('Words') }}</th>
 								<th class="fs-12 font-weight-700 border-top-0 text-right">{{ __('Workbook') }}</th>
-								<th class="fs-12 font-weight-700 border-top-0 text-right">{{ __('Category') }}</th>
 								<th class="fs-12 font-weight-700 border-top-0 text-right">{{ __('Last Activity') }}</th>
 							</tr>
 						</thead>
@@ -508,9 +575,7 @@
 										<div><a class="font-weight-bold document-title" href="{{ route("user.documents.show", $data->id ) }}">{{ ucfirst($data->title) }}</a><br><span class="text-muted">{{ ucfirst($data->template_name) }}</span><div>
 									</div>
 								</td>
-								<td class="text-right text-muted">{{ $data->words }}</td>
 								<td class="text-right text-muted">{{ ucfirst($data->workbook) }}</td>
-								<td class="text-right"><span class="cell-box category-{{ $data->group }}">{{ __(ucfirst($data->group)) }}</span></td>
 								<td class="text-right text-muted">{{ \Carbon\Carbon::parse($data->updated_at)->diffForHumans() }}</td>
 								<td class="w-0 p-0" colspan="0">
 									<a class="strage-things" style="position: absolute; inset: 0px; width: 100%" href="{{ route("user.documents.show", $data->id ) }}"><span class="sr-only">{{ __('View') }}</span></a>
@@ -523,118 +588,137 @@
 			</div>
 		</div>
 
-		<div class="col-lg-12 col-sm-12 mt-3">
-			<div class="row">
-				@if (config('settings.user_support') == 'enabled')
-					<div class="col-lg-2 col-md-2 col-sm-12 mt-5">                        
-						<div class="title text-center dashboard-title">
+		<div class="col-lg col-md-6 col-sm-12">
+			<div class="card" style="height: 100%;">
+				<div class="card-header pt-4 pb-0 border-0">
+					<div class="mt-3">
+						<h3 class="card-title mb-2"><i class="fa-solid fa-solid fa-message-exclamation mr-2 text-muted"></i>{{ __('News & Notifications') }}</h3>
+						<div class="btn-group dashboard-menu-button">
+							<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="export" data-bs-display="static" aria-expanded="false"><i class="fa-solid fa-ellipsis  table-action-buttons table-action-buttons-big edit-action-button"></i></button>
+							<div class="dropdown-menu" aria-labelledby="export" data-popper-placement="bottom-start">								
+								<a class="dropdown-item" href="{{ route('user.notifications') }}">{{ __('View All') }}</a>	
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card-body pt-2 dashboard-timeline dashboard-panel-400">					
+					<div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
+						@foreach ($notifications as $notification)
+							<div class="vertical-timeline-item vertical-timeline-element">
+								<div>
+									<span class="vertical-timeline-element-icon">
+										@if ($notification->data['type'] == 'Warning')
+											<i class="badge badge-dot badge-dot-xl badge-secondary"> </i>
+										@elseif ($notification->data['type'] == 'Info')
+											<i class="badge badge-dot badge-dot-xl badge-primary"> </i>
+										@elseif ($notification->data['type'] == 'Announcement')
+											<i class="badge badge-dot badge-dot-xl badge-success"> </i>
+										@else
+											<i class="badge badge-dot badge-dot-xl badge-warning"> </i>
+										@endif
+										
+									</span>
+									<div class="vertical-timeline-element-content">
+										<h4 class="fs-13"><a href="{{ route("user.notifications.show", $notification->id)  }}"><b>{{ __($notification->data['type']) }}:</b></a> {{ __($notification->data['subject']) }}</h4>
+										<p>@if ($notification->data['action'] == 'Action Required') <span class="text-danger">{{ __('Action Required') }}</span> @else <span class="text-muted fs-12">{{ __('No Action Required') }}</span> @endif</p>
+										<span class="vertical-timeline-element-date text-center">{{ \Carbon\Carbon::parse($notification->created_at)->format('M d, Y') }} <br> {{ \Carbon\Carbon::parse($notification->created_at)->format('H:i A') }}</span>
+									</div>
+								</div>
+							</div>
+						@endforeach
+					</div>											  					
+				</div>
+			</div>                      
+		</div>
+	</div>
+
+	@if (config('settings.user_support') == 'enabled')
+		<div class="row mt-7">		
+			<div class="col-md-6 col-sm-12">
+				<div class="card" style="height: 100%;">    
+					<div class="card-body pt-2 dashboard-panel-500">                   
+						<div class="title text-center dashboard-title" style="display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%;">
+							<div>
+								<img class="mb-5 support-dashboard-image" src="{{ theme_url('/img/files/support.png')}}" alt="">
+							</div>
 							<h3 class="fs-24 super-strong">{{ __('Need Help?') }}</h3>     
 							<h6 class="text-muted fs-14 mb-4">{{ __('Got questions? We have you covered') }}</h6>                    
 							<a href="{{ route('user.support') }}" class="btn btn-primary pl-6 pr-6 mb-2" style="text-transform: none">{{ __('Create Support Ticket') }}</a>
 							<h6 class="text-muted fs-10 mb-4">{{ __('Available from') }} <span class="font-weight-bold">{{ __('9am till 5pm') }}</span></h6> 
-						</div>                                               
+						</div>  
 					</div>
-
-					<div class="col-lg-5 col-md-5 col-sm-12 mb-5">
-						<div class="card border-0 pb-4">
-							<div class="card-header pt-4 pb-0 border-0">
-								<div class="mt-3">
-									<h3 class="card-title mb-2"><i class="fa-solid fa-headset mr-2 text-muted"></i>{{ __('Support Tickets') }}</h3>
-									<div class="btn-group dashboard-menu-button">
-										<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="export" data-bs-display="static" aria-expanded="false"><i class="fa-solid fa-ellipsis  table-action-buttons table-action-buttons-big edit-action-button"></i></button>
-										<div class="dropdown-menu" aria-labelledby="export" data-popper-placement="bottom-start">								
-											<a class="dropdown-item" href="{{ route('user.support') }}">{{ __('View All') }}</a>	
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="card-body pt-2 dashboard-panel-500">
-								<table class="table table-hover" id="database-backup">
-									<thead>
-										<tr role="row">
-											<th class="fs-12 font-weight-700 border-top-0">{{ __('Ticket ID') }}</th>
-											<th class="fs-12 font-weight-700 border-top-0 text-left">{{ __('Subject') }}</th>
-											<th class="fs-12 font-weight-700 border-top-0 text-center">{{ __('Category') }}</th>
-											<th class="fs-12 font-weight-700 border-top-0 text-center">{{ __('Status') }}</th>
-											<th class="fs-12 font-weight-700 border-top-0 text-right">{{ __('Last Updated') }}</th>
-										</tr>
-									</thead>
-									<tbody>
-										@foreach ($tickets as $data)
-										<tr class="relative" style="height: 60px">
-											<td><a class="font-weight-bold text-primary" href="{{ route("user.support.show", $data->ticket_id ) }}">{{ $data->ticket_id }}</a>
-											</td>
-											<td class="text-left text-muted">{{ ucfirst($data->subject) }}</td>
-											<td class="text-center text-muted">{{ ucfirst($data->category) }}</td>
-											<td class="text-center"><span class="cell-box support-{{ strtolower($data->status) }}">{{ __(ucfirst($data->status)) }}</span></td>
-											<td class="text-right text-muted">{{ \Carbon\Carbon::parse($data->updated_at)->diffForHumans() }}</td>
-											<td class="w-0 p-0" colspan="0">
-												<a class="strage-things" style="position: absolute; inset: 0px; width: 100%" href="{{ route("user.support.show", $data->ticket_id ) }}"><span class="sr-only">{{ __('View') }}</span></a>
-											</td>
-										</tr>
-										@endforeach
-									</tbody>
-								</table>					
-							</div>
-						</div>                      
-					</div>    
-				@endif
-				 
-				<div class="col-lg-5 col-md-5 col-sm-12 mb-5">
-					<div class="card border-0 pb-4">
-						<div class="card-header pt-4 pb-0 border-0">
-							<div class="mt-3">
-								<h3 class="card-title mb-2"><i class="fa-solid fa-solid fa-message-exclamation mr-2 text-muted"></i>{{ __('News & Notifications') }}</h3>
-								<div class="btn-group dashboard-menu-button">
-									<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="export" data-bs-display="static" aria-expanded="false"><i class="fa-solid fa-ellipsis  table-action-buttons table-action-buttons-big edit-action-button"></i></button>
-									<div class="dropdown-menu" aria-labelledby="export" data-popper-placement="bottom-start">								
-										<a class="dropdown-item" href="{{ route('user.notifications') }}">{{ __('View All') }}</a>	
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="card-body pt-2 dashboard-timeline dashboard-panel-500">					
-							<div class="vertical-timeline vertical-timeline--animate vertical-timeline--one-column">
-								@foreach ($notifications as $notification)
-									<div class="vertical-timeline-item vertical-timeline-element">
-										<div>
-											<span class="vertical-timeline-element-icon">
-												@if ($notification->data['type'] == 'Warning')
-													<i class="badge badge-dot badge-dot-xl badge-secondary"> </i>
-												@elseif ($notification->data['type'] == 'Info')
-													<i class="badge badge-dot badge-dot-xl badge-primary"> </i>
-												@elseif ($notification->data['type'] == 'Announcement')
-													<i class="badge badge-dot badge-dot-xl badge-success"> </i>
-												@else
-													<i class="badge badge-dot badge-dot-xl badge-warning"> </i>
-												@endif
-												
-											</span>
-											<div class="vertical-timeline-element-content">
-												<h4 class="fs-13"><a href="{{ route("user.notifications.show", $notification->id)  }}"><b>{{ __($notification->data['type']) }}:</b></a> {{ __($notification->data['subject']) }}</h4>
-												<p>@if ($notification->data['action'] == 'Action Required') <span class="text-danger">{{ __('Action Required') }}</span> @else <span class="text-muted fs-12">{{ __('No Action Required') }}</span> @endif</p>
-												<span class="vertical-timeline-element-date text-center">{{ \Carbon\Carbon::parse($notification->created_at)->format('M d, Y') }} <br> {{ \Carbon\Carbon::parse($notification->created_at)->format('H:i A') }}</span>
-											</div>
-										</div>
-									</div>
-								@endforeach
-							</div>											  					
-						</div>
-					</div>                      
-				</div>  
+				</div>                                             
 			</div>
-		</div>
 
+			<div class="col-md-6 col-sm-12">
+				<div class="card" style="height: 100%;">
+					<div class="card-header pt-4 pb-0 border-0">
+						<div class="mt-3">
+							<h3 class="card-title mb-2"><i class="fa-solid fa-headset mr-2 text-muted"></i>{{ __('Support Tickets') }}</h3>
+							<div class="btn-group dashboard-menu-button">
+								<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="export" data-bs-display="static" aria-expanded="false"><i class="fa-solid fa-ellipsis  table-action-buttons table-action-buttons-big edit-action-button"></i></button>
+								<div class="dropdown-menu" aria-labelledby="export" data-popper-placement="bottom-start">								
+									<a class="dropdown-item" href="{{ route('user.support') }}">{{ __('View All') }}</a>	
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="card-body pt-2 dashboard-panel-400">
+						<table class="table table-hover" id="database-backup">
+							<thead>
+								<tr role="row">
+									<th class="fs-12 font-weight-700 border-top-0">{{ __('Ticket ID') }}</th>
+									<th class="fs-12 font-weight-700 border-top-0 text-left">{{ __('Subject') }}</th>
+									<th class="fs-12 font-weight-700 border-top-0 text-center">{{ __('Category') }}</th>
+									<th class="fs-12 font-weight-700 border-top-0 text-center">{{ __('Status') }}</th>
+									<th class="fs-12 font-weight-700 border-top-0 text-right">{{ __('Last Updated') }}</th>
+								</tr>
+							</thead>
+							<tbody>
+								@foreach ($tickets as $data)
+								<tr class="relative" style="height: 60px">
+									<td><a class="font-weight-bold text-primary" href="{{ route("user.support.show", $data->ticket_id ) }}">{{ $data->ticket_id }}</a>
+									</td>
+									<td class="text-left text-muted">{{ ucfirst($data->subject) }}</td>
+									<td class="text-center text-muted">{{ ucfirst($data->category) }}</td>
+									<td class="text-center"><span class="cell-box support-{{ strtolower($data->status) }}">{{ __(ucfirst($data->status)) }}</span></td>
+									<td class="text-right text-muted">{{ \Carbon\Carbon::parse($data->updated_at)->diffForHumans() }}</td>
+									<td class="w-0 p-0" colspan="0">
+										<a class="strage-things" style="position: absolute; inset: 0px; width: 100%" href="{{ route("user.support.show", $data->ticket_id ) }}"><span class="sr-only">{{ __('View') }}</span></a>
+									</td>
+								</tr>
+								@endforeach
+							</tbody>
+						</table>					
+					</div>
+				</div>                      
+			</div>   
+		</div>
+	@endif
+
+	<div class="image-modal">
+		<div class="modal fade" id="image-view-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered modal-xl">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h6>{{ __('Image View') }}</h6>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body pb-6 pr-5 pl-5">
+					
+				</div>
+			</div>
+			</div>
+	  	</div>
 	</div>
-	<!-- END USER PROFILE PAGE -->
 @endsection
 
 @section('js')
 	<!-- Chart JS -->
-	{{-- <script src="{{URL::asset('plugins/chart/chart.min.js')}}"></script> --}}
+	<script src="{{URL::asset('plugins/chart/chart.min.js')}}"></script>
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 	<script src="{{URL::asset('plugins/sweetalert/sweetalert2.all.min.js')}}"></script>
-	<script type="text/javascript" src="//cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+	<script src="{{ URL::asset('plugins/slick/slick.min.js') }}"></script>
 	<script>
 		$(function() {
 	
@@ -868,43 +952,414 @@
 			})
 		}
 
-		$('.lazy').slick({
- 			lazyLoad: 'ondemand',
- 			// slidesToShow: 3,
- 			slidesToScroll: 1,
- 			prevArrow: '<button class="slide-arrow prev-arrow"></button>',
- 			nextArrow: '<button class="slide-arrow next-arrow"></button>',
- 			autoplay: true,
-     		autoplaySpeed: 3000, 
- 		});
- 	
- 		$('.slider').on('click', '.image img', function () {
- 			var bannerType = $(this).data('type');
- 			var bannerUrl = $(this).data('url');
- 			if (bannerType === 'video') {
- 				if (isYouTubeUrl(bannerUrl)) {
- 					$('#media-container').html('<iframe width="560" height="450" src="' + convertToEmbeddedUrl(bannerUrl) + '" frameborder="0" allowfullscreen></iframe>');
- 				} else {
- 					$('#media-container').html('<video width="560" height="450" controls autoplay><source src="' + bannerUrl + '" type="video/mp4"></video>');
- 				}
- 				$('#videoModal').modal('show');
- 			} else if (bannerType === 'website') {
- 				window.open(bannerUrl, '_blank');
- 			}
- 		});
 
-		function isYouTubeUrl(url) {
-			return url.includes('youtube.com') || url.includes('youtu.be');
-		}
+		document.addEventListener('DOMContentLoaded', function() {
+			const ctx = document.getElementById('userDoughnut').getContext('2d');
+			
+			// Get token value
+			const remainingTokens = {{ $remaining_tokens }};
+			const usedTokens = {{ $used_tokens }};
+			const balanceType = '{{ $balance}}';
+			
+			new Chart(ctx, {
+				type: 'doughnut',
+				data: {
+					labels: ['{{ __("Remaining") }}', '{{ __("Used") }}'],
+					datasets: [{
+						data: [remainingTokens, usedTokens],
+						backgroundColor: ['#FFF', 'rgba(255, 255, 255, 0.15)'],
+						borderWidth: 0,
+						weight: 0.7
+					}]
+				},
+				options: {
+				cutout: '70%',
+				circumference: 180,
+				rotation: 270,
+				maintainAspectRatio: false,
+				responsive: true,
+				plugins: {
+					legend: {
+						display: true,
+						position: 'bottom',
+						labels: {
+							color: '#FFFFFF',
+							font: {
+								size: 10
+							},
+							padding: 16,
+							usePointStyle: true,
+            				pointStyle: 'circle'
+						}
+					},
+					tooltip: {
+						callbacks: {
+							label: function(context) {
+								return remainingTokens;
+							}
+						}
+					}
+				},
+				layout: {
+					padding: 10
+				}
+				},
+				plugins: [{
+				id: 'centerText',
+				afterDraw: function(chart) {
+					const width = chart.width;
+					const height = chart.height;
+					const ctx = chart.ctx;
+					
+					ctx.restore();
+					ctx.font = 'bold 14px Poppins';
+					ctx.fillStyle = '#FFFFFF';
+					ctx.textBaseline = 'middle';
+					ctx.textAlign = 'center';
+					
+					const valueText  = balanceType.toString();
+					const textX = width / 2;
+					const textY = height - (height / 2.5);
+					
+					ctx.fillText(valueText, textX, textY);
+        
+					// "words" text
+					ctx.font = '11px Arial';
+					ctx.fillStyle = '#FFFFFF';
+					ctx.textAlign = 'center';
+					
+					const wordsText = '{{ __("words") }} {{ __("left") }}';
+					const wordsY = textY + 17;
+					
+					ctx.fillText(wordsText, textX, wordsY);
+					
+					
+					ctx.save();
+				}
+				}]
+			});
+		});
+
 		
-		function convertToEmbeddedUrl(url) {
-			var videoId = url.match(/(?:youtu\.be\/|youtube\.com\/(?:[^\/]+\d\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-			if (videoId && videoId[1]) {
-				return 'https://www.youtube.com/embed/' + videoId[1];
-			} else {
-				return url;
-			}
-		}
+		document.addEventListener('DOMContentLoaded', function() {
+			const searchInput = document.getElementById('main-search-banner');
+			const searchResultsContainer = document.createElement('div');
+			searchResultsContainer.className = 'search-results-dropdown';
+			searchResultsContainer.style.display = 'none';
+			searchInput.parentNode.appendChild(searchResultsContainer);
+			let searchIcon = document.getElementById('search-icon-main');
+			
+			let debounceTimer;
+			
+			searchInput.addEventListener('input', function() {
+				const query = this.value.trim();
+				
+				clearTimeout(debounceTimer);
+				
+				if (query.length < 2) {
+					searchResultsContainer.style.display = 'none';
+					searchIcon.classList.remove('fa-spinner', 'fa-spin');
+					searchIcon.classList.add('fa-search');
+					return;
+				}
 
+				searchIcon.classList.remove('fa-search');
+				searchIcon.classList.add('fa-spinner', 'fa-spin');
+		
+				debounceTimer = setTimeout(() => {
+					fetch('/app/user/search', {
+						method: 'POST',
+						headers: {
+							'Content-Type': 'application/json',
+							'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+						},
+						body: JSON.stringify({ query: query })
+					})
+					.then(response => response.json())
+					.then(data => {
+						searchIcon.classList.remove('fa-spinner', 'fa-spin');
+						searchIcon.classList.add('fa-search');
+
+						displaySearchResults(data);
+					})
+					.catch(error => {
+						searchIcon.classList.remove('fa-spinner', 'fa-spin');
+						searchIcon.classList.add('fa-search');
+
+						console.error('Error:', error);
+					});
+				}, 300);
+			});
+			
+			function displaySearchResults(results) {
+				searchResultsContainer.innerHTML = '';
+				
+				const hasResults = 
+					results.chats.length > 0 || 
+					results.contents.length > 0 || 
+					results.templates.length > 0;
+				
+				// Create section with header
+				const searchSection = document.createElement('div');
+				searchSection.className = 'search-section';
+				
+				const searchHeader = document.createElement('h4');
+				searchHeader.textContent = 'Search Results';
+				searchHeader.className = 'search-section-header';
+				searchSection.appendChild(searchHeader);
+				
+				if (!hasResults) {
+					const noResultsMessage = document.createElement('div');
+					noResultsMessage.className = 'no-results-message';
+					noResultsMessage.textContent = 'No results found, please try with another word';
+					
+					searchSection.appendChild(noResultsMessage);
+					searchResultsContainer.appendChild(searchSection);
+					searchResultsContainer.style.display = 'block';
+					return;
+				}
+				
+				// Create a single list for all results
+				const resultsList = document.createElement('ul');
+				resultsList.className = 'search-results-list';
+				
+				// Add templates
+				results.templates.forEach(template => {
+					const item = document.createElement('li');
+					item.className = 'search-result-item';
+					
+					const link = document.createElement('a');
+					link.href = template.url;
+					
+					const iconContainer = document.createElement('span');
+					iconContainer.className = 'icon-container';
+					iconContainer.innerHTML = template.icon || '<i class="fa-solid fa-file-lines"></i>';
+					
+					const nameSpan = document.createElement('span');
+					nameSpan.className = 'result-name';
+					nameSpan.textContent = template.name;
+					
+					const typeSpan = document.createElement('span');
+					typeSpan.className = 'result-type';
+					typeSpan.textContent = 'Template';
+					
+					link.appendChild(iconContainer);
+					link.appendChild(nameSpan);
+					link.appendChild(typeSpan);
+					item.appendChild(link);
+					resultsList.appendChild(item);
+				});
+				
+				// Add chats
+				results.chats.forEach(chat => {
+					const item = document.createElement('li');
+					item.className = 'search-result-item';
+					
+					const link = document.createElement('a');
+					link.href = chat.url;
+					
+					const iconContainer = document.createElement('span');
+					iconContainer.className = 'icon-container';
+					if (chat.logo) {
+						const img = document.createElement('img');
+						img.src = chat.logo;
+						img.className = 'chat-logo';
+						img.alt = chat.name;
+						iconContainer.appendChild(img);
+					} else {
+						iconContainer.innerHTML = '<i class="fa-solid fa-comments"></i>';
+					}
+					
+					const nameSpan = document.createElement('span');
+					nameSpan.className = 'result-name';
+					nameSpan.textContent = chat.name;
+					
+					const typeSpan = document.createElement('span');
+					typeSpan.className = 'result-type';
+					typeSpan.textContent = 'Chat Assistant';
+					
+					link.appendChild(iconContainer);
+					link.appendChild(nameSpan);
+					link.appendChild(typeSpan);
+					item.appendChild(link);
+					resultsList.appendChild(item);
+				});
+				
+				// Add contents
+				results.contents.forEach(content => {
+					const item = document.createElement('li');
+					item.className = 'search-result-item';
+					
+					const link = document.createElement('a');
+					link.href = content.url;
+					
+					const iconContainer = document.createElement('span');
+					iconContainer.className = 'icon-container';
+					iconContainer.innerHTML = content.icon || '<i class="fa-solid fa-file-lines"></i>';
+					
+					const nameSpan = document.createElement('span');
+					nameSpan.className = 'result-name';
+					nameSpan.textContent = content.title || 'Untitled Content';
+					
+					const typeSpan = document.createElement('span');
+					typeSpan.className = 'result-type';
+					typeSpan.textContent = 'Document';
+					
+					link.appendChild(iconContainer);
+					link.appendChild(nameSpan);
+					link.appendChild(typeSpan);
+					item.appendChild(link);
+					resultsList.appendChild(item);
+				});
+				
+				searchSection.appendChild(resultsList);
+				searchResultsContainer.appendChild(searchSection);
+				searchResultsContainer.style.display = 'block';
+			}
+			
+			// Close dropdown when clicking outside
+			document.addEventListener('click', function(event) {
+				if (!searchInput.contains(event.target) && !searchResultsContainer.contains(event.target)) {
+					searchResultsContainer.style.display = 'none';
+				}
+			});
+		});
+
+
+		$(document).ready(function(){
+			$('.dashboard-image-carousel').slick({
+				dots: false,
+				infinite: true,
+				speed: 300,
+				slidesToShow: 5,
+				slidesToScroll: 1,
+				autoplay: false,
+				autoplaySpeed: 3000,
+				responsive: [
+					{
+						breakpoint: 1024,
+						settings: {
+							slidesToShow: 3,
+							slidesToScroll: 1
+						}
+					},
+					{
+						breakpoint: 600,
+						settings: {
+							slidesToShow: 2,
+							slidesToScroll: 1
+						}
+					}
+				]
+			});
+		});
+
+		$(document).on('click', '.viewImageResult', function(e) {
+
+			"use strict";
+
+			e.preventDefault();
+
+			var id = $(this).attr("id");
+
+			$.ajax({
+				headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+				method: 'post',
+				url: 'images/view',
+				data:{
+					id: id,
+				},
+				success:function(data) {   
+				
+					if (data['status'] == 'success') {
+						$("#image-view-modal .modal-body").html(data['modal']);
+						var myModal = new bootstrap.Modal(document.getElementById('image-view-modal'))
+						myModal.show();
+					} else {
+						toastr.error(data['message']);
+					}
+				
+				}
+			});
+		});
+
+		$(document).on('click', '.deleteResultButton', function(e) {
+
+			e.preventDefault();
+
+			Swal.fire({
+				title: '{{ __('Confirm Image Deletion') }}',
+				text: '{{ __('It will permanently delete this image') }}',
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonText: '{{ __('Delete') }}',
+				reverseButtons: true,
+			}).then((result) => {
+				if (result.isConfirmed) {
+					var formData = new FormData();
+					formData.append("id", $(this).attr('id'));
+					$.ajax({
+						headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+						method: 'post',
+						url: 'images/delete',
+						data: formData,
+						processData: false,
+						contentType: false,
+						success: function (data) {
+							if (data['status'] == 'success') {
+								toastr.success('{{ __('Selected image has been successfully deleted') }}');	
+								location.replace(location.href);								
+							} else {
+								toastr.error('{{ __('There was an error while deleting this image') }}');
+							}      
+						},
+						error: function(data) {
+							Swal.fire('Oops...','{{ __('Something went wrong') }}!', 'error')
+						}
+					})
+				} 
+			})
+		});
+
+
+		$(document).ready(function() {
+    // Initialize lazy loading for carousel images
+    const lazyImages = document.querySelectorAll('img.lazy');
+    
+    // Create an intersection observer
+    const imageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const img = entry.target;
+                img.src = img.dataset.src;
+                img.classList.remove('lazy');
+                img.classList.add('loaded');
+                observer.unobserve(img);
+            }
+        });
+    });
+    
+    // Observe each lazy image
+    lazyImages.forEach(img => {
+        imageObserver.observe(img);
+    });
+    
+    // Handle lazy loading when slick changes slides
+    $('.dashboard-image-carousel').on('beforeChange', function(event, slick, currentSlide, nextSlide) {
+        let slides = $(slick.$slides);
+        let start = Math.max(0, nextSlide - 1);
+        let end = Math.min(nextSlide + slick.options.slidesToShow + 1, slides.length);
+        
+        for (let i = start; i < end; i++) {
+            let img = slides[i].querySelector('img.lazy');
+            if (img) {
+                img.src = img.dataset.src;
+                img.classList.remove('lazy');
+                img.classList.add('loaded');
+                imageObserver.unobserve(img);
+            }
+        }
+    });
+});
 	</script>
 @endsection

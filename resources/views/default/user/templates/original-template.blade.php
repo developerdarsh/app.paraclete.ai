@@ -10,7 +10,7 @@
 <form id="openai-form" action="" method="post" enctype="multipart/form-data" class="mt-24"> 		
 	@csrf
 	<div class="row">	
-		<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
+		<div class="col-lg-5 col-md-6 col-sm-12 border-template">
 			<div class="card border-0" id="template-input">
 				<div class="card-body p-5 pb-0">
 
@@ -220,31 +220,41 @@
 			</div>			
 		</div>
 
-		<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
+		<div class="col-lg-7 col-md-6 col-sm-12">
 			<div class="card border-0" id="template-output">
 				<div class="card-body">
-					<div class="row">						
-						<div class="col-lg-3 col-md-6 col-sm-12">								
-							<div class="input-box mb-2">								
-								<div class="form-group">							    
-									<input type="text" class="form-control @error('document') is-danger @enderror" id="document" name="document" value="{{ __('New Document') }}">
-									@error('document')
-										<p class="text-danger">{{ $errors->first('document') }}</p>
-									@enderror
-								</div> 
-							</div> 
-						</div>
-						<div class="col-lg-3 col-md-6 col-sm-12">
-							<div class="form-group">
-								<select id="project" name="project" class="form-select" data-placeholder="{{ __('Select Workbook Name') }}">	
-									<option value="all"> {{ __('All Workbooks') }}</option>
-									@foreach ($workbooks as $workbook)
-										<option value="{{ $workbook->name }}" @if (strtolower(auth()->user()->workbook) == strtolower($workbook->name)) selected @endif> {{ ucfirst($workbook->name) }}</option>
-									@endforeach											
-								</select>
+					<div class="row mb-4">
+						<div class="col-lg-2 col-md-6 col-sm-12 text-left justify-content-left">
+							<div class="d-flex " id="template-buttons-group">	
+								<a id="save-button-template" class="template-button mr-2" onclick="return saveText(this);" href="#"><i class="fa-solid fa-floppy-disk-pen table-action-buttons table-action-buttons-big delete-action-button" data-tippy-content="{{ __('Save Document') }}"></i></a>				
+								<div class="template-action-buttons">
+									<div class="btn-group w-100">
+										<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="export" data-bs-display="static" aria-expanded="false"><i class="fa-solid fa-download table-action-buttons table-action-buttons-big edit-action-button"></i></button>
+										<div class="dropdown-menu" aria-labelledby="export" data-popper-placement="bottom-start">								
+											<a class="dropdown-item" id="copy-text"><i class="fa-solid fa-copy fs-13 text-muted mr-2"></i> {{ __('Copy Text') }}</a>
+											<a class="dropdown-item" id="copy-html"><i class="fa-brands fa-html5 fs-13 text-muted mr-2"></i>{{ __('Copy HTML') }}</a>
+											<a class="dropdown-item" id="export-text" onclick="exportTXTEditor();"><i class="fa-solid fa-text-size fs-13 text-muted mr-2"></i>{{ __('Text File') }}</a>								
+											<a class="dropdown-item" id="export-word" onclick="exportWordEditor();"><i class="fa-solid fa-file-word fs-13 text-muted mr-2"></i>{{ __('MS Word') }}</a>
+											{{-- <a class="dropdown-item" id="export-pdf" onclick="exportPDFEditor();"><i class="fa-solid fa-file-pdf fs-13 text-muted mr-2"></i>{{ __('PDF Document') }}</a> --}}
+										</div>
+									</div>
+								</div>							
 							</div>
-						</div>
-						
+						</div>	
+						<div class="col-lg-3 col-md-6 col-sm-12 mt-auto mb-auto">
+							@if ($internet_feature)								
+								<div class="input-box mb-auto mt-auto">									
+									<div class="form-group">
+										<label class="custom-switch mb-0">
+											<input type="checkbox" id="internet" name="internet" class="custom-switch-input">
+											<span class="custom-switch-indicator"></span>
+											<span class="custom-switch-description">{{ __('Internet Access') }}</span>
+										</label>
+									</div>
+								</div>								
+									
+							@endif	
+						</div>											
 						@if (App\Services\HelperService::checkIntegrationAccess())
 							@if (App\Services\HelperService::extensionWordpressIntegration())
 								@if (App\Services\HelperService::checkWordpressIntegrationFeature())
@@ -258,42 +268,30 @@
 									</div>
 								@endif
 							@endif										
-						@endif
-						
-						<div class="col-lg-3 col-md-6 col-sm-12 text-right" style="margin-top: auto;">
-							@if ($internet_feature)
-								<div class="col-sm-12">
-									<div class="input-box mb-4">									
-										<div class="form-group">
-											<label class="custom-switch mb-0">
-												<input type="checkbox" id="internet" name="internet" class="custom-switch-input">
-												<span class="custom-switch-indicator"></span>
-												<span class="custom-switch-description">{{ __('Internet Access') }}</span>
-											</label>
-										</div>
-									</div>								
-								</div>	
-							@endif	
+						@endif					
+					</div>
+					<div class="row">						
+						<div class="col-md-6 col-sm-12">								
+							<div class="input-box mb-2">								
+								<div class="form-group">							    
+									<input type="text" class="form-control @error('document') is-danger @enderror" id="document" name="document" value="{{ __('New Document') }}">
+									@error('document')
+										<p class="text-danger">{{ $errors->first('document') }}</p>
+									@enderror
+								</div> 
+							</div> 
 						</div>
-						<div class="col-lg-1 col-md-6 col-sm-12 text-right justify-content-right">
-							<div class="d-flex text-right" id="template-buttons-group">	
-								<div class="template-action-buttons">
-									<div class="btn-group w-100">
-										<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="export" data-bs-display="static" aria-expanded="false"><i class="fa-solid fa-download table-action-buttons table-action-buttons-big edit-action-button"></i></button>
-										<div class="dropdown-menu" aria-labelledby="export" data-popper-placement="bottom-start">								
-											<a class="dropdown-item" id="copy-text"><i class="fa-solid fa-copy fs-13 text-muted mr-2"></i> {{ __('Copy Text') }}</a>
-											<a class="dropdown-item" id="copy-html"><i class="fa-brands fa-html5 fs-13 text-muted mr-2"></i>{{ __('Copy HTML') }}</a>
-											<a class="dropdown-item" id="export-text" onclick="exportTXTEditor();"><i class="fa-solid fa-text-size fs-13 text-muted mr-2"></i>{{ __('Text File') }}</a>								
-											<a class="dropdown-item" id="export-word" onclick="exportWordEditor();"><i class="fa-solid fa-file-word fs-13 text-muted mr-2"></i>{{ __('MS Word') }}</a>
-											{{-- <a class="dropdown-item" id="export-pdf" onclick="exportPDFEditor();"><i class="fa-solid fa-file-pdf fs-13 text-muted mr-2"></i>{{ __('PDF Document') }}</a> --}}
-										</div>
-									</div>
-								</div>
-								<a id="save-button-template" class="template-button" onclick="return saveText(this);" href="#"><i class="fa-solid fa-floppy-disk-pen table-action-buttons table-action-buttons-big delete-action-button" data-tippy-content="{{ __('Save Document') }}"></i></a>				
+						<div class="col-md-6 col-sm-12">
+							<div class="form-group">
+								<select id="project" name="project" class="form-select" data-placeholder="{{ __('Select Workbook Name') }}">	
+									<option value="all"> {{ __('All Workbooks') }}</option>
+									@foreach ($workbooks as $workbook)
+										<option value="{{ $workbook->name }}" @if (strtolower(auth()->user()->workbook) == strtolower($workbook->name)) selected @endif> {{ ucfirst($workbook->name) }}</option>
+									@endforeach											
+								</select>
 							</div>
 						</div>
-
-					</div>
+					</div>					
 					<div>						
 						<div id="template-textarea">						
 							<textarea class="form-control" id="tinymce-editor" rows="25"></textarea>
@@ -3884,8 +3882,77 @@
 		};
 
 		if (getCookie('theme') == 'dark') {
-			tinymceOptions.skin = 'oxide-dark';
-			tinymceOptions.content_css = 'dark';
+			tinymceOptions.content_style = `
+				body { color: #FFF;}
+				body h1 { font-size: 20px}
+				body h2 { font-size: 18px }
+				body h3, h4, h5 { font-size: 16px }
+				body p { font-size: 14px; }
+
+				body .gradient-typing-indicator {
+					display: inline-flex;
+					align-items: center;
+					font-weight: 500;
+					font-size: 12px;
+					background: transparent;
+				}
+
+				body .typing-text {
+					background: linear-gradient(to right, #007bff, #bf7fff);
+					background-size: 200% auto;
+					background-clip: text;
+					-webkit-background-clip: text;
+					color: transparent;
+					animation: gradientFlow 2s linear infinite;
+					font-weight: 600;
+				}
+
+				body .typing-dots {
+					display: inline-flex;
+					margin-left: 2px;
+				}
+
+				body .typing-dots span {
+					animation: typingDot 1.4s infinite;
+					display: inline-block;
+					width: 5px;
+					height: 5px;
+					border-radius: 50%;
+					margin: 0 2px;
+					background: linear-gradient(to right, #007bff, #bf7fff);
+				}
+
+				body .typing-dots span:nth-child(2) {
+					animation-delay: 0.2s;
+				}
+
+				body .typing-dots span:nth-child(3) {
+					animation-delay: 0.4s;
+				}
+
+				@keyframes gradientFlow {
+					0% {
+						background-position: 0% center;
+					}
+					50% {
+						background-position: 100% center;
+					}
+					100% {
+						background-position: 0% center;
+					}
+				}
+
+				@keyframes typingDot {
+					0%, 60%, 100% {
+						transform: scale(1);
+						opacity: 0.8;
+					}
+					30% {
+						transform: scale(1.5);
+						opacity: 1;
+					}
+				}
+			`;
 		}
 
 		tinyMCE.init( tinymceOptions );

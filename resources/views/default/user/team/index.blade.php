@@ -26,8 +26,8 @@
 	<div class="row">
 
 		<div class="col-lg-12 col-md-12">
-			<div class="card border-0">
-				<div class="card-body pt-5 pb-5">
+			<div class="card  border-0">
+				<div class="card-body pt-5 pb-5 pl-0 pr-0">
 					<div class="row pl-2">
 						<div class="col-lg-4 col-md-4 col-sm-12 text-center" id="user-dashboard-background">
 							@if (!$member)
@@ -84,7 +84,7 @@
 														<h2 class="mb-2 number-font fs-16">{{ number_format($data['transcribed']) }} <span class="text-muted fs-16">{{ __('audio files') }}</span></h2>
 													</div>
 													<div class="usage-icon text-right">
-														<i class="fa-sharp fa-solid fa-folder-music"></i>
+														<i class="fa-solid fa-folder-music"></i>
 													</div>
 												</div>
 											</div>
@@ -101,7 +101,7 @@
 														<h2 class="mb-2 number-font fs-16">{{ number_format($data['chars']) }} <span class="text-muted fs-16">{{ __('characters') }}</span></h2>
 													</div>
 													<div class="usage-icon text-right">
-														<i class="fa-sharp fa-solid fa-waveform-lines"></i>
+														<i class="fa-solid fa-waveform-lines"></i>
 													</div>
 												</div>
 											</div>
@@ -114,7 +114,7 @@
 														<h2 class="mb-2 number-font fs-16">{{ number_format($data['synthesized']) }} <span class="text-muted fs-16">{{ __('tasks') }}</span></h2>
 													</div>
 													<div class="usage-icon text-right">
-														<i class="fa-sharp fa-solid fa-microphone-lines"></i>
+														<i class="fa-solid fa-microphone-lines"></i>
 													</div>
 												</div>
 											</div>
@@ -142,7 +142,7 @@
 		</div>
 
 		<div class="col-lg-12 col-md-12 col-sm-12">
-			<div class="card border-0">
+			<div class="card  ">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('My Team Members') }}</h3>
 				</div>
@@ -173,8 +173,8 @@
 		</div>
 
 		<div class="col-lg-12 col-md-12 col-xm-12 mt-5">
-			<div class="card border-0">
-				<div class="card-header pt-4 border-0">
+			<div class="card  ">
+				<div class="card-header pt-4  ">
 					<div class="mt-3">
 						<h3 class="card-title mb-2"><i class="fa-solid fa-scroll-old mr-2 text-info"></i>{{ __('Word Generation') }} <span class="text-muted">({{ __('Current Year') }})</span></h3>
 						<h6 class="text-muted">{{ __('Monitor word generation closely') }}</h6>

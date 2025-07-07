@@ -24,11 +24,12 @@
 @section('content')					
 	<div class="row justify-content-center">
 		<div class="col-lg-9 col-md-12 col-xm-12">
-			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Created Frontend Pages') }}</h3>
-					<a href="{{ route('admin.settings.page.create') }}" id="createButton" class="btn btn-primary text-right right ripple">{{ __('Create New Page') }}</a>
-				</div>
+			<h3 class="card-title text-center mb-4">{{ __('Created Frontend Pages') }}</h3>
+			<div class="text-center mb-6">
+				<a href="{{ route('admin.settings.page.create') }}" class="btn btn-primary ripple">{{ __('Create New Page') }}</a>
+			</div>
+			
+			<div class="card">
 				<div class="card-body pt-2">
 					<!-- SET DATATABLE -->
 					<table id='pagesTable' class='table' width='100%'>

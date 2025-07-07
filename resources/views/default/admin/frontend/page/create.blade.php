@@ -24,9 +24,6 @@
 	<div class="row justify-content-center">
 		<div class="col-lg-10 col-md-12 col-xm-12">
 			<div class="card overflow-hidden border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('New Page') }}</h3>
-				</div>
 				<div class="card-body">
 				
 					<form action="{{ route('admin.settings.page.store') }}" method="POST" enctype="multipart/form-data">

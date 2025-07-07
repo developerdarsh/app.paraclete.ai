@@ -45,6 +45,7 @@ class DatabaseSeeder extends Seeder
             MenuSeeder::class,
             AzureModelSeeder::class,
             CookiesSeeder::class,
+            ChatbotAvatarsSeeder::class,
         ]);
     }
 }

@@ -24,11 +24,11 @@
 @section('content')						
 	<div class="row justify-content-center">
 		<div class="col-lg-8 col-md-12 col-xm-12">
-			<div class="card overflow-hidden border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('All Newsletter Emails') }}</h3>
-					<a href="{{ route('admin.email.newsletter.create') }}" id="createButton" class="btn btn-primary text-right right">{{ __('Create New Email') }}</a>
-				</div>
+			<h3 class="card-title text-center mb-4">{{ __('All Newsletter Emails') }}</h3>
+			<div class="text-center mb-6">				
+				<a href="{{ route('admin.email.newsletter.create') }}" class="btn btn-primary">{{ __('Create New Email') }}</a>
+			</div>
+			<div class="card">							
 				<div class="card-body pt-2">
 					<!-- SET DATATABLE -->
 					<table id='allNotificationsTable' class='table' width='100%'>
@@ -36,7 +36,7 @@
 								<tr>
 									<th width="10%">{{ __('Name') }}</th>
 									<th width="20%">{{ __('Subject') }}</th>
-									<th width="3%">{{ __('Actions') }}</th>
+									<th width="5%">{{ __('Actions') }}</th>
 								</tr>
 							</thead>
 					</table> <!-- END SET DATATABLE -->

@@ -33,12 +33,6 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use OpenAI\Client;
 use Exception;
-use Orhanerday\OpenAi\OpenAi;
-use App\Library\URLFetcher;
-use App\Models\Voice;	
-use App\Services\AzureTTSService;
-use App\Models\ChatTemplates;
-
 
 
 
@@ -315,7 +309,7 @@ class ChatController extends Controller
 
 
         # Start OpenAI task
-        if (in_array($model, ['gpt-3.5-turbo-0125', 'gpt-4', 'gpt-4o', 'gpt-4o-mini', 'gpt-4.5-preview', 'o1', 'o1-mini', 'o3-mini', 'gpt-4-0125-preview'])) {
+        if (in_array($model, ['gpt-3.5-turbo-0125', 'gpt-4', 'gpt-4o', 'gpt-4o-mini', 'gpt-4.5-preview', 'o1', 'o1-mini', 'o3-mini', 'gpt-4-0125-preview', 'gpt-4o-search-preview', 'gpt-4o-mini-search-preview', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'o4-mini', 'o3'])) {
             if (\App\Services\HelperService::extensionAzureOpenai() && $extension->azure_openai_activate) {
     
                 return $this->streamAzure($conversation_id, $chat_id, $prompt);                      
@@ -655,9 +649,6 @@ class ChatController extends Controller
                 $stream = $openai_client->chat()->createStreamed([
                     'model' => $model,
                     'messages' => $messages,
-                    'frequency_penalty' => 0,
-                    'presence_penalty' => 0,
-                    'temperature' => 1,
                     'stream_options'=>[
                         'include_usage' => true,
                     ]
@@ -2367,8 +2358,7 @@ class ChatController extends Controller
             session()->forget('conversation_id');
         }
 
-        $chat = Chat::where('chat_code', $code)->first();
-        $template = ChatTemplates::where([['chat_id', $chat->id],['status',1]])->get();
+        $chat = Chat::where('chat_code', $code)->first(); 
         $messages = ChatConversation::where('user_id', auth()->user()->id)->where('chat_code', $chat->chat_code)->orderBy('updated_at', 'desc')->get(); 
 
         $categories = ChatPrompt::where('status', true)->groupBy('group')->pluck('group'); 
@@ -2390,7 +2380,7 @@ class ChatController extends Controller
         $brands = BrandVoice::where('user_id', auth()->user()->id)->get();
         $brands_feature = \App\Services\HelperService::checkBrandVoiceAccess();
 
-        return view('user.chat.view', compact('template', 'chat', 'messages', 'categories', 'prompts', 'internet', 'brands', 'brands_feature', 'default_model', 'extension'));
+        return view('user.chat.view', compact('chat', 'messages', 'categories', 'prompts', 'internet', 'brands', 'brands_feature', 'default_model', 'extension'));
 	}
 
 
@@ -3257,74 +3247,6 @@ class ChatController extends Controller
             
         }
 
-    }
-
-    public function saveAudio(Request $request)
-    {
-        $audio = $request->file('audio');
-        $format = $audio->getClientOriginalExtension();
-        $file_name = $audio->getClientOriginalName();
-        $size = $audio->getSize();
-        $name = Str::random(10) . '.' . $format;
-        if (config('settings.whisper_default_storage') == 'local') {
-            $audio_url = $audio->store('transcribe', 'public');
-        } elseif (config('settings.whisper_default_storage') == 'aws') {
-            Storage::disk('s3')->put($name, file_get_contents($audio));
-            $audio_url = Storage::disk('s3')->url($name);
-        } elseif (config('settings.whisper_default_storage') == 'wasabi') {
-            Storage::disk('wasabi')->put($name, file_get_contents($audio));
-            $audio_url = Storage::disk('wasabi')->url($name);
-        }
-
-        if (config('settings.whisper_default_storage') == 'local') {
-            $file = curl_file_create($audio_url);
-        } else {
-            $curl = curl_init();
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($curl, CURLOPT_URL, $audio_url);
-            $content = curl_exec($curl);
-            Storage::disk('public')->put('transcribe/' . $file_name, $content);
-            $file = curl_file_create('transcribe/' . $file_name);
-            curl_close($curl);
-
-        }
-        $open_ai = new OpenAi(config('services.openai.key'));
-        $complete = $open_ai->translate([
-            'model' => 'whisper-1',
-            'file' => $file,
-            'prompt' => "",
-        ]);
-        $response = json_decode($complete, true);
-
-        return response()->json(['response' => $response, 'message' => 'Audio recorded successfully']);
-    }
-    public function audioConvert(Request $request)
-    {
-        $conversation_id = $request->conversation_id;
-        $chat_message = ChatHistory::where('conversation_id', $conversation_id)->orderBy('created_at', 'desc')->first();
-        $messages = $chat_message->response;
-        $chat_conversation = ChatConversation::where('conversation_id', $conversation_id)->first();
-        $chat_code = $chat_conversation->chat_code;
-        $voice_code = Chat::where('chat_code', $chat_code)->first();
-        // $i = count($messages)-1;
-        $lastAssistantData['voice_code'] = $voice_code->voice_code;
-        $lastAssistantData['data'] = $messages;
-        return $lastAssistantData;
-    }
-    public function convertTextToAudio(Request $request)
-    {
-        // language_code , voice_id
-        $text = $request->text;
-        if ($request->voiceCode == 1) {
-            $voice = Voice::where('id', 208)->first();
-        } else {
-            $voice = Voice::where('id', 424)->first();
-        }
-
-        $format = 'mp3';
-        $file_name = 'LISTEN--' . Str::random(10) . '.mp3';
-        $azure = new AzureTTSService();
-        return $azure->synthesizeSpeech($voice, $text, $format, +$file_name);
     }
 
 

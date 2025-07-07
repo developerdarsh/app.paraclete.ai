@@ -9,28 +9,26 @@
 
 @section('page-header')
 	<!-- PAGE HEADER -->
-	<div class="page-header mt-5-7">
-		<div class="page-leftheader">
+	<div class="page-header mt-5-7 justify-content-center">
+		<div class="page-leftheader text-center">
 			<h4 class="page-title mb-0"> {{ __('Customer Reviews Manager') }}</h4>
 			<ol class="breadcrumb mb-2">
 				<li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}"><i class="fa fa-globe mr-2 fs-12"></i>{{ __('Admin') }}</a></li>
 				<li class="breadcrumb-item" aria-current="page"><a href="{{url('#')}}"> {{ __('Frontend Management') }}</a></li>
 				<li class="breadcrumb-item active" aria-current="page"><a href="{{url('#')}}"> {{ __('Reviews Manager') }}</a></li>
 			</ol>
-		</div>
-		<div class="page-rightheader">
-			<a href="{{ route('admin.settings.review.create') }}" class="btn btn-primary mt-1">{{ __('Create Customer Review') }}</a>
-		</div>
+		</div>		
 	</div>
 	<!-- END PAGE HEADER -->
 @endsection
 @section('content')						
-	<div class="row">
+	<div class="row justify-content-center">
 		<div class="col-lg-12 col-md-12 col-xm-12">
-			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Created Customer Reviews List') }}</h3>
-				</div>
+			<h3 class="card-title text-center mb-4">{{ __('Created Customer Reviews List') }}</h3>
+			<div class="text-center mb-6">
+				<a href="{{ route('admin.settings.review.create') }}" class="btn btn-primary mt-1">{{ __('Create Customer Review') }}</a>
+			</div>
+			<div class="card">
 				<div class="card-body pt-2">
 					<!-- SET DATATABLE -->
 					<table id='reviewsTable' class='table' width='100%'>

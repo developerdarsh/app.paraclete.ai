@@ -18,7 +18,7 @@
 @section('content')
 	<div class="row justify-content-center">
 		<div class="col-lg-4 col-md-6 col-sm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('Clear Cache') }}</h3>
 				</div>
@@ -40,7 +40,7 @@
 		</div>
 
 		<div class="col-lg-4 col-md-6 col-sm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('Sitemap') }}</h3>
 				</div>
@@ -50,7 +50,7 @@
 						
 						<div class="row">
 							<div class="col-sm-12 col-md-12">
-								<h6 class="fs-14 mt-2">{{ __('Generated sitemap.xml file will be available at public folder') }}</h6>
+								<h6 class="fs-14 mt-2">{{ __('Generated sitemap.xml file, stored at public folder') }}</h6>
 							</div>
 						</div>
 						<div class="card-footer text-center border-0 pb-2 pt-5">													

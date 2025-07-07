@@ -18,10 +18,8 @@
 @section('content')						
 	<div class="row justify-content-center">
 		<div class="col-lg-6 col-md-6 col-xm-12">
+			<h3 class="card-title text-center mb-6">{{ __('Notification') }} ID: <span class="text-info">{{ $notification->id }}</span></h3>
 			<div class="card overflow-hidden border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Notification') }} ID: <span class="text-info">{{ $notification->id }}</span></h3>
-				</div>
 				<div class="card-body pt-5">		
 
 					<div class="row">

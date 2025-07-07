@@ -7,6 +7,8 @@ use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 use App\Services\Statistics\DavinciUsageService;
 use Illuminate\Support\Str;
 use Illuminate\Http\UploadedFile;
@@ -18,8 +20,11 @@ use App\Models\User;
 use App\Models\GiftCard;
 use App\Models\GiftCardUsage;
 use App\Models\GiftCardTransfer;
+use App\Mail\WalletSender;
+use App\Mail\WalletReceiver;
 use Carbon\Carbon;
 use DataTables;
+use Exception;
 use DB;
 
 
@@ -561,6 +566,15 @@ class UserController extends Controller
                     'receiver_email' => $target_user->email,
                 ]);
 
+                try {
+                    Mail::to($user)->send(new WalletSender($target_user, $request->amount, config('payment.default_system_currency')));
+                    Mail::to($target_user)->send(new WalletReceiver($user, $request->amount, config('payment.default_system_currency')));
+
+
+                } catch (Exception $e) {
+                    Log::info('SMTP settings are not setup to send transfer statuses via email: '. $e->getMessage());
+                }
+
                 return response()->json([
                     'status' => 200,
                     'message' => __('You have successfully transfered funds to your friend!')
@@ -580,7 +594,7 @@ class UserController extends Controller
     public function transferList(Request $request)
     {
         if ($request->ajax()) {
-            $data = GiftCardTransfer::where('sender_user_id', auth()->user()->id)->orderBy('created_at', 'DESC')->get();        
+            $data = GiftCardTransfer::where('sender_user_id', auth()->user()->id)->orWhere('receiver_user_id', auth()->user()->id)->orderBy('created_at', 'DESC')->get();        
             return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('created-on', function($row){
@@ -594,6 +608,13 @@ class UserController extends Controller
                         
                         return $user;
                     })
+                    ->addColumn('sender', function($row){
+                        $user = '<div class="d-flex">
+                                <div class="widget-user-name"><span class="font-weight-bold">'. $row['sender_username'] .'</span> <br> <span class="text-muted">'.$row["sender_email"].'</span></div>
+                            </div>';                        
+                        
+                        return $user;
+                    })
                     ->addColumn('custom-value', function($row){
                         $name = '<span class="font-weight-bold">'.$row['amount']. config('payment.default_system_currency') . '</span>';
                         return $name;
@@ -603,7 +624,7 @@ class UserController extends Controller
                         $custom_priority = '<span class="cell-box gift-'.strtolower($status).'">'.ucfirst($status).'</span>';
                         return $custom_priority;
                     })
-                    ->rawColumns(['custom-status', 'created-on', 'custom-value', 'receiver'])
+                    ->rawColumns(['custom-status', 'created-on', 'custom-value', 'receiver', 'sender'])
                     ->make(true);
                     
         }

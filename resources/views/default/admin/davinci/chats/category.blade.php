@@ -25,11 +25,11 @@
 @section('content')	
 	<div class="row justify-content-center">
 		<div class="col-md-8 col-sm-12">
-			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('All Chat Categories') }}</h3>
-					<a href="#" id="createButton" class="btn btn-primary text-right ripple right">{{ __('Create New') }}</a>
-				</div>
+			<h3 class="card-title text-center mb-4">{{ __('All Chat Categories') }}</h3>
+			<div class="text-center mb-6">				
+				<a href="#" class="btn btn-primary ripple" id="createCategory">{{ __('Create New Category') }}</a>
+			</div>
+			<div class="card">				
 				<div class="card-body pt-2">
 					<!-- BOX CONTENT -->
 					<div class="box-content">
@@ -154,7 +154,7 @@
 
 
 			// CREATE CATEGORY
-			$(document).on('click', '#createButton', function(e) {
+			$(document).on('click', '#createCategory', function(e) {
 
 				e.preventDefault();
 

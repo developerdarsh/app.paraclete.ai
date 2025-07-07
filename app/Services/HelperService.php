@@ -893,6 +893,7 @@ class HelperService
             case 'ai_content_detector': return self::checkContentDetectorAccess(); break;
             case 'ai_avatar': return self::checkAvatarAccess(); break;            
             case 'voice_isolator': return self::checkVoiceIsolatorAccess(); break;            
+            case 'external_chatbot': return self::checkExternalChatbotAccess(); break;            
             case 'team_members': return self::checkTeamMemberAccess(); break;
             case 'subscription_plans':            
             case 'finance_management': 
@@ -1618,6 +1619,19 @@ class HelperService
     // ===================================================================================
 
 
+    // EXTERNAL CHATBOT FEATURE
+    // ===================================================================================
+    public static function checkExternalChatbotAccess()
+    {   
+        if (self::extensionExternalChatbot()) {
+            return self::checkExternalChatbotFeature();
+        } else {
+            return false;
+        }
+    }
+    // ===================================================================================
+
+
     // SPEECH PRO FEATURE
     // ===================================================================================
     public static function checkSpeechProAccess()
@@ -1844,7 +1858,7 @@ class HelperService
     public static function checkVoiceCloneFeature()
     {   
         $settings = ExtensionSetting::first();
-
+ 
         if (isset($settings->voice_clone_feature)) {
             if (!is_null(auth()->user()->plan_id)) {
                 $plan = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();

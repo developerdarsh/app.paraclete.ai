@@ -2,18 +2,6 @@
 @section('css')
 	<!-- Sweet Alert CSS -->
 	<link href="{{URL::asset('plugins/sweetalert/sweetalert2.min.css')}}" rel="stylesheet" />
-	<style>
- 	.info-btn-alt {
- 		font-size: 15px;
- 		background-color: rgb(126, 34, 206);
- 		color: rgb(255, 255, 255);
- 		padding-top: 0.5rem;
- 		padding-bottom: 0.5rem;
- 		padding-left: 1rem;
- 		padding-right: 1rem;
- 		border-radius: 0.5rem;
- 	}
- 	</style>
 @endsection
 
 @section('content')
@@ -23,7 +11,7 @@
 		<div class="row no-gutters justify-content-center">
 			<div class="col-sm-12 col-md-12 col-lg-2 responsive-left-column" id="left-tools-top-box">
 				<div id="main-templates-container" class="app-sidebar responsive-left-column">
-						<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
+					
 						<div class="main-templates-title">
 							<h6 class="mb-0 font-weight-bold">{{ __('All Templates') }}</h6>
 							<a href="#" id="hide-left-menu"><i class="fa-solid fa-chevrons-left"></i></a>
@@ -318,25 +306,7 @@
 			</div>
 		</div>	
 </div>
-<div class="modal fade" id="info-alert-model" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog">
- 	<div class="modal-dialog modal-dialog-centered modal-xl">
- 		<div class="modal-content">
- 			<div class="modal-header">
- 				<h2></h2>
- 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
- 				<span aria-hidden="true">&times;</span>
- 				</button>
- 			</div>
- 			<div class="modal-body">
- 				<div class="row">
- 					<!--ARCADE EMBED START-->
- 					<div style="position: relative; padding-bottom: calc(56.25% + 41px); height: 0; width: 100%;"><iframe src="https://demo.arcade.software/pKW6lSdfLVsENFCLPlow?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true" title="AI Stack Templates" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; color-scheme: light;" ></iframe></div>
- 					<!--ARCADE EMBED END-->
- 				</div>
- 			</div>
- 		</div>
- 	</div>
-</div>
+
 @endsection
 
 @section('js')
@@ -3756,8 +3726,77 @@
 		};
 
 		if (getCookie('theme') == 'dark') {
-			tinymceOptions.skin = 'oxide-dark';
-			tinymceOptions.content_css = 'dark';
+			tinymceOptions.content_style = `
+				body { color: #FFF;}
+				body h1 { font-size: 20px}
+				body h2 { font-size: 18px }
+				body h3, h4, h5 { font-size: 16px }
+				body p { font-size: 14px; }
+
+				body .gradient-typing-indicator {
+					display: inline-flex;
+					align-items: center;
+					font-weight: 500;
+					font-size: 12px;
+					background: transparent;
+				}
+
+				body .typing-text {
+					background: linear-gradient(to right, #007bff, #bf7fff);
+					background-size: 200% auto;
+					background-clip: text;
+					-webkit-background-clip: text;
+					color: transparent;
+					animation: gradientFlow 2s linear infinite;
+					font-weight: 600;
+				}
+
+				body .typing-dots {
+					display: inline-flex;
+					margin-left: 2px;
+				}
+
+				body .typing-dots span {
+					animation: typingDot 1.4s infinite;
+					display: inline-block;
+					width: 5px;
+					height: 5px;
+					border-radius: 50%;
+					margin: 0 2px;
+					background: linear-gradient(to right, #007bff, #bf7fff);
+				}
+
+				body .typing-dots span:nth-child(2) {
+					animation-delay: 0.2s;
+				}
+
+				body .typing-dots span:nth-child(3) {
+					animation-delay: 0.4s;
+				}
+
+				@keyframes gradientFlow {
+					0% {
+						background-position: 0% center;
+					}
+					50% {
+						background-position: 100% center;
+					}
+					100% {
+						background-position: 0% center;
+					}
+				}
+
+				@keyframes typingDot {
+					0%, 60%, 100% {
+						transform: scale(1);
+						opacity: 0.8;
+					}
+					30% {
+						transform: scale(1.5);
+						opacity: 1;
+					}
+				}
+			`;
 		}
 
 		tinyMCE.init( tinymceOptions );

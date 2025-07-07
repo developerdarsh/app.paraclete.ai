@@ -20,18 +20,16 @@
 	<div class="row justify-content-center">
 		<div class="col-lg-8 col-md-10 col-xm-12">
 			<div class="card overflow-hidden border-0">
-				<div class="card-header p-4 pl-5 block">
-					<p class="card-title mb-4">{{ __('Ticket Subject') }}: <span class="text-info">{{ $ticket->subject }}</span></p>
-					<p class="card-title">{{ __('Ticket') }} ID: <span class="text-info">{{ $ticket->ticket_id }}</span></p>
-					<span class="cell-box fs-14 support-header support-{{ strtolower($ticket->status) }}">{{ __($ticket->status) }}</span>
-				</div>
-				<div class="card-body pt-5">	
-					<div class="row">	
+				<p class="card-title mb-4">{{ __('Ticket Subject') }}: <span class="text-info">{{ $ticket->subject }}</span></p>
+				<p class="card-title mb-4">{{ __('Ticket') }} ID: <span class="text-info">{{ $ticket->ticket_id }}</span></p>
+				<p class="card-title">{{ __('Ticket Status') }} <span class="cell-box fs-14 support-{{ strtolower($ticket->status) }}">{{ __($ticket->status) }}</span></p>
+				<div class="card-body">	
+					<div class="row" style="border: 1px solid #ebecf1; border-radius: 0.5rem">	
 						<div class="background-color p-4" id="support-messages-box">
 							@foreach ($messages as $message)
 								@if ($message->role != 'admin')
 									<div class="background-white support-message mb-5">
-										<p class="font-weight-bold fs-11"><i class="fa-sharp fa-solid fa-calendar-clock mr-2"></i>{{ date_format($message->created_at, 'd M Y H:i A') }} <span>{{ __('Your Message') }}</span></p>
+										<p class="font-weight-bold fs-11"><i class=" fa-solid fa-calendar-clock mr-2"></i>{{ date_format($message->created_at, 'd M Y H:i A') }} <span>{{ __('Your Message') }}</span></p>
 										<p class="fs-14 mb-1">{!! nl2br(html_entity_decode($message->message))!!}</p>
 										@if ($message->attachment)
 											<p class="font-weight-bold fs-11 mb-1">{{ __('Attachment') }}</p>
@@ -40,7 +38,7 @@
 									</div>
 								@else
 									<div class="background-white support-message support-response mb-5">
-										<p class="font-weight-bold fs-11"><i class="fa-sharp fa-solid fa-calendar-clock mr-2"></i>{{ date_format($message->created_at, 'd M Y H:i A') }} <span class="text-primary">{{ __('Admin Response') }}</span></p>
+										<p class="font-weight-bold fs-11"><i class=" fa-solid fa-calendar-clock mr-2"></i>{{ date_format($message->created_at, 'd M Y H:i A') }} <span class="text-primary">{{ __('Admin Response') }}</span></p>
 										<p class="fs-14 mb-1">{!! nl2br(html_entity_decode($message->message))!!}</p>
 										@if ($message->attachment)
 											<p class="font-weight-bold fs-11 mt-3 mb-1">{{ __('Attachment') }}</p>

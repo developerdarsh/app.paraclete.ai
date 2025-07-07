@@ -25,11 +25,11 @@
 @section('content')	
 	<div class="row justify-content-center">
 		<div class="col-lg-10 col-md-12 col-sm-12">
-			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('All Chat Prompts') }}</h3>
-					<a href="{{ route('admin.davinci.chat.prompt.create') }}" id="createButton" class="btn btn-primary ripple text-right right">{{ __('Create New Prompt') }}</a>
-				</div>
+			<h3 class="card-title text-center mb-4">{{ __('All Chat Prompts') }}</h3>
+			<div class="text-center mb-6">				
+				<a href="{{ route('admin.davinci.chat.prompt.create') }}" class="btn btn-primary ripple">{{ __('Create New Prompt') }}</a>
+			</div>
+			<div class="card">				
 				<div class="card-body pt-2">
 					<!-- BOX CONTENT -->
 					<div class="box-content">

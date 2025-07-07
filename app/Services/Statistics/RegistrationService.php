@@ -78,7 +78,7 @@ class RegistrationService
                 ->where('group', 'subscriber')
                 ->get();  
         
-        return $total_users[0]['data'];
+        return $total_users[0]['data'] ?? 0;
     }
 
 
@@ -88,7 +88,16 @@ class RegistrationService
                 ->where('group', 'user')
                 ->get();  
         
-        return $total_users[0]['data'];
+        return $total_users[0]['data'] ?? 0;
+    }
+
+     public function getTotalReferred()
+    {
+        $total_users = User::select(DB::raw("count(id) as data"))
+                ->whereNotNull('referred_by')
+                ->get();  
+        
+        return $total_users[0]['data'] ?? 0;
     }
 
 
@@ -134,6 +143,44 @@ class RegistrationService
                 ->get();  
         
         return $total_users[0]['data'];
+    }
+
+
+    public function registrationsToday()
+    {
+        $today = \Carbon\Carbon::today();
+
+        $total_users = User::select(DB::raw("count(id) as data"))
+                ->whereDate('created_at', $today)  
+                ->get();  
+        
+        return $total_users[0]['data'] ?? 0;
+    }
+
+
+    public function subscribersToday()
+    {
+        $today = \Carbon\Carbon::today();
+
+        $total_users = User::select(DB::raw("count(id) as data"))
+                ->whereDate('created_at', $today)  
+                ->where('group', 'subscriber')
+                ->get();  
+        
+        return $total_users[0]['data'] ?? 0;
+    }
+
+
+    public function onlineToday()
+    {
+         $twoHoursAgo = \Carbon\Carbon::now()->subHours(2);
+
+        $count = DB::table('sessions')
+            ->where('last_activity', '>=', $twoHoursAgo->timestamp)
+            ->distinct('ip_address')
+            ->count('ip_address');
+        
+        return $count;
     }
 
 }

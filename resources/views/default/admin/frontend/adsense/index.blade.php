@@ -22,7 +22,7 @@
 @section('content')						
 	<div class="row justify-content-center">
 		<div class="col-lg-9 col-md-12 col-xm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('Google Adsense List') }}</h3>
 				</div>

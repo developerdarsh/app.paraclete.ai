@@ -17,14 +17,13 @@
 
 @section('content')						
 	<div class="row justify-content-center">
-		<div class="col-lg-4 col-md-8 col-sm-12">
+		<div class="col-lg-6 col-md-8 col-sm-12">
 			<div class="card overflow-hidden border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Send Emails') }}: <span class="font-weight-bold text-primary">{{ $id->name }}</span></h3>
-				</div>
 				<div class="card-body pt-5">									
 					<form action="" method="POST" enctype="multipart/form-data" id="send-form">
 						@csrf
+
+						<h3 class="card-title text-center mb-6">{{ __('Send Emails') }}: <span class="font-weight-bold text-primary">{{ $id->name }}</span></h3>
 
 						<div class="col-sm-12">						
 							<div class="input-box">	

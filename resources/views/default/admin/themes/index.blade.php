@@ -41,7 +41,7 @@
 									<div class="row" id="templates-panel">				
 											
 										@foreach ($themes as $theme)
-											<div class="col-lg-4 col-md-6 col-sm-12">
+											<div class="col-lg-4 col-md-6 col-sm-12 theme-item-wrapper">
 												<div class="card shadow-0 theme" id="XXXXX-card">
 													<div class="theme-banner">
 														<figure>
@@ -76,7 +76,7 @@
 														<div class="theme-info">
 															<p class="fs-13 text-muted mb-2">{{ $theme['short_description'] }}</p>
 														</div>	
-														<div class="theme-action text-center mt-4 mb-4">	
+														<div class="theme-action text-center  mt-auto mb-auto">	
 															@foreach ($extensions as $extension)
 																@if ($extension->slug == $theme['slug'])
 																	@if ($extension->purchased && !$extension->installed)
@@ -160,7 +160,7 @@
 															<div class="theme-info">
 																<p class="fs-13 text-muted mb-2">{{ $theme['short_description'] }}</p>
 															</div>	
-															<div class="theme-action text-center mt-4 mb-4">
+															<div class="theme-action text-center  mt-auto mb-auto">
 																@foreach ($extensions as $extension)
 																	@if ($extension->slug == $theme['slug'])
 																		@if ($extension->purchased && !$extension->installed)
@@ -239,7 +239,7 @@
 															<div class="theme-info">
 																<p class="fs-13 text-muted mb-2">{{ $theme['short_description'] }}</p>
 															</div>	
-															<div class="theme-action text-center mt-4 mb-4">
+															<div class="theme-action text-center  mt-auto mb-auto">
 																@foreach ($extensions as $extension)
 																	@if ($extension->slug == $theme['slug'])
 																		@if ($extension->purchased && !$extension->installed)

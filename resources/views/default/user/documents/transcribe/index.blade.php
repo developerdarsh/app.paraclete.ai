@@ -20,7 +20,7 @@
 @section('content')	
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-sm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('All Transcribe Results') }}</h3>
 					<a class="refresh-button" href="#" data-tippy-content="Refresh Table"><i class="fa fa-refresh table-action-buttons view-action-button"></i></a>

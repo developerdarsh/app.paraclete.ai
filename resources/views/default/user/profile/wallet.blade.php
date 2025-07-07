@@ -24,7 +24,7 @@
 	<!-- EDIT USER PROFILE PAGE -->
 	<div class="row">
 		<div class="col-xl-3 col-lg-4 col-sm-12">
-			<div class="card border-0" id="dashboard-background">
+			<div class="card  " id="dashboard-background">
 				<div class="widget-user-image overflow-hidden mx-auto mt-5"><img alt="User Avatar" class="rounded-circle" src="@if(auth()->user()->profile_photo_path){{ asset(auth()->user()->profile_photo_path) }} @else {{ theme_url('img/users/avatar.jpg') }} @endif"></div>
 				<div class="card-body text-center">
 					<div>
@@ -77,11 +77,11 @@
 		<div class="col-xl-9 col-lg-8 col-sm-12">
 			<div class="row">
 				<div class="col-lg-4 col-md-6 col-sm-12">
-					<div class="card overflow-hidden border-0">
+					<div class="card overflow-hidden  ">
 						<div class="card-body d-flex">
 							<div class="usage-info w-100">
 								<p class=" mb-3 fs-12 font-weight-bold">{{ __('My Wallet Balance') }}</p>
-								<h2 class="mb-2 number-font fs-20">{{ number_format(auth()->user()->wallet) }} {{config('payment.default_system_currency')}}</h2>
+								<h2 class="mb-2 number-font fs-20">{{ number_format(auth()->user()->wallet, 2) }} {{config('payment.default_system_currency')}}</h2>
 							</div>
 							<div class="usage-icon text-right">
 								<i class="fa-solid fa-wallet"></i>
@@ -90,7 +90,7 @@
 					</div>
 				</div>
 				<div class="col-lg-4 col-md-6 col-sm-12">
-					<div class="card overflow-hidden border-0">
+					<div class="card overflow-hidden  ">
 						<div class="card-body d-flex">
 							<div class="usage-info w-100">
 								<p class=" mb-3 fs-12 font-weight-bold">{{ __('Total Redeemed Codes') }}</p>
@@ -104,11 +104,11 @@
 				</div>
 	
 				<div class="col-lg-4 col-md-6 col-sm-12">
-					<div class="card overflow-hidden border-0">
+					<div class="card overflow-hidden  ">
 						<div class="card-body d-flex">
 							<div class="usage-info w-100">
 								<p class=" mb-3 fs-12 font-weight-bold">{{ __('Total Redeemed Amount') }}</p>
-								<h2 class="mb-2 number-font fs-20">{{ number_format($data['amount']) }} {{config('payment.default_system_currency')}}</h2>
+								<h2 class="mb-2 number-font fs-20">{{ number_format($data['amount'], 2) }} {{config('payment.default_system_currency')}}</h2>
 							</div>
 							<div class="usage-icon text-right">
 								<i class="fa-solid fa-sack-dollar"></i>
@@ -123,7 +123,7 @@
 				@method('PUT')
 				@csrf
 
-				<div class="card border-0">
+				<div class="card  ">
 					<div class="card-header">
 						<h3 class="card-title"><i class="fa-solid fa-sack-dollar mr-2 text-primary"></i>{{ __('Redeem Gift Codes') }}</h3>
 					</div>
@@ -139,7 +139,7 @@
 							</div>
 
 						</div>
-						<div class="card-footer border-0 text-center mb-2 pr-0">
+						<div class="card-footer   text-center mb-2 pr-0">
 							<button type="submit" class="btn btn-primary">{{ __('Redeem') }}</button>							
 						</div>					
 					</div>				
@@ -150,7 +150,7 @@
 			<form id="transfer-funds-form" method="POST" class="w-100" action="" enctype="multipart/form-data">
 				@csrf
 
-				<div class="card border-0">
+				<div class="card  ">
 					<div class="card-header">
 						<h3 class="card-title"><i class="fa-solid fa-transfer mr-2 text-primary"></i>{{ __('Transfer Your Wallet Balance to Friends') }}</h3>
 					</div>
@@ -180,7 +180,7 @@
 							</div>
 
 						</div>
-						<div class="card-footer border-0 text-center mb-2 pr-0">
+						<div class="card-footer   text-center mb-2 pr-0">
 							<button type="button" class="btn btn-primary" id="transfer-amount">{{ __('Transfer') }}</button>							
 						</div>					
 					</div>				
@@ -190,7 +190,7 @@
 			
 			<div class="row mt-5">
 				<div class="col-lg-12 col-md-12 col-xm-12">
-					<div class="card border-0">
+					<div class="card  ">
 						<div class="card-header">
 							<h3 class="card-title">{{ __('Redeemed Gift Cards') }}</h3>
 						</div>
@@ -215,7 +215,7 @@
 
 			<div class="row mt-5">
 				<div class="col-lg-12 col-md-12 col-xm-12">
-					<div class="card border-0">
+					<div class="card  ">
 						<div class="card-header">
 							<h3 class="card-title">{{ __('Transfers') }}</h3>
 						</div>
@@ -225,7 +225,8 @@
 									<thead>
 										<tr>
 											<th width="10%">{{ __('Transfer ID') }}</th>
-											<th width="10%">{{ __('Sent To') }}</th>									
+											<th width="10%">{{ __('Sender') }}</th>									
+											<th width="10%">{{ __('Receiver') }}</th>									
 											<th width="10%">{{ __('Amount') }}</th>
 											<th width="10%">{{ __('Status') }}</th>
 											<th width="10%">{{ __('Transfer Date') }}</th>
@@ -327,6 +328,12 @@
 						searchable: true
 					},
 					{
+						data: 'sender',
+						name: 'sender',
+						orderable: false,
+						searchable: true
+					},	
+					{
 						data: 'receiver',
 						name: 'receiver',
 						orderable: false,
@@ -398,6 +405,10 @@
 							
 							// Show success message
 							toastr.success('{{ __("Funds have been transfered successfully") }}');
+
+							setTimeout(function() {
+								window.location.reload();
+							}, 1000);
 							
 						} else {
 							// Show error message

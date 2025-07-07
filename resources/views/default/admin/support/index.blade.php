@@ -9,8 +9,8 @@
 
 @section('page-header')
 	<!-- PAGE HEADER -->
-	<div class="page-header mt-5-7">
-		<div class="page-leftheader">
+	<div class="page-header mt-5-7 justify-content-center">
+		<div class="page-leftheader text-center">
 			<h4 class="page-title mb-0">{{ __('User Support Requests') }}</h4>
 			<ol class="breadcrumb mb-2">
 				<li class="breadcrumb-item"><a href="{{route('admin.dashboard')}}"><i class="fa-solid fa-message-question mr-2 fs-12"></i>{{ __('Admin') }}</a></li>
@@ -22,9 +22,9 @@
 @endsection
 
 @section('content')				
-	<div class="row">
+	<div class="row justify-content-center">
 		<div class="col-md col-sm-12">
-			<div class="card overflow-hidden border-0">
+			<div class="card">
 				<div class="card-body">
 					<i class="fa-solid fa-comment-question text-primary fs-35 mt-3 float-right"></i>	
 					<p class=" mb-3 fs-12 font-weight-bold mt-1">{{ __('Open Tickets') }}</p>
@@ -33,7 +33,7 @@
 			</div>
 		</div>
 		<div class="col-md col-sm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-body">
 					<i class="fa-solid fa-comments-question-check fs-35 mt-3 float-right yellow"></i>	
 					<p class=" mb-3 fs-12 font-weight-bold mt-1">{{ __('Replied Tickets') }}</p>
@@ -42,7 +42,7 @@
 			</div>
 		</div>
 		<div class="col-md col-sm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-body">
 					<i class="fa-solid fa-comments-question fs-35 mt-3 float-right"></i>	
 					<p class=" mb-3 fs-12 font-weight-bold mt-1">{{ __('Pending Tickets') }}</p>
@@ -51,7 +51,7 @@
 			</div>
 		</div>
 		<div class="col-md col-sm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-body">
 					<i class="fa-solid fa-clipboard-list-check text-success fs-35 mt-3 float-right"></i>	
 					<p class=" mb-3 fs-12 font-weight-bold mt-1">{{ __('Resolved Tickets') }}</p>
@@ -60,7 +60,7 @@
 			</div>
 		</div>
 		<div class="col-md col-sm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-body">
 					<i class="fa-solid fa-clipboard-list fs-35 text-danger mt-3 float-right"></i>	
 					<p class=" mb-3 fs-12 font-weight-bold mt-1">{{ __('Closed Tickets') }}</p>
@@ -72,7 +72,7 @@
 	<!-- SUPPORT REQUEST DATA TABLE -->
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-xm-12">
-			<div class="card overflow-hidden border-0">
+			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('Support Request List') }}</h3>
 				</div>
@@ -89,7 +89,7 @@
 									<th width="7%">{{ __('Priority') }}</th>
 									<th width="10%">{{ __('Created On') }}</th>										
 									<th width="10%">{{ __('Last Updated On') }}</th>											
-									<th width="5%">{{ __('Actions') }}</th>
+									<th width="7%">{{ __('Actions') }}</th>
 								</tr>
 							</thead>
 					</table> <!-- END SET DATATABLE -->

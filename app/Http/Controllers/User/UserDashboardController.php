@@ -16,8 +16,8 @@ use App\Models\Chat;
 use App\Models\Content;
 use App\Models\SupportTicket;
 use App\Models\FavoriteChat;
-use App\Models\Banner;
 use App\Models\MainSetting;
+use App\Models\Image;
 
 class UserDashboardController extends Controller
 {
@@ -57,23 +57,9 @@ class UserDashboardController extends Controller
 
         $plan = (auth()->user()->plan_id) ? SubscriptionPlan::where('id', auth()->user()->plan_id)->first() : '';
         $subscription = ($plan) ? $plan->plan_name : ''; 
+        $term = ($plan) ? $plan->payment_frequency : null;
 
-        if ($plan) {
-            $price = $plan->price;
-            $all_currencies = config('currencies.all');
-            foreach ($all_currencies as $key => $value) {
-                if ($key = $plan->currency) {
-                    $currency = $value['symbol'];
-                }
-            }
-            $term = $plan->payment_frequency;
-        } else {
-            $price = null;
-            $currency = null;
-            $term = null;
-        }
-
-        $documents = Content::where('user_id', auth()->user()->id)->where('result_text', '<>', 'null')->latest()->paginate(7);
+        $documents = Content::where('user_id', auth()->user()->id)->whereNotNull('title')->latest()->paginate(7);
         $tickets = SupportTicket::where('user_id', auth()->user()->id)->latest()->paginate(8);
         $notifications = Auth::user()->notifications->where('type', 'App\Notifications\GeneralNotification')->all();
         $total_words = $davinci_usage->userTotalWordsGenerated() / 300;
@@ -88,9 +74,34 @@ class UserDashboardController extends Controller
         } else {
             $content_documents = 0; $content_images = 0; $content_voiceovers = 0; $content_transcripts = 0;
         }
-	$BannerModel = Banner::get()->toArray();        
 
-        return view('user.dashboard.index', compact('BannerModel','data', 'configs', 'chart_data', 'template_quantity', 'templates', 'subscription', 'custom_templates', 'chat_quantity', 'favorite_chats', 'custom_chats', 'price', 'currency', 'term', 'documents', 'tickets', 'notifications', 'total_words', 'content_documents', 'content_images', 'content_voiceovers', 'content_transcripts'));           
+        if (is_null(auth()->user()->plan_id)) {
+            if (auth()->user()->tokens == -1) {
+                $remaining_tokens = 999999999;
+                $used_tokens = 0;
+                $balance = __('Unlimited');
+            } else {
+                $remaining_tokens = auth()->user()->tokens;
+                $used_tokens = (($configs->token_credits - auth()->user()->tokens) > 0) ? ($configs->token_credits - auth()->user()->tokens) : 0;
+                $balance = $remaining_tokens;
+            }
+        } else {
+            SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
+            if (auth()->user()->tokens == -1) {
+                $remaining_tokens = 999999999;
+                $used_tokens = 0;
+                $balance = __('Unlimited');
+            } else {
+                $remaining_tokens = auth()->user()->tokens;
+                $used_tokens = (($plan->token_credits - auth()->user()->tokens) > 0) ? ($plan->token_credits - auth()->user()->tokens) : 0;
+                $balance = $remaining_tokens;
+            }
+        }
+
+        $latest_images = Image::latest()->take(10)->get();
+        
+
+        return view('user.dashboard.index', compact('latest_images', 'remaining_tokens', 'used_tokens', 'balance', 'data', 'configs', 'chart_data', 'template_quantity', 'templates', 'subscription', 'custom_templates', 'chat_quantity', 'favorite_chats', 'custom_chats', 'term', 'documents', 'tickets', 'notifications', 'total_words', 'content_documents', 'content_images', 'content_voiceovers', 'content_transcripts'));           
     }
 
 

@@ -369,4 +369,37 @@ class ExtensionController extends Controller
     }
 
 
+    public function get_metadata()
+    {
+        $response = $this->request('post', "extension/version/metadata");
+
+        if ($response->ok()) {
+
+            $data = $response->json('metadata');
+
+            return $data;
+        }
+
+        return false;
+    }
+
+
+    public function get_version($update)
+    {
+        $response = $this->request('post', "extension/version/update");
+
+        if ($response->ok()) {
+
+            $data = $response->json('version');
+
+            if ($data) {
+                return $update;
+            } else {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
 }

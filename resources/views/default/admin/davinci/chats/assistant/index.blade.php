@@ -23,11 +23,11 @@
 	<div class="row justify-content-center">
 
 		<div class="col-lg-10 col-md-12 col-sm-12">
-			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('All Custom Chat Assistants') }}</h3>
-					<a href="{{ route('admin.chat.assistant.create') }}" id="createButton" class="btn btn-primary text-right ripple right">{{ __('Create New Chat Assistant') }}</a>
-				</div>
+			<h3 class="card-title text-center mb-4">{{ __('All Custom Chat Assistants') }}</h3>
+			<div class="text-center mb-6">				
+				<a href="{{ route('admin.chat.assistant.create') }}"  class="btn btn-primary text-right ripple right">{{ __('Create New Chat Assistant') }}</a>
+			</div>
+			<div class="card">				
 				<div class="card-body pt-2">
 					<!-- SET DATATABLE -->
 					<table id='allTemplates' class='table' width='100%'>

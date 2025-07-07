@@ -989,12 +989,14 @@ class TemplateController extends Controller
                 flush();
             }
        
-
+Log::info($text);
             if (!empty($text)) {
                 # Update credit balance
                 $words = count(explode(' ', ($text)));
                 HelperService::updateBalance($words, $model, $input_tokens, $output_tokens);   
-
+Log::info('tut');
+Log::info($input_tokens);
+Log::info($output_tokens);
                 $content->result_text = $text;
                 $content->input_tokens = $input_tokens;
                 $content->output_tokens = $output_tokens;

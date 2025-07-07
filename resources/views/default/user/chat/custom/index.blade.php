@@ -22,11 +22,11 @@
 @section('content')	
 	<div class="row justify-content-center">
 		<div class="col-lg-9 col-md-12 col-sm-12 mt-4">
-			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('My Custom Chat Assistants') }}</h3>
-					<a href="{{ route('user.chat.custom.create') }}" class="btn btn-cancel ripple" style="margin-left: auto">{{ __('Create New Chat Assistant') }}</a>
-				</div>
+			<h3 class="card-title text-center mb-4">{{ __('My Custom Chat Assistants') }}</h3>
+			<div class="text-center mb-6">				
+				<a href="{{ route('user.chat.custom.create') }}" class="btn btn-cancel ripple">{{ __('Create New Chat Assistant') }}</a>
+			</div>
+			<div class="card">				
 				<div class="card-body pt-2">
 					<!-- SET DATATABLE -->
 					<table id='allTemplates' class='table' width='100%'>

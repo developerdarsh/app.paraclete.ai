@@ -24,8 +24,8 @@
 				<div class="grid-item">
 					<div class="grid-image-wrapper">
 						<div class="flex grid-buttons text-center">
-							<a href="{{ url($image->image) }}" class="grid-image-view text-center" download><i class="fa-sharp fa-solid fa-arrow-down-to-line" title="{{ __('Download Image') }}"></i></a>
-							<a href="#" class="grid-image-view text-center viewImageResult" id="{{ $image->id }}"><i class="fa-sharp fa-solid fa-camera-viewfinder" title="{{ __('View Image') }}"></i></a>
+							<a href="{{ url($image->image) }}" class="grid-image-view text-center" download><i class="fa-solid fa-arrow-down-to-line" title="{{ __('Download Image') }}"></i></a>
+							<a href="#" class="grid-image-view text-center viewImageResult" id="{{ $image->id }}"><i class="fa-solid fa-camera-viewfinder" title="{{ __('View Image') }}"></i></a>
 							<a href="#" class="grid-image-view text-center deleteResultButton" id="{{ $image->id }}"><i class="fa-solid fa-trash-xmark" title="{{ __('Delete Image') }}"></i></a>							
 						</div>
 						<div>

@@ -19,9 +19,6 @@
 	<div class="row justify-content-center">
 		<div class="col-lg-6 col-md-6 col-xm-12">
 			<div class="card overflow-hidden border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Create New Notification') }}</h3>
-				</div>
 				<div class="card-body pt-5">									
 					<form action="{{ route('admin.notifications.store') }}" method="POST" enctype="multipart/form-data">
 						@csrf

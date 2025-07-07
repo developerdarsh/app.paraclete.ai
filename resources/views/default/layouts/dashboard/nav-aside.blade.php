@@ -5,6 +5,13 @@
             <img src="{{ URL::asset($settings->logo_dashboard)}}" class="header-brand-img desktop-lgo" alt="Dashboard Logo">
             <img src="{{ URL::asset($settings->logo_dashboard_collapsed)}}" class="header-brand-img mobile-logo" alt="Dashboard Logo">
         </a>
+        <div class="app-sidebar__toggle" data-toggle="sidebar">
+            <a class="open-toggle" href="#">
+                <svg class="w-4 menu-toggle-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 6l-6 6l6 6"></path>
+                  </svg>
+            </a>
+        </div>
     </div>
     <ul class="side-menu app-sidebar3">
 
@@ -16,7 +23,11 @@
 
         @foreach($menuUserItems as $item)
             @if ($item['type'] == 'label')
-                <li class="side-item side-item-category mt-4 mb-3">{{ __($item['label']) }}</li>
+                @if ($loop->first)
+                    <li class="side-item side-item-category mt-3 mb-3">{{ __($item['label']) }}</li>
+                @else
+                    <li class="side-item side-item-category mt-4 mb-3">{{ __($item['label']) }}</li>
+                @endif
             @elseif ($item['type'] == 'divider')
                 <hr class="w-90 text-center ml-auto mr-auto mt-3">
             @else
@@ -91,7 +102,7 @@
                 @endif
             @endforeach
         @endrole
-
+        
         <hr class="w-90 text-center ml-auto mr-auto mt-3">
         
         <div class="side-progress-position mt-4">
@@ -102,7 +113,7 @@
                 <div class="view-credits @if (App\Services\HelperService::extensionSaaS()) mt-1 @endif"><a class=" fs-11 text-muted mb-2" href="javascript:void(0)" id="view-credits" data-bs-toggle="modal" data-bs-target="#creditsModel"><i class="fa-solid fa-coin-front text-yellow "></i> {{ __('View Credits') }}</a></div> 
                 @if (App\Services\HelperService::extensionSaaS())
                     @if (is_null(auth()->user()->plan_id))
-                        <div class="text-center mt-3 mb-2"><a href="{{ route('user.plans') }}" class="btn btn-primary pl-6 pr-6 fs-11"> <i class="fa-solid fa-bolt text-yellow mr-2"></i> {{ __('Upgrade') }}</a></div> 
+                        <div class="text-center mt-3 mb-2"><a href="{{ route('user.plans') }}" class="btn btn-primary btn-primary-small pl-6 pr-6 fs-11"> <i class="fa-solid fa-bolt text-yellow mr-2"></i> {{ __('Upgrade') }}</a></div> 
                     @endif              
                 @endif              
             </div>
@@ -111,7 +122,7 @@
                     <div class="side-plan-wrapper mt-4 text-center p-3 pl-5 pr-5">
                         <div class="mb-1"><i class="fa-solid fa-gifts fs-20 text-yellow"></i></div>
                         <span class="fs-12 mt-4" style="color: #344050">{{ __('Invite your friends and get') }} {{ config('payment.referral.payment.commission') }}% @if (config('payment.referral.payment.policy') == 'all') {{ __('of all their purchases') }} @else {{ __('of their first purchase') }}@endif</span>
-                        <div class="text-center mt-3 mb-2"><a href="{{ route('user.referral') }}" class="btn btn-primary pl-6 pr-6 fs-11" id="referral-button"> {{ __('Invite Friends') }}</a></div>              
+                        <div class="text-center mt-3 mb-2"><a href="{{ route('user.referral') }}" class="btn btn-primary btn-primary-small pl-6 pr-6 fs-11" id="referral-button"> {{ __('Invite Friends') }}</a></div>              
                     </div>
                 @endif
             @endif

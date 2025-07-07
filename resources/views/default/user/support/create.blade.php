@@ -20,9 +20,6 @@
 	<div class="row justify-content-center">
 		<div class="col-lg-8 col-md-10 col-sm-12">
 			<div class="card overflow-hidden border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Create Support Request') }}</h3>
-				</div>
 				<div class="card-body pt-5">									
 					<form id="" action="{{ route('user.support.store') }}" method="post" enctype="multipart/form-data">
 						@csrf

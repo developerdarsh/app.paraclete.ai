@@ -34,6 +34,8 @@ class UpdateController extends Controller
     {
         try {
             Artisan::call('migrate', ['--force' => true]);
+            Artisan::call('db:seed', ['--class'=> 'MenuSeeder', '--force' => true]);
+            Artisan::call('db:seed', ['--class'=> 'ChatbotAvatarsSeeder', '--force' => true]);
             Artisan::call('view:clear');
             Artisan::call('route:clear');
             Artisan::call('cache:clear');

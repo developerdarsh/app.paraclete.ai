@@ -161,11 +161,11 @@ a:hover {
   }
   
   .btn-primary {
-	font-size: 10px;
-	min-width: 100px;
-    padding: 7px 15px;
+	font-size: 12px;
+	min-width: 180px;
+    padding: 10px 15px;
 	border-radius: 35px;
-	text-transform: uppercase;
+	text-transform: none;
 	color: $white !important;
 	background-color: $btnMainBGColor;
 	border-color: $btnMainBGColor;
@@ -198,6 +198,11 @@ a:hover {
 		border-color: $btnMainBGColor;
 	  }
 	}
+  }
+
+  .btn-primary-small {
+	min-width: 100px;
+    padding: 7px 15px;
   }
   
   .show > .btn-primary.dropdown-toggle {
@@ -251,11 +256,11 @@ a:hover {
 
   .btn-cancel,
   .btn-cancel-black {
-	font-size: 10px;
-	min-width: 100px;
-    padding: 7px 15px;
+	font-size: 12px;
+	min-width: 180px;
+    padding: 10px 15px;
 	border-radius: 35px;
-	text-transform: uppercase;
+	text-transform: none;
 	color: $white !important;
 	background-color: $primaryTextColor;
 	border-color: $primaryTextColor;
@@ -278,12 +283,11 @@ a:hover {
   }
 
   .btn-cancel-upgrade {
-	font-size: 10px;
-	min-width: 80px;
-    padding-left: 15px;
-    padding-right: 15px;
+	font-size: 12px;
+	min-width: 200px;
+    padding: 10px 15px;
 	border-radius: 35px;
-	text-transform: uppercase;
+	text-transform: none;
 	color: $white !important;
 	background-color: $primaryTextColor;
 	border-color: $primaryTextColor;
@@ -320,12 +324,11 @@ a:hover {
   }
 
   .btn-confirm {
-	font-size: 10px;
-	min-width: 80px;
-    padding-left: 15px;
-    padding-right: 15px;
+	font-size: 12px;
+	min-width: 200px;
+    padding: 10px 15px;
 	border-radius: 35px;
-	text-transform: uppercase;
+	text-transform: none;
 	color: $white !important;
 	background-color: $btnCancelBGColor;
 	border-color: $btnCancelBGColor;

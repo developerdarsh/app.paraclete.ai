@@ -6,7 +6,7 @@
     }
 
     .app-sidebar {
-      left: 250px;
+      left: 270px;
     }
 
     .app-sidebar__overlay {
@@ -75,7 +75,10 @@
   transition: margin-left 0.3s ease;
 
   .side-app {
-    padding: 20px 2rem 0 2rem;
+    padding: 20px 0 0 0;
+    max-width: 1320px;
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
@@ -89,7 +92,7 @@
 
 @media (min-width: 768px) {
   .app-content {
-    margin-left: 250px;
+    margin-left:270px;
     padding-bottom: 0.5rem;
   }
 }
@@ -135,20 +138,19 @@
   left: 0;
   right: 0;
   top: 0;
-  width: 100%;
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
   z-index: 999;
   padding-right: 15px;
   padding: 0.75rem 0;
-  box-shadow: $small-card-shadow;
+  border-bottom: 1px solid #ebecf1;
 }
 
 @media (min-width: 768px) {
   .app-header {
     padding-right: 20px;
-    padding-left: 250px;
+    margin-left: 270px;
   }
 
   .sidebar-mini.sidenav-toggled .app-header {
@@ -185,7 +187,7 @@
     -ms-flex: 0 0 auto;
     flex: 0 0 auto;
     display: block;
-    width: 250px;
+    width: 270px;
   }
 }
 
@@ -204,6 +206,21 @@
     padding-top: 7px!important;
   }
 
+  position: absolute;
+  border-radius: 50%;
+  width: 1.5rem;
+  height: 1.5rem;
+  line-height: 1;
+  background: $btnPrimaryBGColorSuperLight;
+  right: -0.7rem;
+  top: 1.5rem;
+
+  &:focus, &:hover {
+    background: $btnPrimaryBGColorLight;
+  }
+}
+
+.app-sidebar__toggle2 {
   margin: 5px;
   padding: 0px 18px 0 10px;
   text-align: center;
@@ -230,6 +247,16 @@
     order: -1;
   }
 }
+
+.app-sidebar__toggle2 {
+	display: none;
+  }
+  
+  @media (max-width: 576px) {
+	.app-sidebar__toggle2 {
+	  display: block;
+	}
+  }
 
 .app-nav {
   display: -webkit-box;
@@ -374,7 +401,7 @@
   bottom: 0;
   left: 0;
   margin-top: 0px;
-  width: 250px;
+  width: 270px;
   max-height: 100%;
   z-index: 1000;
   background: $white !important;
@@ -474,8 +501,9 @@
 .side-menu {
   margin-bottom: 0;
   padding-bottom: 40px;
-  margin-top:74px;
-  border-top: 1px solid #ebecf1;
+  margin-top:71px;
+  padding-top: 0.1px;
+  border-right: 1px solid #ebecf1;
 }
 
 .side-menu__item {
@@ -486,24 +514,25 @@
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center;
-  padding: 2.5px 22px 3px 13px;
+  padding-left: 0.5rem;
   font-size: 14px;
   font-weight: 400;
   transition: border-left-color 0.2s ease, background-color 0.2s ease;
   color: #344050;
-  margin: 0px 5px 0px 0px;
-  height: 46px;
+  margin: 2px 10px;
+  height: 38px;
+  border-radius: 8px;
 
   .angle {
     font-size: 10px!important;
     opacity: 0.9;
+    margin-right: 1rem;
   }
 
   &:hover, &:focus {
     text-decoration: none;
-    background: $body-background;
-    color: $text-color;
-    border-left: 3px solid #007BFF;
+    background: $btnPrimaryBGColorLight;
+    color: $primaryTextActiveColor;
     transition: border-left 0.2s ease-in-out, color 0.2s ease;
   }
 
@@ -517,9 +546,8 @@
   }
 
   &.active {
-    color: $text-color;
-    background: $body-background;
-    border-left: 3px solid #007BFF;
+    color: $primaryTextActiveColor;
+    background: $btnPrimaryBGColorLight;
 
     .side-menu__icon {
       color: $primaryTextActiveColor;
@@ -871,7 +899,7 @@
 
   .sidebar-mini.sidenav-toggled.sidenav-toggled1 {
     .app-sidebar {
-      width: 250px;
+      width: 270px;
       -webkit-transition: left 0.3s ease, width 0.3s ease;
       transition: left 0.3s ease, width 0.3s ease;
 	  max-height:100%;
@@ -1308,7 +1336,7 @@
   }
 
   footer.footer {
-    padding: 1.25rem 1.25rem 1.25rem 250px;
+    padding: 1.25rem 1.25rem 1.25rem 270px;
   }
 
   .sidenav-toggled footer.footer {
@@ -1335,7 +1363,7 @@
   }
 
   .header.top-header {
-    padding-left: 250px;
+    padding-left: 270px;
   }
 
   .sidenav-toggled {
@@ -1351,16 +1379,18 @@
 }
 
 .app-sidebar__logo {
+  backdrop-filter: blur(50px);
   padding: 13px 15px;
-  height: 74px; 
+  height: 71px; 
   text-align: center;
-  width: 250px;
+  width: 270px;
   z-index: 999999;
   position: fixed;
-  background: $white;
+  background: transparent;
   -webkit-transition: left 0.3s ease, width 0.3s ease;
   -o-transition: left 0.3s ease, width 0.3s ease;
   transition: left 0.3s ease, width 0.3s ease;
+  border-right: 1px solid $border;
 }
 
 .close-toggle {
@@ -1430,7 +1460,7 @@
     }
 
     &.sidenav-toggled1 .app-sidebar-help {
-      width: 250px;
+      width: 270px;
     }
   }
 
@@ -1451,7 +1481,7 @@
     }
 
     .app-sidebar__logo {
-      width: 250px;
+      width: 270px;
     }
   }
 }
@@ -1466,7 +1496,7 @@
   border-top: 1px solid $border;
   background: $white;
   z-index: 11;
-  width: 250px;
+  width: 270px;
 
   .header-icon {
     width: 30px;

@@ -22,11 +22,7 @@
 @section('content')	
 	<div class="row justify-content-center">
 		<div class="col-lg-10 col-md-12 col-sm-12">
-			<div class="card border-0">	
-				<div class="card-header">
-					<h3 class="card-title"><i class="fa-solid fa-microchip-ai mr-2 text-primary"></i>{{ __('Custom Template Generator') }}</h3>
-					<a href="{{ route('user.templates') }}" class="btn btn-cancel mr-2" style="margin-left: auto">{{ __('Back to Templates') }}</a>
-				</div>			
+			<div class="card border-0">				
 				<div class="card-body pt-5">
 					<form class="w-100" action="{{ route('user.templates.custom.store') }}" method="POST" enctype="multipart/form-data">
 						@csrf
@@ -136,7 +132,8 @@
 							</div>
 				
 							<div class="col-md-12 col-sm-12 text-center mb-2">
-								<button type="submit" class="btn btn-primary pl-6 pr-6">{{ __('Create Template') }}</button>	
+								<a href="{{ route('user.templates') }}" class="btn btn-cancel">{{ __('Return') }}</a>
+								<button type="submit" class="btn btn-primary pl-6 pr-6">{{ __('Create') }}</button>	
 							</div>	
 							
 						</div>
@@ -147,7 +144,7 @@
 
 
 		<div class="col-lg-10 col-md-12 col-sm-12 mt-4">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('My Custom Templates List') }}</h3>
 				</div>

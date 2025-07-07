@@ -4,77 +4,66 @@
 	<link href="{{URL::asset('plugins/sweetalert/sweetalert2.min.css')}}" rel="stylesheet" />
 	<!-- RichText CSS -->
 	<link href="{{URL::asset('plugins/richtext/richtext.min.css')}}" rel="stylesheet" />
-	<style>
- 	.info-btn-alt {
- 		font-size: 15px;
- 		background-color: rgb(126, 34, 206);
- 		color: rgb(255, 255, 255);
- 		padding-top: 0.5rem;
- 		padding-bottom: 0.5rem;
- 		padding-left: 1rem;
- 		padding-right: 1rem;
- 		border-radius: 0.5rem;
- 	}
- 	</style>
 @endsection
 
 @section('content')
 
 <form id="wizard-form" action="" method="post" enctype="multipart/form-data" class="mt-24"> 		
 	@csrf
-	<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div> 
-	<div class="row justify-content-center">	
+	<div class="row">	
 		<div class="col-sm-12 text-center">
 			<h3 class="card-title fs-20 mb-0 super-strong"><i class="fa-solid   fa-sparkles mr-2 text-primary"></i>{{ __('AI Article Wizard') }}</h3>
-			<div class="mb-4" id="balance-status">
+			<div class="mb-4 mt-2">
 				<x-balance-template />
 			</div>
 		</div>
 
-		<div class="col-lg-7 col-md-10 col-sm-12 mb-7">
-			<div class="wizard-nav">
-				<div class="wizard-nav-inner">					
-					<div class="row text-center justify-content-center">
-						<div class="col-3">
-							<div class="d-flex wizard-nav-text">
-								<div class="wizard-step-number current-step mr-3 fs-14" id="step-one-number">1</div>
-								<div class="wizard-step-title"><span class="font-weight-bold fs-14">{{ __('Get Ideas') }}</span> <br> <span class="text-muted wizard-step-title-number fs-11 float-left">{{ __('STEP 1') }}</span></div>
+		<div class="row justify-content-center">	
+			<div class="col-lg-7 col-md-10 col-sm-12 mb-7">
+				<div class="wizard-nav">
+					<div class="wizard-nav-inner">					
+						<div class="row text-center justify-content-center">
+							<div class="col-3">
+								<div class="d-flex wizard-nav-text">
+									<div class="wizard-step-number current-step mr-3 fs-14" id="step-one-number">1</div>
+									<div class="wizard-step-title"><span class="font-weight-bold fs-14">{{ __('Get Ideas') }}</span> <br> <span class="text-muted wizard-step-title-number fs-11 float-left">{{ __('STEP 1') }}</span></div>
+								</div>
+								<div>
+									<i class="fa-solid fa-chevrons-right wizard-nav-chevron" id="step-one-icon"></i>
+								</div>									
+							</div>	
+							<div class="col-3">
+								<div class="d-flex wizard-nav-text">
+									<div class="wizard-step-number mr-3 fs-14" id="step-two-number">2</div>
+									<div class="wizard-step-title responsive"><span class="font-weight-bold fs-14">{{ __('Outlines') }}</span> <br> <span class="text-muted wizard-step-title-number fs-11 float-left">{{ __('STEP 2') }}</span></div>
+								</div>	
+								<div>
+									<i class="fa-solid fa-chevrons-right wizard-nav-chevron" id="step-two-icon"></i>
+								</div>								
 							</div>
-							<div>
-								<i class="fa-solid fa-chevrons-right wizard-nav-chevron" id="step-one-icon"></i>
-							</div>									
-						</div>	
-						<div class="col-3">
-							<div class="d-flex wizard-nav-text">
-								<div class="wizard-step-number mr-3 fs-14" id="step-two-number">2</div>
-								<div class="wizard-step-title responsive"><span class="font-weight-bold fs-14">{{ __('Outlines') }}</span> <br> <span class="text-muted wizard-step-title-number fs-11 float-left">{{ __('STEP 2') }}</span></div>
-							</div>	
-							<div>
-								<i class="fa-solid fa-chevrons-right wizard-nav-chevron" id="step-two-icon"></i>
-							</div>								
-						</div>
-						<div class="col-3">
-							<div class="d-flex wizard-nav-text">
-								<div class="wizard-step-number mr-3 fs-14" id="step-three-number">3</div>
-								<div class="wizard-step-title"><span class="font-weight-bold fs-14">{{ __('Talking Points') }}</span> <br> <span class="text-muted wizard-step-title-number fs-11 float-left">{{ __('STEP 3') }}</span></div>
-							</div>	
-							<div>
-								<i class="fa-solid fa-chevrons-right wizard-nav-chevron" id="step-three-icon"></i>
-							</div>								
-						</div>
-						<div class="col-3">
-							<div class="d-flex wizard-nav-text">
-								<div class="wizard-step-number mr-3 fs-14" id="step-four-number">4</div>
-								<div class="wizard-step-title responsive"><span class="font-weight-bold fs-14">{{ __('Images') }}</span> <br> <span class="text-muted wizard-step-title-number fs-11 float-left">{{ __('STEP 4') }}</span></div>
-							</div>									
-						</div>
-					</div>					
-				</div>
-			</div>			
-			<a href="#" id="new-wizard" data-tippy-content="{{ __('New Article Wizard') }}"><i class="fa-solid fa-layer-plus"></i></a>			
+							<div class="col-3">
+								<div class="d-flex wizard-nav-text">
+									<div class="wizard-step-number mr-3 fs-14" id="step-three-number">3</div>
+									<div class="wizard-step-title"><span class="font-weight-bold fs-14">{{ __('Talking Points') }}</span> <br> <span class="text-muted wizard-step-title-number fs-11 float-left">{{ __('STEP 3') }}</span></div>
+								</div>	
+								<div>
+									<i class="fa-solid fa-chevrons-right wizard-nav-chevron" id="step-three-icon"></i>
+								</div>								
+							</div>
+							<div class="col-3">
+								<div class="d-flex wizard-nav-text">
+									<div class="wizard-step-number mr-3 fs-14" id="step-four-number">4</div>
+									<div class="wizard-step-title responsive"><span class="font-weight-bold fs-14">{{ __('Images') }}</span> <br> <span class="text-muted wizard-step-title-number fs-11 float-left">{{ __('STEP 4') }}</span></div>
+								</div>									
+							</div>
+						</div>					
+					</div>
+				</div>			
+				<a href="#" id="new-wizard" data-tippy-content="{{ __('New Article Wizard') }}"><i class="fa-solid fa-layer-plus"></i></a>			
+			</div>
 		</div>
 
-		<div class="row justify-content-center">
+		<div class="row">
 			<div class="col-lg-4 col-md-12 col-sm-12">
 				<div class="card border-0" id="all-wizard-options">
 					<div class="card-body p-5 pb-0">
@@ -396,10 +385,10 @@
 				</div>		
 			</div>
 
-			<div class="col-lg-6 col-md-12 col-sm-12" id="wizard-results-wrapper">
+			<div class="col-lg-7 col-md-12 col-sm-12" id="wizard-results-wrapper">
 				<div class="row">
 					<div class="col-sm-12">
-						<div class="card border-0 mb-2">
+						<div class="card mb-2">
 							<div class="card-body">
 								<div class="wizard-content-heading">
 									<div class="d-flex wizard-nav-text">
@@ -460,25 +449,6 @@
 		</div>
 	</div>
 </form>
-<div class="modal fade" id="info-alert-model" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog">
- 	<div class="modal-dialog modal-dialog-centered modal-xl">
- 		<div class="modal-content">
- 			<div class="modal-header">
- 				<h2></h2>
- 				<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
- 				<span aria-hidden="true">&times;</span>
- 				</button>
- 			</div>
- 			<div class="modal-body">
- 				<div class="row">
- 					<!--ARCADE EMBED START-->
- 						<div style="position: relative; padding-bottom: calc(56.25% + 41px); height: 0; width: 100%;"><iframe src="https://demo.arcade.software/JHDCTx4N4zckNvTaxunv?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true" title="AI Article Wizard" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; color-scheme: light;" ></iframe></div>
- 					<!--ARCADE EMBED END-->
- 				</div>
- 			</div>
- 		</div>
- 	</div>
-</div>
 @endsection
 
 @section('js')

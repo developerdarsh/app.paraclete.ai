@@ -12,7 +12,7 @@
 			<h6 class="mb-6 fs-12 text-muted">{{ __('Control all AI settings from one place') }}</h6>
 		</div>
 
-		<div class="col-lg-9 col-md-10 col-sm-12 mb-5">
+		<div class="col-lg-8 col-md-10 col-sm-12 mb-5">
 			<div class="templates-nav-menu">
 				<div class="template-nav-menu-inner">
 					<ul class="nav nav-tabs" id="myTab" role="tablist" style="padding: 3px">
@@ -33,9 +33,9 @@
 			</div>
 		</div>
 
-		<div class="col-lg-9 col-md-10 col-sm-12">
+		<div class="col-lg-10 col-md-12 col-sm-12">
 			<div class="card border-0">
-				<div class="card-body p-7">				
+				<div class="card-body p-5">				
 					<div class="tab-content" id="myTabContent">
 
 						<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
@@ -691,7 +691,7 @@
 												<div class="d-flex">
 													<h6 class="fs-15 font-weight-bold mb-3">{{ __('OpenAI') }}</h6>
 												</div>
-												<p class="fs-12 mb-0 text-muted">{{ __('AI Writer | Article Wizard | Smart Editor | AI Images | AI Chat | AI Code')}}</p>
+												<p class="fs-12 mb-0 text-muted">{{ __('AI Writer | Article Wizard | Smart Editor | AI Images | AI Chat')}}</p>
 											</div>
 										</div>							
 									</div>

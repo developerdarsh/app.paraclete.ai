@@ -5,12 +5,14 @@ namespace App\View\Components;
 use Illuminate\View\Component;
 use App\Models\SubscriptionPlan;
 use App\Models\FineTuneModel;
+use App\Models\ApiManagement;
 
 class OpenaiModelsChat extends Component
 {
     public $models;
     public $fine_tunes;
     public $default_model;
+    public $model_list;
 
     /**
      * Create a new component instance.
@@ -32,6 +34,33 @@ class OpenaiModelsChat extends Component
         $this->models = $models;
         $this->fine_tunes = FineTuneModel::all();
         $this->default_model = auth()->user()->default_model_chat;
+
+        $models = array_map('trim', $models); 
+
+        $lists = ApiManagement::get(); 
+
+        foreach ($lists as $list) {
+            if($list->vendor == 'openai') {
+                foreach ($models as $model) {                
+                    if ($model == $list->model) {
+                        $checked = ($this->default_model == $list->model) ? 'checked': '';
+                        $newSpan = ($list->new) ? '<span class="chat-new-model-info">'. __('New').'</span>' : '';
+                        $this->model_list .= '<div class="col-md-4 col-sm-12">
+                                                <input type="radio" id="control_'.$list->id.'" name="model" onclick="handleClick(this);" value="'. $list->model .'"' . $checked . '>
+                                                <label for="control_'.$list->id.'">
+                                                    <h6 class="pt-3 font-weight-bold">
+                                                        '. $list->logo . '
+                                                        '. __($list->title) . '
+                                                    </h6>
+                                                    <p class="text-muted">'. __($list->description) .'</p>
+                                                </label>
+                                                ' . $newSpan . '
+                                            </div>';
+                    }
+                }
+            }
+                
+        }    
     }
 
     /**

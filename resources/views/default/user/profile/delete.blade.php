@@ -24,7 +24,7 @@
 	<!-- EDIT USER PROFILE PAGE -->
 	<div class="row">
 		<div class="col-xl-3 col-lg-4 col-sm-12">
-			<div class="card border-0" id="dashboard-background">
+			<div class="card  " id="dashboard-background">
 				<div class="widget-user-image overflow-hidden mx-auto mt-5"><img alt="User Avatar" class="rounded-circle" src="@if(auth()->user()->profile_photo_path){{ asset(auth()->user()->profile_photo_path) }} @else {{ theme_url('img/users/avatar.jpg') }} @endif"></div>
 				<div class="card-body text-center">
 					<div>
@@ -96,7 +96,7 @@
 			<form method="POST" class="w-100" action="{{ route('user.profile.delete.account') }}" enctype="multipart/form-data">
 				@csrf
 
-				<div class="card border-0">
+				<div class="card  ">
 					<div class="card-header">
 						<h3 class="card-title"><i class="   fa-solid fa-user-xmark mr-2 text-danger"></i>{{ __('Delete Account') }}</h3>
 					</div>
@@ -118,7 +118,7 @@
 							</div>
 							
 						</div>
-						<div class="card-footer border-0 text-center mb-2 pr-0">
+						<div class="card-footer   text-center mb-2 pr-0">
 							<button type="submit" class="btn btn-primary" style="background:red; border-color:red">{{ __('Yes, Delete My Account') }}</button>							
 						</div>					
 					</div>				
