@@ -317,7 +317,8 @@ class LicenseController extends Controller
 	}
 
 	public function download_update($update_id, $type, $version, $license = false, $client = false, $db_for_import = false){ 
-		if(!empty($license)&&!empty($client)){
+		// ini_set('memory_limit','512M');
+        if(!empty($license)&&!empty($client)){
 			$data_array =  array(
 				"license_file" => null,
 				"license_code" => $license,
