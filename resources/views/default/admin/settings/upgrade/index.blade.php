@@ -84,6 +84,31 @@
 
 				<div class="changelog">
 					<div class="changelog-version mt-5">
+						<span class="version-name">{{ __('Version') }} 7.7</span> - <span class="fs-14 font-weight-semibold">2.07.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">SEO Tool extension (Paid)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New Claude Sonnet 4 | Opus 4 models added</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Google Veo 3 added (AI Text to Video)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Kling 2.1 Standard | Pro | Master added (AI Image to Video) & (AI Text to Video)</span></span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">External Chatbot updated (v1.1)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Wallet System disable option added (v1.1)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Image to Video updated (v1.6)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Text to Video updated (v1.4)</span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Chat Share history deletion improved (v1.3)</span></span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Chat history deletion improved</span></span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">External Chatbot credit consumption fixed</span></span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">External Chatbot conversation list view fixed</span></span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">External Chatbot history view minor issue fixed</span></span></li>
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
 						<span class="version-name">{{ __('Version') }} 7.6</span> - <span class="fs-14 font-weight-semibold">08.06.2025</span>
 					</div>   
 					<div class="changelog-description mt-6">     
@@ -99,8 +124,8 @@
 							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Email notifications for Wallet transfers added</span></li>
 							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Dark mode for Default theme improved</span></li>
 							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Theme switch performance improved</span></li>
-							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New openai models view fixed for AI Chat</span></span></li>
-							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New openai models fixed for custom templates</span></span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">New openai models view fixed for AI Chat</span></span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">New openai models fixed for custom templates</span></span></li>
 						</ul>
 					</div>
 				</div>

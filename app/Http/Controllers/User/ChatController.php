@@ -369,7 +369,7 @@ class ChatController extends Controller
 
 
         # Start Anthropic task
-        if (in_array($model, ['claude-3-7-sonnet-20250219', 'claude-3-opus-20240229', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022'])) {
+        if (in_array($model, ['claude-3-7-sonnet-20250219', 'claude-3-opus-20240229', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-opus-4-20250514', 'claude-sonnet-4-20250514'])) {
             if (config('settings.personal_claude_api') == 'allow') {
                 $anthropic_api = auth()->user()->personal_claude_key;        
             } elseif (!is_null(auth()->user()->plan_id)) {
@@ -2625,13 +2625,15 @@ class ChatController extends Controller
 	public function delete(Request $request) 
     {
         if ($request->ajax()) {
-
+Log::info(request('conversation_id'));
             $chat = ChatConversation::where('conversation_id', request('conversation_id'))->first(); 
-
+Log::info($chat);
             if ($chat) {
                 if ($chat->user_id == auth()->user()->id){
 
                     $chat->delete();
+
+                    ChatHistory::where('conversation_id', request('conversation_id'))->delete();
 
                     if (session()->has('conversation_id')) {
                         session()->forget('conversation_id');
@@ -3097,6 +3099,12 @@ class ChatController extends Controller
     {
 
         $shared = ChatShare::where('uuid', $uuid)->first();
+
+        $conversation = ChatConversation::where('conversation_id', $shared->conversation_id)->first();
+
+        if (!$conversation) {
+            abort(404);
+        }
         
         if ($shared) {
             if ($shared->availability == 'limited') {

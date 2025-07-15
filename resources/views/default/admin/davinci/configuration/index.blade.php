@@ -64,6 +64,8 @@
 												<option value="o3-mini" @if ( config('settings.default_model_admin')  == 'o3-mini') selected @endif>{{ __('o3 mini') }}</option>
 												<option value="o3" @if ( config('settings.default_model_admin')  == 'o3') selected @endif>{{ __('o3') }}</option>
 												<option value="o4-mini" @if ( config('settings.default_model_admin')  == 'o4-mini') selected @endif>{{ __('o4 mini') }}</option>
+												<option value="claude-opus-4-20250514" @if ( config('settings.default_model_admin')  == 'claude-opus-4-20250514') selected @endif>{{ __('Claude 4 Opus') }}</option>
+												<option value="claude-sonnet-4-20250514" @if ( config('settings.default_model_admin')  == 'claude-sonnet-4-20250514') selected @endif>{{ __('Claude 4 Sonnet') }}</option>
 												<option value="claude-3-opus-20240229" @if ( config('settings.default_model_admin')  == 'claude-3-opus-20240229') selected @endif>{{ __('Claude 3 Opus') }}</option>
 												<option value="claude-3-7-sonnet-20250219" @if ( config('settings.default_model_admin')  == 'claude-3-7-sonnet-20250219') selected @endif>{{ __('Claude 3.7 Sonnet') }}</option>
 												<option value="claude-3-5-sonnet-20241022" @if ( config('settings.default_model_admin')  == 'claude-3-5-sonnet-20241022') selected @endif>{{ __('Claude 3.5v2 Sonnet') }}</option>
@@ -1543,6 +1545,24 @@
 									</div>
 								@endif
 
+								@if (App\Services\HelperService::extensionWallet())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/wallet')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/payments/wallet.avif')}}" class="mr-4" alt="" style="width: 40px;">												
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Wallet System') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Wallet System Configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
 							</div>
 						</div>
 
@@ -1605,6 +1625,8 @@
 														<option value="o3-mini" @if ( config('settings.default_model_user_bot')  == 'o3-mini') selected @endif>{{ __('o3 mini') }}</option>
 														<option value="o3" @if ( config('settings.default_model_user_bot')  == 'o3') selected @endif>{{ __('o3') }}</option>														
 														<option value="o4-mini" @if ( config('settings.default_model_user_bot')  == 'o4-mini') selected @endif>{{ __('o4 mini') }}</option>														
+														<option value="claude-opus-4-20250514" @if ( config('settings.default_model_user_bot')  == 'claude-opus-4-20250514') selected @endif>{{ __('Claude 4 Opus') }}</option>
+														<option value="claude-sonnet-4-20250514" @if ( config('settings.default_model_user_bot')  == 'claude-sonnet-4-20250514') selected @endif>{{ __('Claude 4 Sonnet') }}</option>
 														<option value="claude-3-opus-20240229" @if ( config('settings.default_model_user_bot')  == 'claude-3-opus-20240229') selected @endif>{{ __('Claude 3 Opus') }}</option>
 														<option value="claude-3-7-sonnet-20250219" @if ( config('settings.default_model_user_bot')  == 'claude-3-7-sonnet-20250219') selected @endif>{{ __('Claude 3.7 Sonnet') }}</option>
 														<option value="claude-3-5-sonnet-20241022" @if ( config('settings.default_model_user_bot')  == 'claude-3-5-sonnet-20241022') selected @endif>{{ __('Claude 3.5v2 Sonnet') }}</option>
@@ -1654,6 +1676,8 @@
 														<option value="o3-mini" @if ( config('settings.default_model_user_template')  == 'o3') selected @endif>{{ __('o3 mini') }}</option>
 														<option value="o3" @if ( config('settings.default_model_user_template')  == 'o3') selected @endif>{{ __('o3') }}</option>
 														<option value="o4-mini" @if ( config('settings.default_model_user_template')  == 'o4-mini') selected @endif>{{ __('o4 mini') }}</option>
+														<option value="claude-opus-4-20250514" @if ( config('settings.default_model_user_template')  == 'claude-opus-4-20250514') selected @endif>{{ __('Claude 4 Opus') }}</option>
+														<option value="claude-sonnet-4-20250514" @if ( config('settings.default_model_user_template')  == 'claude-sonnet-4-20250514') selected @endif>{{ __('Claude 4 Sonnet') }}</option>
 														<option value="claude-3-opus-20240229" @if ( config('settings.default_model_user_template')  == 'claude-3-opus-20240229') selected @endif>{{ __('Claude 3 Opus') }}</option>
 														<option value="claude-3-7-sonnet-20250219" @if ( config('settings.default_model_user_template')  == 'claude-3-7-sonnet-20250219') selected @endif>{{ __('Claude 3.7 Sonnet') }}</option>
 														<option value="claude-3-5-sonnet-20241022" @if ( config('settings.default_model_user_template')  == 'claude-3-5-sonnet-20241022') selected @endif>{{ __('Claude 3.5v2 Sonnet') }}</option>
@@ -1703,6 +1727,8 @@
 														<option value="o3-mini"  @foreach ($all_models as $key=>$value) @if($value == 'o3-mini') selected @endif @endforeach>{{ __('o3 mini') }}</option>
 														<option value="o3"  @foreach ($all_models as $key=>$value) @if($value == 'o3') selected @endif @endforeach>{{ __('o3') }}</option>
 														<option value="o4-mini"  @foreach ($all_models as $key=>$value) @if($value == 'o4-mini') selected @endif @endforeach>{{ __('o4 mini') }}</option>
+														<option value="claude-opus-4-20250514" @foreach ($all_models as $key=>$value) @if($value == 'claude-opus-4-20250514') selected @endif @endforeach>{{ __('Claude 4 Opus') }}</option>
+														<option value="claude-sonnet-4-20250514" @foreach ($all_models as $key=>$value) @if($value == 'claude-sonnet-4-20250514') selected @endif @endforeach>{{ __('Claude 4 Sonnet') }}</option>
 														<option value="claude-3-opus-20240229" @foreach ($all_models as $key=>$value) @if($value == 'claude-3-opus-20240229') selected @endif @endforeach>{{ __('Claude 3 Opus') }}</option>
 														<option value="claude-3-7-sonnet-20250219" @foreach ($all_models as $key=>$value) @if($value == 'claude-3-7-sonnet-20250219') selected @endif @endforeach>{{ __('Claude 3.7 Sonnet') }}</option>
 														<option value="claude-3-5-sonnet-20241022" @foreach ($all_models as $key=>$value) @if($value == 'claude-3-5-sonnet-20241022') selected @endif @endforeach>{{ __('Claude 3.5v2 Sonnet') }}</option>

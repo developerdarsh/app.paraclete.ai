@@ -34,6 +34,10 @@
             <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | o3') }}</option>
         @elseif (trim($model) == 'o4-mini')
             <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('OpenAI | o4 mini') }}</option>
+        @elseif (trim($model) == 'claude-opus-4-20250514')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('Anthropic | Claude 4 Opus') }}</option>
+        @elseif (trim($model) == 'claude-sonnet-4-20250514')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('Anthropic | Claude 4 Sonnet') }}</option>
         @elseif (trim($model) == 'claude-3-opus-20240229')
             <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('Anthropic | Claude 3 Opus') }}</option>
         @elseif (trim($model) == 'claude-3-7-sonnet-20250219')

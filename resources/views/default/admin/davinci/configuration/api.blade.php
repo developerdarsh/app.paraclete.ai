@@ -64,7 +64,7 @@
 
 						<h6 class="font-weight-bold text-center mb-2 mt-6 fs-14">{{ __('OpenAI Models') }}</h6>
 
-						<div class="row pl-5 pr-5">	
+						<div class="row">	
 							@foreach ($models as $model)	
 								@if ($model->vendor == 'openai')					
 									<div class="col-lg-12 col-md-12 col-sm-12 no-gutters mt-5">

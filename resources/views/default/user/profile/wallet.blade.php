@@ -38,11 +38,15 @@
 				<div class="card-footer p-0">
 					<div class="row" id="profile-pages">
 						@if (App\Services\HelperService::extensionSaaS())
-							<div class="col-sm-12">
-								<div class="text-center pt-4">
-									<a href="{{ route('user.wallet') }}" class="fs-13 text-primary"><i class="fa-solid fa-wallet mr-1"></i> {{ __('My Wallet') }}</a>
-								</div>
-							</div>
+							@if (App\Services\HelperService::extensionWallet())
+								@if (App\Services\HelperService::extensionWalletFeature())
+									<div class="col-sm-12">
+										<div class="text-center pt-4">
+											<a href="{{ route('user.wallet') }}" class="fs-13 text-primary"><i class="fa-solid fa-wallet mr-1"></i> {{ __('My Wallet') }}</a>
+										</div>
+									</div>
+								@endif
+							@endif
 						@endif
 						<div class="col-sm-12">
 							<div class="text-center pt-4">

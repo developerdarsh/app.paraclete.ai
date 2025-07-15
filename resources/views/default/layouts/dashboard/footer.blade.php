@@ -165,6 +165,19 @@
     toastr.options.hideMethod = 'slideUp';
     toastr.options.progressBar = true;
 
+    // toastr.options = {
+    //     "newestOnTop": true,
+    //     "positionClass": "toast-bottom-center",
+    //     "showDuration": "100",
+    //     "hideDuration": "500",
+    //     "timeOut": "100",
+    //     "extendedTimeOut": "100",
+    //     "showEasing": "swing",
+    //     "hideEasing": "swing",
+    //     "showMethod": "slideUp",
+    //     "hideMethod": "slideDown"
+    //     }
+
 
     // Theme toggling functionality
     document.addEventListener('DOMContentLoaded', function() {

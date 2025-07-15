@@ -738,7 +738,7 @@ class TemplateController extends Controller
         }
 
         # Start Anthropic task
-        if (in_array($model, ['claude-3-7-sonnet-20250219', 'claude-3-opus-20240229', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022'])) {
+        if (in_array($model, ['claude-3-7-sonnet-20250219', 'claude-3-opus-20240229', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-opus-4-20250514', 'claude-sonnet-4-20250514'])) {
             if (config('settings.personal_claude_api') == 'allow') {
                 $anthropic_api = auth()->user()->personal_claude_key;        
             } elseif (!is_null(auth()->user()->plan_id)) {

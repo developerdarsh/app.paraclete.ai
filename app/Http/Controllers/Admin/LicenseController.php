@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Admin\ExtensionController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use ZanySoft\Zip\Zip;
@@ -48,6 +49,7 @@ class LicenseController extends Controller
 	private $current_path;
 	private $root_path;
 	private $license_file;
+	private $ext;
 
 	/**
      * WARNING! DO NOT EDIT/ALTER ANY PART OF THIS CODE, 
@@ -59,12 +61,13 @@ class LicenseController extends Controller
 		$this->api_url = 'https://license.berkine.space/';
 		$this->api_key = 'C8799890D43B0990004D';
 		$this->api_language = 'english';
-		$this->current_version = 'v7.5';
+		$this->current_version = 'v7.7';
 		$this->verify_type = 'envato';
 		$this->verification_period = 365;
 		$this->current_path = realpath(__DIR__);
 		$this->root_path = base_path();
 		$this->license_file = base_path() . '/.lic';
+		$this->ext = new ExtensionController();
 	}
 
 	public function check_local_license_exist(){
@@ -155,6 +158,11 @@ class LicenseController extends Controller
 		);
 		$response = json_decode($get_data, true);
 		return $response;
+	}
+
+	public function version_metadata(){
+		$get_data = $this->ext->get_metadata();
+		return $get_data;
 	}
 
 	public function get_latest_version(){
@@ -313,12 +321,12 @@ class LicenseController extends Controller
 			json_encode($data_array)
 		);
 		$response = json_decode($get_data, true);
+
 		return $response;
 	}
 
 	public function download_update($update_id, $type, $version, $license = false, $client = false, $db_for_import = false){ 
-		// ini_set('memory_limit','512M');
-        if(!empty($license)&&!empty($client)){
+		if(!empty($license)&&!empty($client)){
 			$data_array =  array(
 				"license_file" => null,
 				"license_code" => $license,
@@ -337,13 +345,14 @@ class LicenseController extends Controller
 		}
 
 		$version = str_replace(".", "_", $version);
+		$version_id = $this->ext->get_version($update_id);
+		$source_size = $this->api_url."api/get_update_size/main/".$version_id; 
 
-		$source_size = $this->api_url."api/get_update_size/main/".$update_id; 
 		Log::info(LB_TEXT_PREPARING_MAIN_DOWNLOAD);
 
 		$temp_progress = '';
 		$ch = curl_init();
-		$source = $this->api_url."api/download_update/main/".$update_id; 
+		$source = $this->api_url."api/download_update/main/".$version_id; 
 		curl_setopt($ch, CURLOPT_URL, $source);
 		curl_setopt($ch, CURLOPT_POST, 1);
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $data_array);

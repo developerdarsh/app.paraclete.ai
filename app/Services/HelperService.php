@@ -894,6 +894,7 @@ class HelperService
             case 'ai_avatar': return self::checkAvatarAccess(); break;            
             case 'voice_isolator': return self::checkVoiceIsolatorAccess(); break;            
             case 'external_chatbot': return self::checkExternalChatbotAccess(); break;            
+            case 'seo_tool': return self::checkSEOToolAccess(); break;            
             case 'team_members': return self::checkTeamMemberAccess(); break;
             case 'subscription_plans':            
             case 'finance_management': 
@@ -1630,6 +1631,18 @@ class HelperService
         }
     }
     // ===================================================================================
+
+
+    // EXTERNAL CHATBOT FEATURE
+    // ===================================================================================
+    public static function checkSEOToolAccess() 
+    {
+         if (self::extensionSEO()) {
+            return self::checkSEOFeature();
+        } else {
+            return false;
+        }
+    }
 
 
     // SPEECH PRO FEATURE
@@ -2877,6 +2890,30 @@ class HelperService
 
         if ($extension) {
             return ($extension->installed) ? true : false;
+        } else {
+            return false;
+        }
+    }
+
+    public static function extensionWalletFeature()
+    {   
+        $extension = Extension::where('slug', 'wallet')->first();
+        $settings = ExtensionSetting::first();
+
+        if ($extension) {
+            if ($extension->installed) {
+                if (isset($settings->wallet_feature)) {
+                    if ($settings->wallet_feature) {
+                        return true;                        
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
         } else {
             return false;
         }

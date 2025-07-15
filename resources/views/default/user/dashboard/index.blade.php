@@ -56,20 +56,24 @@
 		</div>
 
 		<div class="col-lg-3 col-md-12">
-			@if (App\Services\HelperService::extensionSaaS())			
-				<div class="col-sm-12">
-					<div class="card mb-3"  style="height: 100%;">
-						<div class="card-body p-4">
-							<div class="row" style="height: 100%">
-								<div class="col-sm-12 text-center mt-auto mb-auto">
-									<h6 class="fs-14 text-muted"><i class="fa-solid fa-badge-dollar mr-2"></i>{{ __('Your Wallet Balance') }}</h6>
-									<h4 class="mb-3 fs-20 font-weight-800 text-muted">{{ number_format(auth()->user()->wallet) }} {!! config('payment.default_system_currency_symbol') !!}</h4>
-									<a href="{{ route('user.wallet') }}" class="btn btn-primary custom-pricing-plan-button" style="text-transform: none;">{{ __('My Wallet') }} <i class="fa-regular fa-chevron-right fs-8 ml-1"></i></a>
-								</div>							
-							</div>		
+			@if (App\Services\HelperService::extensionSaaS())
+				@if (App\Services\HelperService::extensionWallet())
+					@if (App\Services\HelperService::extensionWalletFeature())			
+						<div class="col-sm-12">
+							<div class="card mb-3"  style="height: 100%;">
+								<div class="card-body p-4">
+									<div class="row" style="height: 100%">
+										<div class="col-sm-12 text-center mt-auto mb-auto">
+											<h6 class="fs-14 text-muted"><i class="fa-solid fa-badge-dollar mr-2"></i>{{ __('Your Wallet Balance') }}</h6>
+											<h4 class="mb-3 fs-20 font-weight-800 text-muted">{{ number_format(auth()->user()->wallet) }} {!! config('payment.default_system_currency_symbol') !!}</h4>
+											<a href="{{ route('user.wallet') }}" class="btn btn-primary custom-pricing-plan-button" style="text-transform: none;">{{ __('My Wallet') }} <i class="fa-regular fa-chevron-right fs-8 ml-1"></i></a>
+										</div>							
+									</div>		
+								</div>
+							</div>
 						</div>
-					</div>
-				</div>	
+					@endif
+				@endif	
 				@if (config('payment.referral.enabled') == 'on')
 					<div class="col-sm-12">
 						<div class="card mb-3">
