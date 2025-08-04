@@ -22,15 +22,14 @@
 
 @section('content')						
 	<div class="row justify-content-center">
-		<div class="col-lg-6 col-md-6 col-xm-12">
+		<div class="col-lg-6 col-md-6 col-sm-12">
 			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Edit Gift Card') }}: <span class="text-info">{{ $id->code }}</span></h3>
-				</div>
-				<div class="card-body pt-5">									
+				<div class="card-body">									
 					<form action="{{ route('admin.finance.gifts.update', $id) }}" method="POST" enctype="multipart/form-data">
 						@method('PUT')
 						@csrf
+
+						<p class="text-center fs-14 text-muted mb-6">{{__('Edit the gift card by changing needed fields')}}</p>
 
 						<div class="row">
 

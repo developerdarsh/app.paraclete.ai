@@ -33,7 +33,7 @@
 			</div>                                               
 		</div>
 		<div class="col-lg col-md-2 col-sm-12">
-			<div class="card overflow-hidden border-0">
+			<div class="card  ">
 				<div class="card-body">
 					<div class="d-flex align-items-end justify-content-between">
 						<div>
@@ -45,7 +45,7 @@
 			</div>
 		</div>
 		<div class="col-lg col-md-2 col-sm-12">
-			<div class="card overflow-hidden border-0">
+			<div class="card  ">
 				<div class="card-body">
 					<div class="d-flex align-items-end justify-content-between">
 						<div>
@@ -57,7 +57,7 @@
 			</div>
 		</div>
 		<div class="col-lg col-md-2 col-sm-12">
-			<div class="card overflow-hidden border-0">
+			<div class="card  ">
 				<div class="card-body">
 					<div class="d-flex align-items-end justify-content-between">
 						<div>
@@ -70,7 +70,7 @@
 		</div>
 
 		<div class="col-lg-12 col-md-12 col-sm-12 mt-3">
-			<div class="card border-0" id="admin-dashboard-panels">
+			<div class="card  " id="admin-dashboard-panels">
 				<div class="card-body p-7">
 
 					<div class="row">
@@ -100,8 +100,8 @@
 		</div>	
 
 		<div class="col-md-4 col-sm-12 mt-3">
-			<div class="card overflow-hidden border-0 dashboard-fixed-457" id="admin-dashboard-panels">
-				<div class="card-header pt-4 pb-4 border-0">
+			<div class="card   dashboard-fixed-457" id="admin-dashboard-panels">
+				<div class="pl-5 pt-4 pb-4  ">
 					<div class="mt-3">
 						<h3 class="card-title mb-2"><i class="fa-solid fa-box-dollar mr-2 text-muted"></i>{{ __('Revenue Source') }}</h3>
 					</div>
@@ -121,8 +121,8 @@
 		</div>
 
 		<div class="col-md-4 col-sm-12 mt-3">
-			<div class="card overflow-hidden border-0 dashboard-fixed-457" id="admin-dashboard-panels">
-				<div class="card-header pt-4 pb-4 border-0">
+			<div class="card   dashboard-fixed-457" id="admin-dashboard-panels">
+				<div class="pl-5 pt-4 pb-4  ">
 					<div class="mt-3">
 						<h3 class="card-title mb-2"><i class="fa-solid fa-microchip-ai mr-2 text-muted"></i>{{ __('AI Cost Breakdown') }} (USD)</h3>
 					</div>
@@ -142,8 +142,8 @@
 		</div>
 
 		<div class="col-md-4 col-sm-12 mt-3">
-			<div class="card overflow-hidden border-0 dashboard-fixed-457" id="admin-dashboard-panels">
-				<div class="card-header pt-4 pb-4 border-0">
+			<div class="card   dashboard-fixed-457" id="admin-dashboard-panels">
+				<div class="pl-5 pt-4 pb-4  ">
 					<div class="mt-3">
 						<h3 class="card-title mb-2"><i class="fa-solid fa-users-viewfinder mr-2 text-muted"></i>{{ __('Users vs Subscribers') }}</h3>
 					</div>
@@ -164,8 +164,8 @@
 		</div>
 
 		<div class="col-lg-6 col-md-12 col-sm-12 mt-3">
-			<div class="card border-0 pb-5 dashboard-fixed-457" id="admin-dashboard-panels">
-				<div class="card-header pt-4 pb-4 border-0">
+			<div class="card   pb-5 dashboard-fixed-457" id="admin-dashboard-panels">
+				<div class="pl-5  pt-4 pb-4  ">
 					<div class="mt-3">
 						<h3 class="card-title mb-2"><i class="fa-solid fa-credit-card-front mr-2 text-muted"></i>{{ __('Latest Transactions') }}</h3>
 						<div class="btn-group dashboard-menu-button">
@@ -222,8 +222,8 @@
 		</div>
 
 		<div class="col-lg-6 col-md-12 col-sm-12 mt-3">
-			<div class="card border-0 pb-5 dashboard-fixed-457" id="admin-dashboard-panels">
-				<div class="card-header pt-4 pb-4 border-0">
+			<div class="card   pb-5 dashboard-fixed-457" id="admin-dashboard-panels">
+				<div class="pl-5 pt-4 pb-4  ">
 					<div class="mt-3">
 						<h3 class="card-title mb-2"><i class="fa-solid fa-credit-card-front mr-2 text-muted"></i>{{ __('Cost per AI Model') }} (USD)</h3>
 					</div>
@@ -239,8 +239,8 @@
 		</div>
 
 		<div class="col-lg-6 col-md-12 col-sm-12 mt-3">
-			<div class="card border-0 pb-5 dashboard-fixed-457" id="admin-dashboard-panels">
-				<div class="card-header pt-4 pb-4 border-0">
+			<div class="card  pb-5 dashboard-fixed-457" id="admin-dashboard-panels">
+				<div class="pl-5 pt-4 pb-4  ">
 					<div class="mt-3">
 						<h3 class="card-title mb-2"><i class="fa-solid fa-badge-percent mr-2 text-muted"></i>{{ __('Revenue per Plan') }}</h3>
 						<div class="btn-group dashboard-menu-button">
@@ -308,8 +308,8 @@
 		</div>
 
 		<div class="col-lg-6 col-md-12 col-sm-12 mt-3">
-			<div class="card border-0 pb-5 dashboard-fixed-457" id="admin-dashboard-panels">
-				<div class="card-header pt-4 pb-4 border-0">
+			<div class="card   pb-5 dashboard-fixed-457" id="admin-dashboard-panels">
+				<div class="pl-5 pt-4 pb-4  ">
 					<div class="mt-3">
 						<h3 class="card-title mb-2"><i class="fa-solid fa-credit-card-front mr-2 text-muted"></i>{{ __('Pending Approvals') }}</h3>
 						<div class="btn-group dashboard-menu-button">

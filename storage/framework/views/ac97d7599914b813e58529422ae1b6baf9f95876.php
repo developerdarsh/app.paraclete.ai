@@ -65,7 +65,8 @@
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
-	<div class="row mb-6">	
+	<!-- USER PROFILE PAGE -->
+	<div class="row">
 		<div class="card-body pt-5 pb-5">
  			<div class="col-lg-12 col-md-12">
  				<div class="card border-0">
@@ -92,7 +93,8 @@
  					</div>
  				</div>
  			</div>
- 		</div>	
+ 		</div>
+	<div class="row mb-6">		
 		<div class="col-lg-3 col-md-12">
 			<div class="card border-0" style="height: 100%;">
 				<div class="card-body pt-4 pb-0 pl-6 pr-6 custom-banner-bg" <?php if(!App\Services\HelperService::extensionSaaS()): ?> style="height: 165px" <?php endif; ?>>
@@ -127,20 +129,24 @@
 		</div>
 
 		<div class="col-lg-3 col-md-12">
-			<?php if(App\Services\HelperService::extensionSaaS()): ?>			
-				<div class="col-sm-12">
-					<div class="card mb-3"  style="height: 100%;">
-						<div class="card-body p-4">
-							<div class="row" style="height: 100%">
-								<div class="col-sm-12 text-center mt-auto mb-auto">
-									<h6 class="fs-14 text-muted"><i class="fa-solid fa-badge-dollar mr-2"></i><?php echo e(__('Your Wallet Balance')); ?></h6>
-									<h4 class="mb-3 fs-20 font-weight-800 text-muted"><?php echo e(number_format(auth()->user()->wallet)); ?> <?php echo config('payment.default_system_currency_symbol'); ?></h4>
-									<a href="<?php echo e(route('user.wallet')); ?>" class="btn btn-primary custom-pricing-plan-button" style="text-transform: none;"><?php echo e(__('My Wallet')); ?> <i class="fa-regular fa-chevron-right fs-8 ml-1"></i></a>
-								</div>							
-							</div>		
+			<?php if(App\Services\HelperService::extensionSaaS()): ?>
+				<?php if(App\Services\HelperService::extensionWallet()): ?>
+					<?php if(App\Services\HelperService::extensionWalletFeature()): ?>			
+						<div class="col-sm-12">
+							<div class="card mb-3"  style="height: 100%;">
+								<div class="card-body p-4">
+									<div class="row" style="height: 100%">
+										<div class="col-sm-12 text-center mt-auto mb-auto">
+											<h6 class="fs-14 text-muted"><i class="fa-solid fa-badge-dollar mr-2"></i><?php echo e(__('Your Wallet Balance')); ?></h6>
+											<h4 class="mb-3 fs-20 font-weight-800 text-muted"><?php echo e(number_format(auth()->user()->wallet)); ?> <?php echo config('payment.default_system_currency_symbol'); ?></h4>
+											<a href="<?php echo e(route('user.wallet')); ?>" class="btn btn-primary custom-pricing-plan-button" style="text-transform: none;"><?php echo e(__('My Wallet')); ?> <i class="fa-regular fa-chevron-right fs-8 ml-1"></i></a>
+										</div>							
+									</div>		
+								</div>
+							</div>
 						</div>
-					</div>
-				</div>	
+					<?php endif; ?>
+				<?php endif; ?>	
 				<?php if(config('payment.referral.enabled') == 'on'): ?>
 					<div class="col-sm-12">
 						<div class="card mb-3">
@@ -790,6 +796,7 @@
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 	<script src="<?php echo e(URL::asset('plugins/sweetalert/sweetalert2.all.min.js')); ?>"></script>
 	<script src="<?php echo e(URL::asset('plugins/slick/slick.min.js')); ?>"></script>
+	
 	<script>
 		$(function() {
 	

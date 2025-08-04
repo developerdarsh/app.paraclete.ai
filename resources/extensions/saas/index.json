@@ -1,6 +1,6 @@
 {
     "extension_name": "SaaS",
-    "version": "2.1",
+    "version": "2.2",
     "controllers": [
       "app/Http/Controllers/Admin/Extensions/SaaSController.php",
       "app/Http/Controllers/Admin/FinanceController.php",

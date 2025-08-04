@@ -10,7 +10,11 @@
 	<style>
 
      @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
-
+     
+    .app-content .side-app {
+        padding: 20px 0 0;
+        max-width: 1600px !important;
+    }
     .sidebar {
         background: rgba(245, 249, 252, 0.1);
         backdrop-filter: blur(10px);
@@ -69,7 +73,6 @@
 
          .sidebar .navbar .nav-item i {
             width: 20px;
-            margin-right: 4px;
         }
 
         .sidebar .nav-section {

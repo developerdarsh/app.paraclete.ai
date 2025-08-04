@@ -29,74 +29,8 @@ class AiUGCVideoController extends Controller
     public function index(Request $request)
     {
  
-        // $curl = curl_init();
-
-        // curl_setopt_array($curl, array(
-        // CURLOPT_URL => 'https://api.topview.ai/v1/product_anyShoot/template/list?categoryIds=&style=&pageNo&pageSize',
-        // //https://api.topview.ai/v1/ethnicity/list?scene&pageNo&pageSize
-        // CURLOPT_RETURNTRANSFER => true,
-        // CURLOPT_ENCODING => '',
-        // CURLOPT_MAXREDIRS => 10,
-        // CURLOPT_TIMEOUT => 0,
-        // CURLOPT_FOLLOWLOCATION => true,
-        // CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        // CURLOPT_CUSTOMREQUEST => 'GET',
-        // CURLOPT_HTTPHEADER => array(
-        //     'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY',
-        //     'Topview-Uid: 7QNjCZNYupL0K16uus9v'
-        // ),
-        // ));
-
-        // $response = curl_exec($curl);
-        // $response = json_decode($response, true);
-        // dd($response);
-        // curl_close($curl);
-
-        // $curl = curl_init();
-
-        // curl_setopt_array($curl, array(
-        // CURLOPT_URL => 'https://api.topview.ai/v1/product_avatar/public_avatar/query',
-        // CURLOPT_RETURNTRANSFER => true,
-        // CURLOPT_ENCODING => '',
-        // CURLOPT_MAXREDIRS => 10,
-        // CURLOPT_TIMEOUT => 0,
-        // CURLOPT_FOLLOWLOCATION => true,
-        // CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        // CURLOPT_CUSTOMREQUEST => 'GET',
-        // CURLOPT_HTTPHEADER => array(
-        //     'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY',
-        //     'Topview-Uid: 7QNjCZNYupL0K16uus9v'
-        // ),
-        // ));
-
-        // $response = curl_exec($curl);
-
-        // curl_close($curl);
-
-        // $response = json_decode($response, true);
-        // dd($response);
-
-        // $curl = curl_init();
-
-        // curl_setopt_array($curl, array(
-        // CURLOPT_URL => 'https://api.topview.ai/v1/scraper/task/query?taskId=',
-        // CURLOPT_RETURNTRANSFER => true,
-        // CURLOPT_ENCODING => '',
-        // CURLOPT_MAXREDIRS => 10,
-        // CURLOPT_TIMEOUT => 0,
-        // CURLOPT_FOLLOWLOCATION => true,
-        // CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        // CURLOPT_CUSTOMREQUEST => 'GET',
-        // CURLOPT_HTTPHEADER => array(
-        //     'Topview-Uid: 7QNjCZNYupL0K16uus9v',
-        //     'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY'
-        // ),
-        // ));
-
-        // $response = curl_exec($curl);
-
-        // curl_close($curl);
-        // dd($response);
+        $apiKey = config('settings.topview.api_key');
+        $topviewUid = config('settings.topview.uid');
 
         $curl = curl_init();
 
@@ -110,14 +44,13 @@ class AiUGCVideoController extends Controller
         CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
         CURLOPT_CUSTOMREQUEST => 'GET',
         CURLOPT_HTTPHEADER => array(
-            'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY',
-            'Topview-Uid: 7QNjCZNYupL0K16uus9v'
-        ),
+            'Authorization: Bearer ' . $apiKey,
+            'Topview-Uid: ' . $topviewUid,
+            ),
         ));
 
         $product_avatar_temp1 = curl_exec($curl);
         $product_avatar_temp = json_decode($product_avatar_temp1, true);
-        // dd($product_avatar_temp);
         curl_close($curl);
 
         $curl = curl_init();
@@ -139,10 +72,28 @@ class AiUGCVideoController extends Controller
 
         $product_anyShoot_template1 = curl_exec($curl);
         $product_anyShoot_template = json_decode($product_anyShoot_template1, true);
-        // dd($product_anyShoot_template);
         curl_close($curl);
 
-        return view('user.topview.index',compact('product_avatar_temp','product_anyShoot_template'));
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+        CURLOPT_URL => 'https://api.topview.ai/v1/aiavatar/query?pageNo=&pageSize=&gender=&ethnicityIdList&sortField&sortType&isCustom=',
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_ENCODING => '',
+        CURLOPT_MAXREDIRS => 10,
+        CURLOPT_TIMEOUT => 0,
+        CURLOPT_FOLLOWLOCATION => true,
+        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+        CURLOPT_CUSTOMREQUEST => 'GET',
+        CURLOPT_HTTPHEADER => array(
+            'Topview-Uid: 7QNjCZNYupL0K16uus9v',
+            'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY'
+        ),
+        ));
+
+        $video_avatars = json_decode(curl_exec($curl) , true);
+        
+        return view('user.topview.index',compact('product_avatar_temp','product_anyShoot_template','video_avatars'));
         
     }
 
@@ -400,9 +351,9 @@ class AiUGCVideoController extends Controller
         if (!$uploadUrl || !$fileId) {
             return response()->json(['error' => 'Failed to get upload URL from API'], 500);
         }
-        // dd($uploadUrl);
+        dd($uploadUrl);
 
-        // Step 2: Download the remote image to a temporary local file
+        //Step 2: Download the remote image to a temporary local file
         // $tempFile = tempnam(sys_get_temp_dir(), 'img_');
         // $imageContents = @file_get_contents($imageUrl);
 
@@ -443,6 +394,7 @@ class AiUGCVideoController extends Controller
         // ]);
         
         // Now call Topview API
+        
         $payload = [
             'avatarId' => $avatarId,
             'productImageFileId' => $fileId, // <-- or pass the S3 file URL if required
@@ -468,7 +420,7 @@ class AiUGCVideoController extends Controller
         ),
         ));
         $response = curl_exec($curl);
-        // dd($apiResponse);
+        dd($response);
         if (curl_errno($curl)) {
             return response()->json(['error' => curl_error($curl)], 500);
         }
@@ -481,7 +433,6 @@ class AiUGCVideoController extends Controller
 
     public function uploadProductImg(Request $request)
     {
-        // dd($request->all());
         if ($request->hasFile('file')) {
             $path = $request->file('file')->store('product_images', 'public');
             $url = asset('/' . $path);
@@ -505,7 +456,7 @@ class AiUGCVideoController extends Controller
 
         $response = curl_exec($ch);
         curl_close($ch);
-        dd($response);
+        // dd($response);
         return response()->json(json_decode($response, true));
     }
 

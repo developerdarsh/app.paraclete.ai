@@ -20,11 +20,9 @@
 @section('content')						
 	<div class="row justify-content-center">
 
-		<div class="col-lg-6 col-md-8 col-xm-12">
-			<div class="card border-0">
-				<div class="card-header text-center">
-					<h3 class="card-title text-muted text-center">{{ __('Current Month Report') }} </h3>
-				</div>
+		<div class="col-lg-9 col-md-8 col-xm-12">
+			<h3 class="card-title text-muted text-center mb-5">{{ __('Current Month Report') }} </h3>
+			<div class="card">
 				<div class="card-body pt-5">
 					<div class="row">
 						<div class="col-lg-5 col-md-6 col-12">
@@ -71,15 +69,12 @@
 								</label>
 							</div>
 						</div>
-					</div>
-
-
-
-					<!-- SAVE CHANGES ACTION BUTTON -->
-					<div class="border-0 text-center mb-4 mt-4">
-						<a href="{{ route('admin.finance.dashboard') }}" class="btn btn-cancel mr-2 pl-7 pr-7 ripple">{{ __('Return') }}</a>						
-					</div>
-				</div>
+					</div>					
+				</div>				
+			</div>
+			<!-- SAVE CHANGES ACTION BUTTON -->
+			<div class="border-0 text-center mb-4 mt-4">
+				<a href="{{ route('admin.finance.dashboard') }}" class="btn btn-cancel mr-2 pl-7 pr-7 ripple">{{ __('Return') }}</a>						
 			</div>
 		</div>
 		

@@ -18,6 +18,7 @@
 			</ol>
 		</div>
 		<div class="page-rightheader">
+			<a href="{{ route('admin.finance.gifts.export') }}" class="btn btn-primary mt-1">{{ __('Export Gift Cards') }}</a>
 			<a href="{{ route('admin.finance.gifts.create') }}" class="btn btn-primary mt-1">{{ __('Create New Gift Card') }}</a>
 		</div>
 	</div>	
@@ -27,7 +28,7 @@
 @section('content')	
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-xm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('All Gift Cards') }}</h3>
 				</div>
@@ -50,7 +51,7 @@
 									<h4 class="mb-3 font-weight-800 text-primary fs-20">{{ $total['redeemed']}}</h4>										
 								</div>
 
-								<div class="col-lg col-md-6 col-sm-12 dashboard-border-right mt-auto mb-auto text-center">
+								<div class="col-lg col-md-6 col-sm-12  mt-auto mb-auto text-center">
 									<h6 class="fs-12 mt-3 font-weight-bold">{{ __('Total Applied Funds') }}</h6>
 									<h4 class="mb-3 font-weight-800 text-primary fs-20">{{ $total['funds']}} {{config('payment.default_system_currency')}}</h4>										
 								</div>								
@@ -81,7 +82,7 @@
 
 	<div class="row mt-5">
 		<div class="col-lg-12 col-md-12 col-xm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('Gift Cards Usage') }}</h3>
 				</div>
@@ -107,7 +108,7 @@
 
 	<div class="row mt-5">
 		<div class="col-lg-12 col-md-12 col-xm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('Transfers by Users') }}</h3>
 				</div>

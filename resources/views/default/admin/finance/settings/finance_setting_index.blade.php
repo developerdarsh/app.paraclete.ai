@@ -23,10 +23,7 @@
 			<form action="{{ route('admin.finance.settings.store') }}" method="POST" enctype="multipart/form-data">
 				@csrf
 
-				<div class="card border-0">
-					<div class="card-header">
-						<h3 class="card-title">{{ __('Setup Payment Settings') }}</h3>
-					</div>		
+				<div class="card pt-4">	
 					<div class="card-body">				
 
 						<div class="row">
@@ -313,21 +310,23 @@
 							@endif
 
 							@if (App\Services\HelperService::extensionWallet())
-								<div class="col-md-6 col-sm-12">
-									<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/finance/settings/wallet')}}'">
-										<div class="card-body p-5 d-flex">
-											<div class="extension-icon">
-												<img src="{{theme_url('img/payments/wallet.avif')}}" class="mr-4" alt="" style="width: 40px;">												
-											</div>
-											<div class="extension-title">
-												<div class="d-flex">
-													<h6 class="fs-15 font-weight-bold mb-3">{{ __('Wallet') }}</h6>
+								@if (App\Services\HelperService::extensionWalletFeature())							
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/finance/settings/wallet')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/payments/wallet.avif')}}" class="mr-4" alt="" style="width: 40px;">												
 												</div>
-												<p class="fs-12 mb-0 text-muted">{{ __('Wallet settings and configuration')}}</p>
-											</div>
-										</div>							
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Wallet') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Wallet settings and configuration')}}</p>
+												</div>
+											</div>							
+										</div>
 									</div>
-								</div>
+								@endif
 							@endif
 						</div>
 					</div>

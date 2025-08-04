@@ -23,7 +23,7 @@
 @section('content')						
 	<div class="row justify-content-center">
 
-		<div class="col-lg-7 col-md-8 col-sm-12">
+		<div class="col-lg-8 col-md-10 col-sm-12">
 			<div class="card border-0">
 				<div class="card-header border-0 pb-0">
 					<h6 class="card-title fs-12 text-muted">{{ __('Create New Subscription Plan') }}</h6>
@@ -159,7 +159,7 @@
 
 									<div class="col-lg-6 col-md-6 col-sm-12">							
 										<div class="input-box">								
-											<h6>{{ __('Stripe Product ID') }} <span class="text-danger">({{ __('Required for Stripe') }}) <i class="ml-2 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('You have to get Stripe Product ID in your Stripe account. Refer to the documentation if you need help with creating one') }}."></i></span></h6>
+											<h6>{{ __('Stripe Price ID') }} <span class="text-danger">({{ __('Required for Stripe') }}) <i class="ml-2 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('You have to get Stripe Price ID in your Stripe account. Refer to the documentation if you need help with creating one') }}."></i></span></h6>
 											<div class="form-group">							    
 												<input type="text" class="form-control" id="stripe_gateway_plan_id" name="stripe_gateway_plan_id" value="{{ old('stripe_gateway_plan_id') }}">
 											</div> 
@@ -572,6 +572,18 @@
 											</div>
 										</div>
 									</div>
+
+									<div class="col-lg-6 col-md-6 col-sm-12">
+										<div class="input-box">
+											<h6>{{ __('Team Member Feature') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+											<div class="form-group mt-3">
+												<label class="custom-switch">
+													<input type="checkbox" name="team_member_feature" class="custom-switch-input">
+													<span class="custom-switch-indicator"></span>
+												</label>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -601,6 +613,8 @@
 												<option value='o3-mini'>{{ __('OpenAI o3 mini') }}</option>																																																																																																																																																																																																																																																						
 												<option value='o3'>{{ __('OpenAI o3') }}</option>																																																																																																																																																																																																																																																						
 												<option value='o4-mini'>{{ __('OpenAI o4 mini') }}</option>																																																																																																																																																																																																																																																						
+												<option value='claude-opus-4-20250514'>{{ __('Claude 4 Opus') }}</option>																																																																																																																											
+												<option value='claude-sonnet-4-20250514'>{{ __('Claude 4 Sonnet') }}</option>																																																																																																																											
 												<option value='claude-3-opus-20240229'>{{ __('Claude 3 Opus') }}</option>																																																																																																																											
 												<option value='claude-3-7-sonnet-20250219'>{{ __('Claude 3.7 Sonnet') }}</option>																																																																																																																											
 												<option value='claude-3-5-sonnet-20241022'>{{ __('Claude 3.5 Sonnet') }}</option>																																																																																																																											
@@ -649,7 +663,9 @@
 												<option value='o1-mini'>{{ __('OpenAI o1 mini') }}</option>																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																											
 												<option value='o3-mini'>{{ __('OpenAI o3 mini') }}</option>																																																																																																																																																																																																																																																						
 												<option value='o3'>{{ __('OpenAI o3') }}</option>																																																																																																																																																																																																																																																						
-												<option value='o4-mini'>{{ __('OpenAI o4 mini') }}</option>																																																																																																																																																																																																																																																					
+												<option value='o4-mini'>{{ __('OpenAI o4 mini') }}</option>	
+												<option value='claude-opus-4-20250514'>{{ __('Claude 4 Opus') }}</option>																																																																																																																											
+												<option value='claude-sonnet-4-20250514'>{{ __('Claude 4 Sonnet') }}</option>																																																																																																																																																																																																																																																				
 												<option value='claude-3-opus-20240229'>{{ __('Claude 3 Opus') }}</option>	
 												<option value='claude-3-7-sonnet-20250219'>{{ __('Claude 3.7 Sonnet') }}</option>																																																																																																																											
 												<option value='claude-3-5-sonnet-20241022'>{{ __('Claude 3.5 Sonnet') }}</option>																																																																																																																											

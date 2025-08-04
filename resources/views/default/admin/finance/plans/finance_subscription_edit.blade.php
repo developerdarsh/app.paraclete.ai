@@ -24,7 +24,7 @@
 @section('content')						
 	<div class="row justify-content-center">
 
-		<div class="col-lg-8 col-md-8 col-sm-12">
+		<div class="col-lg-8 col-md-10 col-sm-12">
 			<div class="card border-0">
 				<div class="card-header border-0 pb-0">
 					<h6 class="card-title fs-12 text-muted">{{ __('Update Subscription Plan') }} <span class="text-primary font-weight-bold">{{ $id->plan_name }}</span></h6>
@@ -162,7 +162,7 @@
 
 									<div class="col-lg-6 col-md-6 col-sm-12">							
 										<div class="input-box">								
-											<h6>{{ __('Stripe Product ID') }} <span class="text-danger">({{ __('Required for Stripe') }}) <i class="ml-2 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('You have to get Stripe Product ID in your Stripe account. Refer to the documentation if you need help with creating one') }}."></i></span></h6>
+											<h6>{{ __('Stripe Price ID') }} <span class="text-danger">({{ __('Required for Stripe') }}) <i class="ml-2 text-dark fs-13 fa-solid fa-circle-info" data-tippy-content="{{ __('You have to get Stripe Price ID in your Stripe account. Refer to the documentation if you need help with creating one') }}."></i></span></h6>
 											<div class="form-group">							    
 												<input type="text" class="form-control" id="stripe_gateway_plan_id" name="stripe_gateway_plan_id" value="{{ $id->stripe_gateway_plan_id }}">
 											</div> 
@@ -575,6 +575,18 @@
 											</div>
 										</div>
 									</div>
+
+									<div class="col-lg-6 col-md-6 col-sm-12">
+										<div class="input-box">
+											<h6>{{ __('Team Member Feature') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+											<div class="form-group mt-3">
+												<label class="custom-switch">
+													<input type="checkbox" name="team_member_feature" class="custom-switch-input" @if ($id->team_member_feature == true) checked @endif>
+													<span class="custom-switch-indicator"></span>
+												</label>
+											</div>
+										</div>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -605,7 +617,9 @@
 												<option value="o3-mini" @foreach ($model_templates as $key=>$value) @if($value == 'o3-mini') selected @endif @endforeach>{{ __('OpenAI o3 mini') }} </option>	
 												<option value="o3" @foreach ($model_templates as $key=>$value) @if($value == 'o3') selected @endif @endforeach>{{ __('OpenAI o3') }} </option>	
 												<option value="o4-mini" @foreach ($model_templates as $key=>$value) @if($value == 'o4-mini') selected @endif @endforeach>{{ __('OpenAI o4 mini') }} </option>	
-												<option value='claude-3-opus-20240229' @foreach ($model_templates as $key=>$value) @if($value == 'claude-3-opus-20240229') selected @endif @endforeach>{{ __('Claude 3 Opus') }}</option>																																																																																																																											
+												<option value='claude-opus-4-20250514' @foreach ($model_templates as $key=>$value) @if($value == 'claude-opus-4-20250514') selected @endif @endforeach>{{ __('Claude 4 Opus') }}</option>
+												<option value='claude-sonnet-4-20250514' @foreach ($model_templates as $key=>$value) @if($value == 'claude-sonnet-4-20250514') selected @endif @endforeach>{{ __('Claude 4 Sonnet') }}</option>
+												<option value='claude-3-opus-20240229' @foreach ($model_templates as $key=>$value) @if($value == 'claude-3-opus-20240229') selected @endif @endforeach>{{ __('Claude 3 Opus') }}</option>
 												<option value='claude-3-7-sonnet-20250219' @foreach ($model_templates as $key=>$value) @if($value == 'claude-3-7-sonnet-20250219') selected @endif @endforeach>{{ __('Claude 3.7 Sonnet') }}</option>
 												<option value='claude-3-5-sonnet-20241022' @foreach ($model_templates as $key=>$value) @if($value == 'claude-3-5-sonnet-20241022') selected @endif @endforeach>{{ __('Claude 3.5 Sonnet') }}</option>
 												<option value='claude-3-5-haiku-20241022' @foreach ($model_templates as $key=>$value) @if($value == 'claude-3-5-haiku-20241022') selected @endif @endforeach>{{ __('Claude 3.5 Haiku') }}</option>																																																																																																																										
@@ -655,6 +669,8 @@
 												<option value="o3-mini" @foreach ($model_chats as $key=>$value) @if($value == 'o3-mini') selected @endif @endforeach>{{ __('OpenAI o3 mini') }} </option>	
 												<option value="o3" @foreach ($model_chats as $key=>$value) @if($value == 'o3') selected @endif @endforeach>{{ __('OpenAI o3') }} </option>	
 												<option value="o4-mini" @foreach ($model_chats as $key=>$value) @if($value == 'o4-mini') selected @endif @endforeach>{{ __('OpenAI o4 mini') }} </option>	
+												<option value='claude-opus-4-20250514' @foreach ($model_chats as $key=>$value) @if($value == 'claude-opus-4-20250514') selected @endif @endforeach>{{ __('Claude 4 Opus') }}</option>
+												<option value='claude-sonnet-4-20250514' @foreach ($model_chats as $key=>$value) @if($value == 'claude-sonnet-4-20250514') selected @endif @endforeach>{{ __('Claude 4 Sonnet') }}</option>
 												<option value='claude-3-opus-20240229' @foreach ($model_chats as $key=>$value) @if($value == 'claude-3-opus-20240229') selected @endif @endforeach>{{ __('Claude 3 Opus') }}</option>
 												<option value='claude-3-7-sonnet-20250219' @foreach ($model_chats as $key=>$value) @if($value == 'claude-3-7-sonnet-20250219') selected @endif @endforeach>{{ __('Claude 3.7 Sonnet') }}</option>																																																																																																																											
 												<option value='claude-3-5-sonnet-20241022' @foreach ($model_chats as $key=>$value) @if($value == 'claude-3-5-sonnet-20241022') selected @endif @endforeach>{{ __('Claude 3.5 Sonnet') }}</option>																																																																																																																											

@@ -21,45 +21,57 @@
 	<div class="row justify-content-center">
 		<div class="col-lg-6 col-md-6 col-sm-12">
 			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Gift Card Name') }}: <span class="text-info">{{ $id->name }}</span> </h3>
-				</div>
+				<h3 class="card-title text-center mb-5">{{ __('Gift Card Name') }}: <span class="text-info">{{ $id->name }}</span> </h3>
 				<div class="card-body pt-5">		
 
 					<div class="row">
 						<div class="col-lg-4 col-md-4 col-12">
-							<h6 class="font-weight-bold mb-1">{{ __('Code') }}: </h6>
-							<span class="fs-14 text-info">{{ $id->code }}</span>
+							<div class="prepaid-view-box pl-5">
+								<h6 class="font-weight-bold mb-1">{{ __('Code') }}: </h6>
+								<span class="fs-14 text-info">{{ $id->code }}</span>
+							</div>							
 						</div>
 						<div class="col-lg-4 col-md-4 col-12">
-							<h6 class="font-weight-bold mb-1">{{ __('Status') }}: </h6>
-							<span class="fs-14">@if($id->status) {{__('Active')}} @else {{__('Inactive')}} @endif</span>
+							<div class="prepaid-view-box pl-5">
+								<h6 class="font-weight-bold mb-1">{{ __('Status') }}: </h6>
+								<span class="fs-14">@if($id->status) {{__('Active')}} @else {{__('Inactive')}} @endif</span>
+							</div>
 						</div>
 						<div class="col-lg-4 col-md-4 col-12">
-							<h6 class="font-weight-bold mb-1">{{ __('Expires at') }}: </h6>
-							<span class="fs-14">{{ $id->valid_until}}</span>
+							<div class="prepaid-view-box pl-5">
+								<h6 class="font-weight-bold mb-1">{{ __('Expires at') }}: </h6>
+								<span class="fs-14">{{ $id->valid_until}}</span>
+							</div>
 						</div>
 					</div>
 
-					<div class="row pt-5">
+					<div class="row">
 						<div class="col-lg-4 col-md-4 col-12">
-							<h6 class="font-weight-bold mb-1">{{ __('Amount') }}: </h6>
-							<span class="fs-14">{{ $id->amount }}{{config('payment.default_system_currency')}}</span>
+							<div class="prepaid-view-box pl-5">
+								<h6 class="font-weight-bold mb-1">{{ __('Amount') }}: </h6>
+								<span class="fs-14">{{ $id->amount }}{{config('payment.default_system_currency')}}</span>
+							</div>
 						</div>
 						<div class="col-lg-4 col-md-4 col-12">
-							<h6 class="font-weight-bold mb-1">{{ __('Available Quantity') }}: </h6>
-							<span class="fs-14">{{ $id->usages_left }}</span>
+							<div class="prepaid-view-box pl-5">
+								<h6 class="font-weight-bold mb-1">{{ __('Available Quantity') }}: </h6>
+								<span class="fs-14">{{ $id->usages_left }}</span>
+							</div>
 						</div>
 						<div class="col-lg-4 col-md-4 col-12">
-							<h6 class="font-weight-bold mb-1">{{ __('Multi Usage by the same User') }}: </h6>
-							<span class="fs-14">@if ($id->reusable == 1) {{ __('Allowed') }} @else {{ __('Not Allowed') }} @endif</span>
+							<div class="prepaid-view-box pl-5">
+								<h6 class="font-weight-bold mb-1">{{ __('Multi Usage') }}: </h6>
+								<span class="fs-14">@if ($id->reusable == 1) {{ __('Allowed') }} @else {{ __('Not Allowed') }} @endif</span>
+							</div>
 						</div>
 					</div>
 
-					<div class="row pt-5">
+					<div class="row">
 						<div class="col-sm-12">
-							<h6 class="font-weight-bold mb-1">{{ __('Notes') }}: </h6>
-							<span class="fs-14">{{ $id->details ?? __('Not provided') }}</span>
+							<div class="prepaid-view-box pl-5">
+								<h6 class="font-weight-bold mb-1">{{ __('Notes') }}: </h6>
+								<span class="fs-14">{{ $id->details ?? __('Not provided') }}</span>
+							</div>
 						</div>
 					</div>					
 

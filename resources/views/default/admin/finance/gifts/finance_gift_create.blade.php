@@ -22,14 +22,13 @@
 
 @section('content')						
 	<div class="row justify-content-center">
-		<div class="col-lg-6 col-md-6 col-xm-12">
+		<div class="col-lg-6 col-md-6 col-sm-12">
 			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Create New Gift Card') }}</h3>
-				</div>
-				<div class="card-body pt-5">									
+				<div class="card-body">									
 					<form action="{{ route('admin.finance.gifts.store') }}" method="POST" enctype="multipart/form-data">
 						@csrf
+
+						<p class="text-center fs-14 text-muted mb-6">{{__('Create a new gift card by filling all required fields')}}</p>
 
 						<div class="row">
 

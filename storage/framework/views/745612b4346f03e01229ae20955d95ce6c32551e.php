@@ -54,6 +54,7 @@
 <!-- multiselect select  -->
 <script src="<?php echo e(URL::asset('plugins/bootstrap-5.0.2/js/bootstrap-multiselect.min.js')); ?>"></script>
 
+
 <!-- Google Analytics -->
 <?php if(config('services.google.analytics.enable') == 'on'): ?>
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo e(config('services.google.analytics.id')); ?>"></script>
@@ -166,6 +167,19 @@
     toastr.options.showMethod = 'slideDown';
     toastr.options.hideMethod = 'slideUp';
     toastr.options.progressBar = true;
+
+    // toastr.options = {
+    //     "newestOnTop": true,
+    //     "positionClass": "toast-bottom-center",
+    //     "showDuration": "100",
+    //     "hideDuration": "500",
+    //     "timeOut": "100",
+    //     "extendedTimeOut": "100",
+    //     "showEasing": "swing",
+    //     "hideEasing": "swing",
+    //     "showMethod": "slideUp",
+    //     "hideMethod": "slideDown"
+    //     }
 
 
     // Theme toggling functionality

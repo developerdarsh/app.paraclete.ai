@@ -239,6 +239,208 @@ class FinanceGiftCardController extends Controller
 
 
     /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function export()
+    {   
+        return view('admin.finance.gifts.finance_gift_export');
+    }
+
+
+    public function exportGenerate(Request $request)
+    {   
+        $request->validate([
+            'status' => 'required|in:active,inactive',
+            'value' => 'required|numeric',
+            'usage' => 'required|in:unused,used',
+            'format' => 'required|in:csv,xls,pdf',
+        ]);
+
+        $query = GiftCard::query();
+
+        // Apply filters
+        if ($request->has('all') && $request->all) {
+            // If "Select All" is checked, don't apply other filters
+        } else {
+            // Filter by status
+            if ($request->status == 'active') {
+                $query->where('status', 1);
+            } else {
+                $query->where('status', 0);
+            }
+
+            // Filter by value/amount
+            if ($request->value > 0) {
+                $query->where('amount', $request->value);
+            }
+
+            if ($request->usage == 'unused') {
+                // Get gift cards whose codes don't exist in the GiftCardUsage table
+                $query->whereNotIn('code', function($subquery) {
+                    $subquery->select('code')
+                            ->from('gift_card_usages')
+                            ->where('status', 1);
+                });
+            } else {
+                // Get gift cards whose codes exist in the GiftCardUsage table
+                $query->whereIn('code', function($subquery) {
+                    $subquery->select('code')
+                            ->from('gift_card_usages')
+                            ->where('status', 1);
+                });
+            }
+        }
+
+        // Get the filtered gift cards
+        $giftCards = $query->get();
+
+        // Define the columns for export
+        $columns = ['Name', 'Code', 'Amount', 'Status', 'Reusable', 'Usages Left', 'Valid Until', 'Created At'];
+
+        // Prepare the data for export
+        $data = [];
+        foreach ($giftCards as $card) {
+            $data[] = [
+                'Name' => $card->name,
+                'Code' => $card->code,
+                'Amount' => $card->amount,
+                'Status' => $card->status ? 'Active' : 'Inactive',
+                'Reusable' => $card->reusable ? 'Yes' : 'No',
+                'Usages Left' => $card->usages_left,
+                'Valid Until' => $card->valid_until->format('Y-m-d'),
+                'Created At' => $card->created_at->format('Y-m-d'),
+            ];
+        }
+
+        // Generate the export file based on the selected format
+        $fileName = 'gift_cards_export_' . date('Y-m-d') . '.' . $request->format;
+
+        if ($request->format == 'csv') {
+            return $this->exportToCSV($data, $columns, $fileName);
+        } elseif ($request->format == 'xls') {
+            return $this->exportToExcel($data, $columns, $fileName);
+        } else {
+            return $this->exportToPDF($data, $columns, $fileName);
+        }
+    }
+
+    /**
+     * Export data to CSV format
+     */
+    private function exportToCSV($data, $columns, $fileName)
+    {
+        $headers = [
+            "Content-type" => "text/csv",
+            "Content-Disposition" => "attachment; filename=$fileName",
+            "Pragma" => "no-cache",
+            "Cache-Control" => "must-revalidate, post-check=0, pre-check=0",
+            "Expires" => "0"
+        ];
+
+        $callback = function() use ($data, $columns) {
+            $file = fopen('php://output', 'w');
+            fputcsv($file, $columns);
+
+            foreach ($data as $row) {
+                fputcsv($file, $row);
+            }
+            
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Export data to Excel format
+     */
+    private function exportToExcel($data, $columns, $fileName)
+    {
+        $headers = [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+            'Cache-Control' => 'max-age=0',
+        ];
+    
+        $callback = function() use ($data, $columns) {
+            $file = fopen('php://output', 'w');
+            
+            // Write UTF-8 BOM
+            fputs($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+            
+            // Write header row
+            fputcsv($file, $columns);
+            
+            // Write data rows
+            foreach ($data as $row) {
+                fputcsv($file, $row);
+            }
+            
+            fclose($file);
+        };
+    
+        return response()->stream($callback, 200, $headers);
+    }
+
+    /**
+     * Export data to PDF format
+     */
+    private function exportToPDF($data, $columns, $fileName)
+    {
+        require_once base_path('vendor/tecnickcom/tcpdf/tcpdf.php');
+        
+        $pdf = new \TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+    
+        // Set document information
+        $pdf->SetCreator('Gift Card System');
+        $pdf->SetTitle('Gift Cards Export');
+        
+        // Set default header data
+        $pdf->SetHeaderData('', 0, 'Gift Cards Export', date('Y-m-d H:i:s'));
+        
+        // Set margins
+        $pdf->SetMargins(15, 15, 15);
+        $pdf->SetHeaderMargin(5);
+        $pdf->SetFooterMargin(10);
+        
+        // Set auto page breaks
+        $pdf->SetAutoPageBreak(TRUE, 15);
+        
+        // Add a page
+        $pdf->AddPage();
+        
+        // Create the table content
+        $html = '<table border="1" cellpadding="5">';
+        
+        // Add header row
+        $html .= '<tr style="background-color:#f8f9fa;font-weight:bold;">';
+        foreach ($columns as $column) {
+            $html .= '<th>' . $column . '</th>';
+        }
+        $html .= '</tr>';
+        
+        // Add data rows
+        foreach ($data as $row) {
+            $html .= '<tr>';
+            foreach ($row as $cell) {
+                $html .= '<td>' . $cell . '</td>';
+            }
+            $html .= '</tr>';
+        }
+        
+        $html .= '</table>';
+        
+        // Print the HTML table
+        $pdf->writeHTML($html, true, false, true, false, '');
+        
+        // Close and output PDF document
+        return $pdf->Output($fileName, 'D');
+    }
+
+
+    /**
      * Display the specified resource.
      *
      * @param  int  $id
