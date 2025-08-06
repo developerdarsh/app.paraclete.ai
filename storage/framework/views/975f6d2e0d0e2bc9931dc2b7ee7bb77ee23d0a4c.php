@@ -2,6 +2,7 @@
 <?php $__env->startSection('css'); ?>
 	<link href="<?php echo e(URL::asset('plugins/sweetalert/sweetalert2.min.css')); ?>" rel="stylesheet" />
 	<link href="<?php echo e(URL::asset('plugins/highlight/highlight.dark.min.css')); ?>" rel="stylesheet" />
+	<link href="<?php echo e(URL::asset('plugins/air-datepicker/air-datepicker.css')); ?>" rel="stylesheet" />
 	<style>
  		.chat-main-container .card-footer {
  			height: 75px;
@@ -242,7 +243,7 @@
 
 <?php $__env->startSection('page-header'); ?>
 	<!-- PAGE HEADER -->
-	<div class="page-header mt-5-7">
+	<div class="page-header mt-5-7 pt-5">
 		<div class="page-leftheader">
 			<h4 class="page-title mb-0"><?php echo e(__($chat->name)); ?></h4>
 			<ol class="breadcrumb mb-2">
@@ -252,7 +253,7 @@
 			</ol>
 		</div>
 		<div class="page-rightheader">
-			<div>
+			<div id="balance-status">
 				<?php if (isset($component)) { $__componentOriginal221f5bfb272fac1e0cede7f43069a34d3b82f6b9 = $component; } ?>
 <?php $component = App\View\Components\BalanceChat::resolve([] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? (array) $attributes->getIterator() : [])); ?>
 <?php $component->withName('balance-chat'); ?>
@@ -306,8 +307,8 @@
 									<div class="chat-date"><?php echo e(\Carbon\Carbon::parse($message->updated_at)->diffForhumans()); ?></div>
 								</div>
 								<div class="chat-actions d-flex">
-									<a href="#" class="chat-edit fs-12" id="<?php echo e($message->conversation_id); ?>"><i class="   fa-solid fa-pen-to-square" data-tippy-content="<?php echo e(__('Edit Name')); ?>"></i></a>
-									<a href="#" class="chat-delete fs-12 ml-2" id="<?php echo e($message->conversation_id); ?>"><i class="   fa-solid fa-trash" data-tippy-content="<?php echo e(__('Delete Chat')); ?>"></i></a>
+									<a href="#" class="chat-edit fs-12" id="<?php echo e($message->conversation_id); ?>"><i class="  fa-solid fa-pen-to-square" data-tippy-content="<?php echo e(__('Edit Name')); ?>"></i></a>
+									<a href="#" class="chat-delete fs-12 ml-2" id="<?php echo e($message->conversation_id); ?>"><i class="  fa-solid fa-trash" data-tippy-content="<?php echo e(__('Delete Chat')); ?>"></i></a>
 								</div>
 							</div>						
 						<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>						
@@ -319,15 +320,22 @@
 						<div class="w-100 pt-2 pb-2">
 							<div class="d-flex">
 								<div class="overflow-hidden mr-4"><img alt="Avatar" class="chat-avatar" src="<?php echo e(URL::asset($chat->logo)); ?>"></div>
-								<div class="widget-user-name"><span class="font-weight-bold"><?php echo e(__($chat->name)); ?></span><br><span class="text-muted"><?php echo e(__($chat->sub_name)); ?></span></div>
+								<div class="widget-user-name"><span class="font-weight-bold"><?php echo e(__($chat->name)); ?></span><br><span class="text-muted"><?php echo __($chat->sub_name); ?></span></div>
 							</div>
 						</div>
+						<?php if(App\Services\HelperService::extensionChatShare()): ?>
+								<?php if(App\Services\HelperService::checkChatShareFeature()): ?>									
+									<div class="btn-group mt-1 publish-action-buttons">
+										<button type="button" class="btn btn-primary ripple" id="share" data-bs-toggle="modal" data-bs-target="#shareModal" style="text-transform: none; font-size: 11px"><?php echo e(__('Share')); ?></button>
+									</div>									
+								<?php endif; ?>
+							<?php endif; ?>
 						<?php if($internet): ?>
 							<div class="form-group text-right w-30" id="chat-internet-button">
 								<label class="custom-switch mb-0">
-									<input type="checkbox" name="google-search" class="custom-switch-input" id="google-search">
+									<input type="checkbox" name="realtime" class="custom-switch-input" id="realtime">
 									<span class="custom-switch-indicator"></span>
-									<span class="custom-switch-description"><?php echo e(__('Use Internet Access')); ?></span>
+									<span class="custom-switch-description"><?php echo e(__('Real-Time Data Access')); ?></span>
 								</label>
 							</div>
 						<?php endif; ?>
@@ -337,20 +345,33 @@
 								<button type="button" class="btn dropdown-toggle" data-bs-toggle="dropdown" id="export" data-bs-display="static" aria-expanded="false" data-tippy-content="<?php echo e(__('Export Chat Conversation')); ?>"><i class="fa-solid fa-bars table-action-buttons table-action-buttons-big edit-action-button"></i></button>
 								<div class="dropdown-menu" aria-labelledby="export" data-popper-placement="bottom-start">						
 									<a class="dropdown-item" id="export-txt" onclick="exportTXT();"><i class="fa-solid fa-text-size fs-13 text-muted mr-2"></i><?php echo e(__('Text File')); ?></a>								
-									<a class="dropdown-item" id="export-word" onclick="exportWord();"><i class="   fa-solid fa-file-word fs-13 text-muted mr-2"></i><?php echo e(__('MS Word')); ?></a>
-									<a class="dropdown-item" id="export-pdf" onclick="exportPDF();"><i class="   fa-solid fa-file-pdf fs-13 text-muted mr-2"></i><?php echo e(__('PDF File')); ?></a>
+									<a class="dropdown-item" id="export-word" onclick="exportWord();"><i class="  fa-solid fa-file-word fs-13 text-muted mr-2"></i><?php echo e(__('MS Word')); ?></a>
+									<a class="dropdown-item" id="export-pdf" onclick="exportPDF();"><i class="  fa-solid fa-file-pdf fs-13 text-muted mr-2"></i><?php echo e(__('PDF File')); ?></a>
 								</div>
 							</div>							
 						</div>
 					</div>
 					<div class="card-body pl-0 pr-0">
+						<div class="sound-wave-overlay">
+							<div class="sound-wave">
+								<div class="sound-wave-bar"></div>
+								<div class="sound-wave-bar"></div>
+								<div class="sound-wave-bar"></div>
+								<div class="sound-wave-bar"></div>
+								<div class="sound-wave-bar"></div>
+								<div class="sound-wave-bar"></div>
+								<div class="sound-wave-bar"></div>
+								<div class="sound-wave-bar"></div>
+								<div class="sound-wave-bar"></div>
+							</div>
+						</div>
 						<div class="row">						
 							<div class="col-md-12 col-sm-12" >									
 								<div id="chat-container">
 									<div class="msg left-msg">
 										<div class="message-img" style="background-image: url(<?php echo e($chat->logo); ?>)"></div>
 										<div class="message-bubble">					
-											<div class="msg-text"><?php echo e(__($chat->description)); ?></div>
+											<div class="msg-text"><?php echo __($chat->description); ?></div>
 										</div>
 									</div>
 
@@ -394,8 +415,13 @@ $message = $__bag->first($__errorArgs[0]); ?> is-danger <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>" rows="1" id="message" name="message" placeholder="<?php echo e(__('Type your message here...')); ?>"></textarea>
+										<?php if(App\Services\HelperService::extensionRealtimeChat()): ?>							
+											<?php if(App\Services\HelperService::checkRealtimeChatFeature()): ?>
+												<div class="chat-button-box"><a class="btn chat-button-icon live-mic-button" href="javascript:void(0)" id="live_mic_button"><i class="fa-solid fa-signal-stream"></i></a></div>
+											<?php endif; ?>
+										<?php endif; ?>
 										<div class="chat-button-box"><a class="btn chat-button-icon" href="javascript:void(0)" id="mic-button"><i class="fa-solid fa-microphone"></i></a></div>
-										<div class="chat-button-box no-margin-right"><a class="btn chat-button-icon special-action-color" href="javascript:void(0)" id="stop-button"><i class="fa-solid fa-circle-stop"></i></a></div>
+										<div class="chat-button-box no-margin-right"><a class="btn chat-button-icon" href="javascript:void(0)" id="stop-button"><i class="fa-solid fa-circle-stop"></i></a></div>
 										<div><button class="btn ripple chat-button" id="chat-button"><?php echo e(__('Send')); ?> <i class="fa-solid fa-paper-plane-top ml-1"></i></button></div>										
 									</div> 
 									<div class="flex mt-3">
@@ -410,6 +436,14 @@ unset($__errorArgs, $__bag); ?>" rows="1" id="message" name="message" placeholde
 										<?php if(config('settings.vision_for_chat_feature_user') == 'allow'): ?>
 											<input type="file" id="image-input" style="display: none;" accept="image/png, image/jpeg, image/webp">
 											<a class="btn btn-primary-chat fs-11 text-muted mb-2" href="javascript:void(0)" id="upload-button-main"><i class="fa-solid fa-image"></i> <span><?php echo e(__('Upload Image')); ?></span></a>
+										<?php endif; ?>			
+										<?php if(App\Services\HelperService::extensionRealtimeChat()): ?>							
+											<?php if(App\Services\HelperService::checkRealtimeChatFeature()): ?>							
+												<span id="app-config" data-ephemeral-url="<?php echo e(route('user.chat.ephemeral')); ?>"></span>
+												<span id="app-prompt" data-prompt="<?php echo e($chat->prompt); ?>"></span>
+												<span id="app-voice" data-voice="<?php echo e($extension->chat_realtime_voice); ?>"></span>
+												<span id="app-model" data-model="<?php echo e($extension->chat_realtime_model); ?>"></span>
+											<?php endif; ?>
 										<?php endif; ?>
 									</div>
 									<?php $__errorArgs = ['message'];
@@ -536,14 +570,22 @@ unset($__errorArgs, $__bag); ?>
 	</div>
 
 	<div class="modal fade" id="aiModel" tabindex="-1">
-		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
 		  	<div class="modal-content">
-				<div class="modal-header">
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<div class="modal-header modal-model-header">
+					<div class="w-100">
+						<h5 class="modal-title" id="addMenuItemModalLabel"><i class="fa-solid fa-microchip-ai text-primary mr-2"></i> <?php echo e(__('AI Models')); ?></h5>
+						<p class="fs-12 text-muted mb-0"><?php echo e(__('Select your AI model that best suits your needs')); ?></p>
+					</div>
+					<div class="chat-model-search pb-0 pt-0">	
+						<div class="input-box relative mb-0">				
+							<input id="model-search" class="form-control" type="text" placeholder="<?php echo e(__('Search')); ?>">	
+							<i class="fa-solid fa-magnifying-glass fs-14 text-muted chat-search-icon"></i>	
+						</div>			
+					</div>		
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body pl-5 pr-5">
-					<h6 class="text-center font-weight-extra-bold fs-16 mb-4"><i class="fa-solid fa-microchip-ai text-primary mr-2"></i> <?php echo e(__('AI Models')); ?></h6>			
-					
 					<div class="prompts-panel">			
 						<div class="tab-content" id="myTabContent">			
 							<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
@@ -570,10 +612,70 @@ unset($__errorArgs, $__bag); ?>
 								</div>
 							</div>
 							<div class="text-center mt-3">	
-								<button type="button" class="btn-primary ripple btn pl-7 pr-7" data-bs-dismiss="modal"><?php echo e(__('Apply')); ?></button>
+								<button type="button" class="btn-primary ripple btn pl-7 pr-7" style="min-width: 200px;" data-bs-dismiss="modal"><?php echo e(__('Apply')); ?></button>
 							</div>							
 						</div>
 					</div>
+					
+				</div>
+		  	</div>
+		</div>
+	</div>
+
+	<div class="modal fade" id="shareModal" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-md">
+		  	<div class="modal-content">
+				<div class="modal-header">
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body pl-5 pr-5 pb-0">
+					<h6 class="text-center font-weight-bold fs-16 mb-4"><?php echo e(__('Chat Share')); ?></h6>			
+					
+					<div class="row">
+						<div class="col-lg-12 col-md-12 col-sm-12 p-4">
+							<div id="chat-search-panel">
+								<div class="chat-share-copy">
+									<div class="input-box">								
+										<div class="form-group prompt-search-bar-dark">							    
+											<div class="input-group">
+												<input type="text" class="form-control" id="chat-url" placeholder="<?php echo e(__('Chat share url...')); ?>" readonly>
+												<button class="btn btn-copy" onclick="copyUrl()">
+													<i class="fas fa-copy"></i>
+												</button>												
+											</div>
+
+											<h6 class="text-muted mt-3 pt-1 mb-4 text-center"><?php echo e(__('Additional Settings')); ?></h6>
+											<select id="chat-share-permission" name="chat-share-permission" class="form-select">
+												<option value="read" selected><?php echo e(__('Read Only Chat Permission')); ?></option>
+												<option value="chat"><?php echo e(__('Full Chat Permission')); ?></option>													
+											</select>
+
+											<select id="chat-share-time" name="chat-share-time" class="form-select mt-4" onchange="setAvailableOption()">
+												<option value="always" selected><?php echo e(__('Always available')); ?></option>
+												<option value="limited"><?php echo e(__('Available until specified time')); ?></option>													
+											</select>	
+											
+											<div id="schedule-time" class="mt-3 pt-3 hidden">
+												<div class="row">
+													<div class="col-sm-12">
+														<div class="input-box mb-2">
+															<h6 class="mb-2"><?php echo e(__('Available Until')); ?></h6>
+															<input type="text" id="schedule_date" name="limited_date" class="form-control">
+														</div>
+													</div>
+												</div>		
+											</div>
+
+											<div class="text-center mt-4">	
+												<button type="button" class="btn-cancel ripple btn pl-7 pr-7" style="min-width: 200px; height: 40px" data-bs-dismiss="modal"><?php echo e(__('Cancel')); ?></button>
+												<button type="button" class="btn-primary ripple btn pl-7 pr-7" style="min-width: 200px; height: 40px" id="generate-new-url"><?php echo e(__('Generate New URL')); ?></button>
+											</div>
+										</div> 
+									</div> 
+								</div>
+							</div>
+						</div>	
+					</div>	
 					
 				</div>
 		  	</div>
@@ -588,6 +690,13 @@ unset($__errorArgs, $__bag); ?>
 <script src="<?php echo e(URL::asset('plugins/pdf/jspdf.umd.min.js')); ?>"></script>
 <script src="<?php echo e(URL::asset('plugins/highlight/highlight.min.js')); ?>"></script>
 <script src="<?php echo e(URL::asset('plugins/highlight/showdown.min.js')); ?>"></script>
+<script src="<?php echo e(URL::asset('plugins/markdown/markdown-it.min.js')); ?>"></script>
+<script src="<?php echo e(URL::asset('plugins/air-datepicker/air-datepicker.js')); ?>"></script>
+<?php if(App\Services\HelperService::extensionRealtimeChat()): ?>							
+	<?php if(App\Services\HelperService::checkRealtimeChatFeature()): ?>
+		<script src="<?php echo e(theme_url('js/script.js')); ?>"></script>
+	<?php endif; ?>
+<?php endif; ?>
 <script src="<?php echo e(theme_url('js/export-chat.js')); ?>"></script>
 <script type="text/javascript">
 	const main_form = get("#openai-form");
@@ -619,9 +728,22 @@ unset($__errorArgs, $__bag); ?>
 
 	const domainUrl = window.location.origin;
 
+	new AirDatepicker('#schedule_date', {
+		dateFormat: 'dd/MM/yyyy',
+		navTitles: {
+			days: '<strong>yyyy</strong> <i>MMMM</i>',
+			months: 'Select month of <strong>yyyy</strong>'    
+		},
+		selectedDates: [new Date()],
+		minDate: [new Date()],
+		timepicker: true,
+	});
+	
+
 	// Process deault conversation
 	$(document).ready(function() {
 		$(".chat-sidebar-message").first().focus().trigger('click');
+
 		$('[data-toggle="tooltip"]').tooltip();
  		$('#audio-player').hide();
 
@@ -649,8 +771,8 @@ unset($__errorArgs, $__bag); ?>
 									<div class="chat-date"><?php echo e(__('Now')); ?></div>
 								</div>
 								<div class="chat-actions d-flex">
-									<a href="#" class="chat-edit fs-12" id="${id}"><i class="   fa-solid fa-pen-to-square" data-tippy-content="<?php echo e(__('Edit Name')); ?>"></i></a>
-									<a href="#" class="chat-delete fs-12 ml-2"  id="${id}"><i class="   fa-solid fa-trash" data-tippy-content="<?php echo e(__('Delete Chat')); ?>"></i></a>
+									<a href="#" class="chat-edit fs-12" id="${id}"><i class="  fa-solid fa-pen-to-square" data-tippy-content="<?php echo e(__('Edit Name')); ?>"></i></a>
+									<a href="#" class="chat-delete fs-12 ml-2"  id="${id}"><i class="  fa-solid fa-trash" data-tippy-content="<?php echo e(__('Delete Chat')); ?>"></i></a>
 								</div>
 							</div>`);
 						active_id = id;	
@@ -674,7 +796,6 @@ unset($__errorArgs, $__bag); ?>
  				$(".charge-count").text("1");
  			}
  		});
- 
 
 		let model = '';
 		let logo = '';
@@ -797,7 +918,6 @@ unset($__errorArgs, $__bag); ?>
 		let ai = document.getElementById('ai-model');
 		ai.innerHTML = logo + model;
 	
-		
 	});
 	
 
@@ -831,8 +951,8 @@ unset($__errorArgs, $__bag); ?>
 								<div class="chat-date"><?php echo e(__('Now')); ?></div>
 							</div>
 							<div class="chat-actions d-flex">
-								<a href="#" class="chat-edit fs-12" id="${id}"><i class="   fa-solid fa-pen-to-square" data-tippy-content="<?php echo e(__('Edit Name')); ?>"></i></a>
-								<a href="#" class="chat-delete fs-12 ml-2"  id="${id}"><i class="   fa-solid fa-trash" data-tippy-content="<?php echo e(__('Delete Chat')); ?>"></i></a>
+								<a href="#" class="chat-edit fs-12" id="${id}"><i class="  fa-solid fa-pen-to-square" data-tippy-content="<?php echo e(__('Edit Name')); ?>"></i></a>
+								<a href="#" class="chat-delete fs-12 ml-2"  id="${id}"><i class="  fa-solid fa-trash" data-tippy-content="<?php echo e(__('Delete Chat')); ?>"></i></a>
 							</div>
 						</div>`);
 					active_id = id;	
@@ -988,8 +1108,8 @@ unset($__errorArgs, $__bag); ?>
 														<div class="chat-date"><?php echo e(__('Now')); ?></div>
 													</div>
 													<div class="chat-actions d-flex">
-														<a href="#" class="chat-edit fs-12" id="${id}"><i class="   fa-solid fa-pen-to-square" data-tippy-content="<?php echo e(__('Edit Name')); ?>"></i></a>
-														<a href="#" class="chat-delete fs-12 ml-2"  id="${id}"><i class="   fa-solid fa-trash" data-tippy-content="<?php echo e(__('Delete Chat')); ?>"></i></a>
+														<a href="#" class="chat-edit fs-12" id="${id}"><i class="  fa-solid fa-pen-to-square" data-tippy-content="<?php echo e(__('Edit Name')); ?>"></i></a>
+														<a href="#" class="chat-delete fs-12 ml-2"  id="${id}"><i class="  fa-solid fa-trash" data-tippy-content="<?php echo e(__('Delete Chat')); ?>"></i></a>
 													</div>
 												</div>`);
 											active_id = id;	
@@ -1039,11 +1159,11 @@ unset($__errorArgs, $__bag); ?>
 	// Send chat message
 	function process(message) {
 		msgerSendBtn.disabled = true;
-		let google = '';
-		if ($('#google-search').is(':checked')) {
-			google = 'on';
+		let realtime = '';
+		if ($('#realtime').is(':checked')) {
+			realtime = 'on';
 		} else {
-			google = '';
+			realtime = '';
 		}
 		let model = document.querySelector('input[name="model"]:checked').value;
 		let company = document.getElementById("company").value;
@@ -1054,7 +1174,7 @@ unset($__errorArgs, $__bag); ?>
 		formData.append('chat_code', chat_code);
 		formData.append('conversation_id', active_id);
 		formData.append('image', uploaded_image);
-		formData.append('google_search', google);
+		formData.append('realtime', realtime);
 		formData.append('model', model);
 		formData.append('company', company);
 		formData.append('service', service);
@@ -1091,7 +1211,6 @@ unset($__errorArgs, $__bag); ?>
 				const chatbubble = document.getElementById('chat-bubble-' + code);
 				let msg = '';
                 let i = 0;
-				let isProcess = false;
 
 				eventSource.onopen = function(e) {
 					response.innerHTML = '';					
@@ -1123,28 +1242,9 @@ unset($__errorArgs, $__bag); ?>
 
 					} else {
 						let txt;
-                        console.log(e.data);
 						if (uploaded_image == '') {
-							if (model == 'claude-3-5-haiku-20241022' || model == 'claude-3-5-sonnet-20241022' || model == 'claude-3-opus-20240229' || model == 'gemini_pro' || model == 'o1-mini' || model == 'o1-preview') {
+
 								txt = e.data;
-							} else {
-								// try {
- 								// 	let parsedData = JSON.parse(e.data);
- 								// 	if (parsedData.choices && parsedData.choices[0].delta) {
- 								// 		txt = parsedData.choices[0].delta.content;
- 								// 		if (isProcess) {
- 								// 			response.innerHTML = '';
- 								// 			console.log('model', model);
- 								// 			msg = "";
- 								// 		}
- 								// 		isProcess = parsedData.choices[0].delta.process;
- 								// 	}
- 								// } catch (error) {
- 								// 	console.error("JSON Parsing Error:", error, "Raw Data:", e.data);
- 								// 	txt = e.data; // Fallback to raw data
- 								// }
-								txt = JSON.parse(e.data).choices[0].delta.content;
-							}
 							
 						} else {
 							txt = e.data
@@ -1186,14 +1286,13 @@ unset($__errorArgs, $__bag); ?>
 							}
 							
 
-							$msg_txt.html(str);
-							if (model != 'gemini_pro') {
-								hljs.highlightAll();
-							}
-                            
+							$msg_txt.html(escape_html(msg));
 
-							//response.innerHTML += txt.replace(/(?:\r\n|\r|\n)/g, '<br>');
+							hljs.highlightAll();
+							
+
 						}
+
 						msgerChat.scrollTop += 100;
 					}
 				};
@@ -1440,6 +1539,21 @@ unset($__errorArgs, $__bag); ?>
     });
 
 
+	// Search model
+	$('#model-search').on('keyup', function () {
+        var search = $(this).val().toLowerCase();
+        $('.chat-model-box').find('.col-sm-12').each(function () {
+            if ($(this).filter(function() {
+                return $(this).find('h6').text().toLowerCase().indexOf(search) > -1;
+            }).length > 0 || search.length < 1) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+    });
+
+
 	// Send via keyboard shortcuts
 	$('#message').on('keypress', function (e) {
 		if (e.keyCode == 13 && !e.shiftKey) {
@@ -1455,7 +1569,7 @@ unset($__errorArgs, $__bag); ?>
 			process(message)
 		}
     });
-
+	
 
 	// Capture input text via microphone
     if(mic) {
@@ -1791,10 +1905,7 @@ unset($__errorArgs, $__bag); ?>
 			data: { 'model': radio.value},
 			success: function (data) {					
 				let balance = document.getElementById('balance-number');
-				let model = document.getElementById('model-name');
 				balance.innerHTML =  data['balance'];
-				model.innerHTML =  data['model'];
-
 			},
 			error: function(data) {
 			}
@@ -1882,10 +1993,121 @@ unset($__errorArgs, $__bag); ?>
 		var selectedTemplateText = $(this).text();
 		$('#message').val(selectedTemplateText);
 		$('#message').text(selectedTemplateText);
+	});
+
+	function copyUrl() {
+		const urlInput = document.getElementById('chat-url');
+		const copyBtn = document.querySelector('.btn-copy');
+		
+		// Check if input is empty or contains only whitespace
+		if (!urlInput.value.trim()) {
+			copyBtn.style.color = '#dc3545'; // Error color
+			
+			// Shake animation for error feedback
+			copyBtn.style.animation = 'shake 0.5s';
+			setTimeout(() => {
+				copyBtn.style.color = '#6c757d';
+				copyBtn.style.animation = 'none';
+			}, 1500);
+
+			toastr.error('<?php echo e(__('Please generate a chat share link first')); ?>');
+
+			return;
+		}
+		
+		navigator.clipboard.writeText(urlInput.value).then(() => {
+			// Visual feedback on button
+			const originalIcon = copyBtn.innerHTML;
+			
+			// Change to check icon
+			copyBtn.innerHTML = '<i class="fas fa-check"></i>';
+			copyBtn.style.color = '#198754'; // Success color
+
+			toastr.success('<?php echo e(__('Chat share link has been copied')); ?>');
+			
+			// Revert back after 1.5 seconds
+			setTimeout(() => {
+				copyBtn.innerHTML = originalIcon;
+				copyBtn.style.color = '#6c757d';
+			}, 1500);
+		}).catch(err => {
+			console.error('Failed to copy text: ', err);
+		});
+	}
+
+
+	function setAvailableOption() {
+		var select = document.getElementById("chat-share-time").value;
+	
+		switch (select) {
+			case 'always':
+				$('#schedule-time').addClass('hidden');
+				break;
+			case 'limited':
+				$('#schedule-time').removeClass('hidden');
+				break;
+			default:
+				$('#schedule-time').addClass('hidden');
+				break;
+		}
+	}
+
+	$('#generate-new-url').on('click', function() {
+
+		// Collect all form values from the modal
+        const sharePermission = $('#chat-share-permission').val();
+        const shareTime = $('#chat-share-time').val();
+        const limitedDate = (shareTime == 'limited') ? $('#schedule_date').val() : '';
+        console.log(limitedDate)
+        // Show loading state on button
+        const originalButtonText = $(this).text();
+        $(this).html(`<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> ${originalButtonText}`);
+        $(this).prop('disabled', true);
+        
+        // Make AJAX request
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            method: 'POST',
+            url: '/app/user/chat/share/generate',
+            data: {
+				'conversation_id': active_id,
+                'chat_code': chat_code,
+                'permission': sharePermission,
+                'availability': shareTime,
+                'expiry_date': limitedDate
+            },
+            success: function(response) {
+                // Reset button state
+                $('#generate-new-url').html(originalButtonText);
+                $('#generate-new-url').prop('disabled', false);
+                
+                if (response.status === 200) {
+                    // Update the URL input field with the new URL
+                    $('#chat-url').val(response.url);
+                    toastr.success('<?php echo e(__('URL has been successfully generated')); ?>');
+                } else {
+					toastr.error('<?php echo e(__('There was an issue generating your url, please contact support')); ?>');
+                }
+            },
+            error: function(xhr) {
+                // Reset button state
+                $('#generate-new-url').html(originalButtonText);
+                $('#generate-new-url').prop('disabled', false); 
+				toastr.error('<?php echo e(__('There was an issue generating your url')); ?>');               
+                console.error('Error:', xhr.responseText);
+            }
+        });
 
 	});
- 
 
 </script>
+
+<style>
+	@keyframes shake {
+		0%, 100% { transform: translateY(-50%) translateX(0); }
+		25% { transform: translateY(-50%) translateX(-4px); }
+		75% { transform: translateY(-50%) translateX(4px); }
+	}
+	</style>
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /home/customer/www/staging.paraclete.ai/public_html/resources/views/classic/user/chat/view.blade.php ENDPATH**/ ?>

@@ -18,13 +18,12 @@
 	<div class="row justify-content-center">
 		<div class="col-lg-8 col-md-12 col-xm-12">
 			<div class="card overflow-hidden border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Setup OAuth Login') }}</h3>
-				</div>
 				<div class="card-body">
 					
 					<form action="{{ route('admin.settings.oauth.store') }}" method="POST" enctype="multipart/form-data">
 						@csrf
+
+						<h3 class="card-title text-center mb-5">{{ __('Setup OAuth Login') }}</h3>
 						
 						<div class="row">
 
@@ -41,7 +40,7 @@
 						</div>
 
 
-						<div class="card border-0 special-shadow">							
+						<div class="card">							
 							<div class="card-body">
 								<h6 class="fs-12 font-weight-bold mb-4"><i class="fs-13 mr-2 fa-brands fa-facebook-square"></i>{{ __('Facebook') }}</h6>
 								
@@ -99,7 +98,7 @@
 						</div>	
 
 
-						<div class="card border-0 special-shadow">							
+						<div class="card mt-6">							
 							<div class="card-body">
 
 								<h6 class="fs-12 font-weight-bold mb-4"><i class="fs-13 mr-2 fa-brands fa-twitter-square"></i>{{ __('Twitter') }}</h6>
@@ -158,7 +157,7 @@
 						</div>
 
 
-						<div class="card overflow-hidden border-0 special-shadow">							
+						<div class="card mt-6">							
 							<div class="card-body">
 
 								<h6 class="fs-12 font-weight-bold mb-4"><i class="fs-13 mr-2 fa-brands fa-google-plus-square"></i>{{ __('Google') }}</h6>
@@ -215,7 +214,7 @@
 						</div>						
 
 
-						<div class="card overflow-hidden border-0 special-shadow">							
+						<div class="card mt-6">							
 							<div class="card-body">
 
 								<h6 class="fs-12 font-weight-bold mb-4"><i class="fs-13 mr-2 fa-brands fa-linkedin-square"></i>{{ __('LinkedIn') }}</h6>

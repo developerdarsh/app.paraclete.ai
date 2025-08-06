@@ -59,43 +59,45 @@
             @endif
         @endforeach
 
-        @foreach($menuAdminItems as $item)
-            @if ($item['type'] == 'label')
-                <li class="side-item side-item-category mt-4 mb-3">{{ __($item['label']) }}</li>
-            @elseif ($item['type'] == 'divider')
-                <hr class="w-90 text-center ml-auto mr-auto mt-3">
-            @else
-                @if ($item['has_access'])
-                    <li class="slide">
-                        @if(!empty($item['children']))
-                            <a class="side-menu__item" data-toggle="slide" href="{{ $item['url'] ?? '#' }}">
-                                <span class="side-menu__icon {{ $item['icon'] }}"></span>                    
-                                <span class="side-menu__label">{{ __($item['label']) }}</span>
-                                @if(!empty($item['badge_text']))
-                                    <span class="badge badge-{{ $item['badge_type'] ?? 'primary' }}">{{ $item['badge_text'] }}</span>
-                                @endif
-                                <i class="angle fa fa-angle-right"></i>
-                            </a>
-                            <ul class="slide-menu">
-                                @foreach($item['children'] as $child)
-                                    <li>
-                                        <a href="{{ $child['route'] ? route($child['route']) : $child['url'] }}" class="slide-item">@if (!is_null($child['icon'])) <i class="slide-child-icon {{$child['icon']}}"></i> @endif{{ __($child['label']) }}</a>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        @else
-                            <a class="side-menu__item" href="{{ $item['route'] ? route($item['route']) : $item['url'] }}">
-                                <span class="side-menu__icon {{ $item['icon'] }}"></span>                        
-                                <span class="side-menu__label">{{ __($item['label']) }}</span>
-                                @if(!empty($item['badge_text']))
-                                    <span class="badge badge-{{ $item['badge_type'] ?? 'primary' }}">{{ $item['badge_text'] }}</span>
-                                @endif
-                            </a>
-                        @endif
-                    </li>
-                @endif                
-            @endif
-        @endforeach
+        @role('admin')
+            @foreach($menuAdminItems as $item)
+                @if ($item['type'] == 'label')
+                    <li class="side-item side-item-category mt-4 mb-3">{{ __($item['label']) }}</li>
+                @elseif ($item['type'] == 'divider')
+                    <hr class="w-90 text-center ml-auto mr-auto mt-3">
+                @else
+                    @if ($item['has_access'])
+                        <li class="slide">
+                            @if(!empty($item['children']))
+                                <a class="side-menu__item" data-toggle="slide" href="{{ $item['url'] ?? '#' }}">
+                                    <span class="side-menu__icon {{ $item['icon'] }}"></span>                    
+                                    <span class="side-menu__label">{{ __($item['label']) }}</span>
+                                    @if(!empty($item['badge_text']))
+                                        <span class="badge badge-{{ $item['badge_type'] ?? 'primary' }}">{{ $item['badge_text'] }}</span>
+                                    @endif
+                                    <i class="angle fa fa-angle-right"></i>
+                                </a>
+                                <ul class="slide-menu">
+                                    @foreach($item['children'] as $child)
+                                        <li>
+                                            <a href="{{ $child['route'] ? route($child['route']) : $child['url'] }}" class="slide-item">@if (!is_null($child['icon'])) <i class="slide-child-icon {{$child['icon']}}"></i> @endif{{ __($child['label']) }}</a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <a class="side-menu__item" href="{{ $item['route'] ? route($item['route']) : $item['url'] }}">
+                                    <span class="side-menu__icon {{ $item['icon'] }}"></span>                        
+                                    <span class="side-menu__label">{{ __($item['label']) }}</span>
+                                    @if(!empty($item['badge_text']))
+                                        <span class="badge badge-{{ $item['badge_type'] ?? 'primary' }}">{{ $item['badge_text'] }}</span>
+                                    @endif
+                                </a>
+                            @endif
+                        </li>
+                    @endif                
+                @endif
+            @endforeach
+        @endrole
 
         <hr class="w-90 text-center ml-auto mr-auto mt-3">
         

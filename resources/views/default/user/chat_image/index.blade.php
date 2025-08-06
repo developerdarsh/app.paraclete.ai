@@ -25,7 +25,7 @@
 			<div class="col-sm-12 text-center">
 				<h3 class="card-title fs-20 mb-3 super-strong"><i class="fa-solid fa-image-landscape mr-2 text-primary"></i>{{ __('Chat Image') }}</h3>
 				<h6 class="mb-0 fs-12 text-muted">{{ __($chat->description) }}</h6>
-				<div class="mb-4" id="balance-status">
+				<div class="mb-4 mt-3">
 					<span class="fs-11 text-muted pl-3"><i class="fa-solid fa-bolt-lightning mr-2 text-primary"></i>{{ __('Your Balance is') }} <span class="font-weight-semibold" id="balance-number">@if (auth()->user()->images == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->images + auth()->user()->images_prepaid) }}@endif</span> {{ __('credits') }}</span>
 				</div>	
 			</div>

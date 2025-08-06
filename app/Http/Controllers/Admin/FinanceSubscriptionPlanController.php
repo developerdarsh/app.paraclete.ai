@@ -392,12 +392,11 @@ class FinanceSubscriptionPlanController extends Controller
             $team_member = false;
         }
 
-        if (request('smart_ads_feature') == 'on') {
-            $smart_ads_feature = 1; 
+        if (request('speech_text_pro_feature') == 'on') {
+            $speech_pro = true; 
         } else {
-            $smart_ads_feature = 0;
+            $speech_pro = false;
         }
-        
 
         $voiceover_vendors = '';
         if (!is_null(request('voiceover_vendors'))) {
@@ -535,8 +534,7 @@ class FinanceSubscriptionPlanController extends Controller
                 'chatbot_external_quantity' => request('chatbot_external_quantity'),
                 'chatbot_external_domains' => request('chatbot_external_domains'),
                 'team_member_feature' => $team_member,
-                'smart_ads_feature' => $smart_ads_feature,
-
+                'speech_text_pro_feature' => $speech_pro,
             ]); 
                    
             $plan->save();            
@@ -883,12 +881,11 @@ class FinanceSubscriptionPlanController extends Controller
             $team_member = false;
         }
 
-        if (request('smart_ads_feature') == 'on') {
-            $smart_ads_feature = 1; 
+        if (request('speech_text_pro_feature') == 'on') {
+            $speech_pro = true; 
         } else {
-            $smart_ads_feature = 0;
+            $speech_pro = false;
         }
-
 
         $voiceover_vendors = '';
         if (!is_null(request('voiceover_vendors'))) {
@@ -1026,8 +1023,7 @@ class FinanceSubscriptionPlanController extends Controller
                 'chatbot_external_quantity' => request('chatbot_external_quantity'),
                 'chatbot_external_domains' => request('chatbot_external_domains'),
                 'team_member_feature' => $team_member,
-                'smart_ads_feature' => $smart_ads_feature,
-    
+                'speech_text_pro_feature' => $speech_pro,
             ]); 
             
             toastr()->success(__('Selected plan has been updated successfully'));

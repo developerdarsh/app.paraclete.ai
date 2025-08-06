@@ -9,8 +9,8 @@
 
 @section('page-header')
 	<!-- PAGE HEADER -->
-	<div class="page-header mt-5-7">
-		<div class="page-leftheader">
+	<div class="page-header mt-5-7 justify-content-center">
+		<div class="page-leftheader text-center">
 			<h4 class="page-title mb-0">{{ __('Category Manager') }}</h4>
 			<ol class="breadcrumb mb-2">
 				<li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}"><i class="fa-solid fa-featheri mr-2 fs-12"></i>{{ __('Admin') }}</a></li>
@@ -23,13 +23,13 @@
 @endsection
 
 @section('content')	
-	<div class="row">
+	<div class="row justify-content-center">
 		<div class="col-md-12 col-sm-12">
-			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('All Categories') }}</h3>
-					<a href="#" id="createButton" class="btn btn-primary text-right right">{{ __('Create New') }}</a>
-				</div>
+			<h3 class="card-title text-center mb-4">{{ __('All Categories') }}</h3>
+			<div class="text-center mb-6">
+				<a href="#" id="createCategory" class="btn btn-primary">{{ __('Create New Category') }}</a>
+			</div>
+			<div class="card ">				
 				<div class="card-body pt-2">
 					<!-- BOX CONTENT -->
 					<div class="box-content">
@@ -41,7 +41,7 @@
 										<th width="5%">{{ __('Type') }}</th> 					
 										<th width="15%">{{ __('Description') }}</th> 					
 										<th width="3%">{{ __('Updated On') }}</th>	    										 						           	
-										<th width="2%">{{ __('Actions') }}</th>
+										<th width="3%">{{ __('Actions') }}</th>
 									</tr>
 								</thead>
 						</table> <!-- END SET DATATABLE -->
@@ -206,7 +206,7 @@
 
 
 			// CREATE CATEGORY
-			$(document).on('click', '#createButton', function(e) {
+			$(document).on('click', '#createCategory', function(e) {
 
 				e.preventDefault();
 

@@ -6,8 +6,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Backup\Helpers\Backup;
 use App\Services\Statistics\UserService;
-use OpenAI\Laravel\Facades\OpenAI;
 use App\Models\Voice;
+use OpenAI\Client;
 
 class OpenaiTTSService 
 {
@@ -39,7 +39,9 @@ class OpenaiTTSService
         $model = ($voice->voice_type == 'standard') ? 'tts-1' : 'tts-1-hd';
         $voice_id = explode('_', $voice->voice_id);
 
-        $audio_stream = OpenAI::audio()->speech([
+        $client = \OpenAI::client(config('services.openai.key'));
+
+        $audio_stream = $client->audio()->speech([
             'model' => $model,
             'input' => $text,
             'voice' => $voice_id[0],

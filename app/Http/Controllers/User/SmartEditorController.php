@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\LicenseController;
 use App\Services\Statistics\UserService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Traits\VoiceToneTrait;
 use Illuminate\Http\Request;
 use OpenAI\Laravel\Facades\OpenAI;
@@ -18,10 +19,10 @@ use App\Models\Workbook;
 use App\Models\Language;
 use App\Models\ApiKey;
 use App\Models\User;
-use App\Models\Setting;
 use App\Models\FineTuneModel;
-use GuzzleHttp\Client;
 use App\Services\HelperService;
+use App\Services\AIService;
+use Exception;
 
 class SmartEditorController extends Controller
 {
@@ -93,9 +94,6 @@ class SmartEditorController extends Controller
                 return $data;
             }   
 
-            $uploading = new UserService();
-            $upload = $uploading->prompt();
-            if($upload['dota']!=622220){return;}
 
             if (auth()->user()->group == 'user') {
                 if (config('settings.templates_access_user') != 'all' && config('settings.templates_access_user') != 'premium') {
@@ -329,10 +327,6 @@ class SmartEditorController extends Controller
             }
             
             $flag = Language::where('language_code', $request->language)->first();
-            $uploading = new UserService();
-            $settings = Setting::where('name', 'license')->first(); 
-            $verify = $uploading->prompt();
-            if($settings->value != $verify['code']){return;}
 
             if ($request->title) {
                 $input_title = $request->title;
@@ -687,115 +681,101 @@ class SmartEditorController extends Controller
 	*
 	*/
 	public function process(Request $request) 
-    {
-        if (config('settings.personal_openai_api') == 'allow') {
-            config(['openai.api_key' => auth()->user()->personal_openai_key]);         
-        } elseif (!is_null(auth()->user()->plan_id)) {
-            $check_api = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
-            if ($check_api->personal_openai_api) {
-                config(['openai.api_key' => auth()->user()->personal_openai_key]);                
-            } else {
-                if (config('settings.openai_key_usage') !== 'main') {
-                    $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
-                    array_push($api_keys, config('services.openai.key'));
-                    $key = array_rand($api_keys, 1);
-                    config(['openai.api_key' => $api_keys[$key]]);
-                } else {
-                    config(['openai.api_key' => config('services.openai.key')]);
-                }
-            }
-        } else {
-            if (config('settings.openai_key_usage') !== 'main') {
-                $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
-                array_push($api_keys, config('services.openai.key'));
-                $key = array_rand($api_keys, 1);
-                config(['openai.api_key' => $api_keys[$key]]);
-            } else {
-                config(['openai.api_key' => config('services.openai.key')]);
-            }
-        }
-        
-        $model = '';
-
+    {        
         $content_id = $request->content_id;
         $temperature = $request->temperature;
-        $language = $request->language;
-        $content = Content::where('id', $content_id)->first();
-        $prompt = $content->input_text;  
-        $model = $content->model;  
 
-        return response()->stream(function () use($model, $prompt, $content_id, $temperature, $language) {
+        return response()->stream(function () use($content_id, $temperature) {
 
+            $content = Content::where('id', $content_id)->first();
+            $prompt = $content->input_text;  
+            $model = $content->model; 
+
+            $openai_key = AIService::getOpenAIKey();
             $text = "";
 
             try {
-
-                $results = OpenAI::chat()->createStreamed([
-                    'model' => $model,
-                    'messages' => [
-                        ['role' => 'user', 'content' => $prompt]
-                    ],
-                    'frequency_penalty' => 0,
-                    'presence_penalty' => 0,
-                    'temperature' => (float)$temperature,
-                ]);
-
-                $output = "";
-                $responsedText = "";
-                foreach ($results as $result) {
+                $openai_client = \OpenAI::client($openai_key);
                     
-                    if (isset($result['choices'][0]['delta']['content'])) {
-                        $raw = $result['choices'][0]['delta']['content'];
-                        $clean = str_replace(["\r\n", "\r", "\n"], "<br/>", $raw);
-                        $text .= $raw;
-    
-                        echo 'data: ' . $clean ."\n\n";
-                        ob_flush();
-                        flush();
-                        usleep(400);
-                    }
-    
-    
-                    if (connection_aborted()) { break; }
+                if (in_array($model, ['o1', 'o1-mini', 'o3-mini'])) {
+                    $stream = $openai_client->chat()->createStreamed([
+                        'model' => $model,
+                        'messages' => [
+                            ['role' => 'user', 'content' => $prompt]
+                        ],
+                        'frequency_penalty' => 0,
+                        'presence_penalty' => 0,
+                        'stream_options'=>[
+                            'include_usage' => true,
+                        ]
+                    ]);
+                } else {
+                    $stream = $openai_client->chat()->createStreamed([
+                        'model' => $model,
+                        'messages' => [
+                            ['role' => 'user', 'content' => $prompt]
+                        ],
+                        'frequency_penalty' => 0,
+                        'presence_penalty' => 0,
+                        'temperature' => (float)$temperature,                        
+                        'stream_options'=>[
+                            'include_usage' => true,
+                        ]
+                    ]);
                 }
 
+                foreach ($stream as $result) {
 
-            } catch (\Exception $exception) {
-                echo "data: " . $exception->getMessage();
-                echo "\n\n";
-                ob_flush();
-                flush();
+                    if (isset($result->choices[0]->delta->content)) {
+                        $raw = $result->choices[0]->delta->content;
+                        $clean = str_replace(["\r\n", "\r", "\n"], "<br/>", $raw);
+                        $text .= $raw;
+
+                        if (connection_aborted()) {
+                            break;
+                        }
+
+                        echo 'data: ' . $clean;
+                        echo "\n\n";
+                        ob_flush();
+                        flush();
+                    }
+
+                    if(isset($result->usage)){
+                        $input_tokens = $result->usage->promptTokens;
+                        $output_tokens = $result->usage->completionTokens; 
+                    }
+                }
+                echo "event: stop\n";
                 echo 'data: [DONE]';
                 echo "\n\n";
                 ob_flush();
                 flush();
-                usleep(50000);
+
+            } catch (Exception $e) {
+                Log::error('OpenAI API Error: ' . $e->getMessage());
+                echo 'data: OpenAI Notification: <span class="font-weight-bold">' . $e->getMessage() . '</span>. Please contact support team.';
+                echo "\n\n";
+                echo 'data: [DONE]';
+                echo "\n\n";
+                ob_flush();
+                flush();
             }
            
-
-            # Update credit balance
-            $words = count(explode(' ', ($text)));
-            HelperService::updateBalance($words, $model); 
-            // if ($language != 'cmn-CN' && $language != 'ja-JP') {
-            //     $words = count(explode(' ', ($text)));
-            //     $this->updateBalance($words); 
-            // } else {
-            //     $words = $this->updateBalanceKanji($text);
-            // }
-             
-
-            $content = Content::where('id', $content_id)->first();
-            $content->tokens = $words;
-            $content->words = $words;
-            $content->save();
-
-
-            echo 'data: [DONE]';
-            echo "\n\n";
-            ob_flush();
-            flush();
-            usleep(40000);
             
+            if (!empty($text)) {
+                # Update credit balance
+                $words = count(explode(' ', ($text)));
+                HelperService::updateBalance($words, $model, $input_tokens, $output_tokens);   
+
+                $content->result_text = $text;
+                $content->input_tokens = $input_tokens;
+                $content->output_tokens = $output_tokens;
+                $content->words = $words;
+                $content->save();
+
+            }
+
             
         }, 200, [
             'Cache-Control' => 'no-cache',
@@ -883,7 +863,9 @@ class SmartEditorController extends Controller
 
 
         $words = count(explode(' ', ($completion->choices[0]->message->content)));
-        HelperService::updateBalance($words, $model); 
+        $input_token = $completion->usage->promptTokens ?? 0;
+        $output_token = $completion->usage->completionTokens ?? 0;
+        HelperService::updateBalance($words, $model, $input_token, $output_token); 
 
         return response()->json(["status" => "success", "message" => $completion->choices[0]->message->content]);
     }

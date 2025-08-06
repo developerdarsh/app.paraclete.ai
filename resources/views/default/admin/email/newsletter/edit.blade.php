@@ -24,13 +24,12 @@
 	<div class="row justify-content-center">
 		<div class="col-lg-6 col-md-10 col-sm-12">
 			<div class="card overflow-hidden border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Edit Email') }}: <span class="font-weight-bold text-primary">{{ $id->name }}</span></h3>
-				</div>
 				<div class="card-body pt-5">									
 					<form action="{{ route('admin.email.newsletter.update', $id) }}" method="POST" enctype="multipart/form-data">
 						@method('PUT')
 						@csrf
+
+						<h3 class="card-title text-center mb-6">{{ __('Edit Email') }}: <span class="font-weight-bold text-primary">{{ $id->name }}</span></h3>
 
 						<div class="row">							
 							<div class="col-lg-12 col-md-12 col-sm-12">							

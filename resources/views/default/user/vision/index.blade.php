@@ -25,7 +25,7 @@
 			<div class="col-sm-12 text-center">
 				<h3 class="card-title fs-20 mb-3 super-strong"><i class="fa-solid fa-brain-circuit mr-2 text-primary"></i>{{ __('AI Vision') }}</h3>
 				<h6 class="mb-0 fs-12 text-muted">{{ __($chat->description) }}</h6>
-				<div class="mb-4" id="balance-status">
+				<div class="mb-5 mt-2">
 					<x-balance-chat />
 				</div>
 			</div>
@@ -786,11 +786,7 @@
 
 					} else {
 						let txt;
-						if (uploaded_image == '') {
-							txt = JSON.parse(e.data).choices[0].delta.content;
-						} else {
-							txt = e.data
-						}
+						txt = e.data
 						
 						if (txt !== undefined) {
 							msg = msg + txt;

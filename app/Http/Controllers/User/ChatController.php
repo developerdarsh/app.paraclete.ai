@@ -40,6 +40,7 @@ use App\Services\AzureTTSService;
 use App\Models\ChatTemplates;
 
 
+
 class ChatController extends Controller
 {
 
@@ -245,7 +246,6 @@ class ChatController extends Controller
         $chat_id = session()->get('chat_id');
         $model = session()->get('model');
         
-
         # Append real time data
         if($realtime == 'on') {
             if ($settings->realtime_data_engine == 'serper') {
@@ -254,8 +254,6 @@ class ChatController extends Controller
                 $prompt = $this->realtimeData($prompt, 'perplexity');
             } 
         } 
-        
-
         # Add Brand information
         if ($company != 'none') {
             $brand = BrandVoice::where('id', $company)->first();
@@ -310,20 +308,15 @@ class ChatController extends Controller
                 }
             }
         }
-
-
         # Start OpenAI task
-        if (in_array($model, ['gpt-3.5-turbo-0125', 'gpt-4', 'gpt-4o', 'gpt-4o-mini', 'gpt-4.5-preview', 'o1', 'o1-mini', 'o3-mini', 'gpt-4-0125-preview'])) {
+        if (in_array($model, ['gpt-3.5-turbo-0125', 'gpt-4', 'gpt-4o', 'gpt-4o-mini', 'gpt-4.5-preview', 'o1', 'o1-mini', 'o3-mini', 'gpt-4-0125-preview', 'gpt-4o-search-preview', 'gpt-4o-mini-search-preview', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'o4-mini', 'o3'])) {
             if (\App\Services\HelperService::extensionAzureOpenai() && $extension->azure_openai_activate) {
-    
                 return $this->streamAzure($conversation_id, $chat_id, $prompt);                      
 
             } elseif (\App\Services\HelperService::extensionOpenRouter() && $extension->open_router_activate) {
-
                 return $this->streamOpenRouter($conversation_id, $chat_id, $prompt);                      
             
             } else {
-
                 if (config('settings.personal_openai_api') == 'allow') {
                     $openai_api = auth()->user()->personal_openai_key;        
                 } elseif (!is_null(auth()->user()->plan_id)) {
@@ -364,15 +357,13 @@ class ChatController extends Controller
                         'Content-Type' => 'text/event-stream',
                     ]);
                 }
-    
                 return $this->streamOpenai($conversation_id, $chat_id, $prompt, $openai_api);
             }
             
         }
 
-
         # Start Anthropic task
-        if (in_array($model, ['claude-3-7-sonnet-20250219', 'claude-3-opus-20240229', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022'])) {
+        if (in_array($model, ['claude-3-7-sonnet-20250219', 'claude-3-opus-20240229', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-opus-4-20250514', 'claude-sonnet-4-20250514'])) {
             if (config('settings.personal_claude_api') == 'allow') {
                 $anthropic_api = auth()->user()->personal_claude_key;        
             } elseif (!is_null(auth()->user()->plan_id)) {
@@ -606,9 +597,9 @@ class ChatController extends Controller
 	* @return - text stream
 	*
 	*/
-    private function streamOpenai($conversation_id, $chat_id, $prompt, $openai_api)
+    private function streamOpenai($conversation_id, $chat_id, $prompt, $openai_api, $user_id = null)
     {
-        return response()->stream(function () use($conversation_id, $chat_id, $prompt, $openai_api) {
+        return response()->stream(function () use($conversation_id, $chat_id, $prompt, $openai_api, $user_id) {
             
             $chat_conversation = ChatConversation::where('conversation_id', $conversation_id)->first();  
             $chat_message = ChatHistory::where('id', $chat_id)->first();
@@ -622,40 +613,46 @@ class ChatController extends Controller
             $output_tokens = 0;
 
             # Prepare chat history
-            $messages[] = ['role' => 'system', 'content' => $main_prompt];
+            if (strpos($model, 'o1-') === 0) {
+                $first_message = $main_prompt . "\n\nUser: " . $prompt;
+                $messages[] = ['role' => 'user', 'content' => $first_message];
 
-            foreach ($chat_messages as $chat) {
-                if (empty($chat['response']) || is_null($chat['response'])) {
-                    continue;
-                }
+            } else {
 
-                $messages[] = ['role' => 'user', 'content' => $chat['prompt']];
-                if (!empty($chat['response'])) {
-                    $messages[] = ['role' => 'assistant', 'content' => $chat['response']];
-                }
-            }                
+                $messages[] = ['role' => 'system', 'content' => $main_prompt];
 
-            $messages[] = ['role' => 'user', 'content' => $prompt];                          
+                foreach ($chat_messages as $chat) {
+                    if (empty($chat['response']) || is_null($chat['response'])) {
+                        continue;
+                    }
+
+                    $messages[] = ['role' => 'user', 'content' => $chat['prompt']];
+                    if (!empty($chat['response'])) {
+                        $messages[] = ['role' => 'assistant', 'content' => $chat['response']];
+                    }
+                }                
+
+                $messages[] = ['role' => 'user', 'content' => $prompt];   
+            }                       
  
 
             try {
 
                 $openai_client = \OpenAI::client($openai_api);
-                    
+                $content = '';                    
                 $stream = $openai_client->chat()->createStreamed([
                     'model' => $model,
                     'messages' => $messages,
-                    'frequency_penalty' => 0,
-                    'presence_penalty' => 0,
-                    'temperature' => 1,
                     'stream_options'=>[
                         'include_usage' => true,
                     ]
                 ]);
-				Log::info('StreamResponse received', ['type' => $stream]);
                 foreach ($stream as $result) {
 
                     if (isset($result->choices[0]->delta->content)) {
+                        $delta = $result->choices[0]->delta->content ?? '';
+                        $content .= $delta;
+
                         $raw = $result->choices[0]->delta->content;
                         $clean = str_replace(["\r\n", "\r", "\n"], "<br/>", $raw);
                         $text .= $raw;
@@ -669,7 +666,7 @@ class ChatController extends Controller
                         ob_flush();
                         flush();
                     }
-    
+
                     if(isset($result->usage)){
                         $input_tokens = $result->usage->promptTokens;
                         $output_tokens = $result->usage->completionTokens; 
@@ -695,7 +692,7 @@ class ChatController extends Controller
             if (!empty($text)) {
                 # Update credit balance
                 $words = count(explode(' ', ($text)));
-                HelperService::updateBalance($words, $model, $input_tokens, $output_tokens);   
+                HelperService::updateBalance($words, $model, $input_tokens, $output_tokens, $user_id);   
 
                 $current_chat = ChatHistory::where('id', $chat_id)->first();
                 $current_chat->response = $text;
@@ -870,9 +867,20 @@ class ChatController extends Controller
                             }
                             
                             // Handle message stop event                          
-                            if (isset($data['message']['usage'])) {
-                                $input_tokens = $data['message']['usage']['input_tokens'];
-                                $output_tokens = $data['message']['usage']['output_tokens'];
+                            if (isset($data['message']['usage'])) {                              
+                                // Check if usage data exists in the expected structure
+                                if (isset($data['message']['usage']['input_tokens'])) {
+                                    $input_tokens = $data['message']['usage']['input_tokens'];
+                                }
+                                if (isset($data['message']['usage']['output_tokens'])) {
+                                    $output_tokens = $data['message']['usage']['output_tokens'];
+                                }
+                            }
+
+                            if (isset($data['usage'])) {                              
+                                if (isset($data['usage']['output_tokens'])) {
+                                    $output_tokens = $data['usage']['output_tokens'];
+                                }
                             }
                             
                         }
@@ -882,7 +890,7 @@ class ChatController extends Controller
                         break;
                     }
                 }
-                
+              
                 echo "event: stop\n";
                 echo 'data: [DONE]';
                 echo "\n\n";
@@ -921,6 +929,8 @@ class ChatController extends Controller
 
             
             if (!empty($text)) {
+               
+
                 # Update credit balance
                 $words = count(explode(' ', ($text)));
                 HelperService::updateBalance($words, $model, $input_tokens, $output_tokens);  
@@ -2138,7 +2148,6 @@ class ChatController extends Controller
     public function realtimeData($prompt, $engine)
     {   
         $settings = ExtensionSetting::first();
-
         if ($engine == 'serper') {
 
             $client = new GuzzleClient;
@@ -2160,7 +2169,6 @@ class ChatController extends Controller
                 ]);
     
                 $result = $response->getBody()->getContents();
-
                 $final_prompt = 'Prompt: ' . $prompt .
                                 '\n\nWeb search json results: '
                                 . json_encode($result) .
@@ -2177,7 +2185,6 @@ class ChatController extends Controller
 
             $url = 'https://api.perplexity.ai/chat/completions';
             $api = $settings->perplexity_api;
-
             $payload = [
                 'model'    => $settings->perplexity_realtime_model,
                 'messages' => [
@@ -2193,10 +2200,11 @@ class ChatController extends Controller
                                 ->withHeaders([
                                     'Content-Type' => 'application/json',
                                 ])->post($url, $payload);
-
+                
                 if ($response->successful()) {
 
                     $data = $response->json();
+                    Log::info($data);
                     $response = $data['choices'][0]['message']['content'];
 
                     $final_prompt = 'Prompt: ' . $prompt .
@@ -2344,7 +2352,7 @@ class ChatController extends Controller
             session()->forget('conversation_id');
         }
 
-        $chat = Chat::where('chat_code', $code)->first();
+        $chat = Chat::where('chat_code', $code)->first(); 
         $template = ChatTemplates::where([['chat_id', $chat->id],['status',1]])->get();
         $messages = ChatConversation::where('user_id', auth()->user()->id)->where('chat_code', $chat->chat_code)->orderBy('updated_at', 'desc')->get(); 
 
@@ -2367,7 +2375,7 @@ class ChatController extends Controller
         $brands = BrandVoice::where('user_id', auth()->user()->id)->get();
         $brands_feature = \App\Services\HelperService::checkBrandVoiceAccess();
 
-        return view('user.chat.view', compact('template','chat', 'messages', 'categories', 'prompts', 'internet', 'brands', 'brands_feature', 'default_model', 'extension'));
+        return view('user.chat.view', compact('chat', 'template' , 'messages', 'categories', 'prompts', 'internet', 'brands', 'brands_feature', 'default_model', 'extension'));
 	}
 
 
@@ -2612,13 +2620,15 @@ class ChatController extends Controller
 	public function delete(Request $request) 
     {
         if ($request->ajax()) {
-
+Log::info(request('conversation_id'));
             $chat = ChatConversation::where('conversation_id', request('conversation_id'))->first(); 
-
+Log::info($chat);
             if ($chat) {
                 if ($chat->user_id == auth()->user()->id){
 
                     $chat->delete();
+
+                    ChatHistory::where('conversation_id', request('conversation_id'))->delete();
 
                     if (session()->has('conversation_id')) {
                         session()->forget('conversation_id');
@@ -3032,7 +3042,6 @@ class ChatController extends Controller
             HelperService::updateBalance($chat->words, $chat->model, $request->input_tokens, $request->output_tokens); 
         }
 
-        
     }
 
 
@@ -3042,16 +3051,35 @@ class ChatController extends Controller
 
             $conversation = ChatConversation::where('conversation_id', $request->conversation_id)->first();
 
+
             if ($conversation) {
+                $characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                $uuid = '';
+                
+                $charactersLength = strlen($characters);
+                
+                for ($i = 0; $i < 20; $i++) {
+                    $uuid .= $characters[rand(0, $charactersLength - 1)];
+                }
+
+                $permission = ($request->permission == 'read') ? true : false;
+                $expiresAt = ($request->availability == 'limited' && $request->expiry_date) ? $expiresAt = \Carbon\Carbon::createFromFormat('d/m/Y H:i', $request->expiry_date)->format('Y-m-d H:i:s') : null;
+
                 ChatShare::create([
-                    'uuid' => $request->uuid,
+                    'uuid' => $uuid,
+                    'user_id' => auth()->user()->id,
                     'chat_code' => $conversation->chat_code,
                     'conversation_id' => $conversation->conversation_id,
-                    'read_only' => $request->read_only
+                    'read_only' => $permission,
+                    'availability' => $request->availability,
+                    'expires_at' => $expiresAt
                 ]);
 
+                $url = config('app.url') . '/app/chat/share/' . $uuid;
+
                 return response()->json([
-                    'status' => 200
+                    'status' => 200,
+                    'url' => $url
                 ]);
             } else {
                 return response()->json([
@@ -3067,17 +3095,163 @@ class ChatController extends Controller
 
         $shared = ChatShare::where('uuid', $uuid)->first();
 
-        if ($shared) {
-            $chat = Chat::where('chat_code', $shared->chat_code)->first(); 
-            $conversation = ChatConversation::where('conversation_id', $shared->conversation_id)->orderBy('updated_at', 'desc')->first(); 
-            $messages = ChatHistory::where('conversation_id', $shared->conversation_id)->get();
+        $conversation = ChatConversation::where('conversation_id', $shared->conversation_id)->first();
 
-            return view('user.chat.share', compact('chat', 'conversation', 'messages'));
+        if (!$conversation) {
+            abort(404);
         }
         
+        if ($shared) {
+            if ($shared->availability == 'limited') {
+                if ($shared->expires_at->isPast()) {
+                    abort(404);
+                } else {
+                    $chat = Chat::where('chat_code', $shared->chat_code)->first();  
+                    $conversation_id = $shared->conversation_id;
+                    return view('user.chat.share', compact('chat', 'conversation_id', 'shared'));
+                }
+            } else {
+                $chat = Chat::where('chat_code', $shared->chat_code)->first();  
+                $conversation_id = $shared->conversation_id;
+                return view('user.chat.share', compact('chat', 'conversation_id', 'shared'));
+            }            
+        } else {
+            abort(404);
+        }
     }
 
-     public function saveAudio(Request $request)
+
+    public function sharedHistory(Request $request) {
+
+        if ($request->ajax()) {
+
+            $messages = ChatHistory::where('conversation_id', $request->conversation_id)->get();
+            return $messages;
+        }   
+    }
+
+
+    /**
+	*
+	* Process Input Text
+	* @param - file id in DB
+	* @return - confirmation
+	*
+	*/
+	public function processChatShare(Request $request) 
+    {       
+        $user = User::where('id', $request->user)->first();
+
+        # Check if user has sufficient words available to proceed
+        $verify = HelperService::creditCheck($request->model, 200, $user->id);
+        if (isset($verify['status'])) {
+            if ($verify['status'] == 'error') {
+                return response()->json(['status' => $verify['status'], 'message' => $verify['message']]);
+            }
+        }
+
+        $chat = new ChatHistory();
+        $chat->user_id = $user->id;
+        $chat->conversation_id = $request->conversation_id;
+        $chat->prompt = $request->input('message');
+        $chat->images = $request->image;
+        $chat->model = $request->model;
+        $chat->save();
+
+        session()->put('conversation_id', $request->conversation_id);
+        session()->put('chat_id', $chat->id);
+        session()->put('message', $request->input('message'));
+        session()->put('model', $request->model);
+        session()->put('user_id', $request->user);
+
+        return response()->json(['status' => 'success', 'chat_id' => $chat->id]);
+        
+	}
+
+
+     /**
+	*
+	* Process Chat
+	* @param - file id in DB
+	* @return - confirmation
+	*
+	*/
+    public function generateChatShare(Request $request) 
+    {  
+        # Get Settings
+        $settings = MainSetting::first();
+        $extension = ExtensionSetting::first();
+
+        $conversation_id = $request->conversation_id;
+
+        $prompt= session()->get('message'); 
+        $chat_id = session()->get('chat_id');
+        $model = session()->get('model');
+        $user_id = session()->get('user_id');
+        
+
+        # Start OpenAI task
+        if (in_array($model, ['gpt-3.5-turbo-0125', 'gpt-4', 'gpt-4o', 'gpt-4o-mini', 'gpt-4.5-preview', 'o1', 'o1-mini', 'o3-mini', 'gpt-4-0125-preview'])) {
+            if (\App\Services\HelperService::extensionAzureOpenai() && $extension->azure_openai_activate) {
+    
+                return $this->streamAzure($conversation_id, $chat_id, $prompt);                      
+
+            } elseif (\App\Services\HelperService::extensionOpenRouter() && $extension->open_router_activate) {
+
+                return $this->streamOpenRouter($conversation_id, $chat_id, $prompt);                      
+            
+            } else {
+                $user = User::where('id', $user_id)->first();
+
+                if (config('settings.personal_openai_api') == 'allow') {
+                    $openai_api = $user->personal_openai_key;        
+                } elseif (!is_null($user->plan_id)) {
+                    $check_api = SubscriptionPlan::where('id', $user->plan_id)->first();
+                    if ($check_api->personal_openai_api) {
+                        $openai_api = $user->personal_openai_key;               
+                    } else {
+                        if (config('settings.openai_key_usage') !== 'main') {
+                           $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
+                           array_push($api_keys, config('services.openai.key'));
+                           $key = array_rand($api_keys, 1);
+                           $openai_api = $api_keys[$key];
+                       } else {
+                           $openai_api = config('services.openai.key');
+                       }
+                   }               
+                } else {
+                    if (config('settings.openai_key_usage') !== 'main') {
+                        $api_keys = ApiKey::where('engine', 'openai')->where('status', true)->pluck('api_key')->toArray();
+                        array_push($api_keys, config('services.openai.key'));
+                        $key = array_rand($api_keys, 1);
+                        $openai_api = $api_keys[$key];
+                    } else {
+                        $openai_api = config('services.openai.key');
+                    }
+                }
+    
+                if (is_null($openai_api) || $openai_api == '') {
+                    return response()->stream(function () {
+                        echo 'data: OpenAI Notification: <span class="font-weight-bold">Missing OpenAI API key</span>. Please contact support team.';
+                        echo "\n\n";
+                        echo 'data: [DONE]';
+                        echo "\n\n";
+                        ob_flush();
+                        flush();
+                    }, 200, [
+                        'Cache-Control' => 'no-cache',
+                        'X-Accel-Buffering' => 'no',
+                        'Content-Type' => 'text/event-stream',
+                    ]);
+                }
+    
+                return $this->streamOpenai($conversation_id, $chat_id, $prompt, $openai_api, $user_id);
+            }
+            
+        }
+
+    }
+    public function saveAudio(Request $request)
     {
         $audio = $request->file('audio');
         $format = $audio->getClientOriginalExtension();
@@ -3085,7 +3259,7 @@ class ChatController extends Controller
         $size = $audio->getSize();
         $name = Str::random(10) . '.' . $format;
         if (config('settings.whisper_default_storage') == 'local') {
-            $audio_url = $audio->store('transcribe','public');
+            $audio_url = $audio->store('transcribe', 'public');
         } elseif (config('settings.whisper_default_storage') == 'aws') {
             Storage::disk('s3')->put($name, file_get_contents($audio));
             $audio_url = Storage::disk('s3')->url($name);
@@ -3093,7 +3267,6 @@ class ChatController extends Controller
             Storage::disk('wasabi')->put($name, file_get_contents($audio));
             $audio_url = Storage::disk('wasabi')->url($name);
         }
-        
         if (config('settings.whisper_default_storage') == 'local') {
             $file = curl_file_create($audio_url);
         } else {
@@ -3104,20 +3277,21 @@ class ChatController extends Controller
             Storage::disk('public')->put('transcribe/' . $file_name, $content);
             $file = curl_file_create('transcribe/' . $file_name);
             curl_close($curl);
-            
+
         }
-		$open_ai = new OpenAi(config('services.openai.key')); 
-       	$complete = $open_ai->translate([
-			'model' => 'whisper-1',
-			'file' => $file,
-			'prompt' => "",
-		]);
-        $response = json_decode($complete , true);
-		
-		return response()->json(['response' => $response, 'message' => 'Audio recorded successfully']);
+        // dd($file);
+        $open_ai = new OpenAi(config('services.openai.key'));
+        $complete = $open_ai->translate([
+            'model' => 'whisper-1',
+            'file' => $file,
+            'prompt' => "",
+        ]);
+        $response = json_decode($complete, true);
+        return response()->json(['response' => $response, 'message' => 'Audio recorded successfully']);
     }
-    public function audioConvert(Request $request){
-		$conversation_id = $request->conversation_id;
+    public function audioConvert(Request $request)
+    {
+        $conversation_id = $request->conversation_id;
         $chat_message = ChatHistory::where('conversation_id', $conversation_id)->orderBy('created_at', 'desc')->first();
         $messages = $chat_message->response;
         $chat_conversation = ChatConversation::where('conversation_id', $conversation_id)->first();
@@ -3126,22 +3300,23 @@ class ChatController extends Controller
         // $i = count($messages)-1;
         $lastAssistantData['voice_code'] = $voice_code->voice_code;
         $lastAssistantData['data'] = $messages;
-        return  $lastAssistantData;
+        return $lastAssistantData;
     }
     public function convertTextToAudio(Request $request)
     {
         // language_code , voice_id
-		$text = $request->text;
-		if($request->voiceCode == 1){
-			$voice = Voice::where('id', 208)->first();
-		} else {
-			$voice = Voice::where('id', 424)->first();
-		}
-        
+        $text = $request->text;
+        if ($request->voiceCode == 1) {
+            $voice = Voice::where('id', 208)->first();
+        } else {
+            $voice = Voice::where('id', 424)->first();
+        }
+
         $format = 'mp3';
         $file_name = 'LISTEN--' . Str::random(10) . '.mp3';
         $azure = new AzureTTSService();
         return $azure->synthesizeSpeech($voice, $text, $format, $file_name);
-    } 
+    }
+
 
 }

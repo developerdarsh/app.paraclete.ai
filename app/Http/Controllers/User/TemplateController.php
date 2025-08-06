@@ -655,7 +655,8 @@ class TemplateController extends Controller
 	*/
 	public function process(Request $request) 
     {
-		# Get Settings
+
+        # Get Settings
         $settings = MainSetting::first();
         $extension = ExtensionSetting::first();
         
@@ -679,7 +680,7 @@ class TemplateController extends Controller
 
 
          # Start OpenAI task
-         if (in_array($model, ['gpt-3.5-turbo-0125', 'gpt-4', 'gpt-4o', 'gpt-4o-mini', 'gpt-4.5-preview', 'o1', 'o1-mini', 'o3-mini', 'gpt-4-0125-preview'])) {
+         if (in_array($model, ['gpt-3.5-turbo-0125', 'gpt-4', 'gpt-4o', 'gpt-4o-mini', 'gpt-4.5-preview', 'o1', 'o1-mini', 'o3-mini', 'gpt-4-0125-preview', 'o3', 'o4-mini', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'gpt-4o-search-preview', 'gpt-4o-mini-search-preview'])) {
             if (\App\Services\HelperService::extensionAzureOpenai() && $extension->azure_openai_activate) {
     
                 return $this->streamAzure($request->content_id, $max_results, $prompt, $max_words, $temperature);                      
@@ -737,7 +738,7 @@ class TemplateController extends Controller
         }
 
         # Start Anthropic task
-        if (in_array($model, ['claude-3-7-sonnet-20250219', 'claude-3-opus-20240229', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022'])) {
+        if (in_array($model, ['claude-3-7-sonnet-20250219', 'claude-3-opus-20240229', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-opus-4-20250514', 'claude-sonnet-4-20250514'])) {
             if (config('settings.personal_claude_api') == 'allow') {
                 $anthropic_api = auth()->user()->personal_claude_key;        
             } elseif (!is_null(auth()->user()->plan_id)) {
@@ -750,6 +751,7 @@ class TemplateController extends Controller
             } else {
                 $anthropic_api = config('anthropic.api_key'); 
             }
+
             if (is_null($anthropic_api) || $anthropic_api == '') {
                 return response()->stream(function () {
                     echo 'data: Anthropic Notification: <span class="font-weight-bold">Missing Anthropic API key</span>. Please contact support team.';
@@ -917,12 +919,20 @@ class TemplateController extends Controller
 
                 $openai_client = \OpenAI::client($openai_api);
                 
-                if (in_array($model, ['o1', 'o1-mini', 'o3-mini'])) {
+                if (in_array($model, ['o1', 'o1-mini', 'o3-mini', 'o3', 'o4-mini'])) {
                     $stream = $openai_client->chat()->createStreamed([
                         'model' => $model,
                         'messages' => $messages,
                         'frequency_penalty' => 0,
                         'presence_penalty' => 0,
+                        'stream_options'=>[
+                            'include_usage' => true,
+                        ]
+                    ]);
+                } elseif (in_array($model, ['gpt-4o-search-preview', 'gpt-4o-mini-search-preview'])) {
+                    $stream = $openai_client->chat()->createStreamed([
+                        'model' => $model,
+                        'messages' => $messages,
                         'stream_options'=>[
                             'include_usage' => true,
                         ]
@@ -979,12 +989,14 @@ class TemplateController extends Controller
                 flush();
             }
        
-
+Log::info($text);
             if (!empty($text)) {
                 # Update credit balance
                 $words = count(explode(' ', ($text)));
                 HelperService::updateBalance($words, $model, $input_tokens, $output_tokens);   
-
+Log::info('tut');
+Log::info($input_tokens);
+Log::info($output_tokens);
                 $content->result_text = $text;
                 $content->input_tokens = $input_tokens;
                 $content->output_tokens = $output_tokens;
@@ -996,7 +1008,9 @@ class TemplateController extends Controller
         }, 200, [
             'Cache-Control' => 'no-cache',
             'X-Accel-Buffering' => 'no',
+            'Connection' => 'keep-alive',
             'Content-Type' => 'text/event-stream',
+            'X-Accel-Buffering' => 'no'
         ]);
     }
 
@@ -1131,11 +1145,22 @@ class TemplateController extends Controller
                                     flush();
                                 }
                             }
-                            
+
                             // Handle message stop event                          
-                            if (isset($data['message']['usage'])) {
-                                $input_tokens = $data['message']['usage']['input_tokens'];
-                                $output_tokens = $data['message']['usage']['output_tokens'];
+                            if (isset($data['message']['usage'])) {                              
+                                // Check if usage data exists in the expected structure
+                                if (isset($data['message']['usage']['input_tokens'])) {
+                                    $input_tokens = $data['message']['usage']['input_tokens'];
+                                }
+                                if (isset($data['message']['usage']['output_tokens'])) {
+                                    $output_tokens = $data['message']['usage']['output_tokens'];
+                                }
+                            }
+
+                            if (isset($data['usage'])) {                              
+                                if (isset($data['usage']['output_tokens'])) {
+                                    $output_tokens = $data['usage']['output_tokens'];
+                                }
                             }
                             
                         }
@@ -1183,6 +1208,7 @@ class TemplateController extends Controller
 
             
             if (!empty($text)) {
+
                 # Update credit balance
                 $words = count(explode(' ', ($text)));
                 HelperService::updateBalance($words, $model, $input_tokens, $output_tokens);  
@@ -2507,8 +2533,20 @@ class TemplateController extends Controller
             if ($document) {
                 if ($document->user_id == auth()->user()->id){
 
+                    if ($request->title == 'New Document') {
+                        // Strip HTML tags
+                        $cleanText = strip_tags($request->text);
+                        // Remove markdown elements (common patterns)
+                        $cleanText = preg_replace('/[*#_\[\]\(\)`~>]+/', '', $cleanText);
+                        // Trim whitespace
+                        $cleanText = trim($cleanText);
+                        $title = mb_substr($cleanText, 0, 40) . '...';
+                    } else {
+                        $title = strip_tags($request->title);
+                    }
+
                     $document->result_text = $request->text;
-                    $document->title = $request->title;
+                    $document->title = $title;
                     $document->workbook = $request->workbook;
                     $document->save();
     

@@ -30,7 +30,7 @@
 	<!-- USERS LIST DATA TABEL -->
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-xm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('User Management') }}</h3>
 				</div>

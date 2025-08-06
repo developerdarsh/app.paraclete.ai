@@ -24,7 +24,7 @@
 	<div class="row">
 
 		<div class="col-xl-3 col-lg-3 col-md-12">
-			<div class="card border-0" id="dashboard-background">
+			<div class="card  " id="dashboard-background">
 				<div class="widget-user-image overflow-hidden mx-auto mt-5"><img alt="User Avatar" class="rounded-circle" src="@if(auth()->user()->profile_photo_path){{ asset(auth()->user()->profile_photo_path) }} @else {{ theme_url('img/users/avatar.jpg') }} @endif"></div>
 				<div class="card-body text-center">
 					<div>
@@ -37,6 +37,17 @@
 				
 				<div class="card-footer p-0">
 					<div class="row" id="profile-pages">
+						@if (App\Services\HelperService::extensionSaaS())
+							@if (App\Services\HelperService::extensionWallet())
+								@if (App\Services\HelperService::extensionWalletFeature())
+									<div class="col-sm-12">
+										<div class="text-center pt-4">
+											<a href="{{ route('user.wallet') }}" class="fs-13"><i class="fa-solid fa-wallet mr-1"></i> {{ __('My Wallet') }}</a>
+										</div>
+									</div>
+								@endif
+							@endif
+						@endif
 						<div class="col-sm-12">
 							<div class="text-center pt-4">
 								<a href="{{ route('user.profile.edit') }}" class="fs-13"><i class="fa fa-calendar-lines-pen mr-1"></i> {{ __('Update Profile') }}</a>
@@ -100,7 +111,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="card border-0">
+			<div class="card  ">
 				<div class="card-body">
 					<h4 class="card-title mb-4 mt-1">{{ __('Personal Details') }}</h4>
 					<div class="table-responsive">
@@ -181,7 +192,7 @@
 				<div class="col-lg-12 col-md-12 col-sm-12">
 					<div class="row">
 						<div class="col-lg-4 col-md-6 col-sm-12">
-							<div class="card overflow-hidden border-0">
+							<div class="card overflow-hidden  ">
 								<div class="card-body d-flex">
 									<div class="usage-info w-100">
 										<p class=" mb-3 fs-12 font-weight-bold">{{ __('Documents Created') }}</p>
@@ -194,7 +205,7 @@
 							</div>
 						</div>
 						<div class="col-lg-4 col-md-6 col-sm-12">
-							<div class="card overflow-hidden border-0">
+							<div class="card overflow-hidden  ">
 								<div class="card-body d-flex">
 									<div class="usage-info w-100">
 										<p class=" mb-3 fs-12 font-weight-bold">{{ __('Words Generated') }}</p>
@@ -209,7 +220,7 @@
 						@role('user|subscriber|admin')
             				@if (config('settings.image_feature_user') == 'allow')
 								<div class="col-lg-4 col-md-6 col-sm-12">
-									<div class="card overflow-hidden border-0">
+									<div class="card overflow-hidden  ">
 										<div class="card-body d-flex">
 											<div class="usage-info w-100">
 												<p class=" mb-3 fs-12 font-weight-bold">{{ __('Images Created') }}</p>
@@ -226,7 +237,7 @@
 						@role('user|subscriber|admin')
             				@if (config('settings.voiceover_feature_user') == 'allow')
 								<div class="col-lg-4 col-md-6 col-sm-12">
-									<div class="card overflow-hidden border-0">
+									<div class="card overflow-hidden  ">
 										<div class="card-body d-flex">
 											<div class="usage-info w-100">
 												<p class=" mb-3 fs-12 font-weight-bold">{{ __('Voiceover Tasks') }}</p>
@@ -243,7 +254,7 @@
 						@role('user|subscriber|admin')
             				@if (config('settings.whisper_feature_user') == 'allow')
 								<div class="col-lg-4 col-md-6 col-sm-12">
-									<div class="card overflow-hidden border-0">
+									<div class="card overflow-hidden  ">
 										<div class="card-body d-flex">
 											<div class="usage-info w-100">
 												<p class=" mb-3 fs-12 font-weight-bold">{{ __('Audio Transcribed') }}</p>
@@ -260,7 +271,7 @@
 						@role('user|subscriber|admin')
             				@if (config('settings.code_feature_user') == 'allow')
 								<div class="col-lg-4 col-md-6 col-sm-12">
-									<div class="card overflow-hidden border-0">
+									<div class="card overflow-hidden  ">
 										<div class="card-body d-flex">
 											<div class="usage-info w-100">
 												<p class=" mb-3 fs-12 font-weight-bold">{{ __('Codes Generated') }}</p>
@@ -278,8 +289,8 @@
 				</div>
 
 				<div class="col-lg-12 col-md-12 col-sm-12">
-					<div class="card mb-5 border-0">
-						<div class="card-header d-inline border-0">
+					<div class="card mb-5  ">
+						<div class="card-header d-inline  ">
 							<div>
 								<h3 class="card-title fs-16 mt-3 mb-4"><i class="fa-solid fa-box-open mr-4 text-info"></i>{{ __('Subscription') }}</h3>
 							</div>
@@ -324,8 +335,8 @@
 				</div>
 
 				<div class="col-lg-12 col-md-12 col-sm-12">
-					<div class="card border-0">
-						<div class="card-header d-inline border-0">
+					<div class="card  ">
+						<div class="card-header d-inline  ">
 							<div>
 								<h3 class="card-title fs-16 mt-3 mb-4"><i class="fa-solid fa-scroll-old mr-4 text-info"></i>{{ __('Words & Images Generated') }} <span class="text-muted">({{ __('Current Year') }})</span></h3>
 							</div>

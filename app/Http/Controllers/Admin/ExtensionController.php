@@ -60,22 +60,28 @@ class ExtensionController extends Controller
             $status = $response->json('status');
             $data = $response->json('data');
 
-            $extension = Extension::where('slug', $slug)->first();
+            if ($slug == 'premier') {
+                return $status == 'succeeded' ? $data : [];
+            } elseif ($slug == 'support') {
+                return $status == 'active' ? $data : [];
+            } else {
+                $extension = Extension::where('slug', $slug)->first();
             
-            if ($status == 'succeeded') {
+                if ($status != 'succeeded') {
+                    return [];
+                }
+
                 $extension->purchased = true;
                 $extension->save();
-
+                
                 return array_merge($data, [
                     'latest_version' => $extension?->version,
                     'installed' => (bool) $extension?->installed,
                     'upgradable' => $extension?->version !== $data['version'],
                     'purchased' => true
                 ]);
-
-            } else {
-                return [];
             }
+            
             
         }
 
@@ -362,5 +368,38 @@ class ExtensionController extends Controller
 
     }
 
+
+    public function get_metadata()
+    {
+        $response = $this->request('post', "extension/version/metadata");
+
+        if ($response->ok()) {
+
+            $data = $response->json('metadata');
+
+            return $data;
+        }
+
+        return false;
+    }
+
+
+    public function get_version($update)
+    {
+        $response = $this->request('post', "extension/version/update");
+
+        if ($response->ok()) {
+
+            $data = $response->json('version');
+
+            if ($data) {
+                return $update;
+            } else {
+                return false;
+            }
+        }
+
+        return false;
+    }
 
 }

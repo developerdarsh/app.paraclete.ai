@@ -38,7 +38,7 @@
 				  {{ __('AI File Chat') }}
 				</h3>
 				<h6 class="mb-0 fs-12 text-muted">{{ __('Analyze the content of your Word/PDF/CSV documents with the help of AI') }}</h6>
-				<div class="mb-4" id="balance-status">
+				<div class="mb-5 mt-2">
 					<x-balance-chat />
 				</div>
 			</div>

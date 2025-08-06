@@ -19,7 +19,7 @@
 	<!-- USER BOX INFO -->
 	<div class="row">
 		<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
-			<div class="card overflow-hidden border-0">
+			<div class="card">
 				<div class="card-body">
 					<i class="fa-solid fa-user-check text-primary fs-35 mt-3 float-right"></i>	
 					<p class=" mb-3 fs-12 font-weight-bold mt-1">{{ __('Total Registered Users') }}</p>
@@ -28,7 +28,7 @@
 			</div>
 		</div>
 		<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-body">
 					<i class="fa-solid fa-user-headset fs-35 mt-3 float-right yellow"></i>	
 					<p class=" mb-3 fs-12 font-weight-bold mt-1">{{ __('Online Users') }}</p>
@@ -37,7 +37,7 @@
 			</div>
 		</div>
 		<div class="col-xl-4 col-lg-4 col-md-12 col-sm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-body">
 					<i class="fa-solid fa-user-clock fs-35 mt-3 float-right"></i>	
 					<p class=" mb-3 fs-12 font-weight-bold mt-1">{{ __('Visitors Today') }} ({{ __('Registered') }})</p>
@@ -83,10 +83,10 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-lg-12 col-md-12">
-			<div class="card overflow-hidden border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('New Registered Users') }} <span class="text-muted">({{ __('Current Month') }})</span></h3>
+		<div class="col-lg-12 col-md-12 mt-5">
+			<div class="card">
+				<div class="pb-4 pt-5">
+					<h3 class="card-title pl-5">{{ __('New Registered Users') }} <span class="text-muted">({{ __('Current Month') }})</span></h3>
 				</div>
 				<div class="card-body mb-3 mt-3">
 					<div class="row">
@@ -99,10 +99,10 @@
 				</div>
 			</div>
 		</div>
-		<div class="col-lg-12 col-md-12">
-			<div class="card overflow-hidden border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Total Registered Users') }}<span class="text-muted">({{ __('Current Year') }})</span></h3>
+		<div class="col-lg-12 col-md-12 mt-5">
+			<div class="card">
+				<div class="pb-4 pt-5">
+					<h3 class="card-title pl-5">{{ __('Total Registered Users') }}<span class="text-muted">({{ __('Current Year') }})</span></h3>
 				</div>
 				<div class="card-body">
 					<div class="row mb-5 mt-2">
@@ -334,7 +334,12 @@
 
 			function drawRegionsMap() {     
 
-				let options = {colors: ['#007bff']};
+				let options = {
+					colors: ['#007bff'],
+					backgroundColor: 'transparent', // Make background transparent
+					datalessRegionColor: 'rgba(32, 32, 50, 0.2)', // Light color for regions with no data
+					defaultColor: '#007bff' // Default color for regions with data
+				};
 				let result = [];
 
 				result.push(['Country', 'Users']);

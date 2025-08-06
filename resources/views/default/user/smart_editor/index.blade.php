@@ -3756,8 +3756,77 @@
 		};
 
 		if (getCookie('theme') == 'dark') {
-			tinymceOptions.skin = 'oxide-dark';
-			tinymceOptions.content_css = 'dark';
+			tinymceOptions.content_style = `
+				body { color: #FFF;}
+				body h1 { font-size: 20px}
+				body h2 { font-size: 18px }
+				body h3, h4, h5 { font-size: 16px }
+				body p { font-size: 14px; }
+
+				body .gradient-typing-indicator {
+					display: inline-flex;
+					align-items: center;
+					font-weight: 500;
+					font-size: 12px;
+					background: transparent;
+				}
+
+				body .typing-text {
+					background: linear-gradient(to right, #007bff, #bf7fff);
+					background-size: 200% auto;
+					background-clip: text;
+					-webkit-background-clip: text;
+					color: transparent;
+					animation: gradientFlow 2s linear infinite;
+					font-weight: 600;
+				}
+
+				body .typing-dots {
+					display: inline-flex;
+					margin-left: 2px;
+				}
+
+				body .typing-dots span {
+					animation: typingDot 1.4s infinite;
+					display: inline-block;
+					width: 5px;
+					height: 5px;
+					border-radius: 50%;
+					margin: 0 2px;
+					background: linear-gradient(to right, #007bff, #bf7fff);
+				}
+
+				body .typing-dots span:nth-child(2) {
+					animation-delay: 0.2s;
+				}
+
+				body .typing-dots span:nth-child(3) {
+					animation-delay: 0.4s;
+				}
+
+				@keyframes gradientFlow {
+					0% {
+						background-position: 0% center;
+					}
+					50% {
+						background-position: 100% center;
+					}
+					100% {
+						background-position: 0% center;
+					}
+				}
+
+				@keyframes typingDot {
+					0%, 60%, 100% {
+						transform: scale(1);
+						opacity: 0.8;
+					}
+					30% {
+						transform: scale(1.5);
+						opacity: 1;
+					}
+				}
+			`;
 		}
 
 		tinyMCE.init( tinymceOptions );

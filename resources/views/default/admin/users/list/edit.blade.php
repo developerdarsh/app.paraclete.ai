@@ -147,7 +147,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="card-footer border-0 text-right mb-2 pr-0">							
+						<div class="card-footer border-0 text-center mb-2 pr-0">							
 							<a href="{{ route('admin.user.list') }}" class="btn btn-cancel mr-2">{{ __('Return') }}</a>
 							<button type="submit" class="btn btn-primary">{{ __('Update') }}</button>
 						</div>
@@ -226,8 +226,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="card-footer border-0 text-right pb-0 pr-0">							
-							<a href="{{ route('admin.user.list') }}" class="btn btn-cancel mr-2">{{ __('Return') }}</a>
+						<div class="card-footer border-0 text-center pb-0 pr-0">							
 							<button type="submit" class="btn btn-primary">{{ __('Change') }}</button>
 						</div>
 					</form>

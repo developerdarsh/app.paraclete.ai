@@ -23,8 +23,8 @@
 	<div class="row" id="image-side-space">
 		<div class="row no-gutters justify-content-center">
 			<div class="col-lg-9 col-md-11 col-sm-12 text-center">
-			<a class="info-btn-alt mt-4" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a>
-				<h3 class="card-title mt-6 fs-20"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-primary"></i></i>{{ __('AI Image Generator') }}</h3>
+				<a class="info-btn-alt mt-4" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a>
+				<h3 class="page-title mb-2">{{ __('AI Image Generator') }}</h3>
 				<h6 class="text-muted mb-7">{{ __('Unleash your creativity with our AI image generator that produces stunning visuals in seconds') }}</h6>
 				<div class="card-top d-flex text-right justify-content-right right mx-auto">
 					<div class="mr-4">

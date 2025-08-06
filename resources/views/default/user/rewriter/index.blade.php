@@ -21,7 +21,7 @@
 <form id="openai-form" action="" method="post" enctype="multipart/form-data" class="mt-24"> 		
 	@csrf
 	<div class="row">	
-		<div class="col-xl-4 col-lg-6 col-md-12 col-sm-12">
+		<div class="col-lg-5 col-md-12 col-sm-12">
 			<div class="card border-0" id="template-input">
 				<div class="card-body p-5 pb-0">
 					<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
@@ -199,7 +199,7 @@
 			</div>			
 		</div>
 
-		<div class="col-xl-8 col-lg-6 col-md-12 col-sm-12">
+		<div class="col-lg-7 col-md-12 col-sm-12">
 			<div class="card border-0" id="template-output">
 				<div class="card-body p-5">
 					<div class="row">						

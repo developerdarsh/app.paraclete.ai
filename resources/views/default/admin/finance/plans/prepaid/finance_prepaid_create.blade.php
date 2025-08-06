@@ -99,7 +99,7 @@
 							</div>
 						</div>
 
-						<div class="card mt-7 special-shadow border-0">
+						<div class="card mt-7">
 							<div class="card-body">
 								<h6 class="fs-12 font-weight-bold mb-5 plan-title-bar "><i class="fa-solid fa-box-circle-check text-info fs-14 mr-1 fw-2"></i>{{ __('Included Credits') }}</h6>
 

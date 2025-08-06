@@ -18,12 +18,9 @@
 @section('content')						
 	<div class="row justify-content-center">
 		<div class="col-lg-6 col-md-12 col-sm-12">
+			<h6 class="card-title fs-12 text-muted text-center mb-5">{{ __('Update AI Vendor Service Costs') }}</h6>
 			<div class="card border-0">
-				<div class="card-header border-0 pb-0">
-					<h6 class="card-title fs-12 text-muted">{{ __('Update AI Vendor Service Costs') }}</h6>
-				</div>
-				<div class="card-body pt-0">			
-					<hr class="mt-0">						
+				<div class="card-body pt-0">									
 					<form id="" action="{{ route('admin.finance.settings.costs.store') }}" method="post" enctype="multipart/form-data">
 						@csrf
 

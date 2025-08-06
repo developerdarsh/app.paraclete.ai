@@ -20,9 +20,6 @@
 	<div class="row justify-content-center">
 		<div class="col-lg-8 col-md-12 col-sm-12">
 			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title"><i class="fa-solid fa-id-badge mr-2 text-primary fs-14"></i>{{ __('Update User Credits') }}</h3>
-				</div>
 				<div class="card-body">
 					<form method="POST" action="{{ route('admin.user.increase', [$user->id]) }}" enctype="multipart/form-data">
 						@csrf

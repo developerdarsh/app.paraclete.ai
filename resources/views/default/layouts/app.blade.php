@@ -29,7 +29,7 @@ dir="{{ LaravelLocalization::getCurrentLocaleDirection() }}">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <!-- TITLE -->
-        <title>{{ config('app.name', 'Paraclete AI') }}</title>
+        <title>{{ config('app.name', 'DaVinci AI') }}</title>
         
         @include('layouts.dashboard.header')
 
@@ -66,8 +66,6 @@ dir="{{ LaravelLocalization::getCurrentLocaleDirection() }}">
             </div>		
         </div><!-- END PAGE -->
         
-		        
-
 	</body>
 </html>
 

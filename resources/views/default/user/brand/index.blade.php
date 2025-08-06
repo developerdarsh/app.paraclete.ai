@@ -36,7 +36,7 @@
 	<div class="row justify-content-center">
 
 		<div class="col-lg-10 col-md-12 col-sm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title"><i class="fa-solid fa-signature mr-2 text-primary"></i>{{ __('My Brand Voices') }}</h3>
 					<a href="{{ route('user.brand.create') }}" class="btn btn-primary ripple" style="margin-left: auto; text-transform: none">{{ __('Add New Brand') }}</a>

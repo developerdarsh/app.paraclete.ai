@@ -20,9 +20,6 @@
 	<div class="row justify-content-center">
 		<div class="col-lg-6 col-md-12 col-sm-12">
 			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Assign Subscription Plan') }}</h3>
-				</div>
 				<div class="card-body">
 					<form method="POST" action="{{ route('admin.user.assign', [$user->id]) }}" enctype="multipart/form-data">
 						@csrf

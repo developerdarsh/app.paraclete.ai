@@ -25,7 +25,7 @@
 @section('content')	
 	<div class="row">
 		<div class="col-lg-12 col-md-12 col-sm-12 mt-4">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('All Custom Templates') }}</h3>
 				</div>
@@ -40,7 +40,7 @@
 								<th width="2%">{{ __('Package') }}</th>						
 								<th width="1%">{{ __('New') }}</th>						
 								<th width="3%">{{ __('Updated On') }}</th>	    										 						           	
-								<th width="7%">{{ __('Actions') }}</th>
+								<th width="8%">{{ __('Actions') }}</th>
 							</tr>
 						</thead>
 					</table> <!-- END SET DATATABLE -->

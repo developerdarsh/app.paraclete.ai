@@ -502,13 +502,13 @@
 		$(document).on('keyup', '#search-template', function () {
 
 			var searchTerm = $(this).val().toLowerCase();
-            let value = $(this).val().toLowerCase();
+			let value = $(this).val().toLowerCase();
  			let activeTab = $('.tab-pane.active'); // Get currently active tab
  			let chats = activeTab.find('.col-lg-3'); // Target chat cards within active tab
  			chats.filter(function () {
  				let chatText = $(this).text().toLowerCase();
  				$(this).toggle(chatText.indexOf(value) > -1);
- 			});	
+ 			});
 			// $('#templates-panel').find('> div').each(function () {
 			// 	if ($(this).filter(function() {
 			// 		return (($(this).find('h6').text().toLowerCase().indexOf(searchTerm) > -1) || ($(this).find('p').text().toLowerCase().indexOf(searchTerm) > -1));

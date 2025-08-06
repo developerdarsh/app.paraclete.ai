@@ -18,15 +18,14 @@
 	<div class="row justify-content-center">
 		<div class="col-lg-8 col-md-12 col-xm-12">
 			<div class="card overflow-hidden border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Setup Global Settings') }}</h3>
-				</div>
 				<div class="card-body">
 							
 					<form action="{{ route('admin.settings.global.store') }}" method="POST" enctype="multipart/form-data">
 						@csrf
 
-						<div class="card border-0 special-shadow mb-7">							
+						<h3 class="card-title text-center mb-5">{{ __('Setup Global Settings') }}</h3>
+
+						<div class="card shadow-0 mb-7">							
 							<div class="card-body">
 
 								<h6 class="fs-12 font-weight-bold mb-4">{{ __('General Settings') }}</h6>
@@ -551,7 +550,7 @@
 							</div>
 						</div>
 
-						<div class="card border-0 special-shadow mb-7">							
+						<div class="card shadow-0 mb-7">							
 							<div class="card-body">
 								<h6 class="fs-12 font-weight-bold mb-4">{{ __('Live Chat') }} <span class="text-muted">({{ __('tawk.to') }})</span></h6>
 								
@@ -575,7 +574,7 @@
 							</div>
 						</div>
 
-						<div class="card border-0 special-shadow mb-7">							
+						<div class="card shadow-0 mb-7">							
 							<div class="card-body pb-0">
 								<h6 class="fs-12 font-weight-bold mb-4">{{ __('Google reCaptcha v3') }}</h6>
 								
@@ -617,7 +616,7 @@
 							</div>
 						</div>	
 
-						<div class="card overflow-hidden border-0 special-shadow mb-7">							
+						<div class="card overflow-hidden shadow-0 mb-7">							
 							<div class="card-body pb-0">
 
 								<h6 class="fs-12 font-weight-bold mb-4">{{ __('Google Analytics') }}</h6>
@@ -678,7 +677,7 @@
 							</div>
 						</div>
 
-						<div class="card overflow-hidden border-0 special-shadow mb-7">							
+						<div class="card overflow-hidden shadow-0">							
 							<div class="card-body pb-0">
 
 								<h6 class="fs-12 font-weight-bold mb-4">{{ __('Google Maps') }}</h6>
@@ -707,21 +706,6 @@
 								</div>
 							</div>
 						</div>						
-						
-						<div class="card overflow-hidden border-0 special-shadow">							
-							<div class="card-body">
-
-								<h6 class="fs-12 font-weight-bold mb-4">{{ __('GDPR Policy') }}</h6>
-
-								<div class="form-group">
-									<label class="custom-switch">
-										<input type="checkbox" name="enable-gdpr" class="custom-switch-input" @if ( config('cookie-consent.enabled') ) checked @endif>
-										<span class="custom-switch-indicator"></span>
-										<span class="custom-switch-description">{{ __('Enable GDPR Consent Popup') }}</span>
-									</label>
-								</div>	
-							</div>
-						</div>
 
 
 						<!-- SAVE CHANGES ACTION BUTTON -->

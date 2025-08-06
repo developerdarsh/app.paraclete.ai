@@ -29,7 +29,7 @@ class DocumentController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Content::where('user_id', Auth::user()->id)->where('result_text', '<>', 'null')->orderBy('created_at', 'asc')->get();
+            $data = Content::where('user_id', Auth::user()->id)->where('title', '<>', 'null')->orderBy('created_at', 'DESC')->get();
             return Datatables::of($data)
                     ->addIndexColumn()
                     ->addColumn('actions', function($row){
@@ -54,6 +54,10 @@ class DocumentController extends Controller
                         $custom = '<span>'.ucfirst($row["workbook"]).'</span>';
                         return $custom;
                     })
+                    ->addColumn('cost', function($row){
+                        $custom = '<span>'.$row["input_tokens"] + $row["output_tokens"].'</span>';
+                        return $custom;
+                    })
                     ->addColumn('custom-group', function($row){
                         $group = ($row['group'] == 'text') ? 'content' : $row['group'];
                         $custom =  '<span class="cell-box category-'.strtolower($row["group"]).'">'.ucfirst(__($group)).'</span>';
@@ -63,7 +67,7 @@ class DocumentController extends Controller
                         $language = '<span class="vendor-image-sm overflow-hidden"><img class="mr-2" src="' . theme_url($row['language_flag']) . '">'. $row['language_name'] .'</span> ';            
                         return $language;
                     })
-                    ->rawColumns(['actions', 'created-on', 'custom-language', 'custom-title', 'custom-workbook', 'custom-group'])
+                    ->rawColumns(['actions', 'created-on', 'custom-language', 'custom-title', 'custom-workbook', 'custom-group', 'cost'])
                     ->make(true);
                     
         }

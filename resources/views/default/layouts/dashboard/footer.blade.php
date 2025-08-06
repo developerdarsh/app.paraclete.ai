@@ -48,8 +48,12 @@
 <!-- Custom js-->
 <script src="{{theme_url('js/custom.js')}}"></script>
 
+<!-- Search js-->
+<script src="{{theme_url('js/search.js')}}"></script>
+
 <!-- multiselect select  -->
 <script src="{{URL::asset('plugins/bootstrap-5.0.2/js/bootstrap-multiselect.min.js')}}"></script>
+
 
 <!-- Google Analytics -->
 @if (config('services.google.analytics.enable') == 'on')
@@ -164,59 +168,89 @@
     toastr.options.hideMethod = 'slideUp';
     toastr.options.progressBar = true;
 
+    // toastr.options = {
+    //     "newestOnTop": true,
+    //     "positionClass": "toast-bottom-center",
+    //     "showDuration": "100",
+    //     "hideDuration": "500",
+    //     "timeOut": "100",
+    //     "extendedTimeOut": "100",
+    //     "showEasing": "swing",
+    //     "hideEasing": "swing",
+    //     "showMethod": "slideUp",
+    //     "hideMethod": "slideDown"
+    //     }
 
-    document.querySelector(".btn-theme-toggle > span").classList.add("fa-moon-stars");
-    var myCookie = (document.cookie.match(/^(?:.*;)?\s*theme\s*=\s*([^;]+)(?:.*)?$/)||[,null])[1];
-    if (myCookie == 'dark') {
-            document.querySelector(".btn-theme-toggle > span").classList.remove("fa-moon-stars");
-            document.querySelector(".btn-theme-toggle > span").classList.add("fa-sun-bright");  
-            var logo = document.querySelector(".desktop-lgo");
-            logo.src = '{{ URL::asset($settings->logo_dashboard_dark) }}';
-    }
 
-    const btn = document.querySelector(".btn-theme-toggle");
-    btn.addEventListener("click", function() {
-        if (document.body.classList.contains('light-theme')) {
-            document.body.classList.remove('light-mode');
-            document.body.classList.add('dark-mode');
-            document.querySelector(".btn-theme-toggle > span").classList.remove("fa-moon-stars");
-            document.querySelector(".btn-theme-toggle > span").classList.add("fa-sun-bright");
-            var logo = document.querySelector(".desktop-lgo");
-            logo.src = '{{ URL::asset($settings->logo_dashboard) }}';
-            var theme = "dark";
-        } else if(document.body.classList.contains('dark-theme')) {
-            document.body.classList.remove('dark-mode');
-            document.body.classList.add('light-mode');
-            document.querySelector(".btn-theme-toggle > span").classList.remove("fa-sun-bright");
-            document.querySelector(".btn-theme-toggle > span").classList.add("fa-moon-stars");
-            var logo = document.querySelector(".desktop-lgo");
-            logo.src = '{{ URL::asset($settings->logo_dashboard_dark) }}';
-            var theme = "light";
+    // Theme toggling functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const themeToggleBtn = document.querySelector(".btn-theme-toggle");
+        const themeIcon = document.querySelector(".btn-theme-toggle > span");
+        const logo = document.querySelector(".desktop-lgo");
+        const body = document.body;
+        
+        // Get logo URLs
+        const lightLogo = '{{ URL::asset($settings->logo_dashboard) }}';
+        const darkLogo = '{{ URL::asset($settings->logo_dashboard_dark) }}';
+        
+        // Check theme on load
+        const savedTheme = localStorage.getItem('theme') || 
+                        (document.cookie.match(/^(?:.*;)?\s*theme\s*=\s*([^;]+)(?:.*)?$/)||[,null])[1];
+        
+        if (savedTheme === 'dark') {
+            body.classList.add('dark-mode');
+            body.classList.remove('light-mode');
+            themeIcon.classList.remove("fa-moon");
+            themeIcon.classList.add("fa-sun-bright");
+            logo.src = darkLogo;
         } else {
-            document.querySelector(".btn-theme-toggle > span").classList.remove("fa-moon-stars");
-            document.querySelector(".btn-theme-toggle > span").classList.add("fa-sun-bright");
-            document.body.classList.add('dark-mode');
-            var logo = document.querySelector(".desktop-lgo");
-            logo.src = '{{ URL::asset($settings->logo_dashboard_dark) }}';
-            var theme = "dark";
+            themeIcon.classList.add("fa-moon");
+            themeIcon.classList.remove("fa-sun-bright");
         }
-    
-        document.cookie = "theme=" + theme + ";path=/";
-
-        $.ajax({
-            headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            type: "POST",
-            url: '/app/user/profile/settings',
-            data: {'theme': theme},
-            success: function(data) {
-            },
-            error: function(data) {        
+        
+        // Toggle theme
+        themeToggleBtn.addEventListener("click", function() {
+            const isDark = body.classList.contains('dark-mode');
+            
+            // Toggle classes on body and all themed elements
+            document.querySelectorAll('[class*="-theme"], [class*="-mode"]').forEach(el => {
+                if (isDark) {
+                    el.classList.remove('dark-theme', 'dark-mode');
+                    el.classList.add('light-theme', 'light-mode');
+                } else {
+                    el.classList.remove('light-theme', 'light-mode');
+                    el.classList.add('dark-theme', 'dark-mode');
+                }
+            });
+            
+            // Update icon and logo
+            if (isDark) {
+                themeIcon.classList.remove("fa-sun-bright");
+                themeIcon.classList.add("fa-moon");
+                logo.src = lightLogo;
+                localStorage.setItem('theme', 'light');
+            } else {
+                themeIcon.classList.remove("fa-moon");
+                themeIcon.classList.add("fa-sun-bright");
+                logo.src = darkLogo;
+                localStorage.setItem('theme', 'dark');
             }
-        }).done(function(data) {})
-
-        location.reload();
+            
+            // Save preference
+            const theme = isDark ? 'light' : 'dark';
+            document.cookie = "theme=" + theme + ";path=/;max-age=31536000";
+            
+            // Send to server in background
+            fetch('/app/user/profile/settings', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({theme: theme}),
+                keepalive: true
+            });
+        });
     });
 
 
@@ -254,6 +288,21 @@
 
         });
 
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleBtn = document.querySelector('.open-toggle');
+        const toggleIcon = document.querySelector('.menu-toggle-icon');
+        let isRotated = false;
+        
+        toggleBtn.addEventListener('click', function(e) {
+            isRotated = !isRotated;
+            if(isRotated) {
+                toggleIcon.style.transform = 'rotate(180deg)';
+            } else {
+                toggleIcon.style.transform = 'rotate(0deg)';
+            }
+        });
     });
    
 </script>

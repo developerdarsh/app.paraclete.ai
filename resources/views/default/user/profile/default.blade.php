@@ -24,7 +24,7 @@
 	<!-- EDIT USER PROFILE PAGE -->
 	<div class="row">
 		<div class="col-xl-3 col-lg-4 col-sm-12">
-			<div class="card border-0" id="dashboard-background">
+			<div class="card  " id="dashboard-background">
 				<div class="widget-user-image overflow-hidden mx-auto mt-5"><img alt="User Avatar" class="rounded-circle" src="@if(auth()->user()->profile_photo_path){{ asset(auth()->user()->profile_photo_path) }} @else {{ theme_url('img/users/avatar.jpg') }} @endif"></div>
 				<div class="card-body text-center">
 					<div>
@@ -97,7 +97,7 @@
 				@method('PUT')
 				@csrf
 
-				<div class="card border-0">
+				<div class="card  ">
 					<div class="card-header">
 						<h3 class="card-title"><i class="   fa-solid fa-sliders mr-2 text-primary"></i>{{ __('Set Defaults') }}</h3>
 					</div>
@@ -160,14 +160,28 @@
 												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_template) selected @endif>{{ __('GPT 4o') }}</option>
 											@elseif (trim($model) == 'gpt-4o-mini')
 												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_template) selected @endif>{{ __('GPT 4o mini') }}</option>
+											@elseif (trim($model) == 'gpt-4o-search-preview')
+												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_template) selected @endif>{{ __('GPT 4o Search Preview') }}</option>
+											@elseif (trim($model) == 'gpt-4o-mini-search-preview')
+												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_template) selected @endif>{{ __('GPT 4o mini Search Preview') }}</option>
 											@elseif (trim($model) == 'gpt-4-0125-preview')
 												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_template) selected @endif>{{ __('GPT 4 Turbo') }}</option>
+											@elseif (trim($model) == 'gpt-4.1')
+												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_template) selected @endif>{{ __('GPT 4.1') }}</option>
+											@elseif (trim($model) == 'gpt-4.1-mini')
+												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_template) selected @endif>{{ __('GPT 4.1 mini') }}</option>
+											@elseif (trim($model) == 'gpt-4.1-nano')
+												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_template) selected @endif>{{ __('GPT 4.1 nano') }}</option>
 											@elseif (trim($model) == 'o1')
 												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_template) selected @endif>{{ __('o1') }}</option>
 											@elseif (trim($model) == 'o1-mini')
 												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_template) selected @endif>{{ __('o1 mini') }}</option>
 											@elseif (trim($model) == 'o3-mini')
 												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_template) selected @endif>{{ __('o3 mini') }}</option>
+											@elseif (trim($model) == 'o3')
+												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_template) selected @endif>{{ __('o3') }}</option>
+											@elseif (trim($model) == 'o4-mini')
+												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_template) selected @endif>{{ __('o4 mini') }}</option>
 											@elseif (trim($model) == 'claude-3-opus-20240229')
 												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_template) selected @endif>{{ __('Claude 3 Opus') }}</option>
 											@elseif (trim($model) == 'claude-3-7-sonnet-20250219')
@@ -209,14 +223,28 @@
 												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_chat) selected @endif>{{ __('GPT 4o') }}</option>
 											@elseif (trim($model) == 'gpt-4o-mini')
 												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_chat) selected @endif>{{ __('GPT 4o mini') }}</option>
+											@elseif (trim($model) == 'gpt-4o-search-preview')
+												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_chat) selected @endif>{{ __('GPT 4o Search Preview') }}</option>
+											@elseif (trim($model) == 'gpt-4o-mini-search-preview')
+												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_chat) selected @endif>{{ __('GPT 4o mini Search Preview') }}</option>
 											@elseif (trim($model) == 'gpt-4-0125-preview')
 												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_chat) selected @endif>{{ __('GPT 4 Turbo') }}</option>
+											@elseif (trim($model) == 'gpt-4.1')
+												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_chat) selected @endif>{{ __('GPT 4.1') }}</option>
+											@elseif (trim($model) == 'gpt-4.1-mini')
+												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_chat) selected @endif>{{ __('GPT 4.1 mini') }}</option>
+											@elseif (trim($model) == 'gpt-4.1-nano')
+												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_chat) selected @endif>{{ __('GPT 4.1 nano') }}</option>
 											@elseif (trim($model) == 'o1')
 												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_chat) selected @endif>{{ __('o1') }}</option>
 											@elseif (trim($model) == 'o1-mini')
 												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_chat) selected @endif>{{ __('o1 mini') }}</option>
 											@elseif (trim($model) == 'o3-mini')
 												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_chat) selected @endif>{{ __('o3 mini') }}</option>
+											@elseif (trim($model) == 'o3')
+												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_chat) selected @endif>{{ __('o3') }}</option>
+											@elseif (trim($model) == 'o4-mini')
+												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_chat) selected @endif>{{ __('o4 mini') }}</option>
 											@elseif (trim($model) == 'claude-3-opus-20240229')
 												<option value="{{ trim($model) }}" @if (trim($model) == auth()->user()->default_model_chat) selected @endif>{{ __('Claude 3 Opus') }}</option>
 											@elseif (trim($model) == 'claude-3-7-sonnet-20250219')
@@ -244,8 +272,60 @@
 									</select>	
 								</div>
 							</div>
+
+							<div class="col-md-6 col-sm-12">
+								<div class="form-group">	
+									<h6 class="fs-11 mb-2 font-weight-semibold">{{ __('Default AI Image Model') }}</h6>								
+									<select id="model" name="default_image_model" class="form-select" >		
+										@foreach ($vendors as $vendor)
+											@if (trim($vendor) == 'openai')
+												<option value="dall-e-2" @if (auth()->user()->default_image_model == 'dall-e-2') selected @endif>{{ __('Dalle 2') }}</option>
+												<option value="dall-e-3" @if (auth()->user()->default_image_model == 'dall-e-3') selected @endif>{{ __('Dalle 3') }}</option>
+												<option value="dall-e-3-hd" @if (auth()->user()->default_image_model == 'dall-e-3-hd') selected @endif>{{ __('Dalle 3 HD') }}</option>
+											@endif
+										@endforeach
+										@foreach ($vendors as $vendor)
+											@if (trim($vendor) == 'sd')
+												<option value="stable-diffusion-v1-6" @if (auth()->user()->default_image_model == 'stable-diffusion-v1-6') selected @endif>{{ __('Stable Diffusion v1.6') }}</option>
+												<option value="stable-diffusion-xl-1024-v1-0" @if (auth()->user()->default_image_model == 'stable-diffusion-xl-1024-v1-0') selected @endif>{{ __('SDXL v1.0') }}</option>
+												<option value="sd3.5-medium" @if (auth()->user()->default_image_model == 'sd3.5-medium') selected @endif>{{ __('SD 3.5 Medium') }}</option>
+												<option value="sd3.5-large" @if (auth()->user()->default_image_model == 'sd3.5-large') selected @endif>{{ __('SD 3.5 Large') }}</option>
+												<option value="sd3.5-large-turbo" @if (auth()->user()->default_image_model == 'sd3.5-large-turbo') selected @endif>{{ __('SD 3.5 Large Turbo') }}</option>
+												<option value="core" @if (auth()->user()->default_image_model == 'core') selected @endif>{{ __('Stable Image Core') }}</option>
+												<option value="ultra" @if (auth()->user()->default_image_model == 'ultra') selected @endif>{{ __('Stable Image Ultra') }}</option>
+											@endif
+										@endforeach
+										@if (App\Services\HelperService::extensionFlux())
+											@foreach ($vendors as $vendor)
+												@if (trim($vendor) == 'falai')
+													<option value="flux/dev" @if (auth()->user()->default_image_model == 'flux/dev') selected @endif>{{ __('FLUX.1 [dev]') }}</option>
+													<option value="flux/schnell" @if (auth()->user()->default_image_model == 'flux/schnell') selected @endif>{{ __('FLUX.1 [schnell]') }}</option>
+													<option value="flux-pro/new" @if (auth()->user()->default_image_model == 'flux-pro/new') selected @endif>{{ __('FLUX.1 [pro]') }}</option>
+													<option value="flux-realism" @if (auth()->user()->default_image_model == 'flux-realism') selected @endif>{{ __('FLUX Realism') }}</option>
+												@endif
+											@endforeach
+										@endif
+										@if (App\Services\HelperService::extensionMidjourney())
+											@foreach ($vendors as $vendor)
+												@if (trim($vendor) == 'midjourney')
+													<option value="midjourney/fast" @if (auth()->user()->default_image_model == 'midjourney/fast') selected @endif>{{ __('Midjourney Fast') }}</option>
+													<option value="midjourney/relax" @if (auth()->user()->default_image_model == 'midjourney/relax') selected @endif>{{ __('Midjourney Relax') }}</option>
+													<option value="midjourney/turbo" @if (auth()->user()->default_image_model == 'midjourney/turbo') selected @endif>{{ __('Midjourney Turbo') }}</option>
+												@endif
+											@endforeach
+										@endif
+										@if (App\Services\HelperService::extensionClipdrop())
+											@foreach ($vendors as $vendor)
+												@if (trim($vendor) == 'clipdrop')
+													<option value="clipdrop" @if (auth()->user()->default_image_model == 'clipdrop') selected @endif>{{ __('Clipdrop') }}</option>
+												@endif
+											@endforeach
+										@endif
+									</select>	
+								</div>
+							</div>
 						</div>
-						<div class="card-footer border-0 text-right mb-2 pr-0">
+						<div class="card-footer   text-right mb-2 pr-0">
 							<button type="submit" class="btn btn-primary">{{ __('Save') }}</button>							
 						</div>					
 					</div>				
@@ -259,3 +339,4 @@
 @section('js')
 	<script src="{{theme_url('js/admin-config.js')}}"></script>
 @endsection
+

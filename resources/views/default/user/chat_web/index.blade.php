@@ -20,12 +20,12 @@
 @section('content')
 	<form id="openai-form" action="" method="GET" enctype="multipart/form-data" class="mt-24">		
 		@csrf
-		<div class="row justify-content-md-center">
-			<div class="text-center my-5"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
+		<div class="text-center my-5"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
+		<div class="row justify-content-md-center">	
 			<div class="col-sm-12 text-center">
 				<h3 class="card-title fs-20 mb-3 super-strong"><i class="fa-solid fa-globe mr-2 text-primary"></i>{{ __('AI Web Chat') }}</h3>
 				<h6 class="mb-0 fs-12 text-muted">{{ __('Turn Your Website into Intelligent Dynamic Conversations') }}</h6>
-				<div class="mb-4" id="balance-status">
+				<div class="mb-5 mt-2">
 					<x-balance-chat />
 				</div>
 			</div>

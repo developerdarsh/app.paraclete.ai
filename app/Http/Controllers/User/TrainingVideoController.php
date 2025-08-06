@@ -599,7 +599,10 @@ public function searchFeeds(Request $request){
 
 	}
 
-	public function automation(Request $request){
+	public function ai_avtar(Request $request){
+        
+
+        
 		$client = new Client();
 		$response = $client->post('https://api.anthropic.com/v1/messages', [
                 'headers' => [

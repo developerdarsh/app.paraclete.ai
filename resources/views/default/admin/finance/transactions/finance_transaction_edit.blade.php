@@ -19,51 +19,67 @@
 @section('content')						
 	<div class="row justify-content-center">
 		<div class="col-lg-6 col-md-6 col-xm-12">
+			<h3 class="card-title text-center">{{ __('Transaction') }} ID: <span class="text-info">{{ $id->order_id }}</span></h3>
 			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Transaction') }} ID: <span class="text-info">{{ $id->order_id }}</span></h3>
-				</div>
 				<div class="card-body pt-5">		
 
 					<div class="row">
 						<div class="col-lg-4 col-md-4 col-12">
-							<h6 class="font-weight-bold mb-1">{{ __('Transaction Date') }}: </h6>
-							<span class="fs-14">{{ date_format($id->created_at, 'd M Y, H:i A') }}</span>
+							<div class="prepaid-view-box text-center">
+								<h6 class="font-weight-bold mb-1">{{ __('Transaction Date') }} </h6>
+								<span class="fs-14">{{ date_format($id->created_at, 'd M Y, H:i A') }}</span>
+							</div>
 						</div>
 						<div class="col-lg-4 col-md-4 col-12">
-							<h6 class="font-weight-bold mb-1">{{ __('Total Price') }}: </h6>
-							<span class="fs-14">{!! config('payment.default_system_currency_symbol') !!}{{ ucfirst($id->price) }}</span>
+							<div class="prepaid-view-box text-center">
+								<h6 class="font-weight-bold mb-1">{{ __('Total Price') }} </h6>
+								<span class="fs-14">{!! config('payment.default_system_currency_symbol') !!}{{ ucfirst($id->price) }}</span>
+							</div>
 						</div>
 						<div class="col-lg-4 col-md-4 col-12">
-							<h6 class="font-weight-bold mb-1">{{ __('Payment Status') }}: </h6>
-							<span class="fs-14">{{ ucfirst($id->status) }}</span>
+							<div class="prepaid-view-box text-center">
+								<h6 class="font-weight-bold mb-1">{{ __('Payment Status') }} </h6>
+								<span class="fs-14">{{ ucfirst($id->status) }}</span>
+							</div>
 						</div>
 					</div>
 
-					<div class="row pt-5">
+					<div class="row">
 						<div class="col-lg-4 col-md-4 col-12">
-							<h6 class="font-weight-bold mb-1">{{ __('Plan Name') }}: </h6>
-							<span class="fs-14">{{ ucfirst($id->plan_name) }}</span>
+							<div class="prepaid-view-box text-center">
+								<h6 class="font-weight-bold mb-1">{{ __('Plan Name') }} </h6>
+								<span class="fs-14">{{ ucfirst($id->plan_name) }}</span>
+							</div>
 						</div>
 						<div class="col-lg-4 col-md-4 col-12">
-							<h6 class="font-weight-bold mb-1">{{ __('Payment Gateway') }}: </h6>
-							<span class="fs-14">{{ $id->gateway }}</span>
+							<div class="prepaid-view-box text-center">
+								<h6 class="font-weight-bold mb-1">{{ __('Payment Gateway') }} </h6>
+								<span class="fs-14">{{ $id->gateway }}</span>
+							</div>
 						</div>
-						<div class="col-lg-4 col-md-4 col-12 pt-5">
-							<h6 class="font-weight-bold mb-1">{{ __('Payment Frequency') }}: </h6>
-							<span class="fs-14">{{ ucfirst($id->frequency) }}</span>
+						<div class="col-lg-4 col-md-4 col-12">
+							<div class="prepaid-view-box text-center">
+								<h6 class="font-weight-bold mb-1">{{ __('Payment Frequency') }} </h6>
+								<span class="fs-14">{{ ucfirst($id->frequency) }}</span>
+							</div>
 						</div>
-						<div class="col-lg-4 col-md-4 col-12 pt-5">
-							<h6 class="font-weight-bold mb-1">{{ __('User Name') }}: </h6>
-							<span class="fs-14">{{ $user->name }}</span>
+						<div class="col-lg-4 col-md-4 col-12">
+							<div class="prepaid-view-box text-center">
+								<h6 class="font-weight-bold mb-1">{{ __('User Name') }} </h6>
+								<span class="fs-14">{{ $user->name }}</span>
+							</div>
 						</div>
-						<div class="col-lg-4 col-md-4 col-12 pt-5">
-							<h6 class="font-weight-bold mb-1">{{ __('User Email') }}: </h6>
-							<span class="fs-14">{{ $user->email }}</span>
+						<div class="col-lg-4 col-md-4 col-12">
+							<div class="prepaid-view-box text-center">
+								<h6 class="font-weight-bold mb-1">{{ __('User Email') }} </h6>
+								<span class="fs-14">{{ $user->email }}</span>
+							</div>
 						</div>
-						<div class="col-lg-4 col-md-4 col-12 pt-5">
-							<h6 class="font-weight-bold mb-1">{{ __('Country') }}: </h6>
-							<span class="fs-14">{{ $user->country }}</span>
+						<div class="col-lg-4 col-md-4 col-12">
+							<div class="prepaid-view-box text-center">
+								<h6 class="font-weight-bold mb-1">{{ __('Country') }} </h6>
+								<span class="fs-14">{{ $user->country }}</span>
+							</div>
 						</div>
 					</div>
 
@@ -71,34 +87,34 @@
 						@method('PUT')
 						@csrf
 
-						
+						<div class="prepaid-view-box text-center mt-5">
+							<div class="row p-4">
 
-						<div class="row pt-8">
+								<div class="col-12 mb-7">
+									<h6 class="font-weight-bold mb-2">{{ __('Payment Confirmation') }}: </h6>
+									@if (is_null($id->invoice))
+										<span class="fs-14">{{ __('User did not upload any payment confirmation yet') }}</span>
+									@else
+										<a href="{{ URL::asset($id->invoice) }}" download class="btn btn-primary pl-5 pr-5">{{ __('Download Confirmation') }}</a>	
+									@endif
+														
+								</div>
 
-							<div class="col-12 mb-7">
-								<h6 class="font-weight-bold mb-2">{{ __('Payment Confirmation') }}: </h6>
-								@if (is_null($id->invoice))
-									<span class="fs-14">{{ __('User did not upload any payment confirmation yet') }}</span>
-								@else
-									<a href="{{ URL::asset($id->invoice) }}" download class="btn btn-primary pl-5 pr-5">{{ __('Download Confirmation') }}</a>	
-								@endif
-													
+								<div class="col-sm-12">				
+									<div class="input-box">	
+										<h6>{{ __('Update Payment Status') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+										<select id="notification-type" name="payment-status" class="form-select" data-placeholder="{{ __('Update Payment Status') }}:">			
+											<option value="pending" @if ($id->status == 'pending') selected @endif>{{ __('Pending Payment') }}</option>
+											<option value="completed" @if ($id->status == 'completed') selected @endif>{{ __('Payment Received') }}</option>
+											<option value="cancelled" @if ($id->status == 'cancelled') selected @endif>{{ __('Payment Cancelled') }}</option>
+											<option value="declined" @if ($id->status == 'declined') selected @endif>{{ __('Payment Declined') }}</option>
+										</select>
+										@error('payment-status')
+											<p class="text-danger">{{ $errors->first('payment-status') }}</p>
+										@enderror
+									</div> 							
+								</div>						
 							</div>
-
-							<div class="col-sm-12">				
-								<div class="input-box">	
-									<h6>{{ __('Update Payment Status') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-									<select id="notification-type" name="payment-status" class="form-select" data-placeholder="{{ __('Update Payment Status') }}:">			
-										<option value="pending" @if ($id->status == 'pending') selected @endif>{{ __('Pending Payment') }}</option>
-										<option value="completed" @if ($id->status == 'completed') selected @endif>{{ __('Payment Received') }}</option>
-										<option value="cancelled" @if ($id->status == 'cancelled') selected @endif>{{ __('Payment Cancelled') }}</option>
-										<option value="declined" @if ($id->status == 'declined') selected @endif>{{ __('Payment Declined') }}</option>
-									</select>
-									@error('payment-status')
-										<p class="text-danger">{{ $errors->first('payment-status') }}</p>
-									@enderror
-								</div> 							
-							</div>						
 						</div>
 
 						<!-- SAVE CHANGES ACTION BUTTON -->

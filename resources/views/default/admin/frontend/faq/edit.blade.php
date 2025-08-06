@@ -26,9 +26,6 @@
 	<div class="row justify-content-center">
 		<div class="col-lg-6 col-md-8 col-xm-12">
 			<div class="card overflow-hidden border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Edit FAQ Answer') }}</h3>
-				</div>
 				<div class="card-body pt-5">									
 					<form id="" action="{{ route('admin.settings.faq.update', [$id->id]) }}" method="POST" enctype="multipart/form-data">
 						@method('PUT')

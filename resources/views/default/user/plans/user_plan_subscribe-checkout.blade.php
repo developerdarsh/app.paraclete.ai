@@ -168,6 +168,7 @@
 																@elseif ($payment_platform->name == 'Iyzico') payment-image-iyzico
 																@elseif ($payment_platform->name == 'Paddle') payment-image-paddle
 																@elseif ($payment_platform->name == 'Flutterwave') payment-image-flutterwave
+																@elseif ($payment_platform->name == 'Wallet') payment-image-paddle
 																@endif" alt="{{ $payment_platform->name }}">
 															</label>	
 														</div>									
@@ -225,16 +226,17 @@
 											@endif
 										</p>																					
 										<p class="fs-12 mb-3 text-muted">{{ __('Included Features') }}</p>																	
-										<ul class="fs-12 pl-3">		
-											@if ($id->words == -1)
+										<ul class="fs-12 pl-3">	
+												
+											@if ($id->token_credits == -1)
 												<li class="fs-12 mb-3"><i class="fa-solid fa-check fs-12 mr-2 text-success"></i> <span class="font-weight-bold">{{ __('Unlimited') }}</span> <span class="plan-feature-text">{{ __('words / month') }}</span></li>
 											@else	
-												@if($id->words != 0) <li class="fs-12 mb-3"><i class="fa-solid fa-check fs-12 mr-2 text-success"></i> <span class="font-weight-bold">{{ number_format($id->words) }}</span> <span class="plan-feature-text">{{ __('words / month') }}</span></li> @endif
+												@if($id->token_credits != 0) <li class="fs-12 mb-3"><i class="fa-solid fa-check fs-12 mr-2 text-success"></i> <span class="font-weight-bold">{{ number_format($id->token_credits) }}</span> <span class="plan-feature-text">{{ __('words / month') }}</span></li> @endif
 											@endif
 											@if ($id->image_credits == -1)
-												<li class="fs-12 mb-3"><i class="fa-solid fa-check fs-12 mr-2 text-success"></i> <span class="font-weight-bold">{{ __('Unlimited') }}</span> <span class="plan-feature-text">{{ __('image credits') }}</span></li>
+												<li class="fs-12 mb-3"><i class="fa-solid fa-check fs-12 mr-2 text-success"></i> <span class="font-weight-bold">{{ __('Unlimited') }}</span> <span class="plan-feature-text">{{ __('media credits / month') }}</span></li>
 											@else
-												@if($id->image_credits != 0) <li class="fs-12 mb-3"><i class="fa-solid fa-check fs-12 mr-2 text-success"></i> <span class="font-weight-bold">{{ number_format($id->image_credits) }}</span> <span class="plan-feature-text">{{ __('image credits') }}</span></li> @endif
+												@if($id->image_credits != 0) <li class="fs-12 mb-3"><i class="fa-solid fa-check fs-12 mr-2 text-success"></i> <span class="font-weight-bold">{{ number_format($id->image_credits) }}</span> <span class="plan-feature-text">{{ __('media credits / month') }}</span></li> @endif
 											@endif
 											@if (config('settings.whisper_feature_user') == 'allow')
 												@if ($id->minutes == -1)

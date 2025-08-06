@@ -93,6 +93,7 @@
  	</style>
 @endsection
 
+
 @section('page-header')
 	<!-- PAGE HEADER -->
 	<div class="page-header mt-5-7 justify-content-center"> 
@@ -113,9 +114,6 @@
 	<div class="row justify-content-center">
 		<div class="col-lg-8 col-md-12 col-xm-12">
 			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Edit Chat Bot') }}</h3>
-				</div>
 				<div class="card-body pt-5">									
 					<form action="{{ route('admin.davinci.chat.update', $chat->id) }}" method="POST" enctype="multipart/form-data">
             @method('PUT')
@@ -231,29 +229,31 @@
                   </div> 
                 </div> 
               </div>
-				<div class="col-sm-12">								
-                    <div class="input-box add_templates-sec">								
-						<h6 class="fs-11 mb-2 font-weight-semibold">{{ __('Templates') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-						<div class="form-group Templete_multiselect">
-							@if(isset($templates))
-							<select id="template-list" name="templates[]"  class="multiselect-picker" multiple="multiple">
-								@foreach ($templates as $template)
-								<option value="{{ $template->id }}">{{ $template->template }}</option>
-								@endforeach
-							</select>
-							@endif
-						</div> 
-						<div class="add_templates-sec">
-							<div class="form-group">
-								<div class="form-input">
-									<input type="hidden" name="dataArrayField" id="dataArrayField">
-									<input type="text" name="template_name" id="template_name">
-									<button type="button" id="addTemplateBtn" class="btn btn-primary">Add </button>
-								</div>
-							</div>
-						</div>
+
+				 <div class="col-sm-12">								
+                <div class="input-box add_templates-sec">								
+                      <h6 class="fs-11 mb-2 font-weight-semibold">{{ __('Templates') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+                      <div class="form-group Templete_multiselect">
+                        @if(isset($templates))
+                        <select id="template-list" name="templates[]"  class="multiselect-picker" multiple="multiple">
+                          @foreach ($templates as $template)
+                          <option value="{{ $template->id }}">{{ $template->template }}</option>
+                          @endforeach
+                        </select>
+                        @endif
+                      </div> 
+                      <div class="add_templates-sec">
+                        <div class="form-group">
+                          <div class="form-input">
+                            <input type="hidden" name="dataArrayField" id="dataArrayField">
+                            <input type="text" name="template_name" id="template_name">
+                            <button type="button" id="addTemplateBtn" class="btn btn-primary">Add </button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                 </div>   
+
               <div class="col-sm-12">								
                 <div class="input-box">								
                   <h6 class="fs-11 mb-2 font-weight-semibold">{{ __('Prompt') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>

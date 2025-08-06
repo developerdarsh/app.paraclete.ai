@@ -25,10 +25,7 @@
 @section('content')	
 	<div class="row">
 		<div class="col-sm-12">
-			<div class="card border-0">	
-				<div class="card-header">
-					<h3 class="card-title"><i class="fa-solid fa-microchip-ai mr-2 text-primary"></i>{{ __('Custom Template Editor') }}</h3>
-				</div>			
+			<div class="card border-0">			
 				<div class="card-body pt-5">
 					<form class="w-100" action="{{ route('admin.davinci.custom.update', $id) }}" method="POST" enctype="multipart/form-data">
 						@method('PUT')

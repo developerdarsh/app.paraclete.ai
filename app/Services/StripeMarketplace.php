@@ -36,12 +36,13 @@ class StripeMarketplace
 
         if ($type == 'extension') {
             $name = "Payment for: " . ucfirst($extension_name) . ' ' . ucfirst($type);
-        } else {
+        } elseif($type == 'theme') {
             $name = "Payment for: " . ucfirst($slug) . ' ' . ucfirst($type);
+        } else {
+            $name = "Payment for: " . ucfirst($extension_name);
         }
         
-        $total = $amount * 100;
-        
+        $total = $amount * 100;        
 
         Stripe::setApiKey($this->sak);
 
@@ -64,6 +65,28 @@ class StripeMarketplace
                     'mode' => 'payment',
                     'success_url' => route('admin.payments.theme.approved'),
                     'cancel_url' => route('admin.payments.stripe.theme.cancel'),
+                ]);
+            } elseif ($type == 'support') {
+                $session = \Stripe\Checkout\Session::create([
+                    'customer_email' => auth()->user()->email,
+                    'line_items' => [
+                        [
+                            'price_data' => [
+                                'currency' => 'USD',
+                                'product_data' => [
+                                    'name' => $name,
+                                ],
+                                'unit_amount' => $total,
+                                'recurring' => [
+                                    'interval' => 'month',
+                                ]
+                            ],
+                            'quantity' => 1,
+                        ]
+                    ],
+                    'mode' => 'subscription', 
+                    'success_url' => route('admin.payments.market.approved'),
+                    'cancel_url' => route('admin.payments.stripe.market.cancel'),
                 ]);
             } else {
                 $session = \Stripe\Checkout\Session::create([
@@ -131,12 +154,20 @@ class StripeMarketplace
         $slug = session()->get('name');
 
         $theme = $this->extensions->verify($slug, $paymentIntentID);
-        
+
         if ($theme) {
-            session()->forget('paymentIntentID');
-            session()->forget('name');
-            toastr()->success(__('Payment Successfully Processed'));
-            return view('admin.themes.success-theme', compact('theme'));
+            if ($slug == 'premier' || $slug == 'support') {
+                session()->forget('paymentIntentID');
+                session()->forget('name');
+                toastr()->success(__('Payment Successfully Processed'));
+                return view('admin.marketplace.success-package', compact('theme'));
+            } else {
+                session()->forget('paymentIntentID');
+                session()->forget('name');
+                toastr()->success(__('Payment Successfully Processed'));
+                return view('admin.themes.success-theme', compact('theme'));
+            }
+           
         } else {
             toastr()->warning(__('Please contact support team, there was an issue with your payment'));
             return redirect()->route('admin.themes');
@@ -147,16 +178,25 @@ class StripeMarketplace
 
     public function handleMarketApproval(Request $request)
     {
+
         $paymentIntentID = session()->get('paymentIntentID');
         $slug = session()->get('name');
 
         $theme = $this->extensions->verify($slug, $paymentIntentID);
-        
+   
         if ($theme) {
-            session()->forget('paymentIntentID');
-            session()->forget('name');
-            toastr()->success(__('Payment Successfully Processed'));
-            return view('admin.marketplace.success-theme', compact('theme'));
+            if ($slug == 'premier' || $slug == 'support') {
+                session()->forget('paymentIntentID');
+                session()->forget('name');
+                toastr()->success(__('Payment Successfully Processed'));
+                return view('admin.marketplace.success-package', compact('theme'));
+            } else {
+                session()->forget('paymentIntentID');
+                session()->forget('name');
+                toastr()->success(__('Payment Successfully Processed'));
+                return view('admin.marketplace.success-theme', compact('theme'));
+            }
+            
         } else {
             toastr()->warning(__('Please contact support team, there was an issue with your payment'));
             return redirect()->route('admin.extensions');

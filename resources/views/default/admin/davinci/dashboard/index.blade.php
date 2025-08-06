@@ -18,20 +18,17 @@
 @section('content')	
 	<div class="row">
 		<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
-			<div class="card overflow-hidden border-0">
+			<div class="card overflow-hidden">
 				<div class="card-body">
 					<div class="d-flex align-items-end justify-content-between">
 						<div class="w-100">
-							<p class=" mb-3 fs-12 font-weight-bold">{{ __('Free Words Used') }} <span class="text-muted">({{ __('Current Month') }})</span></p>
+							<p class=" mb-3 fs-12 font-weight-bold"><i class="fs-14 mr-2 fa-solid fa-gifts"></i> {{ __('Free Words Used') }} <span class="text-muted">({{ date('F') }})</span></p>
 							<h2 class="mb-0"><span class="number-font-chars">{{ number_format($usage_data['free_current_month']) }}</span></h2>									
-						</div>
-						<div class="text-right">
-							<i class="fs-35 fa-solid fa-gifts" style="vertical-align: bottom;"></i>
 						</div>
 					</div>
 					<div class="d-flex mt-2">
 						<div>
-							<span class="text-muted fs-12 mr-1">{{ __('Total Free Words Used') }} ({{ __('Current Year') }}):</span>
+							<span class="text-muted fs-12 mr-1">{{ __('Total Free Words Used') }} ({{ date('Y') }}):</span>
 							<span class="number-font fs-12"><i class="fa fa-bookmark mr-1 text-info"></i>{{ number_format($usage_data['free_current_year']) }}</span>
 						</div>
 					</div>
@@ -39,20 +36,17 @@
 			</div>
 		</div>
 		<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
-			<div class="card overflow-hidden border-0">
+			<div class="card overflow-hidden">
 				<div class="card-body">
 					<div class="d-flex align-items-end justify-content-between">
 						<div class="w-100">
-							<p class=" mb-3 fs-12 font-weight-bold">{{ __('Paid Words Used') }} <span class="text-muted">({{ __('Current Month') }})</span></p>
+							<p class=" mb-3 fs-12 font-weight-bold"><i class="fs-14 mr-2 text-info fa-solid fa-box-dollar" style="vertical-align: bottom;"></i> {{ __('Paid Words Used') }} <span class="text-muted">({{ date('F') }})</span></p>
 							<h2 class="mb-0"><span class="number-font-chars">{{ number_format($usage_data['paid_current_month']) }}</span></h2>									
-						</div>
-						<div class="text-right">
-							<i class="fs-35 text-info fa-solid fa-box-dollar" style="vertical-align: bottom;"></i>
 						</div>
 					</div>
 					<div class="d-flex mt-2">
 						<div>
-							<span class="text-muted fs-12 mr-1">{{ __('Total Paid Words Used') }} ({{ __('Current Year') }}):</span>
+							<span class="text-muted fs-12 mr-1">{{ __('Total Paid Words Used') }} ({{ date('Y') }}):</span>
 							<span class="number-font fs-12"><i class="fa fa-bookmark mr-1 text-info"></i>{{ number_format($usage_data['paid_current_year']) }}</span>
 						</div>
 					</div>
@@ -60,20 +54,17 @@
 			</div>
 		</div>
 		<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
-			<div class="card overflow-hidden border-0">
+			<div class="card overflow-hidden">
 				<div class="card-body">
 					<div class="d-flex align-items-end justify-content-between">
 						<div class="w-100">
-							<p class=" mb-3 fs-12 font-weight-bold">{{ __('Images Generated') }} <span class="text-muted">({{ __('Current Month') }})</span></p>
+							<p class=" mb-3 fs-12 font-weight-bold"><i class="fs-14 mr-2 text-warning fa-solid fa-image-landscape" style="vertical-align: bottom;"></i> {{ __('Images Generated') }} <span class="text-muted">({{ date('F') }})</span></p>
 							<h2 class="mb-0"><span class="number-font-chars">{{ $usage_data['images_current_month'] }}</span></h2>									
-						</div>
-						<div class="text-right">
-							<i class="fs-35 text-warning fa-solid fa-image-landscape" style="vertical-align: bottom;"></i>
 						</div>
 					</div>
 					<div class="d-flex mt-2">
 						<div>
-							<span class="text-muted fs-12 mr-1">{{ __('Total Images Generated') }} ({{ __('Current Year') }}):</span>
+							<span class="text-muted fs-12 mr-1">{{ __('Total Images Generated') }} ({{ date('Y') }}):</span>
 							<span class="number-font fs-12"><i class="fa fa-bookmark mr-1 text-info"></i>{{ $usage_data['images_current_year'] }}</span>
 						</div>
 					</div>
@@ -81,20 +72,17 @@
 			</div>
 		</div>
 		<div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
-			<div class="card overflow-hidden border-0">
+			<div class="card overflow-hidden">
 				<div class="card-body">
 					<div class="d-flex align-items-end justify-content-between">
 						<div class="w-100">
-							<p class=" mb-3 fs-12 font-weight-bold">{{ __('Documents Created') }} <span class="text-muted">({{ __('Current Month') }})</span></p>
+							<p class=" mb-3 fs-12 font-weight-bold"><i class="fs-14 mr-2 text-success fa-solid fa-folder-open" style="vertical-align: bottom;"></i> {{ __('Documents Created') }} <span class="text-muted">({{ date('F') }})</span></p>
 							<h2 class="mb-0"><span class="number-font-chars">{{ $usage_data['contents_current_month'] }}</span></h2>									
-						</div>
-						<div class="text-right">
-							<i class="fs-35 text-success fa-solid fa-folder-open" style="vertical-align: bottom;"></i>
 						</div>
 					</div>
 					<div class="d-flex mt-2">
 						<div>
-							<span class="text-muted fs-12 mr-1">{{ __('Total Documents Created') }} ({{ __('Current Year') }}):</span>
+							<span class="text-muted fs-12 mr-1">{{ __('Total Documents Created') }} ({{ date('Y') }}):</span>
 							<span class="number-font fs-12"><i class="fa fa-bookmark mr-1 text-info"></i>{{ $usage_data['contents_current_year'] }}</span>
 						</div>
 					</div>
@@ -106,7 +94,7 @@
 	<!-- CURRENT YEAR USAGE ANALYTICS -->
 	<div class="row mt-4">
 		<div class="col-lg-12 col-md-12">
-			<div class="card mb-4 overflow-hidden border-0">
+			<div class="card mb-4 overflow-hidden">
 				<div class="card-header d-inline border-0">
 					<div>
 						<h3 class="card-title fs-16 mt-3 mb-4"><i class="fa-solid fa-cloud-arrow-up mr-4 text-info"></i>{{ __('Words Generated') }} <span class="text-muted">({{ __('Current Month') }})</span></h3>
@@ -137,7 +125,7 @@
 
 	<div class="row mt-4">
 		<div class="col-lg-12 col-md-12">
-			<div class="card mb-4 overflow-hidden border-0">
+			<div class="card mb-4 overflow-hidden">
 				<div class="card-header d-inline border-0">
 					<div>
 						<h3 class="card-title fs-16 mt-3 mb-4"><i class="fa-solid fa-cloud-arrow-up mr-4 text-info"></i>{{ __('Words Generated') }} <span class="text-muted">({{ __('Current Year') }})</span></h3>

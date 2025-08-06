@@ -24,8 +24,8 @@
 
 @section('content')	
 	<div class="row justify-content-center">
-		<div class="col-lg-10 col-md-12 col-sm-12">
-			<div class="card border-0">
+		<div class="col-lg-11 col-md-12 col-sm-12">
+			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('All Original Chatbots') }}</h3>
 				</div>
@@ -43,7 +43,7 @@
 											<th width="3%">{{ __('Group') }}</th>
 											<th width="3%">{{ __('Package') }}</th>							
 											<th width="3%">{{ __('Updated On') }}</th>	    										 						           	
-											<th width="4%">{{ __('Actions') }}</th>
+											<th width="5%">{{ __('Actions') }}</th>
 										</tr>
 									</thead>
 							</table> <!-- END SET DATATABLE -->

@@ -17,10 +17,8 @@
 @section('content')					
 	<div class="row justify-content-center">
 		<div class="col-lg-8 col-md-12 col-xm-12">
+			<h3 class="card-title text-muted text-center">{{ __('Setup Your Company Information on Invoices') }}</h3>
 			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title text-muted">{{ __('Setup Your Company Information on Invoices') }}</h3>
-				</div>
 				<div class="card-body">
 									
 					<form action="{{ route('admin.settings.invoice.store') }}" method="POST" enctype="multipart/form-data">

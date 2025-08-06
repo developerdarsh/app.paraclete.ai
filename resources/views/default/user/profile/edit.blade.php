@@ -24,7 +24,7 @@
 	<!-- EDIT USER PROFILE PAGE -->
 	<div class="row">
 		<div class="col-xl-3 col-lg-4 col-sm-12">
-			<div class="card border-0" id="dashboard-background">
+			<div class="card  " id="dashboard-background">
 				<div class="widget-user-image overflow-hidden mx-auto mt-5"><img alt="User Avatar" class="rounded-circle" src="@if(auth()->user()->profile_photo_path){{ asset(auth()->user()->profile_photo_path) }} @else {{ theme_url('img/users/avatar.jpg') }} @endif"></div>
 				<div class="card-body text-center">
 					<div>
@@ -97,7 +97,7 @@
 				@method('PUT')
 				@csrf
 
-				<div class="card border-0">
+				<div class="card  ">
 					<div class="card-header">
 						<h3 class="card-title"><i class="fa-solid fa-calendar-lines-pen mr-2 text-primary"></i>{{ __('Edit Profile') }}</h3>
 					</div>
@@ -233,7 +233,7 @@
 								</div>
 							</div>
 						</div>
-						<div class="card-footer border-0 text-right mb-2 pr-0">
+						<div class="card-footer   text-right mb-2 pr-0">
 							<a href="{{ route('user.profile') }}" class="btn ripple btn-cancel mr-2 pl-7 pr-7">{{ __('Cancel') }}</a>
 							<button type="submit" class="btn ripple btn-primary pl-7 pr-7">{{ __('Update') }}</button>							
 						</div>					

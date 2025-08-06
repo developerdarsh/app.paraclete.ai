@@ -27,9 +27,6 @@
 	<div class="row justify-content-center">
 		<div class="col-xl-9 col-lg-8 col-sm-12">
 			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Create New User') }}</h3>
-				</div>
 				<div class="card-body pb-0">
 					<form method="POST" action="{{ route('admin.user.store') }}" enctype="multipart/form-data">
 						@csrf

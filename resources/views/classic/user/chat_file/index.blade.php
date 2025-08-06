@@ -20,8 +20,8 @@
 @section('content')
 	<form id="openai-form" action="" method="GET" enctype="multipart/form-data" class="mt-24">		
 		@csrf
-		<div class="row justify-content-md-center">
-			<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>	
+		<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
+		<div class="row justify-content-md-center">	
 			<div class="col-sm-12 text-center">
 				<h3 class="page-title mb-2">{{ __('AI File Chat') }}</h3>
 				<h6 class="fs-12 text-muted">{{ __('Analyze the content of your Word/PDF/CSV documents with the help of AI') }}</h6>

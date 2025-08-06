@@ -23,8 +23,8 @@
 
 @section('content')						
 	<div class="row justify-content-center">
-		<div class="col-lg-8 col-md-12 col-xm-12">
-			<div class="card overflow-hidden border-0">
+		<div class="col-lg-8 col-md-12 col-sm-12">
+			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('System Email Templates') }}</h3>
 				</div>

@@ -28,7 +28,7 @@
 										</div>
 										<div class="col-lg-3 col-md-6 col-sm-12">
 											<div class="card shadow-0 text-center" style="height: 50px;">
-												<h6 class="mt-auto mb-auto fs-13 font-weight-semibold"><i class="fa-solid fa-badge-check mr-2 text-primary"></i>{{ __('Tested with DaVinci AI') }}</h6>
+												<h6 class="mt-auto mb-auto fs-13 font-weight-semibold"><i class="fa-solid fa-badge-check mr-2 text-primary"></i>{{ __('Fully Tested') }}</h6>
 											</div>
 										</div>
 										<div class="col-lg-3 col-md-6 col-sm-12">
@@ -242,7 +242,48 @@
 									</div>
 								</div>
 							</div>	
+
+							<div class="card shadow-0 card-body-gradient">
+								<div class="card-body p-6 ">
+									<p class="card-title fs-20 text-center card-header-gradient" >{{ __('Premium VIP Support') }}</p>
+									<div class="text-center">
+										<h6 class="mb-2 fs-40 number-font" style="opacity: 0.8">$299</h6>
+										<h6 class="mb-4 fs-12 text-muted">{{ __('Monthly cost. Price is in US dollar.') }}</h6>
+									</div>
+									
+									<div class="row">
+										<div class="col-sm-12 text-center">
+											<h6 class="fs-14"><i class="fa-solid fa-circle-check card-header-gradient mr-1"></i> {{ __('Priority support in support ticket queue') }}</h6>
+											<h6 class="fs-14"><i class="fa-solid fa-circle-check card-header-gradient mr-1"></i> {{ __('Support during Weekends') }}</h6>
+											<h6 class="fs-14"><i class="fa-solid fa-circle-check card-header-gradient mr-1"></i> {{ __('Maximum few hours of SLA time') }}</h6>
+											<h6 class="fs-14"><i class="fa-solid fa-circle-check card-header-gradient mr-1"></i> {{ __('Access to Extensions while on Premium Support') }}</h6>
+											<a href="{{ route('admin.extension.purchase.package', 'support') }}" id="buy-package" class="btn btn-primary ripple premier-button mt-3" style="width: 250px; text-transform: none; font-size: 11px; padding-top: 10px; padding-bottom: 10px;"><span class="card-header-gradient">{{ __('Buy Premium Support') }}</span></a>										
+										</div>										
+									</div>
+								</div>
+							</div>	
 							
+							<div class="card shadow-0 card-body-gradient">
+								<div class="card-body p-6 ">
+									<p class="card-title fs-20 text-center card-header-gradient" >{{ __('Premier Package Bundle') }}</p>
+									<div class="text-center">
+										<h6 class="mb-2 fs-40 number-font" style="opacity: 0.8">$999</h6>
+										<h6 class="mb-2 fs-12 text-muted">{{ __('One-time cost. Price is in US dollar.') }}</h6>
+										<h6 class="mb-4 fs-12 text-muted">{{ __('Includes released and upcoming Extensions & Themes.') }}</h6>										
+									</div>
+									
+									<div class="row">
+										<div class="col-sm-12 text-center">
+											<h6 class="fs-14"><i class="fa-solid fa-circle-check card-header-gradient mr-1"></i> {{ __('Full access to all paid Themes') }}</h6>
+											<h6 class="fs-14"><i class="fa-solid fa-circle-check card-header-gradient mr-1"></i> {{ __('Full access to all paid Extensions') }}</h6>
+											<h6 class="fs-14"><i class="fa-solid fa-circle-check card-header-gradient mr-1"></i> {{ __('Forever access to Extension updates') }}</h6>
+											<h6 class="fs-14"><i class="fa-solid fa-circle-check card-header-gradient mr-1"></i> {{ __('Forever access to Theme updates') }}</h6>
+											<a href="{{ route('admin.extension.purchase.package', 'premier') }}" class="btn btn-primary ripple premier-button mt-3" style="width: 250px; text-transform: none; font-size: 11px; padding-top: 10px; padding-bottom: 10px;"><span class="card-header-gradient">{{ __('Buy Premier Bundle') }}</span></a>										
+										</div>	
+										
+									</div>
+								</div>
+							</div>
 						</div>
 
 					</div>

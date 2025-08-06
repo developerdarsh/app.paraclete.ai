@@ -4,8 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Searchable\Searchable;
+use Spatie\Searchable\SearchResult;
 
-class Chat extends Model
+class Chat extends Model implements Searchable
 {
     use HasFactory;
 
@@ -25,8 +27,17 @@ class Chat extends Model
         'type',
         'prompt',
         'group', 
-		'voice_code',
+        'voice_code',
         'model',
         'model_mode'
     ];
+
+    public function getSearchResult(): SearchResult
+    {
+        return new SearchResult(
+            $this,
+            $this->name,
+            $this->chat_code
+        );
+    }
 }

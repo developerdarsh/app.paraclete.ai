@@ -12,7 +12,7 @@
 			<h6 class="mb-6 fs-12 text-muted">{{ __('Control all AI settings from one place') }}</h6>
 		</div>
 
-		<div class="col-lg-9 col-md-10 col-sm-12 mb-5">
+		<div class="col-lg-8 col-md-10 col-sm-12 mb-5">
 			<div class="templates-nav-menu">
 				<div class="template-nav-menu-inner">
 					<ul class="nav nav-tabs" id="myTab" role="tablist" style="padding: 3px">
@@ -33,9 +33,9 @@
 			</div>
 		</div>
 
-		<div class="col-lg-9 col-md-10 col-sm-12">
+		<div class="col-lg-10 col-md-12 col-sm-12">
 			<div class="card border-0">
-				<div class="card-body p-7">				
+				<div class="card-body p-5">				
 					<div class="tab-content" id="myTabContent">
 
 						<div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
@@ -52,11 +52,20 @@
 												<option value="gpt-4" @if ( config('settings.default_model_admin')  == 'gpt-4') selected @endif>{{ __('GPT 4') }}</option>
 												<option value="gpt-4o" @if ( config('settings.default_model_admin')  == 'gpt-4o') selected @endif>{{ __('GPT 4o') }}</option>
 												<option value="gpt-4o-mini" @if ( config('settings.default_model_admin')  == 'gpt-4o-mini') selected @endif>{{ __('GPT 4o mini') }}</option>
+												<option value="gpt-4o-search-preview" @if ( config('settings.default_model_admin')  == 'gpt-4o-search-preview') selected @endif>{{ __('GPT 4o Search Preview') }}</option>
+												<option value="gpt-4o-mini-search-preview" @if ( config('settings.default_model_admin')  == 'gpt-4o-mini-search-preview') selected @endif>{{ __('GPT 4o mini Search Preview') }}</option>
 												<option value="gpt-4-0125-preview" @if ( config('settings.default_model_admin')  == 'gpt-4-0125-preview') selected @endif>{{ __('GPT 4 Turbo') }}</option>
 												<option value="gpt-4.5-preview" @if ( config('settings.default_model_admin')  == 'gpt-4.5-preview') selected @endif>{{ __('GPT 4.5') }}</option>
+												<option value="gpt-4.1" @if ( config('settings.default_model_admin')  == 'gpt-4.1') selected @endif>{{ __('GPT 4.1') }}</option>
+												<option value="gpt-4.1-mini" @if ( config('settings.default_model_admin')  == 'gpt-4.1-mini') selected @endif>{{ __('GPT 4.1 mini') }}</option>
+												<option value="gpt-4.1-nano" @if ( config('settings.default_model_admin')  == 'gpt-4.1-nano') selected @endif>{{ __('GPT 4.1 nano') }}</option>
 												<option value="o1" @if ( config('settings.default_model_admin')  == 'o1') selected @endif>{{ __('o1') }}</option>
 												<option value="o1-mini" @if ( config('settings.default_model_admin')  == 'o1-mini') selected @endif>{{ __('o1 mini') }}</option>
 												<option value="o3-mini" @if ( config('settings.default_model_admin')  == 'o3-mini') selected @endif>{{ __('o3 mini') }}</option>
+												<option value="o3" @if ( config('settings.default_model_admin')  == 'o3') selected @endif>{{ __('o3') }}</option>
+												<option value="o4-mini" @if ( config('settings.default_model_admin')  == 'o4-mini') selected @endif>{{ __('o4 mini') }}</option>
+												<option value="claude-opus-4-20250514" @if ( config('settings.default_model_admin')  == 'claude-opus-4-20250514') selected @endif>{{ __('Claude 4 Opus') }}</option>
+												<option value="claude-sonnet-4-20250514" @if ( config('settings.default_model_admin')  == 'claude-sonnet-4-20250514') selected @endif>{{ __('Claude 4 Sonnet') }}</option>
 												<option value="claude-3-opus-20240229" @if ( config('settings.default_model_admin')  == 'claude-3-opus-20240229') selected @endif>{{ __('Claude 3 Opus') }}</option>
 												<option value="claude-3-7-sonnet-20250219" @if ( config('settings.default_model_admin')  == 'claude-3-7-sonnet-20250219') selected @endif>{{ __('Claude 3.7 Sonnet') }}</option>
 												<option value="claude-3-5-sonnet-20241022" @if ( config('settings.default_model_admin')  == 'claude-3-5-sonnet-20241022') selected @endif>{{ __('Claude 3.5v2 Sonnet') }}</option>
@@ -684,7 +693,7 @@
 												<div class="d-flex">
 													<h6 class="fs-15 font-weight-bold mb-3">{{ __('OpenAI') }}</h6>
 												</div>
-												<p class="fs-12 mb-0 text-muted">{{ __('AI Writer | Article Wizard | Smart Editor | AI Images | AI Chat | AI Code')}}</p>
+												<p class="fs-12 mb-0 text-muted">{{ __('AI Writer | Article Wizard | Smart Editor | AI Images | AI Chat')}}</p>
 											</div>
 										</div>							
 									</div>
@@ -1536,6 +1545,24 @@
 									</div>
 								@endif
 
+								@if (App\Services\HelperService::extensionWallet())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/wallet')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/payments/wallet.avif')}}" class="mr-4" alt="" style="width: 40px;">												
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Wallet System') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Wallet System Configuration')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
 							</div>
 						</div>
 
@@ -1586,11 +1613,20 @@
 														<option value="gpt-4" @if ( config('settings.default_model_user_bot')  == 'gpt-4') selected @endif>{{ __('GPT 4') }}</option>
 														<option value="gpt-4o" @if ( config('settings.default_model_user_bot')  == 'gpt-4o') selected @endif>{{ __('GPT 4o') }}</option>
 														<option value="gpt-4o-mini" @if ( config('settings.default_model_user_bot')  == 'gpt-4o-mini') selected @endif>{{ __('GPT 4o mini') }}</option>
+														<option value="gpt-4o-search-preview" @if ( config('settings.default_model_user_bot')  == 'gpt-4o-search-preview') selected @endif>{{ __('GPT 4o Search Preview') }}</option>
+														<option value="gpt-4o-mini-search-preview" @if ( config('settings.default_model_user_bot')  == 'gpt-4o-mini-search-preview') selected @endif>{{ __('GPT 4o mini Search Preview') }}</option>
 														<option value="gpt-4-0125-preview" @if ( config('settings.default_model_user_bot')  == 'gpt-4-0125-preview') selected @endif>{{ __('GPT 4 Turbo') }}</option>														
 														<option value="gpt-4.5-preview" @if ( config('settings.default_model_user_bot')  == 'gpt-4.5-preview') selected @endif>{{ __('GPT 4.5') }}</option>														
+														<option value="gpt-4.1" @if ( config('settings.default_model_user_bot')  == 'gpt-4.1') selected @endif>{{ __('GPT 4.1') }}</option>
+														<option value="gpt-4.1-mini" @if ( config('settings.default_model_user_bot')  == 'gpt-4.1-mini') selected @endif>{{ __('GPT 4.1 mini') }}</option>
+														<option value="gpt-4.1-nano" @if ( config('settings.default_model_user_bot')  == 'gpt-4.1-nano') selected @endif>{{ __('GPT 4.1 nano') }}</option>
 														<option value="o1" @if ( config('settings.default_model_user_bot')  == 'o1') selected @endif>{{ __('o1') }}</option>
 														<option value="o1-mini" @if ( config('settings.default_model_user_bot')  == 'o1-mini') selected @endif>{{ __('o1 mini') }}</option>
 														<option value="o3-mini" @if ( config('settings.default_model_user_bot')  == 'o3-mini') selected @endif>{{ __('o3 mini') }}</option>
+														<option value="o3" @if ( config('settings.default_model_user_bot')  == 'o3') selected @endif>{{ __('o3') }}</option>														
+														<option value="o4-mini" @if ( config('settings.default_model_user_bot')  == 'o4-mini') selected @endif>{{ __('o4 mini') }}</option>														
+														<option value="claude-opus-4-20250514" @if ( config('settings.default_model_user_bot')  == 'claude-opus-4-20250514') selected @endif>{{ __('Claude 4 Opus') }}</option>
+														<option value="claude-sonnet-4-20250514" @if ( config('settings.default_model_user_bot')  == 'claude-sonnet-4-20250514') selected @endif>{{ __('Claude 4 Sonnet') }}</option>
 														<option value="claude-3-opus-20240229" @if ( config('settings.default_model_user_bot')  == 'claude-3-opus-20240229') selected @endif>{{ __('Claude 3 Opus') }}</option>
 														<option value="claude-3-7-sonnet-20250219" @if ( config('settings.default_model_user_bot')  == 'claude-3-7-sonnet-20250219') selected @endif>{{ __('Claude 3.7 Sonnet') }}</option>
 														<option value="claude-3-5-sonnet-20241022" @if ( config('settings.default_model_user_bot')  == 'claude-3-5-sonnet-20241022') selected @endif>{{ __('Claude 3.5v2 Sonnet') }}</option>
@@ -1628,11 +1664,20 @@
 														<option value="gpt-4" @if ( config('settings.default_model_user_template')  == 'gpt-4') selected @endif>{{ __('GPT 4') }}</option>
 														<option value="gpt-4o" @if ( config('settings.default_model_user_template')  == 'gpt-4o') selected @endif>{{ __('GPT 4o') }}</option>
 														<option value="gpt-4o-mini" @if ( config('settings.default_model_user_template')  == 'gpt-4o-mini') selected @endif>{{ __('GPT 4o mini') }}</option>
+														<option value="gpt-4o-search-preview" @if ( config('settings.default_model_user_template')  == 'gpt-4o-search-preview') selected @endif>{{ __('GPT 4o Search Preview') }}</option>
+														<option value="gpt-4o-mini-search-preview" @if ( config('settings.default_model_user_template')  == 'gpt-4o-mini-search-preview') selected @endif>{{ __('GPT 4o mini Search Preview') }}</option>
 														<option value="gpt-4-0125-preview" @if ( config('settings.default_model_user_template')  == 'gpt-4-0125-preview') selected @endif>{{ __('GPT 4 Turbo') }}</option>																												
 														<option value="gpt-4.5-preview" @if ( config('settings.default_model_user_template')  == 'gpt-4.5-preview') selected @endif>{{ __('GPT 4.5') }}</option>																												
+														<option value="gpt-4.1" @if ( config('settings.default_model_user_template')  == 'gpt-4.1') selected @endif>{{ __('GPT 4.1') }}</option>
+														<option value="gpt-4.1-mini" @if ( config('settings.default_model_user_template')  == 'gpt-4.1-mini') selected @endif>{{ __('GPT 4.1 mini') }}</option>
+														<option value="gpt-4.1-nano" @if ( config('settings.default_model_user_template')  == 'gpt-4.1-nano') selected @endif>{{ __('GPT 4.1 nano') }}</option>
 														<option value="o1" @if ( config('settings.default_model_user_template')  == 'o1') selected @endif>{{ __('o1') }}</option>
 														<option value="o1-mini" @if ( config('settings.default_model_user_template')  == 'o1-mini') selected @endif>{{ __('o1 mini') }}</option>
-														<option value="o3-mini" @if ( config('settings.default_model_user_template')  == 'o3-mini') selected @endif>{{ __('o3 mini') }}</option>
+														<option value="o3-mini" @if ( config('settings.default_model_user_template')  == 'o3') selected @endif>{{ __('o3 mini') }}</option>
+														<option value="o3" @if ( config('settings.default_model_user_template')  == 'o3') selected @endif>{{ __('o3') }}</option>
+														<option value="o4-mini" @if ( config('settings.default_model_user_template')  == 'o4-mini') selected @endif>{{ __('o4 mini') }}</option>
+														<option value="claude-opus-4-20250514" @if ( config('settings.default_model_user_template')  == 'claude-opus-4-20250514') selected @endif>{{ __('Claude 4 Opus') }}</option>
+														<option value="claude-sonnet-4-20250514" @if ( config('settings.default_model_user_template')  == 'claude-sonnet-4-20250514') selected @endif>{{ __('Claude 4 Sonnet') }}</option>
 														<option value="claude-3-opus-20240229" @if ( config('settings.default_model_user_template')  == 'claude-3-opus-20240229') selected @endif>{{ __('Claude 3 Opus') }}</option>
 														<option value="claude-3-7-sonnet-20250219" @if ( config('settings.default_model_user_template')  == 'claude-3-7-sonnet-20250219') selected @endif>{{ __('Claude 3.7 Sonnet') }}</option>
 														<option value="claude-3-5-sonnet-20241022" @if ( config('settings.default_model_user_template')  == 'claude-3-5-sonnet-20241022') selected @endif>{{ __('Claude 3.5v2 Sonnet') }}</option>
@@ -1670,11 +1715,20 @@
 														<option value='gpt-4' @foreach ($all_models as $key=>$value) @if($value == 'gpt-4') selected @endif @endforeach>{{ __('GPT 4') }}</option>																																																																																																																																																																																																																		
 														<option value='gpt-4o' @foreach ($all_models as $key=>$value) @if($value == 'gpt-4o') selected @endif @endforeach>{{ __('GPT 4o') }}</option>																																																																																																																																																																																																																		
 														<option value="gpt-4o-mini" @foreach ($all_models as $key=>$value) @if($value == 'gpt-4o-mini') selected @endif @endforeach>{{ __('GPT 4o mini') }}</option>
+														<option value="gpt-4o-search-preview" @foreach ($all_models as $key=>$value) @if($value == 'gpt-4o-search-preview') selected @endif @endforeach>{{ __('GPT 4o Search Preview') }}</option>
+														<option value="gpt-4o-mini-search-preview" @foreach ($all_models as $key=>$value) @if($value == 'gpt-4o-mini-search-preview') selected @endif @endforeach>{{ __('GPT 4o mini Search Preview') }}</option>
 														<option value='gpt-4-0125-preview' @foreach ($all_models as $key=>$value) @if($value == 'gpt-4-0125-preview') selected @endif @endforeach>{{ __('GPT 4 Turbo') }}</option>																		
 														<option value='gpt-4.5-preview' @foreach ($all_models as $key=>$value) @if($value == 'gpt-4.5-preview') selected @endif @endforeach>{{ __('GPT 4.5') }}</option>																		
+														<option value="gpt-4.1"  @foreach ($all_models as $key=>$value) @if($value == 'gpt-4.1') selected @endif @endforeach>{{ __('GPT 4.1') }}</option>
+														<option value="gpt-4.1-mini"  @foreach ($all_models as $key=>$value) @if($value == 'gpt-4.1-mini') selected @endif @endforeach>{{ __('GPT 4.1 mini') }}</option>
+														<option value="gpt-4.1-nano"  @foreach ($all_models as $key=>$value) @if($value == 'gpt-4.1-nano') selected @endif @endforeach>{{ __('GPT 4.1 nano') }}</option>
 														<option value="o1"  @foreach ($all_models as $key=>$value) @if($value == 'o1') selected @endif @endforeach>{{ __('o1') }}</option>
 														<option value="o1-mini"  @foreach ($all_models as $key=>$value) @if($value == 'o1-mini') selected @endif @endforeach>{{ __('o1 mini') }}</option>
 														<option value="o3-mini"  @foreach ($all_models as $key=>$value) @if($value == 'o3-mini') selected @endif @endforeach>{{ __('o3 mini') }}</option>
+														<option value="o3"  @foreach ($all_models as $key=>$value) @if($value == 'o3') selected @endif @endforeach>{{ __('o3') }}</option>
+														<option value="o4-mini"  @foreach ($all_models as $key=>$value) @if($value == 'o4-mini') selected @endif @endforeach>{{ __('o4 mini') }}</option>
+														<option value="claude-opus-4-20250514" @foreach ($all_models as $key=>$value) @if($value == 'claude-opus-4-20250514') selected @endif @endforeach>{{ __('Claude 4 Opus') }}</option>
+														<option value="claude-sonnet-4-20250514" @foreach ($all_models as $key=>$value) @if($value == 'claude-sonnet-4-20250514') selected @endif @endforeach>{{ __('Claude 4 Sonnet') }}</option>
 														<option value="claude-3-opus-20240229" @foreach ($all_models as $key=>$value) @if($value == 'claude-3-opus-20240229') selected @endif @endforeach>{{ __('Claude 3 Opus') }}</option>
 														<option value="claude-3-7-sonnet-20250219" @foreach ($all_models as $key=>$value) @if($value == 'claude-3-7-sonnet-20250219') selected @endif @endforeach>{{ __('Claude 3.7 Sonnet') }}</option>
 														<option value="claude-3-5-sonnet-20241022" @foreach ($all_models as $key=>$value) @if($value == 'claude-3-5-sonnet-20241022') selected @endif @endforeach>{{ __('Claude 3.5v2 Sonnet') }}</option>

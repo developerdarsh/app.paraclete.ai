@@ -5,6 +5,7 @@ namespace App\Services\Statistics;
 use App\Models\Payment;
 use App\Models\Payout;
 use App\Models\Referral;
+use App\Models\GiftCardUsage;
 use DB;
 
 class PaymentsService 
@@ -93,9 +94,9 @@ class PaymentsService
 
 
     public function getTotalPaymentsPastMonth()
-    {   
+    {  
         $date = \Carbon\Carbon::now();
-        $pastMonth =  $date->subMonth()->format('m');
+        $pastMonth =  $date->subMonth()->format('m'); 
 
         $payments = Payment::select(DB::raw("sum(price) as data"))
                 ->whereMonth('created_at', $pastMonth)
@@ -149,6 +150,7 @@ class PaymentsService
     {   
         $payments = Referral::select(DB::raw("sum(payment) as data"))                
                 ->get();  
+
         
         return $payments;
     }
@@ -159,8 +161,82 @@ class PaymentsService
         $payments = Payout::select(DB::raw("sum(total) as data"))                
                 ->where('status', 'completed')
                 ->get();  
+
         
         return $payments;
+    }
+
+
+    public function getGiftCurrentMonth()
+    {
+        $gifts = GiftCardUsage::select(DB::raw("count(id) as data"))
+                ->whereMonth('created_at', $this->month)
+                ->whereYear('created_at', $this->year)
+                ->get();
+        \Log::info($gifts[0]['data']);
+        return $gifts[0]['data'];
+    }
+
+
+    public function getGiftPastMonth()
+    {
+        $date = \Carbon\Carbon::now();
+        $pastMonth =  $date->subMonth()->format('m');
+
+        $gifts = GiftCardUsage::select(DB::raw("count(id) as data"))
+                ->whereMonth('created_at', $pastMonth)
+                ->whereYear('created_at', $this->year)
+                ->get();
+        return $gifts[0]['data'];
+    }
+
+
+    public function getGiftUsageCurrentMonth()
+    {
+        $gifts = GiftCardUsage::select(DB::raw("sum(amount) as data"))
+                ->whereMonth('created_at', $this->month)
+                ->whereYear('created_at', $this->year)
+                ->get();
+        return $gifts[0]['data'];
+    }
+
+
+    public function getGiftUsagePastMonth()
+    {
+        $date = \Carbon\Carbon::now();
+        $pastMonth =  $date->subMonth()->format('m');
+
+        $gifts = GiftCardUsage::select(DB::raw("sum(amount) as data"))
+                ->whereMonth('created_at', $pastMonth)
+                ->whereYear('created_at', $this->year)
+                ->get();
+
+        return $gifts[0]['data'];
+    }
+
+
+    public function revenueToday()
+    {
+        $today = \Carbon\Carbon::today();
+
+        $payments = Payment::select(DB::raw("sum(price) as data")) 
+                ->whereDate('created_at', $today)               
+                ->where('status', 'completed')
+                ->get();  
+        
+        return $payments[0]['data'] ?? 0;
+    }
+
+
+     public function transactionsToday()
+    {
+        $today = \Carbon\Carbon::today();
+        
+        $payments = Payment::select(DB::raw("count(id) as data")) 
+                ->whereDate('created_at', $today)               
+                ->get();  
+        
+        return $payments[0]['data'] ?? 0;
     }
 
 }

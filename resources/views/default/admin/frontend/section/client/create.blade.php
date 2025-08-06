@@ -27,9 +27,6 @@
 	<div class="row justify-content-center">
 		<div class="col-lg-5 col-md-8 col-xm-12">
 			<div class="card overflow-hidden border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Create New Client') }}</h3>								
-				</div>
 				<div class="card-body pt-5">									
 					<form id="" action="{{ route('admin.settings.client.store') }}" method="post" enctype="multipart/form-data">
 						@csrf

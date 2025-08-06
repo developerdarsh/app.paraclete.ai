@@ -144,8 +144,8 @@
               </div>					
           
             </div>
-          
-		  	<div class="gender-select-b d-flex">
+
+			<div class="gender-select-b d-flex">
  				<div class="form-check me-4">
  					<input value="1" class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1" @if($chat->voice_code == '1') checked @endif>
  					<label class="form-check-label" for="flexRadioDefault1">
@@ -158,7 +158,7 @@
  					Female
  					</label>
  				</div>   
- 			</div>	 
+ 			</div>
 
             <div class="col-md-12 col-sm-12 mt-2 mb-4 pl-0">
               <div class="form-group">
@@ -230,8 +230,8 @@
                   </div> 
                 </div> 
               </div>
-          
-		  		<div class="col-sm-12">								
+
+			  <div class="col-sm-12">								
 					<div class="input-box add_templates-sec">								
 						<h6 class="fs-11 mb-2 font-weight-semibold">{{ __('Templates') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
 						<div class="form-group Templete_multiselect">
@@ -253,8 +253,8 @@
 							</div>
 						</div>
 					</div>
-				</div>     
- 
+				</div>
+          
               <div class="col-sm-12">								
                 <div class="input-box">								
                   <h6 class="fs-11 mb-2 font-weight-semibold">{{ __('Prompt') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>

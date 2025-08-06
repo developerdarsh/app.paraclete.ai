@@ -11545,6 +11545,10 @@ label.btn:focus, label.btn.focus, label.btn.active {
     border-radius: 1rem;
 }
 
+i.slide-child-icon.fa-solid.fa-angles-right::before {
+	display: none!important;
+}
+
 
 
 

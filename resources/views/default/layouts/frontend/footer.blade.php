@@ -69,7 +69,7 @@
                 // domain: location.hostname,
                 // path: '/',
                 // sameSite: "Lax",
-                expiresAfterDays: '{{$cookie_settings->days ?? 7 }}',
+                expiresAfterDays: {{$cookie_settings->days ?? 7 }},
             },
 
             // https://cookieconsent.orestbida.com/reference/configuration-reference.html#guioptions

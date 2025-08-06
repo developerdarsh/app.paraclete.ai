@@ -18,49 +18,61 @@
 @section('content')
 	<div class="row justify-content-center">
 		<div class="col-lg-10 col-md-12 col-sm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-body p-5">
-					<form id="upgrade-form" method="POST" action="{{ route('admin.settings.upgrade.start', ['update_id' => $latest_version['update_id'], 'version' => $latest_version['version']]) }}" enctype="multipart/form-data">
+					<form id="upgrade-form" method="POST" action="@if($version_metadata){{ route('admin.settings.upgrade.start', ['update_id' => $latest_version['update_id'], 'version' => $latest_version['version']]) }}@else{{ route('admin.settings.upgrade.start', ['update_id' => $current_version, 'version' => $current_version]) }} @endif" enctype="multipart/form-data">
 						@csrf
 						
 						<div class="row">
-							<div class="col-sm-12 col-md-12">															
-								@if ($latest_version['status'])
-									<div class="text-center" id="not-installed-info">
-										<h1 class="fs-24"><i class="fa-solid fa-box-check fs-24 mr-2 text-cancel"></i> {{ __('New Update is Available') }}</h1>
-										<h6 class="fs-13 text-muted mt-4">{{ __('Current installed version') }}: <span class="text-info font-weight-bold">{{ $current_version }}</span></h6>	
-										<h6 class="fs-13 text-muted mb-4">{{ __('New available version') }}: <span class="text-info font-weight-bold"> {{ $latest_version['version'] }} </span> </h6>
-										<div id="audio-format" role="radiogroup">
-											<span  id="webm-format">							
-												<div class="radio-control">
-													<input type="checkbox" name="concent" class="input-control fs-13" id="concent">
-													<label for="concent" class="label-control text-muted fs-13" id="concent-label">{{  __('I confirm that I have read the Update tab in the documentation and will follow all steps there to finish the update') }} - <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">{{ __('Documentation Link') }}</a></label>
-												</div>	
-											</span>										
-										</div>	
-									</div>
-									<div id="installed-info">
-										<div class="text-center">
-											<h1 class="fs-24">{{ __('Update Installation Completed') }}</h1>
-											<h6 class="text-success fs-14 font-weight-bold mt-4 mb-5"><span> {{ $latest_version['version'] }} </span> {{ __('version was installed successfully') }}</h6>
-											<i class="fa-solid fa-box-check fs-50 text-success"></i>
-											<h6 class="text-danger fs-14 font-weight-bold mt-4">{{ __('Warning! Make sure to follow the instructions in the update tab in the') }} <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">documentation </a> {{ __('to finish the update process') }}</h6>
+							<div class="col-sm-12 col-md-12">
+								@if($version_metadata)															
+									@if ($latest_version['status'])
+										<div class="text-center" id="not-installed-info">
+											<h1 class="fs-24"><i class="fa-solid fa-box-check fs-24 mr-2 text-cancel"></i> {{ __('New Update is Available') }}</h1>
+											<h6 class="fs-13 text-muted mt-4">{{ __('Current installed version') }}: <span class="text-info font-weight-bold">{{ $current_version }}</span></h6>	
+											<h6 class="fs-13 text-muted mb-4">{{ __('New available version') }}: <span class="text-info font-weight-bold"> {{ $latest_version['version'] }} </span> </h6>
+											<div id="audio-format" role="radiogroup">
+												<span  id="webm-format">							
+													<div class="radio-control">
+														<input type="checkbox" name="concent" class="input-control fs-13" id="concent">
+														<label for="concent" class="label-control text-muted fs-13" id="concent-label">{{  __('I confirm that I have read the Update tab in the documentation and will follow all steps there to finish the update') }} - <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">{{ __('Documentation Link') }}</a></label>
+													</div>	
+												</span>										
+											</div>	
 										</div>
-									</div>														
+										<div id="installed-info">
+											<div class="text-center">
+												<h1 class="fs-24">{{ __('Update Installation Completed') }}</h1>
+												<h6 class="text-success fs-14 font-weight-bold mt-4 mb-5"><span> {{ $latest_version['version'] }} </span> {{ __('version was installed successfully') }}</h6>
+												<i class="fa-solid fa-box-check fs-50 text-success"></i>
+												<h6 class="text-danger fs-14 font-weight-bold mt-4">{{ __('Warning! To complete the update process follow all steps listed under') }} <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">update instructions </a> {{ __('in the docs') }}</h6>
+											</div>
+										</div>														
+									@else
+										<div class="text-center">
+											<h1 class="fs-24">{{ __('You have the Latest Version Installed') }}</h1>
+											<h1 class="fs-30 super-strong">{{ $current_version }}</h1>	
+											<h6 class="text-danger fs-14 font-weight-bold mt-4">{{ __('Warning! To complete the update process follow all steps listed under') }} <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">update instructions </a> {{ __('in the docs') }}</h6>									
+											
+										</div>
+									@endif
 								@else
 									<div class="text-center">
 										<h1 class="fs-24">{{ __('You have the Latest Version Installed') }}</h1>
-										<h6 class="text-success fs-14 font-weight-bold mt-4 mb-5">{{ __('Current version is the latest') }}</h6>
-										<i class="fa-solid fa-box-check fs-50 text-success"></i>	
-										<h6 class="text-danger fs-14 font-weight-bold mt-4">{{ __('Warning! Make sure to follow the instructions in the update tab in the') }} <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">documentation </a> {{ __('to finish the update process') }}</h6>									
-										
+										<h1 class="fs-30 super-strong">{{ $current_version }}</h1>	
+										<h6 class="text-danger fs-14 font-weight-bold mt-4">{{ __('Warning! To complete the update process follow all steps listed under') }} <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">update instructions </a> {{ __('in the docs') }}</h6>									
 									</div>
 								@endif								
 							</div>
 						</div>
-						<div class="card-footer text-center border-0 pb-2 pt-5">		
-							<span id="processing"><img src="{{ theme_url('img/svgs/upgrade.svg') }}" alt=""></span>												
-							<button id="upgrade" type="button" class="btn btn-primary">@if ($latest_version['status']) {{ __('Download & Install Upgrade') }} @else	{{ __('Check New Version') }} @endif</button>						
+						<div class="card-footer text-center border-0 pb-2 pt-5">
+							@if($version_metadata)			
+								<span id="processing"><img src="{{ theme_url('img/svgs/upgrade.svg') }}" alt=""></span>												
+								<button id="upgrade" type="button" class="btn btn-primary">@if ($latest_version['status']) {{ __('Download & Install Upgrade') }} @else	{{ __('Check New Version') }} @endif</button>					
+							@else
+								<span id="processing"><img src="{{ theme_url('img/svgs/upgrade.svg') }}" alt=""></span>												
+								<button id="update" type="button" class="btn btn-primary">{{ __('Check New Version') }}</button>					
+							@endif
 						</div>
 					</form>
 				</div>
@@ -72,11 +84,144 @@
 
 				<div class="changelog">
 					<div class="changelog-version mt-5">
-						<span class="version-name">{{ __('Version') }} 7.1</span> - <span class="fs-14 font-weight-semibold">06.04.2025</span>
+						<span class="version-name">{{ __('Version') }} 7.7</span> - <span class="fs-14 font-weight-semibold">2.07.2025</span>
 					</div>   
 					<div class="changelog-description mt-6">     
 						<ul>	 	 				     
-							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">AI Speech to Text Pro extension added (Paid)</span></li>	
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">SEO Tool extension (Paid)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New Claude Sonnet 4 | Opus 4 models added</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Google Veo 3 added (AI Text to Video)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Kling 2.1 Standard | Pro | Master added (AI Image to Video) & (AI Text to Video)</span></span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">External Chatbot updated (v1.1)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Wallet System disable option added (v1.1)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Image to Video updated (v1.6)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Text to Video updated (v1.4)</span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Chat Share history deletion improved (v1.3)</span></span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Chat history deletion improved</span></span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">External Chatbot credit consumption fixed</span></span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">External Chatbot conversation list view fixed</span></span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">External Chatbot history view minor issue fixed</span></span></li>
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
+						<span class="version-name">{{ __('Version') }} 7.6</span> - <span class="fs-14 font-weight-semibold">08.06.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">External Chatbots (Paid)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Enhanced User Dashboard</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Revamped Admin Dashboard with Advanced User and Finance Analytics</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Advanced search feature</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Redesign of the Default Theme</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Export all Gift Codes to PDF | Excel feature added</span></span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">SaaS Business extension updated (v2.2)</span></span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">RTL css styles updated</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Email notifications for Wallet transfers added</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Dark mode for Default theme improved</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Theme switch performance improved</span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">New openai models view fixed for AI Chat</span></span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">New openai models fixed for custom templates</span></span></li>
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
+						<span class="version-name">{{ __('Version') }} 7.5</span> - <span class="fs-14 font-weight-semibold">12.05.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">AI Speech to Text Pro extension (Paid)</span></span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Gift System has been updated</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Saas Business extension updated (v2.1)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Wordpress Integration extension updated (v1.2)</span></li>
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
+						<span class="version-name">{{ __('Version') }} 7.4</span> - <span class="fs-14 font-weight-semibold">10.05.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Wallet System added (Free)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Gift Card System added</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Wallet Balance transfer option between users added</span></span></li>										
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Saas Business extension updated (v2.0)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Modern theme updated (v1.3)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Sonic theme updated (v1.7)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Classic theme updated (v1.7)</span></li>
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
+						<span class="version-name">{{ __('Version') }} 7.3</span> - <span class="fs-14 font-weight-semibold">5.05.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New OpenAI o4 mini | o3 | GPT 4.1 | GPT 4.1 mini | GPT 4.1 nano models added</span></li>	
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New OpenAI GPT 4o Search Preview | GPT 4o mini Search Preview models with Web Search capabilities added</span></li>	
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Saas Business extension updated (v1.9)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Chat Share extension updated (v1.2)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Faceswap extension updated (v1.2)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Custom template creation feature updated</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Writer results saving improved</span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">AI Writer result view issue fixed</span></li>											
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Documents results view minor issue fixed</span></li>											
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
+						<span class="version-name">{{ __('Version') }} 7.2</span> - <span class="fs-14 font-weight-semibold">28.04.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Coinremitter cryptocurrency payment gateway added (Paid)</span></li>	
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">TikTok added to Social Media Suite</span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Premium Support package option added</span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Premium Extension package option added</span></li>							
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Stripe Free Trial days option added</span></li>	
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New Documentation v2 released</span></li>								
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Social Media Suite updated (1.3)</span></li>											
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">API Credit Management mechanism updated</span></li>																		
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">User can set default Image model as well now for AI Images feature</span></li>				
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Youtube feature improved</span></li>	
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Saas Business Extension updated (v1.8)</span></li>																																					
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">o1 mini model response issue fixed</span></li>						
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Claude models credit calculations fixed</span></li>												
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">AI Vision credit consumption improved</span></li>						
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Smart Editor credit consumption improved</span></li>						
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Chat share extension installation fixed (v1.1)</span></li>											
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
+						<span class="version-name">{{ __('Version') }} 7.1</span> - <span class="fs-14 font-weight-semibold">14.04.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     	
 							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Xero integration extension added (Free)</span></li>
 							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Amazon Bedrock extension added (Free)</span></li>
 							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Azure OpenAI extension added (Free)</span></li>
@@ -131,8 +276,7 @@
 					<div class="changelog-description mt-6"> 
 						<ul>								
 							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">External Chatbots extension added (Paid)</span></li>														
-							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">AI Realtime Voice Chat extension added (Paid)</span></li>														
-							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">SEO Tool extension added (Paid)</span></li>														
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">AI Realtime Voice Chat extension added (Paid)</span></li>																												
 							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">AI Textract extension added (Paid)</span></li>																															
 							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Hubspot extension added (Free)</span></li>														
 							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Mailchimp extension added (Free)</span></li>														

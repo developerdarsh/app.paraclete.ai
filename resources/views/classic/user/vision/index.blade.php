@@ -20,7 +20,7 @@
 @section('content')
 	<form id="openai-form" action="" method="GET" enctype="multipart/form-data" class="mt-24">		
 		@csrf
-		<div class="row justify-content-md-center">	
+		<div class="row justify-content-md-center">
 			<div class="text-center my-5"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
 			<div class="col-sm-12 text-center">
 				<h3 class="page-title mb-2">{{ __('AI Vision') }}</h3>

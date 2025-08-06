@@ -30,7 +30,9 @@ class UpgradeController extends Controller
 
         $latest_version = $this->api->check_update();
 
-        return view('admin.settings.upgrade.index', compact('current_version', 'latest_version'));
+        $version_metadata = $this->api->version_metadata();
+
+        return view('admin.settings.upgrade.index', compact('current_version', 'latest_version', 'version_metadata'));
     }
 
 

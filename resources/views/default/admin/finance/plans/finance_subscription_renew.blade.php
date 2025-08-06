@@ -24,10 +24,8 @@
 @section('content')						
 	<div class="row justify-content-center">
 		<div class="col-lg-8 col-md-10 col-sm-12">
+			<h3 class="card-title text-center mb-4">{{ __('Subscription Plan') }}: <span class="text-primary font-weight-bold">{{ $id->plan_name }}</span></h3>		
 			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Subscription Plan') }}: <span class="text-primary font-weight-bold">{{ $id->plan_name }}</span></h3>					
-				</div>
 				<div class="card-body pt-5">									
 					<form action="{{ route('admin.finance.plan.push', $id) }}" method="POST" enctype="multipart/form-data">
 						@csrf

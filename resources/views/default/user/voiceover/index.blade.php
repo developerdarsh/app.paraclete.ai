@@ -383,7 +383,7 @@
 
 	<div class="row mt-4" id="results-header">
 		<div class="col-lg-12 col-md-12 col-xm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('AI Voiceover Results') }} <span class="text-muted">({{ __('Current Day') }})</span></h3>
 				</div>

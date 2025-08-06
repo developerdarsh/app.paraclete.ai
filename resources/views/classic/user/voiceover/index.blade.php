@@ -26,7 +26,7 @@
 			<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
 			<div class="card border-0">
 				<div class="card-header pt-4 border-0" id="voiceover-character-counter-top">
-					<h3 class="page-title ml-5">{{ __('AI Voiceover Studio') }} </h3>
+					<h3 class="card-title"><i class="   fa-solid fa-waveform-lines mr-4 text-info"></i>{{ __('AI Voiceover Studio') }} </h3>
 					<span class="fs-11 text-muted pl-3" id="voiceover-character-counter"><i class="   fa-solid fa-bolt-lightning mr-2 text-primary"></i>{{ __('Your Balance is') }} <span class="font-weight-semibold" id="balance-number">@if (auth()->user()->characters == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->characters + auth()->user()->characters_prepaid) }} {{ __('Characters') }} @endif</span></span>
 				</div>
 				<div class="card-body pt-2 pl-7 pr-7 pb-4" id="tts-body-minify">
@@ -383,7 +383,7 @@
 
 	<div class="row mt-4" id="results-header">
 		<div class="col-lg-12 col-md-12 col-xm-12">
-			<div class="card">
+			<div class="card border-0">
 				<div class="card-header">
 					<h3 class="card-title">{{ __('AI Voiceover Results') }} <span class="text-muted">({{ __('Current Day') }})</span></h3>
 				</div>

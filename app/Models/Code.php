@@ -9,16 +9,7 @@ class Code extends Model
 {
     use HasFactory;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'user_id',
-        'model',
-        'instructions',
-        'code',
-        'title',
-    ];
+    protected $guarded = [];
+
+    protected $table = 'codes';
 }

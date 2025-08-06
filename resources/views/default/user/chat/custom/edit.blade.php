@@ -22,11 +22,7 @@
 @section('content')	
 	<div class="row justify-content-center">
 		<div class="col-lg-9 col-md-12 col-sm-12">
-			<div class="card border-0">	
-				<div class="card-header">
-					<h3 class="card-title"><i class="fa-solid fa-microchip-ai mr-2 text-primary"></i>{{ __('Custom Chat Generator') }}</h3>
-					<a href="{{ route('user.chat.custom') }}" class="btn btn-cancel ripple" style="margin-left: auto">{{ __('Back to AI Chats') }}</a>
-				</div>			
+			<div class="card border-0">			
 				<div class="card-body pt-5 pb-0 pl-6 pr-6">
 					<form class="w-100" action="{{ route('user.chat.custom.update', $id->id) }}" method="POST" enctype="multipart/form-data">
 						@method('PUT')
@@ -161,7 +157,8 @@
 						<div class="modal-footer d-inline">
 							<div class="row text-center">
 							  	<div class="col-md-12">
-									<button type="submit" class="btn btn-primary ripple pl-6 pr-6">{{ __('Update Chat Assistant') }}</button>
+									<a href="{{ route('user.chat.custom') }}" class="btn btn-cancel ripple">{{ __('Return') }}</a>
+									<button type="submit" class="btn btn-primary ripple pl-6 pr-6">{{ __('Update') }}</button>
 							  	</div>
 							</div>
 						</div>

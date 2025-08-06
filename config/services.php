@@ -89,6 +89,7 @@ return [
         'key' => env('CAPTIONS_API_KEY'),
     ],
 
+
     /*
     |--------------------------------------------------------------------------
     | Cloud Vendors
@@ -127,14 +128,6 @@ return [
 
     'serper' => [
         'key' => env('SERPER_API_KEY'),
-    ],
-
-    'plagiarism' => [
-        'key' => env('PLAGIARISM_API_TOKEN'),
-    ],
-
-    'copyleaks' => [
-        'key' => env('COPYLEAKS_API_KEY'),
     ],
 
     'storj' => [
@@ -335,6 +328,14 @@ return [
         'secret_key' => env('IYZICO_SECRET_KEY'),
         'sandbox' => env('IYZICO_SANDBOX'),
         'class' => App\Services\IyzicoService::class,
+    ],
+
+    'coinremitter' => [
+        'class' => App\Services\CoinremitterService::class,
+    ],
+
+    'wallet' => [
+        'class' => App\Services\WalletService::class,
     ],
 
     '2checkout' => [

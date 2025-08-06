@@ -87,6 +87,24 @@ class MarketplaceController extends Controller
     }
 
 
+    public function purchasePackage(Request $request, $slug)
+    {   
+        if ($slug == 'premier') {
+            session()->put('name', $slug);
+            session()->put('type', 'package');
+            session()->put('amount', 999); 
+            session()->put('extension_name', 'Premier Package Bundle');
+        } elseif ($slug == 'support') {
+            session()->put('name', $slug);
+            session()->put('type', 'support');
+            session()->put('amount', 299);
+            session()->put('extension_name', 'Premium Support');
+        }
+
+        return view('admin.marketplace.gateway');    
+    }
+
+
     /**
      * Install Extension
      *

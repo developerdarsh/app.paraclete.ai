@@ -22,10 +22,8 @@
 	<div class="row justify-content-center">
 
 		<div class="col-lg-6 col-md-6 col-xm-12">
+			<h3 class="card-title text-center">{{ __('Subscription Plan Name') }}: <span class="text-info">{{ $id->plan_name }}</span> </h3>
 			<div class="card border-0">
-				<div class="card-header">
-					<h3 class="card-title">{{ __('Subscription Plan Name') }}: <span class="text-info">{{ $id->plan_name }}</span> </h3>
-				</div>
 				<div class="card-body pt-5">
 					<div class="row">
 						<div class="col-lg-4 col-md-4 col-12">

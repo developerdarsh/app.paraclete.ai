@@ -179,6 +179,9 @@ class FinanceController extends Controller
                             case 'TwoCheckout':
                                 $custom_gateway = '<div class="overflow-hidden"><img alt="TwoCheckout Gateway" class="w-40" src="' . theme_url('img/payments/twocheckout.svg') . '"></div>';
                                 break;
+                            case 'Wallet':
+                                $custom_gateway = '<div class="overflow-hidden"><img alt="TwoCheckout Gateway" class="w-30" src="' . theme_url('img/payments/wallet.avif') . '" title="Wallet Balance"></div>';
+                                break;
                             case 'Manual':
                                 $custom_gateway = '<div>Manual Assign</div>';
                                 break;
@@ -255,46 +258,49 @@ class FinanceController extends Controller
                     ->addColumn('custom-gateway', function($row){
                         switch ($row['gateway']) {
                             case 'PayPal':
-                                $custom_gateway = '<div class="overflow-hidden"><img alt="PayPal Gateway" class="w-40" src="' . URL::asset('img/payments/paypal.svg') . '"></div>';                             
+                                $custom_gateway = '<div class="overflow-hidden"><img alt="PayPal Gateway" class="w-40" src="' . theme_url('img/payments/paypal.svg') . '"></div>';                             
                                 break;
                             case 'Stripe':
-                                $custom_gateway = '<div class="overflow-hidden"><img alt="Stripe Gateway" class="w-30" src="' . URL::asset('img/payments/stripe.svg') . '"></div>';
+                                $custom_gateway = '<div class="overflow-hidden"><img alt="Stripe Gateway" class="w-30" src="' . theme_url('img/payments/stripe.svg') . '"></div>';
                                 break;
                             case 'Paystack':
-                                $custom_gateway = '<div class="overflow-hidden"><img alt="Paystack Gateway" class="transaction-gateway-logo" src="' . URL::asset('img/payments/paystack.svg') . '"></div>';
+                                $custom_gateway = '<div class="overflow-hidden"><img alt="Paystack Gateway" class="transaction-gateway-logo" src="' . theme_url('img/payments/paystack.svg') . '"></div>';
                                 break;
                             case 'Razorpay':
-                                $custom_gateway = '<div class="overflow-hidden"><img alt="Razorpay Gateway" class="transaction-gateway-logo" src="' . URL::asset('img/payments/razorpay.svg') . '"></div>';
+                                $custom_gateway = '<div class="overflow-hidden"><img alt="Razorpay Gateway" class="transaction-gateway-logo" src="' . theme_url('img/payments/razorpay.svg') . '"></div>';
                                 break;
                             case 'BankTransfer':
-                                $custom_gateway = '<div class="overflow-hidden"><img alt="BankTransfer Gateway" class="w-40" src="' . URL::asset('img/payments/bank-transfer.png') . '"></div>';
+                                $custom_gateway = '<div class="overflow-hidden"><img alt="BankTransfer Gateway" class="" src="' . theme_url('img/payments/bank-transfer.png') . '"></div>';
                                 break;
                             case 'Coinbase':
-                                $custom_gateway = '<div class="overflow-hidden"><img alt="Coinbase Gateway" class="w-40" src="' . URL::asset('img/payments/coinbase.svg') . '"></div>';
+                                $custom_gateway = '<div class="overflow-hidden"><img alt="Coinbase Gateway" class="w-40" src="' . theme_url('img/payments/coinbase.svg') . '"></div>';
                                 break;
                             case 'Mollie':
-                                $custom_gateway = '<div class="overflow-hidden"><img alt="Mollie Gateway" class="w-40" src="' . URL::asset('img/payments/mollie.svg') . '"></div>';
+                                $custom_gateway = '<div class="overflow-hidden"><img alt="Mollie Gateway" class="w-40" src="' . theme_url('img/payments/mollie.svg') . '"></div>';
                                 break;
                             case 'Braintree':
-                                $custom_gateway = '<div class="overflow-hidden"><img alt="Braintree Gateway" class="w-40" src="' . URL::asset('img/payments/braintree.svg') . '"></div>';
+                                $custom_gateway = '<div class="overflow-hidden"><img alt="Braintree Gateway" class="w-40" src="' . theme_url('img/payments/braintree.svg') . '"></div>';
                                 break;
                             case 'Midtrans':
-                                $custom_gateway = '<div class="overflow-hidden"><img alt="Midtrans Gateway" class="w-40" src="' . URL::asset('img/payments/midtrans.png') . '"></div>';
+                                $custom_gateway = '<div class="overflow-hidden"><img alt="Midtrans Gateway" class="w-40" src="' . theme_url('img/payments/midtrans.png') . '"></div>';
                                 break;
                             case 'Flutterwave':
-                                $custom_gateway = '<div class="overflow-hidden"><img alt="Flutterwave Gateway" class="w-40" src="' . URL::asset('img/payments/flutterwave.svg') . '"></div>';
+                                $custom_gateway = '<div class="overflow-hidden"><img alt="Flutterwave Gateway" class="w-40" src="' . theme_url('img/payments/flutterwave.svg') . '"></div>';
                                 break;
                             case 'Yookassa':
-                                $custom_gateway = '<div class="overflow-hidden"><img alt="Yookassa Gateway" class="w-40" src="' . URL::asset('img/payments/yookassa.svg') . '"></div>';
+                                $custom_gateway = '<div class="overflow-hidden"><img alt="Yookassa Gateway" class="w-40" src="' . theme_url('img/payments/yookassa.svg') . '"></div>';
                                 break;
                             case 'Paddle':
-                                $custom_gateway = '<div class="overflow-hidden"><img alt="Paddle Gateway" class="w-40" src="' . URL::asset('img/payments/paddle.svg') . '"></div>';
+                                $custom_gateway = '<div class="overflow-hidden"><img alt="Paddle Gateway" class="w-40" src="' . theme_url('img/payments/paddle.svg') . '"></div>';
                                 break;
                             case 'Iyzico':
-                                $custom_gateway = '<div class="overflow-hidden"><img alt="Iyzico Gateway" class="w-40" src="' . URL::asset('img/payments/iyzico.svg') . '"></div>';
+                                $custom_gateway = '<div class="overflow-hidden"><img alt="Iyzico Gateway" class="w-40" src="' . theme_url('img/payments/iyzico.svg') . '"></div>';
                                 break;
                             case 'TwoCheckout':
-                                $custom_gateway = '<div class="overflow-hidden"><img alt="TwoCheckout Gateway" class="w-40" src="' . URL::asset('img/payments/twocheckout.svg') . '"></div>';
+                                $custom_gateway = '<div class="overflow-hidden"><img alt="TwoCheckout Gateway" class="w-40" src="' . theme_url('img/payments/twocheckout.svg') . '"></div>';
+                                break;
+                            case 'Wallet':
+                                $custom_gateway = '<div class="overflow-hidden"><img alt="TwoCheckout Gateway" class="w-30" src="' . theme_url('img/payments/wallet.avif') . '" title="Wallet Balance"></div>';
                                 break;
                             case 'Manual':
                                 $custom_gateway = '<div class="">Manual Assign</div>';

@@ -87,7 +87,7 @@
 									@elseif($chat->category == 'premium')
 										<p class="fs-8 btn btn-yellow"><i class="  fa-solid fa-gem mr-2"></i>{{ __('Premium') }}</p> 
 									@endif
-									<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else border-0 @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats') }}/{{ $chat->chat_code }}'">
+									<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else    @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats') }}/{{ $chat->chat_code }}'">
 										<div class="card-body pt-3">
 											<div class="widget-user-image overflow-hidden mx-auto mt-3 mb-4"><img alt="User Avatar" class="rounded-circle" src="{{ URL::asset($chat->logo) }}"></div>
 											<div class="template-title">
@@ -113,7 +113,7 @@
 									@elseif($chat->category == 'premium')
 										<p class="fs-8 btn btn-yellow"><i class="  fa-solid fa-gem mr-2"></i>{{ __('Premium') }}</p> 
 									@endif
-									<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else border-0 @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats/custom') }}/{{ $chat->chat_code }}'">
+									<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else    @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats/custom') }}/{{ $chat->chat_code }}'">
 										<div class="card-body pt-3">
 											<div class="widget-user-image overflow-hidden mx-auto mt-3 mb-4"><img alt="User Avatar" class="rounded-circle" src="{{ URL::asset($chat->logo) }}"></div>
 											<div class="template-title">
@@ -139,7 +139,7 @@
 									@elseif($chat->category == 'premium')
 										<p class="fs-8 btn btn-yellow"><i class="  fa-solid fa-gem mr-2"></i>{{ __('Premium') }}</p> 
 									@endif
-									<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else border-0 @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats') }}/{{ $chat->chat_code }}'">
+									<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else    @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats') }}/{{ $chat->chat_code }}'">
 										<div class="card-body pt-3">
 											<div class="widget-user-image overflow-hidden mx-auto mt-3 mb-4"><img alt="User Avatar" class="rounded-circle" src="{{ URL::asset($chat->logo) }}"></div>
 											<div class="template-title">
@@ -165,7 +165,7 @@
 									@elseif($chat->category == 'premium')
 										<p class="fs-8 btn btn-yellow"><i class="  fa-solid fa-gem mr-2"></i>{{ __('Premium') }}</p> 
 									@endif
-									<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else border-0 @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats/custom') }}/{{ $chat->chat_code }}'">
+									<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else    @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats/custom') }}/{{ $chat->chat_code }}'">
 										<div class="card-body pt-3">
 											<div class="widget-user-image overflow-hidden mx-auto mt-3 mb-4"><img alt="User Avatar" class="rounded-circle" src="{{ URL::asset($chat->logo) }}"></div>
 											<div class="template-title">
@@ -191,7 +191,7 @@
 									@elseif($chat->category == 'premium')
 										<p class="fs-8 btn btn-yellow"><i class="  fa-solid fa-gem mr-2"></i>{{ __('Premium') }}</p> 
 									@endif
-									<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else border-0 @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats/custom') }}/{{ $chat->chat_code }}'">
+									<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else    @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats/custom') }}/{{ $chat->chat_code }}'">
 										<div class="card-body pt-3">
 											<div class="widget-user-image overflow-hidden mx-auto mt-3 mb-4"><img alt="User Avatar" class="rounded-circle" src="{{ URL::asset($chat->logo) }}"></div>
 											<div class="template-title">
@@ -223,7 +223,7 @@
 											@elseif($chat->category == 'premium')
 												<p class="fs-8 btn btn-yellow"><i class="  fa-solid fa-gem mr-2"></i>{{ __('Premium') }}</p> 
 											@endif
-											<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else border-0 @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats') }}/{{ $chat->chat_code }}'">
+											<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else    @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats') }}/{{ $chat->chat_code }}'">
 												<div class="card-body pt-3">
 													<div class="widget-user-image overflow-hidden mx-auto mt-3 mb-4"><img alt="User Avatar" class="rounded-circle" src="{{ URL::asset($chat->logo) }}"></div>
 													<div class="template-title">
@@ -251,7 +251,7 @@
 											@elseif($chat->category == 'premium')
 												<p class="fs-8 btn btn-yellow"><i class="  fa-solid fa-gem mr-2"></i>{{ __('Premium') }}</p> 
 											@endif
-											<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else border-0 @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats/custom') }}/{{ $chat->chat_code }}'">
+											<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else    @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats/custom') }}/{{ $chat->chat_code }}'">
 												<div class="card-body pt-3">
 													<div class="widget-user-image overflow-hidden mx-auto mt-3 mb-4"><img alt="User Avatar" class="rounded-circle" src="{{ URL::asset($chat->logo) }}"></div>
 													<div class="template-title">
@@ -279,7 +279,7 @@
 											@elseif($chat->category == 'premium')
 												<p class="fs-8 btn btn-yellow"><i class="  fa-solid fa-gem mr-2"></i>{{ __('Premium') }}</p> 
 											@endif
-											<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else border-0 @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats') }}/{{ $chat->chat_code }}'">
+											<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else    @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats') }}/{{ $chat->chat_code }}'">
 												<div class="card-body pt-3">
 													<div class="widget-user-image overflow-hidden mx-auto mt-3 mb-4"><img alt="User Avatar" class="rounded-circle" src="{{ URL::asset($chat->logo) }}"></div>
 													<div class="template-title">
@@ -307,7 +307,7 @@
 											@elseif($chat->category == 'premium')
 												<p class="fs-8 btn btn-yellow"><i class="  fa-solid fa-gem mr-2"></i>{{ __('Premium') }}</p> 
 											@endif
-											<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else border-0 @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats/custom') }}/{{ $chat->chat_code }}'">
+											<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else    @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats/custom') }}/{{ $chat->chat_code }}'">
 												<div class="card-body pt-3">
 													<div class="widget-user-image overflow-hidden mx-auto mt-3 mb-4"><img alt="User Avatar" class="rounded-circle" src="{{ URL::asset($chat->logo) }}"></div>
 													<div class="template-title">
@@ -335,7 +335,7 @@
 											@elseif($chat->category == 'premium')
 												<p class="fs-8 btn btn-yellow"><i class="  fa-solid fa-gem mr-2"></i>{{ __('Premium') }}</p> 
 											@endif
-											<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else border-0 @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats/custom') }}/{{ $chat->chat_code }}'">
+											<div class="card @if($chat->category == 'professional') professional @elseif($chat->category == 'premium') premium @elseif($chat->favorite) favorite @else    @endif" id="{{ $chat->chat_code }}-card" onclick="window.location.href='{{ url('app/user/chats/custom') }}/{{ $chat->chat_code }}'">
 												<div class="card-body pt-3">
 													<div class="widget-user-image overflow-hidden mx-auto mt-3 mb-4"><img alt="User Avatar" class="rounded-circle" src="{{ URL::asset($chat->logo) }}"></div>
 													<div class="template-title">
@@ -407,7 +407,7 @@
 								// do nothing
 							} else {
 								card.classList.remove("favorite");
-								card.classList.add('border-0');
+								card.classList.add('  ');
 							}							
 						} else {
 							Swal.fire('{{ __('Chat Bot Added to Favorites') }}', '{{ __('Selected chat bot has been successfully added to favorites') }}', 'success');
@@ -422,7 +422,7 @@
 								// do nothing
 							} else {
 								card.classList.add('favorite');
-								card.classList.remove('border-0');
+								card.classList.remove('  ');
 							}
 						}
 														
@@ -465,7 +465,7 @@
 								// do nothing
 							} else {
 								card.classList.remove("favorite");
-								card.classList.add('border-0');
+								card.classList.add('  ');
 							}							
 						} else {
 							Swal.fire('{{ __('Chat Bot Added to Favorites') }}', '{{ __('Selected chat bot has been successfully added to favorites') }}', 'success');
@@ -480,7 +480,7 @@
 								// do nothing
 							} else {
 								card.classList.add('favorite');
-								card.classList.remove('border-0');
+								card.classList.remove('  ');
 							}
 						}
 														
@@ -502,22 +502,15 @@
 		$(document).on('keyup', '#search-template', function () {
 
 			var searchTerm = $(this).val().toLowerCase();
-			let value = $(this).val().toLowerCase();
- 			let activeTab = $('.tab-pane.active'); // Get currently active tab
- 			let chats = activeTab.find('.col-lg-3'); // Target chat cards within active tab
- 			chats.filter(function () {
- 				let chatText = $(this).text().toLowerCase();
- 				$(this).toggle(chatText.indexOf(value) > -1);
- 			});	
-			// $('#templates-panel').find('> div').each(function () {
-			// 	if ($(this).filter(function() {
-			// 		return (($(this).find('h6').text().toLowerCase().indexOf(searchTerm) > -1) || ($(this).find('p').text().toLowerCase().indexOf(searchTerm) > -1));
-			// 	}).length > 0 || searchTerm.length < 1) {
-			// 		$(this).show();
-			// 	} else {
-			// 		$(this).hide();
-			// 	}
-			// });
+			$('#templates-panel').find('> div').each(function () {
+				if ($(this).filter(function() {
+					return (($(this).find('h6').text().toLowerCase().indexOf(searchTerm) > -1) || ($(this).find('p').text().toLowerCase().indexOf(searchTerm) > -1));
+				}).length > 0 || searchTerm.length < 1) {
+					$(this).show();
+				} else {
+					$(this).hide();
+				}
+			});
 		});
 	</script>
 @endsection

@@ -253,9 +253,11 @@ class DavinciUsageService
      */
     public function getTotalWordsCurrentYear()
     {
-        $total_words = Content::select(DB::raw("sum(tokens) as data"))
+        $total_words = cache()->remember('words-generated', 60*60*10, function() { 
+                return Content::select(DB::raw("sum(tokens) as data"))
                 ->whereYear('created_at', date('Y'))
                 ->get();  
+        });
         
         return $total_words[0]['data'];
     }
@@ -436,9 +438,11 @@ class DavinciUsageService
      */
     public function getTotalImagesCurrentYear()
     {
-        $total_words = Image::select(DB::raw("count(id) as data"))
+        $total_words = cache()->remember('total-images', 60*60*10, function() { 
+            return Image::select(DB::raw("count(id) as data"))
                 ->whereYear('created_at', date('Y'))
                 ->get();  
+        });
         
         return $total_words[0]['data'];
     }
@@ -450,6 +454,19 @@ class DavinciUsageService
     public function getTotalContentsCurrentYear()
     {
         $total_content = Content::select(DB::raw("count(id) as data"))
+                ->whereYear('created_at', date('Y'))
+                ->get();  
+        
+        return $total_content[0]['data'];
+    }
+
+
+     /**
+     * Total content usage per user id
+     */
+    public function getTotalChatsCurrentYear()
+    {
+        $total_content = ChatHistory::select(DB::raw("count(id) as data"))
                 ->whereYear('created_at', date('Y'))
                 ->get();  
         
@@ -480,6 +497,37 @@ class DavinciUsageService
         $pastMonth =  $date->subMonth()->format('m');
 
         $total_transfers = Content::select(DB::raw("count(id) as data"))
+                ->whereMonth('created_at', $pastMonth)
+                ->whereYear('created_at', date('Y')) 
+                ->get();  
+        
+        return $total_transfers[0]['data'];
+    }
+
+
+    /**
+     * Current month total usage per user id
+     */
+    public function getTotalChatsCurrentMonth()
+    {
+        $total_words = ChatHistory::select(DB::raw("count(id) as data"))
+                ->whereMonth('created_at', $this->month)
+                ->whereYear('created_at', $this->year)
+                ->get();  
+        
+        return $total_words[0]['data'];
+    }
+
+
+    /**
+     * Past month total usage per user id
+     */
+    public function getTotalChatsPastMonth()
+    {
+        $date = \Carbon\Carbon::now();
+        $pastMonth =  $date->subMonth()->format('m');
+
+        $total_transfers = ChatHistory::select(DB::raw("count(id) as data"))
                 ->whereMonth('created_at', $pastMonth)
                 ->whereYear('created_at', date('Y')) 
                 ->get();  
@@ -884,5 +932,251 @@ class DavinciUsageService
 
         return $data;
 
+    }
+
+
+    public function tokensUsedToday()
+    {
+        $today = \Carbon\Carbon::today();
+        $content = Content::select(DB::raw("sum(input_tokens + output_tokens) as data"))
+                    ->whereDate('created_at', $today)  
+                    ->get();  
+        $content = $content[0]['data'];
+                    
+        $chat = ChatHistory::select(DB::raw("sum(input_tokens + output_tokens) as data"))
+                    ->whereDate('created_at', $today)  
+                    ->get(); 
+        $chat = $chat[0]['data'];
+        
+        $sum = $content + $chat;
+        
+        return $sum;  
+    }
+
+
+    public function contentsToday()
+    {
+        $today = \Carbon\Carbon::today();
+        $content = Content::select(DB::raw("count(id) as data"))
+                    ->whereDate('created_at', $today)  
+                    ->get();  
+        $content = $content[0]['data'];
+                    
+        $chat = ChatHistory::select(DB::raw("count(id) as data"))
+                    ->whereDate('created_at', $today)  
+                    ->get(); 
+        $chat = $chat[0]['data'];
+        
+        $sum = $content + $chat;
+        
+        return $sum;  
+    }
+
+
+    public function mediaUsedToday()
+    {
+        $today = \Carbon\Carbon::today();
+        $content = Image::select(DB::raw("sum(cost) as data"))
+                    ->whereDate('created_at', $today)  
+                    ->get();  
+        $content = $content[0]['data'];
+        
+        return $content;  
+    }
+
+
+    public function inputTokensCurrentMonth()
+    {
+        $content = Content::select(DB::raw("sum(input_tokens) as data"))
+                    ->whereMonth('created_at', $this->month)
+                    ->whereYear('created_at', $this->year) 
+                    ->get();  
+        $content = $content[0]['data'];
+                    
+        $chat = ChatHistory::select(DB::raw("sum(input_tokens) as data"))
+                    ->whereMonth('created_at', $this->month)
+                    ->whereYear('created_at', $this->year) 
+                    ->get(); 
+        $chat = $chat[0]['data'];
+        
+        $sum = $content + $chat;
+        
+        return $sum;  
+    }
+
+
+    public function outputTokensCurrentMonth()
+    {
+        $content = Content::select(DB::raw("sum(output_tokens) as data"))
+                    ->whereMonth('created_at', $this->month)
+                    ->whereYear('created_at', $this->year) 
+                    ->get();  
+        $content = $content[0]['data'];
+                    
+        $chat = ChatHistory::select(DB::raw("sum(output_tokens) as data"))
+                    ->whereMonth('created_at', $this->month)
+                    ->whereYear('created_at', $this->year) 
+                    ->get(); 
+        $chat = $chat[0]['data'];
+        
+        $sum = $content + $chat;
+        
+        return $sum;  
+    }
+
+
+    public function inputTokensPastMonth()
+    {
+        $date = \Carbon\Carbon::now();
+        $pastMonth =  $date->subMonth()->format('m');
+
+        $content = Content::select(DB::raw("sum(input_tokens) as data"))
+                    ->whereMonth('created_at', $pastMonth)
+                    ->whereYear('created_at', $this->year) 
+                    ->get();  
+        $content = $content[0]['data'];
+                    
+        $chat = ChatHistory::select(DB::raw("sum(input_tokens) as data"))
+                    ->whereMonth('created_at', $pastMonth)
+                    ->whereYear('created_at', $this->year) 
+                    ->get(); 
+        $chat = $chat[0]['data'];
+        
+        $sum = $content + $chat;
+        
+        return $sum;  
+    }
+
+
+    public function outputTokensPastMonth()
+    {
+        $date = \Carbon\Carbon::now();
+        $pastMonth =  $date->subMonth()->format('m');
+
+        $content = Content::select(DB::raw("sum(output_tokens) as data"))
+                    ->whereMonth('created_at', $pastMonth)
+                    ->whereYear('created_at', $this->year) 
+                    ->get();  
+        $content = $content[0]['data'];
+                    
+        $chat = ChatHistory::select(DB::raw("sum(output_tokens) as data"))
+                    ->whereMonth('created_at', $pastMonth)
+                    ->whereYear('created_at', $this->year) 
+                    ->get(); 
+        $chat = $chat[0]['data'];
+        
+        $sum = $content + $chat;
+        
+        return $sum;  
+    }
+
+
+    public function inputTokensCurrentYear()
+    {
+        $content = Content::select(DB::raw("sum(input_tokens) as data"))
+                    ->whereYear('created_at', $this->year) 
+                    ->get();  
+        $content = $content[0]['data'];
+                    
+        $chat = ChatHistory::select(DB::raw("sum(input_tokens) as data"))
+                    ->whereYear('created_at', $this->year) 
+                    ->get(); 
+        $chat = $chat[0]['data'];
+        
+        $sum = $content + $chat;
+        
+        return $sum;  
+    }
+
+
+    public function outputTokensCurrentYear()
+    {
+        $content = Content::select(DB::raw("sum(output_tokens) as data"))
+                    ->whereYear('created_at', $this->year) 
+                    ->get();  
+        $content = $content[0]['data'];
+                    
+        $chat = ChatHistory::select(DB::raw("sum(output_tokens) as data"))
+                    ->whereYear('created_at', $this->year) 
+                    ->get(); 
+        $chat = $chat[0]['data'];
+        
+        $sum = $content + $chat;
+        
+        return $sum;  
+    }
+
+
+    public function getMonthlyInputTokensChart()
+    {
+        $contentTokens = Content::select(DB::raw("sum(input_tokens) as data"), DB::raw("MONTH(created_at) month"))
+                ->whereYear('created_at', date('Y'))
+                ->groupBy('month')
+                ->orderBy('month')
+                ->get()->toArray();  
+
+        $chatTokens = ChatHistory::select(DB::raw("sum(input_tokens) as data"), DB::raw("MONTH(created_at) month"))
+                    ->whereYear('created_at', $this->year) 
+                    ->groupBy('month')
+                    ->orderBy('month')
+                    ->get()->toArray(); 
+        
+        $data = [];
+
+        // Initialize all months with zero
+        for($i = 1; $i <= 12; $i++) {
+            $data[$i] = 0;
+        }
+
+        // Add Content tokens to the data array
+        foreach ($contentTokens as $row) {            
+            $month = $row['month'];
+            $data[$month] = intval($row['data']);
+        }
+        
+        // Add ChatHistory tokens to the data array (combining with existing values)
+        foreach ($chatTokens as $row) {            
+            $month = $row['month'];
+            $data[$month] += intval($row['data']); // Use += to combine with existing values
+        }
+        
+        return $data;
+    }
+
+
+    public function getMonthlyOutputTokensChart()
+    {
+        $contentTokens = Content::select(DB::raw("sum(output_tokens) as data"), DB::raw("MONTH(created_at) month"))
+                ->whereYear('created_at', date('Y'))
+                ->groupBy('month')
+                ->orderBy('month')
+                ->get()->toArray();  
+
+        $chatTokens = ChatHistory::select(DB::raw("sum(output_tokens) as data"), DB::raw("MONTH(created_at) month"))
+                    ->whereYear('created_at', $this->year) 
+                    ->groupBy('month')
+                    ->orderBy('month')
+                    ->get()->toArray(); 
+        
+        $data = [];
+
+        // Initialize all months with zero
+        for($i = 1; $i <= 12; $i++) {
+            $data[$i] = 0;
+        }
+
+        // Add Content tokens to the data array
+        foreach ($contentTokens as $row) {            
+            $month = $row['month'];
+            $data[$month] = intval($row['data']);
+        }
+        
+        // Add ChatHistory tokens to the data array (combining with existing values)
+        foreach ($chatTokens as $row) {            
+            $month = $row['month'];
+            $data[$month] += intval($row['data']); // Use += to combine with existing values
+        }
+        
+        return $data;
     }
 }
