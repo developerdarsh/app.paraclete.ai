@@ -28,561 +28,129 @@ class AiUGCVideoController extends Controller
      */
     public function index(Request $request)
     {
- 
-        $apiKey = config('settings.topview.api_key');
-        $topviewUid = config('settings.topview.uid');
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.topview.ai/v1/product_avatar/public_avatar/query?ethnicityIds=&gender=&sortingType=&categoryIds=&pageNo=&pageSize=',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
-            'Authorization: Bearer ' . $apiKey,
-            'Topview-Uid: ' . $topviewUid,
-            ),
-        ));
-
-        $product_avatar_temp1 = curl_exec($curl);
-        $product_avatar_temp = json_decode($product_avatar_temp1, true);
-        curl_close($curl);
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.topview.ai/v1/product_anyShoot/template/list?categoryIds=&style=&pageNo&pageSize',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
-            'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY',
-            'Topview-Uid: 7QNjCZNYupL0K16uus9v'
-        ),
-        ));
-
-        $product_anyShoot_template1 = curl_exec($curl);
-        $product_anyShoot_template = json_decode($product_anyShoot_template1, true);
-        curl_close($curl);
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.topview.ai/v1/aiavatar/query?pageNo=&pageSize=&gender=&ethnicityIdList&sortField&sortType&isCustom=',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
-            'Topview-Uid: 7QNjCZNYupL0K16uus9v',
-            'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY'
-        ),
-        ));
-
-        $video_avatars = json_decode(curl_exec($curl) , true);
-        
-        return view('user.topview.index',compact('product_avatar_temp','product_anyShoot_template','video_avatars'));
-        
-    }
-
-    public function create()
-    {
-        return view('user.topview.create'); // Make sure this Blade file exists
-    }
-
-    public function avatar_video_creation()
-    {
+        $apiKey = config('services.caption.key');
+        // Fetch all video operations for the logged-in user
+        $videoOperations = VideoOperation::where('user_id', Auth::id())
+            ->orderBy('created_at', 'DESC')
+            ->paginate(5); 
+        $allOperations = VideoOperation::where('user_id', Auth::id())
+            ->whereNotNull('url')
+            ->get();        
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, 'https://api.topview.ai/v1/voice/query'); // <-- double-check this URL
+        curl_setopt($ch, CURLOPT_URL, 'https://api.captions.ai/api/creator/list');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($ch, CURLOPT_POST, 1);
 
         $headers = array();
-        $headers[] = 'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY';
-        $headers[] = 'Topview-Uid: 7QNjCZNYupL0K16uus9v';
+        $headers[] = 'Content-Type: application/json';
+        $headers[] = "x-api-key: $apiKey";
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
-        $response = curl_exec($ch);
+        $result = curl_exec($ch);
+        $resultArray = json_decode($result, true);
+
         if (curl_errno($ch)) {
-            echo 'Error: ' . curl_error($ch);
-            $voices = [];
-        } else {
-            $voices = json_decode($response, true);
-            $voices = $voices['result']['data'] ?? []; // GET only the voices array
+            return view('user.UCGVideos.index')->withErrors('Error: ' . curl_error($ch));
         }
         curl_close($ch);
 
-        $curl = curl_init();
+        $creators = $resultArray['supportedCreators'];
 
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.topview.ai/v1/aiavatar/query?pageNo=&pageSize=&gender=&ethnicityIdList&sortField&sortType&isCustom=',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
-            'Topview-Uid: 7QNjCZNYupL0K16uus9v',
-            'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY'
-        ),
-        ));
-
-        $avatars = json_decode(curl_exec($curl) , true);
-
-        curl_close($curl);
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.topview.ai/v1/caption/list',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
-            'Topview-Uid: 7QNjCZNYupL0K16uus9v',
-            'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY'
-        ),
-        ));
-
-        $captions = json_decode(curl_exec($curl) , true);
-        curl_close($curl);
-        return view('user.topview.avatar-video-creation',compact('voices' , 'avatars' ,'captions')); // Make sure this Blade file exists
-    }
-
-    public function getPaginatedAvatars(Request $request)
-    {
-        $pageNo = $request->input('pageNo', 1);
-        $pageSize = $request->input('pageSize', 20);
-
-        $url = "https://api.topview.ai/v1/aiavatar/query?pageNo=$pageNo&pageSize=$pageSize";
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => [
-                'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY',
-                'Topview-Uid: 7QNjCZNYupL0K16uus9v',
-            ],
-        ]);
-
-        $response = curl_exec($curl);
-        curl_close($curl);
-
-        return response($response, 200)
-                ->header('Content-Type', 'application/json');
-    }
-
-    public function generateAvatarVideo(Request $request)
-    {
-        $aiAvatarId = $request->input('aiAvatarId');
-        $voiceoverId = $request->input('voiceoverId');
-        $ttsText = $request->input('ttsText');
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api.topview.ai/v1/video_avatar/task/submit',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => json_encode([
-                "avatarSourceFrom" => 1,
-                "aiAvatarId" =>  $aiAvatarId,
-                "audioSourceFrom" => 1,
-                "ttsText" => $ttsText,
-                "voiceoverId" => $voiceoverId,
-                // "avatarSourceFrom" => 0, // 0 = public avatar
-                // "aiAvatarId" => $aiAvatarId,
-                // "audioSourceFrom" => 0, // 1 = TTS
-            ]),
-            CURLOPT_HTTPHEADER => array(
-                'Topview-Uid: 7QNjCZNYupL0K16uus9v',
-                'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY',
-                'Content-Type: application/json'
-            ),
-        ));
-
-        $response = curl_exec($curl);
-        if (curl_errno($curl)) {
-            return response()->json(['error' => curl_error($curl)], 500);
-        }
-
-        curl_close($curl);
-
-        return response()->json(json_decode($response, true));
-    }
-
-    public function all_product_template()
-    {
-        $pageSize = 20;
-        $pageNo = 1;
-
-        // First page data
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => 'https://api.topview.ai/v1/product_avatar/public_avatar/query?ethnicityIds=&gender=&sortingType=&categoryIds=&pageNo=' . $pageNo . '&pageSize=' . $pageSize,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'GET',
-            CURLOPT_HTTPHEADER => array(
-                'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY',
-                'Topview-Uid: 7QNjCZNYupL0K16uus9v'
-            ),
-        ));
-
-        $product_avatar_temp = json_decode(curl_exec($curl), true);
-        curl_close($curl);
-        // Get categories
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.topview.ai/v1/product_avatar/category/list',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
-            'Topview-Uid: 7QNjCZNYupL0K16uus9v',
-            'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY'
-        ),
-        ));
-
-        $categories = json_decode(curl_exec($curl), true);
-        curl_close($curl);
-
-        return view('user.topview.all-product-template',compact('product_avatar_temp','categories')); // Make sure this Blade file exists
-    }
-
-    public function getProductsByCategory($categoryId = '', $pageNo = 1){   
-        $pageSize = 10; // or whatever number of products you want per page
-        $categoryIdParam = ($categoryId && $categoryId !== 'all') ? $categoryId : '';
-        // dd($categoryIdParam);
-        $url = 'https://api.topview.ai/v1/product_avatar/public_avatar/query?ethnicityIds=&gender=&sortingType=&categoryIds=' . $categoryIdParam . '&pageNo=' . $pageNo . '&pageSize=' . $pageSize;
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => $url,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
-            'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY',
-            'Topview-Uid: 7QNjCZNYupL0K16uus9v'
-        ),
-        ));
-
-        $response = curl_exec($curl);
-        curl_close($curl);
-
-        return response()->json(json_decode($response, true));
-        
-    }
-
-    public function generateAvatarTemplate(Request $request)
-    {
-       $request->validate([
-            'avatarId' => 'required|string',
-            'productImageFileId' => 'required|string', // URL of the product image
-            'imageEditPrompt' => 'nullable|string'
-        ]);
-
-        $avatarId = $request->avatarId;
-        $imageEditPrompt = $request->imageEditPrompt;
-        $imageUrl = $request->productImageFileId;
-
-        // Step 1: Get Upload URL (pre-signed URL) from API
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.topview.ai/v1/upload/credential?format=png',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
-            'Topview-Uid: 7QNjCZNYupL0K16uus9v',
-            'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY'
-        ),
-        ));
-        $response = curl_exec($curl);
-        curl_close($curl);
-
-        $decodedResponse = json_decode($response, true);
-        $uploadUrl = $decodedResponse['result']['uploadUrl'] ?? null;
-        $fileId = $decodedResponse['result']['fileId'] ?? null;
-
-        if (!$uploadUrl || !$fileId) {
-            return response()->json(['error' => 'Failed to get upload URL from API'], 500);
-        }
-        dd($uploadUrl);
-
-        //Step 2: Download the remote image to a temporary local file
-        // $tempFile = tempnam(sys_get_temp_dir(), 'img_');
-        // $imageContents = @file_get_contents($imageUrl);
-
-        // if ($imageContents === false) {
-        //     return response()->json(['error' => 'Failed to download image from provided URL'], 400);
-        // }
-
-        // file_put_contents($tempFile, $imageContents);
-        // $fileSize = filesize($tempFile); // Get file size for Content-Length
-        // // Step 3: Upload the local temp file to S3 via pre-signed URL
-        // $ch = curl_init($uploadUrl);
-        // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-        // curl_setopt($ch, CURLOPT_INFILE, fopen($tempFile, 'r'));
-        // curl_setopt($ch, CURLOPT_INFILESIZE, filesize($tempFile));
-        // curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        //     'Content-Type: image/png',
-        //     'Content-Length:'.$fileSize // Required by S3 to avoid MissingContentLength error
-        // ]);
-
-        // $uploadResponse = curl_exec($ch);
-        // dd($uploadResponse);
-        // if (curl_errno($ch)) {
-        //     $error = curl_error($ch);
-        //     curl_close($ch);
-        //     unlink($tempFile); // Clean up
-        //     return response()->json(['error' => 'Upload failed', 'details' => $error], 500);
-        // }
-
-        // curl_close($ch);
-        // unlink($tempFile); // Clean up the temp file after upload
-
-        // return response()->json([
-        //     'status' => 'success',
-        //     'fileId' => $fileId,
-        //     'uploadUrl' => $uploadUrl,
-        //     'uploadResponse' => $uploadResponse,
-        // ]);
-        
-        // Now call Topview API
-        
-        $payload = [
-            'avatarId' => $avatarId,
-            'productImageFileId' => $fileId, // <-- or pass the S3 file URL if required
-            'imageEditPrompt' => $imageEditPrompt,
-        ];
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.topview.ai/v1/product_avatar/task/image_replace/submit',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'POST',
-        CURLOPT_POSTFIELDS => json_encode($payload),
-        CURLOPT_HTTPHEADER => array(
-            'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY',
-            'Topview-Uid: 7QNjCZNYupL0K16uus9v',
-            'Content-Type: application/json'
-        ),
-        ));
-        $response = curl_exec($curl);
-        dd($response);
-        if (curl_errno($curl)) {
-            return response()->json(['error' => curl_error($curl)], 500);
-        }
-
-        curl_close($curl);
-
-        return response()->json(json_decode($response, true));
-       
-    }
-
-    public function uploadProductImg(Request $request)
-    {
-        if ($request->hasFile('file')) {
-            $path = $request->file('file')->store('product_images', 'public');
-            $url = asset('/' . $path);
-            return response()->json(['fileId' => $url], 200);
-        }
-        return response()->json(['error' => 'No file uploaded'], 400);
-    }
-
-    public function checkVideoStatus($taskId)
-    {
-        $url = "https://api.topview.ai/v1/video_avatar/task/query?taskId={$taskId}&needCloudFrontUrl=true";
-
+        // Generated by curl-to-PHP: http://incarnate.github.io/curl-to-php/
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+
+        curl_setopt($ch, CURLOPT_URL, 'https://api.captions.ai/api/translate/supported-languages');
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POST, 1);
+
+        $headers = array();
+        $headers[] = 'Content-Type: application/json';
+        $headers[] = "X-Api-Key: $apiKey";
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+
+        $support_lang = curl_exec($ch);
+        $supportLangArray = json_decode($support_lang, true);
+        if (curl_errno($ch)) {
+            echo 'Error:' . curl_error($ch);
+        }
+        curl_close($ch);
+
+        return view('user.UCGVideos.index', compact('creators','videoOperations','allOperations','supportLangArray'));
+    }
+
+    public function generate(Request $request)
+    {
+        $apiKey = config('services.caption.key');
+        $data = $request->only(['creatorName', 'script']);
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://api.captions.ai/api/creator/submit");
+        curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY',
-            'Topview-Uid: 7QNjCZNYupL0K16uus9v'
+            "Content-Type: application/json",
+            "x-api-key: $apiKey"
         ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         $response = curl_exec($ch);
-        curl_close($ch);
-        // dd($response);
-        return response()->json(json_decode($response, true));
-    }
+        $responseArray = json_decode($response, true);
 
-    public function all_anyshoot_templete()
-    {
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.topview.ai/v1/product_anyShoot/template/category/list',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
-            'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY',
-            'Topview-Uid: 7QNjCZNYupL0K16uus9v'
-        ),
-        ));
-
-        $categories = json_decode(curl_exec($curl), true);
-
-        curl_close($curl);
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, array(
-        CURLOPT_URL => 'https://api.topview.ai/v1/product_anyShoot/template/list?categoryIds=&style=&pageNo&pageSize',
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_ENCODING => '',
-        CURLOPT_MAXREDIRS => 10,
-        CURLOPT_TIMEOUT => 0,
-        CURLOPT_FOLLOWLOCATION => true,
-        CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-        CURLOPT_CUSTOMREQUEST => 'GET',
-        CURLOPT_HTTPHEADER => array(
-            'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY',
-            'Topview-Uid: 7QNjCZNYupL0K16uus9v'
-        ),
-        ));
-
-        $template_list = json_decode(curl_exec($curl), true);
-        curl_close($curl);
-      
-        return view('user.topview.all-anyshoot-template',compact('categories','template_list')); // Make sure this Blade file exists
-    }
-    
-    public function loadMoreAnyshootTemplates(Request $request)
-    {
-        $page = $request->input('page', 1);
-        $categoryId = $request->input('category_id', '');
-
-        $apiUrl = "https://api.topview.ai/v1/product_anyShoot/template/list?categoryIds={$categoryId}&style=&pageNo={$page}&pageSize=10";
-
-        $curl = curl_init();
-        curl_setopt_array($curl, array(
-            CURLOPT_URL => $apiUrl,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_HTTPHEADER => [
-                'Authorization: Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY',
-                'Topview-Uid: 7QNjCZNYupL0K16uus9v'
-            ]
-        ));
-        $response = curl_exec($curl);
-        curl_close($curl);
-
-        $data = json_decode($response, true);
-        
-        return response()->json([
-            'templates' => $data['result']['data'] ?? []
+        $videoOperation = VideoOperation::create([
+            'title' => $request['title'],
+            'user_id' => Auth::id(),
+            'creator' => $request['creatorName'],
+            'script'  => $request['script'],
+            'operation_id' => $responseArray['operationId'],
         ]);
+        
+        curl_close($ch);
+        $responseArray['video_operation_id'] = $videoOperation->id;
+        $responseArray['creator'] = $videoOperation->creator;
+        $responseArray['title'] = $videoOperation->title;
+        return response()->json($responseArray);
     }
 
-    public function generateMarketingVideo(Request $request)
+    public function poll(Request $request)
     {
-        $avatarSourceFrom = $request->avatarSourceFrom;
-        $videoFileId = $request->videoFileId;
-        $aiAvatarId = $request->aiAvatarId;
+        $apiKey = config('services.caption.key');
+        $operationId = $request->input('operationId');
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, 'https://api.captions.ai/api/creator/poll');
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type: application/json',
+            "x-api-key: $apiKey",
+            "X-Operation-Id: $operationId"
+        ]);
 
-        $audioSourceFrom = $request->audioSourceFrom;
-        $audioFileId = $request->audioFileId;
-        $ttsText = $request->ttsText;
-        $voiceoverId = $request->voiceoverId;
+        $resultSet = curl_exec($ch);
+        $resultSetArray = json_decode($resultSet, true);
+        curl_close($ch);
 
-        $payload = [
-            'avatarSourceFrom' => $avatarSourceFrom,
-            'audioSourceFrom' => $audioSourceFrom,
-        ];
+        $videoOperation = VideoOperation::where('operation_id', $operationId)->first();
 
-        if ($avatarSourceFrom == 0) {
-            $payload['videoFileId'] = $videoFileId;
-        } else {
-            $payload['aiAvatarId'] = $aiAvatarId;
-        }
-
-        if ($audioSourceFrom == 0) {
-            $payload['audioFileId'] = $audioFileId;
-        } else {
-            $payload['ttsText'] = $ttsText;
-            if ($avatarSourceFrom == 0) {
-                $payload['voiceoverId'] = $voiceoverId;
-            } else {
-                $payload['voiceoverId'] = null; // use default tone
-            }
-        }
-
-        $response = Http::withHeaders([
-            'Topview-Uid' => '7QNjCZNYupL0K16uus9v', // Store in .env
-            'Authorization' => 'Bearer sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY',
-            'Content-Type' => 'application/json',
-        ])->post('https://api.topview.ai/v1/video_avatar/task/submit', $payload);
-
-        if ($response->successful()) {
-            return response()->json($response->json());
-        } else {
+        if (isset($resultSetArray['url']) && $resultSetArray['url'] != null) {
+            // Update the operation as 'done' and save the URL
+            $videoOperation->update([
+                'status' => 'DONE',
+                'url' => $resultSetArray['url']
+            ]);
             return response()->json([
-                'error' => true,
-                'message' => $response->json()['message'] ?? 'Failed to generate video',
-            ], $response->status());
+                'status' => 'DONE',
+                'videoUrl' => $resultSetArray['url'],
+                'video_operation_id' => $videoOperation->id
+            ]);
+        } else {
+            $status = $resultSetArray['state'] ?? null; // Default to 'null' if no state is provided
+            $videoOperation->update(['status' => $status]);
+            return response()->json([
+                'status' => $status,
+                'video_operation_id' => $videoOperation->id
+            ]);
         }
-    }
-
-    public function allProject()
-    {
-        return view('user.topview.all-project'); // Make sure this Blade file exists
+        
+        
     }
 }   

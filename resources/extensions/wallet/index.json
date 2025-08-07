@@ -1,0 +1,17 @@
+{
+    "extension_name": "Wallet",
+    "version": "1.2",
+    "controllers": [
+      "app/Http/Controllers/Admin/Extensions/WalletController.php",
+      "app/Services/WalletService.php"
+    ],
+    "views": [
+      "resources/views/default/admin/davinci/configuration/extension/wallet/setting.blade.php",
+      "resources/views/default/admin/finance/settings/gateways/finance_setting_wallet.blade.php"
+    ],
+    "routes": "routes/wallet_route.php",
+    "migrations": {
+        "install": [],
+        "uninstall": []
+    }
+}

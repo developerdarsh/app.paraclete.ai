@@ -29,7 +29,7 @@ dir="<?php echo e(LaravelLocalization::getCurrentLocaleDirection()); ?>">
         <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
         <!-- TITLE -->
-        <title><?php echo e(config('app.name', 'Paraclete AI')); ?></title>
+        <title><?php echo e(config('app.name', 'DaVinci AI')); ?></title>
         
         <?php echo $__env->make('layouts.dashboard.header', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
@@ -66,8 +66,6 @@ dir="<?php echo e(LaravelLocalization::getCurrentLocaleDirection()); ?>">
             </div>		
         </div><!-- END PAGE -->
         
-		        
-
 	</body>
 </html>
 

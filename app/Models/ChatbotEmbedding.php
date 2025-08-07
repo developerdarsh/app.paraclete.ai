@@ -12,4 +12,9 @@ class ChatbotEmbedding extends Model
     protected $guarded = [];
 
     protected $table = 'chatbot_embeddings';
+
+    public function chatbot()
+    {
+        return $this->belongsTo(Chatbot::class);
+    }
 }

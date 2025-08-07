@@ -3,242 +3,6 @@
 	<link href="{{URL::asset('plugins/sweetalert/sweetalert2.min.css')}}" rel="stylesheet" />
 	<link href="{{URL::asset('plugins/highlight/highlight.dark.min.css')}}" rel="stylesheet" />
 	<link href="{{URL::asset('plugins/air-datepicker/air-datepicker.css')}}" rel="stylesheet" />
-	<style>
- 		.chat-main-container .card-footer {
- 			height: 75px;
- 			padding-top: 0;
- 			padding-bottom: 0;
- 		}
- 		.chat-controllers {
- 			display: flex;
- 			align-items: center;
- 			justify-content: center;
- 			padding-bottom: 10px;
- 
- 		}
- 		.chat-message-container .d-flex .form-switch{
- 			max-height: 1rem;
- 		}
- 		.audio_search a{
- 			padding:0px 2px;
- 		}
- 		#audioPlayer{
- 			display: block;
- 		}
- 		.audio_search .fa{
- 			font-size:1.3rem;
- 			cursor:pointer;
- 		}
- 		.chats-input-b .form-group {
- 			position: relative;
- 			display: flex;
- 			flex-wrap: inherit;
- 			align-items: center;
- 			flex-direction: row;
- 			width: 100%;
- 		}
- 		.chats-input-b .input-group-btn {
- 			position: relative;
- 		}
- 		.chats-input-b .microphone-voice {
- 			margin: 0px 10px !IMPORTANT;
- 		}
- 		.chats-input-b .microphone-voice i {
- 			width: 40px;
- 			height: 40px;
- 			line-height: 40px;
- 			background: #7111ef;
- 			color: #ffffff;
- 			font-size: 18px;
- 			text-align: center;
- 			border-radius: 100%;
- 		}
- 		.chats-input-b .microphone-voice .active:after {
- 			content: '';
- 			width: 12px;
- 			height: 12px;
- 			background: red;
- 			position: absolute;
- 			border-radius: 100%;
- 			top: 2px;
- 		}
- 		.audio_search a i {
- 			width: 24px;
- 			height: 24px;
- 			line-height: 24px;
- 			text-align: center;
- 			background: #520cae;
- 			color: #fff;
- 			border-radius: 100%;
- 			font-size: 12px;
- 		}
- 		.card-footer .dropdown-selected {
- 			margin: 15px 0;
- 		}
- 		.card-footer .dropdown-selected .btn:focus {
- 			box-shadow: none;
- 		}
- 		.card-footer .dropdown-selected .btn {
- 			min-width: 100%;
- 			border: 1px solid #ddd;
- 			padding: 8px 40px;
- 			background: #4987f8c2;
- 			color: #ffffff;
- 		}
- 		.chat-main-container .card-footer {
- 			min-height: auto !important;
- 			height: auto !important;
- 		}
- 		.input-box.chats-input-b .form-control {
- 			border-color: #007BFF;
- 		}
- 		.card-footer .dropdown-selected .s-dropdown-menu {
- 			width: calc(100% - 24px); 
- 			padding: 10px 30px 10px;
- 			overflow-y: auto;
- 			max-height: 340px;
- 			height: max-content;
- 		}
- 		.card-footer .dropdown-selected .s-dropdown-menu li {
- 			font-size: 14px;
- 			line-height: 24px;
- 			font-weight: 400;
- 			list-style: number;
- 		} 
- 		.card.balance-view {
- 			background: #f5f9fc;
- 		}
- 		.chage-x {
- 			background: #f4f4f6;
- 			padding: 5px;
- 			border-radius: 4px;
- 		}
- 		.chage-x span.bold-f {
- 			font-weight: 600;
- 			color: #222222;
- 		}
- 		.card.balance-view p {
- 			font-size: 14px;
- 		}
- 		.card.balance-view p span {
- 			background: #75a4fa;
- 			color: #ffffff;
- 			font-weight: bold;
- 			padding: 2px 6px;
- 			border-radius: 2px;
- 			font-size: 14px;
- 		}
- 		.chat-card-header {
- 			min-height: 5rem;
- 		}
- 
- 		.chat-sidebar-search {
- 			max-height: 79px;
- 			font-size: 16px;
- 			margin: 0;
- 			padding: 1.2rem 1.5rem;
- 			color: #333;
- 			display: block;
- 			position: relative;
- 			min-height: 3.5rem;
- 			border-bottom: 1px solid #ebecf1;
- 		}
- 		.chat-sidebar-search .chat-search-icon {
- 			position: absolute;
- 			right: 1rem;
- 			top: 35%;
- 		}
- 		#chat-search {
- 			border-radius: 1rem;
- 		}
- 		.chat-controllers {
- 			align-self: flex-end;
- 			gap: 1rem !important;
- 			display: flex;
- 			flex-direction: row;
- 			justify-content: space-between;
- 		}
- 		.chat-controllers .text-input {
- 			flex: 1;
- 		}
- 		.chat-controllers .action-0btn {
- 			display: flex;
- 			gap: 10px;
- 			margin-bottom: 20px;
- 		}
- 		.chat-controllers #message {
- 			background-color: transparent;
- 			border: none;
- 			resize: none;
- 		}
- 		.chat-controllers .chat-button {
- 			font-size: 12px;
- 			min-width: 100px;
- 			padding: 0.6rem 10px;
- 			border-radius: 35px;
- 			color: #fff;
- 			background-color: #007BFF;
- 			border-color: #007BFF;
- 			box-shadow: 0 1px 3px 0 rgba(50, 50, 50, 0.2), 0 2px 1px -1px rgba(50, 50, 50, 0.12), 0 1px 1px 0 rgba(50, 50, 50, 0.14);
- 		}
- 		.chat-controllers .chat-button:hover {
- 			background-color: #1e1e2d;
- 			border-color: #1e1e2d;
- 		}
- 		.chat-controllers .chat-button-icon {
- 			color: #007BFF;
- 			border-radius: 50%;
- 			padding: 0.5rem 0.8rem;
- 			width: 43px;
- 			background-color: #E1F0FF;
- 			outline: none !important;
- 			text-decoration: none !important;
- 		}
- 		.chat-controllers .chat-button-icon:hover {
- 			color: #1e1e2d;
- 			background-color: #D1D3E0;
- 		}
- 		.chat-controllers .special-action-color {
- 			border-color: #E1F0FF;
- 			color: #007BFF;
- 			background-color: #E1F0FF;
- 			box-shadow: none;
- 		}
- 		.chat-controllers .special-action-color:hover {
- 			color: #FFF;
- 		}
- 		#new-chat-button {
- 			padding: 0.6rem 10px;
- 			text-transform: none;
- 		}
- 		@media (max-width: 991px) {
- 			.chat-controllers .action-0btn {
- 				margin-bottom: 0px;
- 			}
- 			.chat-controllers .text-input {
- 				flex: inherit;
- 				width: 100%;
- 			}
- 			#chat-system #chat-container {
- 				height: auto;
- 			}
- 	
- 			.chat-controllers {
- 				flex-direction: column;
- 				align-items: flex-start;
- 			}
- 		}
- 		/* 16-05-2024 CSS start */
- 		.card-footer .dropdown-selected .btn.cs-btn {
- 			border: none;
- 			background: transparent;
- 		 	min-width: auto;
- 		    padding: .375rem .75rem;
- 		}
- 		.chat-main-container {
- 			max-height: 820px !important;
- 		}
- 	</style>
 @endsection
 
 @section('page-header')
@@ -371,25 +135,7 @@
 					<div class="card-footer">
 						<div class="row">						
 							<div class="col-sm-12">	
-								<div class='d-lg-flex justify-content-between align-items-center mt-4'>
- 									<div class="form-check form-switch" style="display:none">
- 										<input class="form-check-input" type="checkbox" id="web_access_button">
- 										<label class="form-check-label" for="web-access-button">Web access</label>
- 									</div>
- 									<div class="text-black-3 font-medium bg-gray-3 px-1.5 rounded-lg" style="display:none">
- 										<div class="flex gap-0.5 items-center text-xs whitespace-nowrap">
- 											<p class="chage-x"><svg data-toggle="tooltip" data-placement="top" title="When Web access is highlighted, you will be deducted double the amount of words from your account. Note: Web access is for research purposes only" class="me-1" xmlns="http://www.w3.org/2000/svg" width="17" height="16" fill="none"><path stroke="#6B7280" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" d="M8.5 14a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z"/><path stroke="#6B7280" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.4" d="M8 7.5h.5V11H9"/><path fill="#6B7280" stroke="#6B7280" stroke-width="125" d="M9.063 5.25a.687.687 0 1 1-1.375 0 .687.687 0 0 1 1.375 0Z"/></svg><span class="bold-f">Charge: <span class="charge-count">1</span> * output words</span></p>
- 										</div>
- 									</div>
- 									<div class="form-check form-switch d-flex">
- 										<div class="audio_search">
- 										<audio id="audioPlayer" controls style="visibility:hidden"></audio>
- 										<input type="hidden" id="isAudioSearch" value="0">
- 										<p id="status"></p>
- 										</div>
- 										
- 									</div>
-                                </div>
+								
 								<div class="input-box mb-0">								
 									<div class="chat-controllers">										
 										<textarea type="message" class="form-control @error('message') is-danger @enderror" rows="1" id="message" name="message" placeholder="{{ __('Type your message here...') }}"></textarea>
@@ -410,7 +156,7 @@
 										@if ($brands_feature)
 											<a class="btn btn-primary-chat fs-11 text-muted mb-2" href="javascript:void(0)" id="brand-voice" data-bs-toggle="modal" data-bs-target="#brandVoice"><i class="fa-solid fa-signature mr-1"></i> <span>{{ __('Brand Voice') }}</span></a>
 										@endif	
-										<a class="btn btn-primary-chat fs-11 text-muted mb-2" href="javascript:void(0)" id="prompt-button-main" data-bs-toggle="modal" data-bs-target="#promptModal"><i class="fa-solid fa-notebook"></i> <span>{{ __('Conversational Starters') }}</span></a>
+										<a class="btn btn-primary-chat fs-11 text-muted mb-2" href="javascript:void(0)" id="prompt-button-main" data-bs-toggle="modal" data-bs-target="#promptModal"><i class="fa-solid fa-notebook"></i> <span>{{ __('Prompt Library') }}</span></a>
 										@if (config('settings.vision_for_chat_feature_user') == 'allow')
 											<input type="file" id="image-input" style="display: none;" accept="image/png, image/jpeg, image/webp">
 											<a class="btn btn-primary-chat fs-11 text-muted mb-2" href="javascript:void(0)" id="upload-button-main"><i class="fa-solid fa-image"></i> <span>{{ __('Upload Image') }}</span></a>
@@ -443,7 +189,7 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body pl-5 pr-5">
-					<h6 class="text-center font-weight-extra-bold fs-16"><i class="fa-solid fa-notebook text-primary mr-2"></i> {{ __('Conversational Starters') }}</h6>
+					<h6 class="text-center font-weight-extra-bold fs-16"><i class="fa-solid fa-notebook text-primary mr-2"></i> {{ __('Prompt Library') }}</h6>
 
 					<div class="row">
 						<div class="col-lg-12 col-md-12 col-sm-12 p-4">
@@ -694,13 +440,9 @@
 		timepicker: true,
 	});
 	
-	const domainUrl = window.location.origin;
 
 	// Process deault conversation
 	$(document).ready(function() {
-		$('[data-toggle="tooltip"]').tooltip();
- 		$('#audio-player').hide();
-
 		$(".chat-sidebar-message").first().focus().trigger('click');
 
 		let check_messages = document.querySelectorAll('.chat-sidebar-message').length;
@@ -741,15 +483,6 @@
 				}
 			});
 		}
-		/* web access button click */
- 
- 		$("#web_access_button").click(function() {
- 			if ($(this).is(":checked")) {
- 				$(".charge-count").text("2");
- 			} else {
- 				$(".charge-count").text("1");
- 			}
- 		});
 
 		let model = '';
 		let logo = '';
@@ -855,6 +588,18 @@
 				model = 'Gemini 2.0 Flash';
 				logo = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48" class="mr-1 inline-block h-4 w-4 align-text-top" aria-hidden="true"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"></path><path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"></path><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"></path><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"></path></svg>';
 				break;
+			case 'gemini-2.5-flash':
+				model = 'Gemini 2.5 Flash';
+				logo = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48" class="mr-1 inline-block h-4 w-4 align-text-top" aria-hidden="true"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"></path><path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"></path><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"></path><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"></path></svg>';
+				break;
+			case 'gemini-2.5-flash-lite-preview-06-17':
+				model = 'Gemini 2.5 Flash Lite';
+				logo = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48" class="mr-1 inline-block h-4 w-4 align-text-top" aria-hidden="true"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"></path><path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"></path><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"></path><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"></path></svg>';
+				break;
+			case 'gemini-2.5-pro':
+				model = 'Gemini 2.5 Pro';
+				logo = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48" class="mr-1 inline-block h-4 w-4 align-text-top" aria-hidden="true"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"></path><path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"></path><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"></path><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"></path></svg>';
+				break;
 			case 'deepseek-reasoner':
 				model = 'DeepSeek R1';
 				logo = '<svg height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg" class="mr-1 inline-block h-4 w-4 align-text-top" aria-hidden="true" style="flex: 0 0 auto; line-height: 1;"><path d="M23.748 4.482c-.254-.124-.364.113-.512.234-.051.039-.094.09-.137.136-.372.397-.806.657-1.373.626-.829-.046-1.537.214-2.163.848-.133-.782-.575-1.248-1.247-1.548-.352-.156-.708-.311-.955-.65-.172-.241-.219-.51-.305-.774-.055-.16-.11-.323-.293-.35-.2-.031-.278.136-.356.276-.313.572-.434 1.202-.422 1.84.027 1.436.633 2.58 1.838 3.393.137.093.172.187.129.323-.082.28-.18.552-.266.833-.055.179-.137.217-.329.14a5.526 5.526 0 0 1-1.736-1.18c-.857-.828-1.631-1.742-2.597-2.458a11.365 11.365 0 0 0-.689-.471c-.985-.957.13-1.743.388-1.836.27-.098.093-.432-.779-.428-.872.004-1.67.295-2.687.684a3.055 3.055 0 0 1-.465.137 9.597 9.597 0 0 0-2.883-.102c-1.885.21-3.39 1.102-4.497 2.623C.082 8.606-.231 10.684.152 12.85c.403 2.284 1.569 4.175 3.36 5.653 1.858 1.533 3.997 2.284 6.438 2.14 1.482-.085 3.133-.284 4.994-1.86.47.234.962.327 1.78.397.63.059 1.236-.03 1.705-.128.735-.156.684-.837.419-.961-2.155-1.004-1.682-.595-2.113-.926 1.096-1.296 2.746-2.642 3.392-7.003.05-.347.007-.565 0-.845-.004-.17.035-.237.23-.256a4.173 4.173 0 0 0 1.545-.475c1.396-.763 1.96-2.015 2.093-3.517.02-.23-.004-.467-.247-.588zM11.581 18c-2.089-1.642-3.102-2.183-3.52-2.16-.392.024-.321.471-.235.763.09.288.207.486.371.739.114.167.192.416-.113.603-.673.416-1.842-.14-1.897-.167-1.361-.802-2.5-1.86-3.301-3.307-.774-1.393-1.224-2.887-1.298-4.482-.02-.386.093-.522.477-.592a4.696 4.696 0 0 1 1.529-.039c2.132.312 3.946 1.265 5.468 2.774.868.86 1.525 1.887 2.202 2.891.72 1.066 1.494 2.082 2.48 2.914.348.292.625.514.891.677-.802.09-2.14.11-3.054-.614zm1-6.44a.306.306 0 0 1 .415-.287.302.302 0 0 1 .2.288.306.306 0 0 1-.31.307.303.303 0 0 1-.304-.308zm3.11 1.596c-.2.081-.399.151-.59.16a1.245 1.245 0 0 1-.798-.254c-.274-.23-.47-.358-.552-.758a1.73 1.73 0 0 1 .016-.588c.07-.327-.008-.537-.239-.727-.187-.156-.426-.199-.688-.199a.559.559 0 0 1-.254-.078.253.253 0 0 1-.114-.358c.028-.054.16-.186.192-.21.356-.202.767-.136 1.146.016.352.144.618.408 1.001.782.391.451.462.576.685.914.176.265.336.537.445.848.067.195-.019.354-.25.452z" fill="#4D6BFE"></path></svg>';
@@ -862,6 +607,22 @@
 			case 'deepseek-chat':
 				model = 'DeepSeek V3';
 				logo = '<svg height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg" class="mr-1 inline-block h-4 w-4 align-text-top" aria-hidden="true" style="flex: 0 0 auto; line-height: 1;"><path d="M23.748 4.482c-.254-.124-.364.113-.512.234-.051.039-.094.09-.137.136-.372.397-.806.657-1.373.626-.829-.046-1.537.214-2.163.848-.133-.782-.575-1.248-1.247-1.548-.352-.156-.708-.311-.955-.65-.172-.241-.219-.51-.305-.774-.055-.16-.11-.323-.293-.35-.2-.031-.278.136-.356.276-.313.572-.434 1.202-.422 1.84.027 1.436.633 2.58 1.838 3.393.137.093.172.187.129.323-.082.28-.18.552-.266.833-.055.179-.137.217-.329.14a5.526 5.526 0 0 1-1.736-1.18c-.857-.828-1.631-1.742-2.597-2.458a11.365 11.365 0 0 0-.689-.471c-.985-.957.13-1.743.388-1.836.27-.098.093-.432-.779-.428-.872.004-1.67.295-2.687.684a3.055 3.055 0 0 1-.465.137 9.597 9.597 0 0 0-2.883-.102c-1.885.21-3.39 1.102-4.497 2.623C.082 8.606-.231 10.684.152 12.85c.403 2.284 1.569 4.175 3.36 5.653 1.858 1.533 3.997 2.284 6.438 2.14 1.482-.085 3.133-.284 4.994-1.86.47.234.962.327 1.78.397.63.059 1.236-.03 1.705-.128.735-.156.684-.837.419-.961-2.155-1.004-1.682-.595-2.113-.926 1.096-1.296 2.746-2.642 3.392-7.003.05-.347.007-.565 0-.845-.004-.17.035-.237.23-.256a4.173 4.173 0 0 0 1.545-.475c1.396-.763 1.96-2.015 2.093-3.517.02-.23-.004-.467-.247-.588zM11.581 18c-2.089-1.642-3.102-2.183-3.52-2.16-.392.024-.321.471-.235.763.09.288.207.486.371.739.114.167.192.416-.113.603-.673.416-1.842-.14-1.897-.167-1.361-.802-2.5-1.86-3.301-3.307-.774-1.393-1.224-2.887-1.298-4.482-.02-.386.093-.522.477-.592a4.696 4.696 0 0 1 1.529-.039c2.132.312 3.946 1.265 5.468 2.774.868.86 1.525 1.887 2.202 2.891.72 1.066 1.494 2.082 2.48 2.914.348.292.625.514.891.677-.802.09-2.14.11-3.054-.614zm1-6.44a.306.306 0 0 1 .415-.287.302.302 0 0 1 .2.288.306.306 0 0 1-.31.307.303.303 0 0 1-.304-.308zm3.11 1.596c-.2.081-.399.151-.59.16a1.245 1.245 0 0 1-.798-.254c-.274-.23-.47-.358-.552-.758a1.73 1.73 0 0 1 .016-.588c.07-.327-.008-.537-.239-.727-.187-.156-.426-.199-.688-.199a.559.559 0 0 1-.254-.078.253.253 0 0 1-.114-.358c.028-.054.16-.186.192-.21.356-.202.767-.136 1.146.016.352.144.618.408 1.001.782.391.451.462.576.685.914.176.265.336.537.445.848.067.195-.019.354-.25.452z" fill="#4D6BFE"></path></svg>';
+				break;
+			case 'grok-3-latest':
+				model = 'Grok 3';
+				logo = '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" class="mr-1 inline-block h-4 w-4 align-text-top" width="1em" height="1em" style="fill: currentcolor;"><path d="m3.005 8.858 8.783 12.544h3.904L6.908 8.858zm3.9 6.967L3 21.402h3.907l1.951-2.788zM16.585 2l-6.75 9.64 1.953 2.79L20.492 2zm.707 5.965v13.437h3.2V3.395z"></path></svg>';
+				break;
+			case 'grok-3-fast-latest':
+				model = 'Grok 3 Fast';
+				logo = '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" class="mr-1 inline-block h-4 w-4 align-text-top" width="1em" height="1em" style="fill: currentcolor;"><path d="m3.005 8.858 8.783 12.544h3.904L6.908 8.858zm3.9 6.967L3 21.402h3.907l1.951-2.788zM16.585 2l-6.75 9.64 1.953 2.79L20.492 2zm.707 5.965v13.437h3.2V3.395z"></path></svg>';
+				break;
+			case 'grok-3-mini-latest':
+				model = 'Grok 3 Mini';
+				logo = '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" class="mr-1 inline-block h-4 w-4 align-text-top" width="1em" height="1em" style="fill: currentcolor;"><path d="m3.005 8.858 8.783 12.544h3.904L6.908 8.858zm3.9 6.967L3 21.402h3.907l1.951-2.788zM16.585 2l-6.75 9.64 1.953 2.79L20.492 2zm.707 5.965v13.437h3.2V3.395z"></path></svg>';
+				break;
+			case 'grok-3-mini-fast-latest':
+				model = 'Grok 3 Mini Fast';
+				logo = '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" class="mr-1 inline-block h-4 w-4 align-text-top" width="1em" height="1em" style="fill: currentcolor;"><path d="m3.005 8.858 8.783 12.544h3.904L6.908 8.858zm3.9 6.967L3 21.402h3.907l1.951-2.788zM16.585 2l-6.75 9.64 1.953 2.79L20.492 2zm.707 5.965v13.437h3.2V3.395z"></path></svg>';
 				break;
 			case 'grok-2-1212':
 				model = 'Grok 2';
@@ -1205,21 +966,8 @@
 				};
 
 				eventSource.onmessage = function (e) {
+
 					if (e.data == "[DONE]") {
-						if( $('#isAudioSearch').val() == '1'){
- 							fetch("/app/user/chat/audio-convert", { 
- 								headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
- 								method: 'post',
- 								 body: formData
- 							 })
-                             .then(function(response){
- 								return response.text();
- 							})
- 							.then(function(result){
- 								const parsedResult = JSON.parse(result);
- 								convertTextToSpeech(parsedResult.data, parsedResult.voice_code);
- 							})
-                        }
 						msgerSendBtn.disabled = false
 						eventSource.close();
 						$msg_txt.html(escape_html(msg));
@@ -1283,20 +1031,6 @@
 						msgerChat.scrollTop += 100;
 					}
 				};
-                if( $('#isAudioSearch').val() == '1'){
-                    fetch("/app/user/chat/audio-convert", { 
-                        headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                        method: 'post',
-                            body: formData
-                        })
-                        .then(function(response){
-                        return response.text();
-                    })
-                    .then(function(result){
-                        const parsedResult = JSON.parse(result);
-                        convertTextToSpeech(parsedResult.data, parsedResult.voice_code);
-                    })
-                }
 				eventSource.onerror = function (e) {
 					msgerSendBtn.disabled = false
 					console.log(e);
@@ -1573,53 +1307,53 @@
 	
 
 	// Capture input text via microphone
-    // if(mic) {
-    //     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-    //         const speechRecognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    if(mic) {
+        if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+            const speechRecognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 
-    //         speechRecognition.continuous = true;
+            speechRecognition.continuous = true;
 
-    //         speechRecognition.addEventListener('start', () => {
-    //             $("#mic-button").find('i').removeClass('fa-microphone').addClass('fa-stop-circle');
-    //         });
+            speechRecognition.addEventListener('start', () => {
+                $("#mic-button").find('i').removeClass('fa-microphone').addClass('fa-stop-circle');
+            });
 
-    //         speechRecognition.addEventListener('result', (event) => {
-    //             const transcript = event.results[0][0].transcript;
-    //             $("#message").val($("#message").val() + transcript + ' ');
+            speechRecognition.addEventListener('result', (event) => {
+                const transcript = event.results[0][0].transcript;
+                $("#message").val($("#message").val() + transcript + ' ');
 
-    //             mic.click();
-    //         });
+                mic.click();
+            });
 
-    //         speechRecognition.addEventListener('end', () => {
-    //             $("#mic-button").find('i').addClass('fa-microphone').removeClass('fa-stop-circle');
-    //             isTranscribing = false;
-    //         });
+            speechRecognition.addEventListener('end', () => {
+                $("#mic-button").find('i').addClass('fa-microphone').removeClass('fa-stop-circle');
+                isTranscribing = false;
+            });
 
-    //         mic.addEventListener('click', () => {
-    //             if (!isTranscribing) {
-    //                 speechRecognition.start();
-    //                 isTranscribing = true;
-    //             } else {
-    //                 speechRecognition.stop();
-    //                 isTranscribing = false;
-    //             }
-    //         });
-    //     } else {
-    //         console.log('Web Speech Recognition API not supported by this browser');
-    //         $("#mic-button").hide()
-    //     }
-    // }
+            mic.addEventListener('click', () => {
+                if (!isTranscribing) {
+                    speechRecognition.start();
+                    isTranscribing = true;
+                } else {
+                    speechRecognition.stop();
+                    isTranscribing = false;
+                }
+            });
+        } else {
+            console.log('Web Speech Recognition API not supported by this browser');
+            $("#mic-button").hide()
+        }
+    }
 
 
-	// // Stop chat response
-	// $('#stop-button').on('click', function(e){
-    //     e.preventDefault();
+	// Stop chat response
+	$('#stop-button').on('click', function(e){
+        e.preventDefault();
 
-    //     if(eventSource){
-    //         eventSource.close();
-	// 		msgerSendBtn.disabled = false
-    //     }
-    // });
+        if(eventSource){
+            eventSource.close();
+			msgerSendBtn.disabled = false
+        }
+    });
 
 
 	// Apply prompt
@@ -1882,6 +1616,18 @@
 				model = 'Gemini 2.0 Flash';
 				logo = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48" class="mr-1 inline-block h-4 w-4 align-text-top" aria-hidden="true"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"></path><path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"></path><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"></path><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"></path></svg>';
 				break;
+			case 'gemini-2.5-flash':
+				model = 'Gemini 2.5 Flash';
+				logo = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48" class="mr-1 inline-block h-4 w-4 align-text-top" aria-hidden="true"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"></path><path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"></path><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"></path><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"></path></svg>';
+				break;
+			case 'gemini-2.5-flash-lite-preview-06-17':
+				model = 'Gemini 2.5 Flash Lite';
+				logo = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48" class="mr-1 inline-block h-4 w-4 align-text-top" aria-hidden="true"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"></path><path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"></path><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"></path><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"></path></svg>';
+				break;
+			case 'gemini-2.5-pro':
+				model = 'Gemini 2.5 Pro';
+				logo = '<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48" class="mr-1 inline-block h-4 w-4 align-text-top" aria-hidden="true"><path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303c-1.649 4.657-6.08 8-11.303 8-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.65-.389-3.917z"></path><path fill="#FF3D00" d="m6.306 14.691 6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.961 3.039l5.657-5.657C34.046 6.053 29.268 4 24 4 16.318 4 9.656 8.337 6.306 14.691z"></path><path fill="#4CAF50" d="M24 44c5.166 0 9.86-1.977 13.409-5.192l-6.19-5.238A11.91 11.91 0 0 1 24 36c-5.202 0-9.619-3.317-11.283-7.946l-6.522 5.025C9.505 39.556 16.227 44 24 44z"></path><path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.087 5.571l.003-.002 6.19 5.238C36.971 39.205 44 34 44 24c0-1.341-.138-2.65-.389-3.917z"></path></svg>';
+				break;
 			case 'deepseek-reasoner':
 				model = 'DeepSeek R1';
 				logo = '<svg height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg" class="mr-1 inline-block h-4 w-4 align-text-top" aria-hidden="true" style="flex: 0 0 auto; line-height: 1;"><path d="M23.748 4.482c-.254-.124-.364.113-.512.234-.051.039-.094.09-.137.136-.372.397-.806.657-1.373.626-.829-.046-1.537.214-2.163.848-.133-.782-.575-1.248-1.247-1.548-.352-.156-.708-.311-.955-.65-.172-.241-.219-.51-.305-.774-.055-.16-.11-.323-.293-.35-.2-.031-.278.136-.356.276-.313.572-.434 1.202-.422 1.84.027 1.436.633 2.58 1.838 3.393.137.093.172.187.129.323-.082.28-.18.552-.266.833-.055.179-.137.217-.329.14a5.526 5.526 0 0 1-1.736-1.18c-.857-.828-1.631-1.742-2.597-2.458a11.365 11.365 0 0 0-.689-.471c-.985-.957.13-1.743.388-1.836.27-.098.093-.432-.779-.428-.872.004-1.67.295-2.687.684a3.055 3.055 0 0 1-.465.137 9.597 9.597 0 0 0-2.883-.102c-1.885.21-3.39 1.102-4.497 2.623C.082 8.606-.231 10.684.152 12.85c.403 2.284 1.569 4.175 3.36 5.653 1.858 1.533 3.997 2.284 6.438 2.14 1.482-.085 3.133-.284 4.994-1.86.47.234.962.327 1.78.397.63.059 1.236-.03 1.705-.128.735-.156.684-.837.419-.961-2.155-1.004-1.682-.595-2.113-.926 1.096-1.296 2.746-2.642 3.392-7.003.05-.347.007-.565 0-.845-.004-.17.035-.237.23-.256a4.173 4.173 0 0 0 1.545-.475c1.396-.763 1.96-2.015 2.093-3.517.02-.23-.004-.467-.247-.588zM11.581 18c-2.089-1.642-3.102-2.183-3.52-2.16-.392.024-.321.471-.235.763.09.288.207.486.371.739.114.167.192.416-.113.603-.673.416-1.842-.14-1.897-.167-1.361-.802-2.5-1.86-3.301-3.307-.774-1.393-1.224-2.887-1.298-4.482-.02-.386.093-.522.477-.592a4.696 4.696 0 0 1 1.529-.039c2.132.312 3.946 1.265 5.468 2.774.868.86 1.525 1.887 2.202 2.891.72 1.066 1.494 2.082 2.48 2.914.348.292.625.514.891.677-.802.09-2.14.11-3.054-.614zm1-6.44a.306.306 0 0 1 .415-.287.302.302 0 0 1 .2.288.306.306 0 0 1-.31.307.303.303 0 0 1-.304-.308zm3.11 1.596c-.2.081-.399.151-.59.16a1.245 1.245 0 0 1-.798-.254c-.274-.23-.47-.358-.552-.758a1.73 1.73 0 0 1 .016-.588c.07-.327-.008-.537-.239-.727-.187-.156-.426-.199-.688-.199a.559.559 0 0 1-.254-.078.253.253 0 0 1-.114-.358c.028-.054.16-.186.192-.21.356-.202.767-.136 1.146.016.352.144.618.408 1.001.782.391.451.462.576.685.914.176.265.336.537.445.848.067.195-.019.354-.25.452z" fill="#4D6BFE"></path></svg>';
@@ -1889,6 +1635,22 @@
 			case 'deepseek-chat':
 				model = 'DeepSeek V3';
 				logo = '<svg height="1em" viewBox="0 0 24 24" width="1em" xmlns="http://www.w3.org/2000/svg" class="mr-1 inline-block h-4 w-4 align-text-top" aria-hidden="true" style="flex: 0 0 auto; line-height: 1;"><path d="M23.748 4.482c-.254-.124-.364.113-.512.234-.051.039-.094.09-.137.136-.372.397-.806.657-1.373.626-.829-.046-1.537.214-2.163.848-.133-.782-.575-1.248-1.247-1.548-.352-.156-.708-.311-.955-.65-.172-.241-.219-.51-.305-.774-.055-.16-.11-.323-.293-.35-.2-.031-.278.136-.356.276-.313.572-.434 1.202-.422 1.84.027 1.436.633 2.58 1.838 3.393.137.093.172.187.129.323-.082.28-.18.552-.266.833-.055.179-.137.217-.329.14a5.526 5.526 0 0 1-1.736-1.18c-.857-.828-1.631-1.742-2.597-2.458a11.365 11.365 0 0 0-.689-.471c-.985-.957.13-1.743.388-1.836.27-.098.093-.432-.779-.428-.872.004-1.67.295-2.687.684a3.055 3.055 0 0 1-.465.137 9.597 9.597 0 0 0-2.883-.102c-1.885.21-3.39 1.102-4.497 2.623C.082 8.606-.231 10.684.152 12.85c.403 2.284 1.569 4.175 3.36 5.653 1.858 1.533 3.997 2.284 6.438 2.14 1.482-.085 3.133-.284 4.994-1.86.47.234.962.327 1.78.397.63.059 1.236-.03 1.705-.128.735-.156.684-.837.419-.961-2.155-1.004-1.682-.595-2.113-.926 1.096-1.296 2.746-2.642 3.392-7.003.05-.347.007-.565 0-.845-.004-.17.035-.237.23-.256a4.173 4.173 0 0 0 1.545-.475c1.396-.763 1.96-2.015 2.093-3.517.02-.23-.004-.467-.247-.588zM11.581 18c-2.089-1.642-3.102-2.183-3.52-2.16-.392.024-.321.471-.235.763.09.288.207.486.371.739.114.167.192.416-.113.603-.673.416-1.842-.14-1.897-.167-1.361-.802-2.5-1.86-3.301-3.307-.774-1.393-1.224-2.887-1.298-4.482-.02-.386.093-.522.477-.592a4.696 4.696 0 0 1 1.529-.039c2.132.312 3.946 1.265 5.468 2.774.868.86 1.525 1.887 2.202 2.891.72 1.066 1.494 2.082 2.48 2.914.348.292.625.514.891.677-.802.09-2.14.11-3.054-.614zm1-6.44a.306.306 0 0 1 .415-.287.302.302 0 0 1 .2.288.306.306 0 0 1-.31.307.303.303 0 0 1-.304-.308zm3.11 1.596c-.2.081-.399.151-.59.16a1.245 1.245 0 0 1-.798-.254c-.274-.23-.47-.358-.552-.758a1.73 1.73 0 0 1 .016-.588c.07-.327-.008-.537-.239-.727-.187-.156-.426-.199-.688-.199a.559.559 0 0 1-.254-.078.253.253 0 0 1-.114-.358c.028-.054.16-.186.192-.21.356-.202.767-.136 1.146.016.352.144.618.408 1.001.782.391.451.462.576.685.914.176.265.336.537.445.848.067.195-.019.354-.25.452z" fill="#4D6BFE"></path></svg>';
+				break;
+			case 'grok-3-latest':
+				model = 'Grok 3';
+				logo = '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" class="mr-1 inline-block h-4 w-4 align-text-top" width="1em" height="1em" style="fill: currentcolor;"><path d="m3.005 8.858 8.783 12.544h3.904L6.908 8.858zm3.9 6.967L3 21.402h3.907l1.951-2.788zM16.585 2l-6.75 9.64 1.953 2.79L20.492 2zm.707 5.965v13.437h3.2V3.395z"></path></svg>';
+				break;
+			case 'grok-3-fast-latest':
+				model = 'Grok 3 Fast';
+				logo = '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" class="mr-1 inline-block h-4 w-4 align-text-top" width="1em" height="1em" style="fill: currentcolor;"><path d="m3.005 8.858 8.783 12.544h3.904L6.908 8.858zm3.9 6.967L3 21.402h3.907l1.951-2.788zM16.585 2l-6.75 9.64 1.953 2.79L20.492 2zm.707 5.965v13.437h3.2V3.395z"></path></svg>';
+				break;
+			case 'grok-3-mini-latest':
+				model = 'Grok 3 Mini';
+				logo = '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" class="mr-1 inline-block h-4 w-4 align-text-top" width="1em" height="1em" style="fill: currentcolor;"><path d="m3.005 8.858 8.783 12.544h3.904L6.908 8.858zm3.9 6.967L3 21.402h3.907l1.951-2.788zM16.585 2l-6.75 9.64 1.953 2.79L20.492 2zm.707 5.965v13.437h3.2V3.395z"></path></svg>';
+				break;
+			case 'grok-3-mini-fast-latest':
+				model = 'Grok 3 Mini Fast';
+				logo = '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true" class="mr-1 inline-block h-4 w-4 align-text-top" width="1em" height="1em" style="fill: currentcolor;"><path d="m3.005 8.858 8.783 12.544h3.904L6.908 8.858zm3.9 6.967L3 21.402h3.907l1.951-2.788zM16.585 2l-6.75 9.64 1.953 2.79L20.492 2zm.707 5.965v13.437h3.2V3.395z"></path></svg>';
 				break;
 			case 'grok-2-1212':
 				model = 'Grok 2';
@@ -2053,89 +1815,6 @@
                 console.error('Error:', xhr.responseText);
             }
         });
-
-	});
-	const recordButton = document.getElementById('mic-button');
- 	const statusElement = document.getElementById('status');
- 	let mediaRecorder;
- 	let audioChunks = [];
- 	recordButton.addEventListener('click', toggleRecording);
- 	function toggleRecording() {
- 		if (mediaRecorder && mediaRecorder.state === 'recording') {
- 			stopRecording();
- 		} else {
- 			$('#isAudioSearch').val(1);
- 			startRecording();
- 		}
- 	}
- 	
- 	function startRecording() {
-        console.log('startRecording');
- 		navigator.mediaDevices.getUserMedia({ audio: true })
- 		.then(function (stream) {
- 		mediaRecorder = new MediaRecorder(stream);
- 		mediaRecorder.addEventListener('dataavailable', function (event) {
- 			audioChunks.push(event.data);
- 		});
- 		mediaRecorder.addEventListener('stop', function () {
- 			const audioBlob = new Blob(audioChunks);
- 			const formData = new FormData();
- 			formData.append('audio', audioBlob, 'recorded_audio.wav');
-            console.log('audioBlob');
- 			fetch('/app/user/chat/save-audio', {
- 				headers: {
- 				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
- 				},
- 				method: 'POST',
- 				body: formData
- 			})
- 			.then(response => response.json())
- 			.then(data => {
- 				if (data.response) {
- 				$('#message').val(data.response.text);
- 				$('#chat-button').click();
- 				} else {
- 				console.log('Error saving audio');
- 				}
- 			})
- 			.catch(error => {
- 				console.error('Error:', error);
- 			});
- 			audioChunks = [];
- 		});
- 		mediaRecorder.start();
- 		recordButton.innerHTML = '<i class="fa-solid fa-stop active"></i>';
- 		})
- 		.catch(function (error) {
- 		console.error('Error:', error);
- 		});
- 	}
- 	function stopRecording() {
- 		if (mediaRecorder) {
- 			mediaRecorder.stop();
- 			recordButton.innerHTML = '<i class="fa-regular fa-microphone"></i>';
- 		}
- 	}
- 		
- 	function convertTextToSpeech(text, code){
-        $.get('{{ route("convert-text-to-audio") }}', { text: text, voiceCode: code })
- 		.done(function (voices) {
- 			$('#audioPlayer').css('visibility','inherit');  
- 			const audioUrl = domainUrl + voices.result_url;
- 			const audioPlayer = document.getElementById('audioPlayer');
- 			audioPlayer.src = audioUrl;
- 			audioPlayer.play();
-             $('#isAudioSearch').val(0);
- 		})
- 		.fail(function (error) {
- 			console.error('Error fetching voices:', error);
- 		});
- 	}
- 
-	$('.s-dropdown-menu li').on('click', function () {
-		var selectedTemplateText = $(this).text();
-		$('#message').val(selectedTemplateText);
-		$('#message').text(selectedTemplateText);
 
 	});
 

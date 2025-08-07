@@ -912,6 +912,7 @@ class HelperService
             case 'affiliate_program': return self::checkReferralAccess(); break;
             case 'menu_builder': return self::checkMenuAccess(); break;
             case 'ai_speech_to_text_pro': return self::checkSpeechProAccess(); break;
+            case 'speechify_clone': return self::checkSpeechifyCloneAccess(); break;
             default:
                 return true;
                 break;
@@ -1099,6 +1100,19 @@ class HelperService
     {   
         if (self::extensionVoiceClone()) {
             return self::checkVoiceCloneFeature();
+        } else {
+            return false;
+        }
+    }
+    // ===================================================================================
+
+
+    // VOICE CLONE FEATURE
+    // ===================================================================================
+    public static function checkSpeechifyCloneAccess()
+    {   
+        if (self::extensionSpeechifyVoiceClone()) {
+            return self::checkSpeechifyVoiceCloneFeature();
         } else {
             return false;
         }
@@ -1871,7 +1885,7 @@ class HelperService
     public static function checkVoiceCloneFeature()
     {   
         $settings = ExtensionSetting::first();
- 
+
         if (isset($settings->voice_clone_feature)) {
             if (!is_null(auth()->user()->plan_id)) {
                 $plan = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
@@ -2837,7 +2851,7 @@ class HelperService
     // ===================================================================================
 
 
-    // AZURE OPENAI EXTENSION
+    // XERO EXTENSION
     // ===================================================================================
     public static function extensionXero()
     {   
@@ -2921,6 +2935,61 @@ class HelperService
     // ===================================================================================
 
 
+    // SPEECHIFY TEXT TO SPEECH EXTENSION
+    // ===================================================================================
+    public static function extensionSpeechifyTextToSpeech()
+    {   
+        $extension = Extension::where('slug', 'speechify-text')->first();
+
+        if ($extension) {
+            return ($extension->installed) ? true : false;
+        } else {
+            return false;
+        }
+    }
+
+
+    // SPEECHIFY VOICE CLONE EXTENSION
+    // ===================================================================================
+    public static function extensionSpeechifyVoiceClone()
+    {   
+        $extension = Extension::where('slug', 'speechify-clone')->first();
+
+        if ($extension) {
+            return ($extension->installed) ? true : false;
+        } else {
+            return false;
+        }
+    }
+
+    public static function checkSpeechifyVoiceCloneFeature()
+    {   
+        $settings = ExtensionSetting::first();
+
+        if (isset($settings->speechify_clone_feature)) {
+            if (!is_null(auth()->user()->plan_id)) {
+                $plan = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
+                if (!is_null($plan->speechify_clone_feature)) {
+                    return $plan->speechify_clone_feature;
+                } else {
+                    return false;
+                }
+            } else {
+                if ($settings->speechify_clone_feature) {
+                    if ($settings->speechify_clone_free_tier) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        } else {
+            return false;
+        }  
+    }
+    // ===================================================================================
     
 }
 

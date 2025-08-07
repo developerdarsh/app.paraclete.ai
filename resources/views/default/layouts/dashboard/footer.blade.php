@@ -51,9 +51,6 @@
 <!-- Search js-->
 <script src="{{theme_url('js/search.js')}}"></script>
 
-<!-- multiselect select  -->
-<script src="{{URL::asset('plugins/bootstrap-5.0.2/js/bootstrap-multiselect.min.js')}}"></script>
-
 
 <!-- Google Analytics -->
 @if (config('services.google.analytics.enable') == 'on')

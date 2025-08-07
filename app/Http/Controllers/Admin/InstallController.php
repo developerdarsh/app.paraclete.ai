@@ -135,8 +135,9 @@ class InstallController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function storeDatabaseCredentials()
+    public function storeDatabaseCredentials(Request $request)
     {
+        \Log::info($request->all());
         request()->validate([
             'hostname' => 'required',
             'port' => 'required',
@@ -246,6 +247,7 @@ class InstallController extends Controller
 
             return true;
         } catch (\Exception $e) {
+            \Log::info($e);
             return back()->with('error', $e->getMessage());
         }
     }

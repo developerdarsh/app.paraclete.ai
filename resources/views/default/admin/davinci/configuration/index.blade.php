@@ -73,8 +73,15 @@
 												<option value="gemini-1.5-pro" @if ( config('settings.default_model_admin')  == 'gemini-1.5-pro') selected @endif>{{ __('Gemini 1.5 Pro') }}</option>
 												<option value="gemini-1.5-flash" @if ( config('settings.default_model_admin')  == 'gemini-1.5-flash') selected @endif>{{ __('Gemini 1.5 Flash') }}</option>
 												<option value="gemini-2.0-flash" @if ( config('settings.default_model_admin')  == 'gemini-2.0-flash') selected @endif>{{ __('Gemini 2.0 Flash') }}</option>
+												<option value="gemini-2.5-pro" @if ( config('settings.default_model_admin')  == 'gemini-2.5-pro') selected @endif>{{ __('Gemini 2.5 Pro') }}</option>
+												<option value="gemini-2.5-flash" @if ( config('settings.default_model_admin')  == 'gemini-2.5-flash') selected @endif>{{ __('Gemini 2.5 Flash') }}</option>
+												<option value="gemini-2.5-flash-lite-preview-06-17" @if ( config('settings.default_model_admin')  == 'gemini-2.5-flash-lite-preview-06-17') selected @endif>{{ __('Gemini 2.5 Flash Lite') }}</option>
 												<option value="deepseek-chat" @if ( config('settings.default_model_admin')  == 'deepseek-chat') selected @endif>{{ __('DeepSeek V3') }}</option>
 												<option value="deepseek-reasoner" @if ( config('settings.default_model_admin')  == 'deepseek-reasoner') selected @endif>{{ __('DeepSeek R1') }}</option>
+												<option value="grok-3-latest" @if ( config('settings.default_model_admin')  == 'grok-3-latest') selected @endif>{{ __('Grok 3') }}</option>
+												<option value="grok-3-fast-latest" @if ( config('settings.default_model_admin')  == 'grok-3-fast-latest') selected @endif>{{ __('Grok 3 Fast') }}</option>
+												<option value="grok-3-mini-latest" @if ( config('settings.default_model_admin')  == 'grok-3-mini-latest') selected @endif>{{ __('Grok 3 Mini') }}</option>
+												<option value="grok-3-mini-fast-latest" @if ( config('settings.default_model_admin')  == 'grok-3-mini-fast-latest') selected @endif>{{ __('Grok 3 Mini Fast') }}</option>
 												<option value="grok-2-1212" @if ( config('settings.default_model_admin')  == 'grok-2-1212') selected @endif>{{ __('Grok 2') }}</option>
 												<option value="grok-2-vision-1212" @if ( config('settings.default_model_admin')  == 'grok-2-vision-1212') selected @endif>{{ __('Grok 2 Vision') }}</option>
 												@if (App\Services\HelperService::extensionPerplexity())	
@@ -1563,6 +1570,42 @@
 									</div>
 								@endif
 
+								@if (App\Services\HelperService::extensionSpeechifyTextToSpeech())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/speechify-text')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/csp/speechify.png')}}" class="mr-4" alt="" style="width: 40px;">												
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Speechify Text to Speech') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Speechify API keys and service configurations')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
+								@if (App\Services\HelperService::extensionSpeechifyVoiceClone())
+									<div class="col-md-6 col-sm-12">
+										<div class="card shadow-0 mb-6" onclick="window.location.href='{{ url('/app/admin/davinci/configs/speechify-clone')}}'">
+											<div class="card-body p-5 d-flex">
+												<div class="extension-icon">
+													<img src="{{theme_url('img/csp/speechify.png')}}" class="mr-4" alt="" style="width: 40px;">												
+												</div>
+												<div class="extension-title">
+													<div class="d-flex">
+														<h6 class="fs-15 font-weight-bold mb-3">{{ __('Speechify Voice Clone') }}</h6>
+													</div>
+													<p class="fs-12 mb-0 text-muted">{{ __('Speechify API keys and service configurations')}}</p>
+												</div>
+											</div>							
+										</div>
+									</div>
+								@endif
+
 							</div>
 						</div>
 
@@ -1634,8 +1677,15 @@
 														<option value="gemini-1.5-pro" @if ( config('settings.default_model_user_bot')  == 'gemini-1.5-pro') selected @endif>{{ __('Gemini 1.5 Pro') }}</option>
 														<option value="gemini-1.5-flash" @if ( config('settings.default_model_user_bot')  == 'gemini-1.5-flash') selected @endif>{{ __('Gemini 1.5 Flash') }}</option>
 														<option value="gemini-2.0-flash" @if ( config('settings.default_model_user_bot')  == 'gemini-2.0-flash') selected @endif>{{ __('Gemini 2.0 Flash') }}</option>
+														<option value="gemini-2.5-pro" @if ( config('settings.default_model_user_bot')  == 'gemini-2.5-pro') selected @endif>{{ __('Gemini 2.5 Pro') }}</option>
+														<option value="gemini-2.5-flash" @if ( config('settings.default_model_user_bot')  == 'gemini-2.5-flash') selected @endif>{{ __('Gemini 2.5 Flash') }}</option>
+														<option value="gemini-2.5-flash-lite-preview-06-17" @if ( config('settings.default_model_user_bot')  == 'gemini-2.5-flash-lite-preview-06-17') selected @endif>{{ __('Gemini 2.5 Flash Lite') }}</option>
 														<option value="deepseek-chat" @if ( config('settings.default_model_user_bot')  == 'deepseek-chat') selected @endif>{{ __('DeepSeek V3') }}</option>
 														<option value="deepseek-reasoner" @if ( config('settings.default_model_user_bot')  == 'deepseek-reasoner') selected @endif>{{ __('DeepSeek R1') }}</option>
+														<option value="grok-3-latest" @if ( config('settings.default_model_user_bot')  == 'grok-3-latest') selected @endif>{{ __('Grok 3') }}</option>
+														<option value="grok-3-fast-latest" @if ( config('settings.default_model_user_bot')  == 'grok-3-fast-latest') selected @endif>{{ __('Grok 3 Fast') }}</option>
+														<option value="grok-3-mini-latest" @if ( config('settings.default_model_user_bot')  == 'grok-3-mini-latest') selected @endif>{{ __('Grok 3 Mini') }}</option>
+														<option value="grok-3-mini-fast-latest" @if ( config('settings.default_model_user_bot')  == 'grok-3-mini-fast-latest') selected @endif>{{ __('Grok 3 Mini Fast') }}</option>
 														<option value="grok-2-1212" @if ( config('settings.default_model_user_bot')  == 'grok-2-1212') selected @endif>{{ __('Grok 2') }}</option>
 														<option value="grok-2-vision-1212" @if ( config('settings.default_model_user_bot')  == 'grok-2-vision-1212') selected @endif>{{ __('Grok 2 Vision') }}</option>
 														@if (App\Services\HelperService::extensionPerplexity())	
@@ -1685,8 +1735,15 @@
 														<option value="gemini-1.5-pro" @if ( config('settings.default_model_user_template')  == 'gemini-1.5-pro') selected @endif>{{ __('Gemini 1.5 Pro') }}</option>
 														<option value="gemini-1.5-flash" @if ( config('settings.default_model_user_template')  == 'gemini-1.5-flash') selected @endif>{{ __('Gemini 1.5 Flash') }}</option>
 														<option value="gemini-2.0-flash" @if ( config('settings.default_model_user_template')  == 'gemini-2.0-flash') selected @endif>{{ __('Gemini 2.0 Flash') }}</option>
+														<option value="gemini-2.5-pro" @if ( config('settings.default_model_user_template')  == 'gemini-2.5-pro') selected @endif>{{ __('Gemini 2.5 Pro') }}</option>
+														<option value="gemini-2.5-flash" @if ( config('settings.default_model_user_template')  == 'gemini-2.5-flash') selected @endif>{{ __('Gemini 2.5 Flash') }}</option>
+														<option value="gemini-2.5-flash-lite-preview-06-17" @if ( config('settings.default_model_user_template')  == 'gemini-2.5-flash-lite-preview-06-17') selected @endif>{{ __('Gemini 2.5 Flash Lite') }}</option>
 														<option value="deepseek-chat" @if ( config('settings.default_model_user_template')  == 'deepseek-chat') selected @endif>{{ __('DeepSeek V3') }}</option>
 														<option value="deepseek-reasoner" @if ( config('settings.default_model_user_template')  == 'deepseek-reasoner') selected @endif>{{ __('DeepSeek R1') }}</option>
+														<option value="grok-3-latest" @if ( config('settings.default_model_user_template')  == 'grok-3-latest') selected @endif>{{ __('Grok 3') }}</option>
+														<option value="grok-3-fast-latest" @if ( config('settings.default_model_user_template')  == 'grok-3-fast-latest') selected @endif>{{ __('Grok 3 Fast') }}</option>
+														<option value="grok-3-mini-latest" @if ( config('settings.default_model_user_template')  == 'grok-3-mini-latest') selected @endif>{{ __('Grok 3 Mini') }}</option>
+														<option value="grok-3-mini-fast-latest" @if ( config('settings.default_model_user_template')  == 'grok-3-mini-fast-latest') selected @endif>{{ __('Grok 3 Mini Fast') }}</option>
 														<option value="grok-2-1212" @if ( config('settings.default_model_user_template')  == 'grok-2-1212') selected @endif>{{ __('Grok 2') }}</option>
 														<option value="grok-2-vision-1212" @if ( config('settings.default_model_user_template')  == 'grok-2-vision-1212') selected @endif>{{ __('Grok 2 Vision') }}</option>
 														@if (App\Services\HelperService::extensionPerplexity())	
@@ -1736,8 +1793,15 @@
 														<option value="gemini-1.5-pro" @foreach ($all_models as $key=>$value) @if($value == 'gemini-1.5-pro') selected @endif @endforeach>{{ __('Gemini 1.5 Pro') }}</option>
 														<option value="gemini-1.5-flash" @foreach ($all_models as $key=>$value) @if($value == 'gemini-1.5-flash') selected @endif @endforeach>{{ __('Gemini 1.5 Flash') }}</option>
 														<option value="gemini-2.0-flash" @foreach ($all_models as $key=>$value) @if($value == 'gemini-2.0-flash') selected @endif @endforeach>{{ __('Gemini 2.0 Flash') }}</option>
+														<option value="gemini-2.5-pro" @foreach ($all_models as $key=>$value) @if($value == 'gemini-2.5-pro') selected @endif @endforeach>{{ __('Gemini 2.5 Pro') }}</option>
+														<option value="gemini-2.5-flash" @foreach ($all_models as $key=>$value) @if($value == 'gemini-2.5-flash') selected @endif @endforeach>{{ __('Gemini 2.5 Flash') }}</option>
+														<option value="gemini-2.5-flash-lite-preview-06-17" @foreach ($all_models as $key=>$value) @if($value == 'gemini-2.5-flash-lite-preview-06-17') selected @endif @endforeach>{{ __('Gemini 2.5 Flash Lite') }}</option>
 														<option value="deepseek-chat" @foreach ($all_models as $key=>$value) @if($value == 'deepseek-chat') selected @endif @endforeach>{{ __('DeeSeek V3') }}</option>
 														<option value="deepseek-reasoner" @foreach ($all_models as $key=>$value) @if($value == 'deepseek-reasoner') selected @endif @endforeach>{{ __('DeeSeek R1') }}</option>
+														<option value="grok-3-latest" @foreach ($all_models as $key=>$value) @if($value == 'grok-3-latest') selected @endif @endforeach>{{ __('Grok 3') }}</option>
+														<option value="grok-3-fast-latest" @foreach ($all_models as $key=>$value) @if($value == 'grok-3-fast-latest') selected @endif @endforeach>{{ __('Grok 3 Fast') }}</option>
+														<option value="grok-3-mini-latest" @foreach ($all_models as $key=>$value) @if($value == 'grok-3-mini-latest') selected @endif @endforeach>{{ __('Grok 3 Mini') }}</option>
+														<option value="grok-3-mini-fast-latest" @foreach ($all_models as $key=>$value) @if($value == 'grok-3-mini-fast-latest') selected @endif @endforeach>{{ __('Grok 3 Mini Fast') }}</option>
 														<option value="grok-2-1212" @foreach ($all_models as $key=>$value) @if($value == 'grok-2-1212') selected @endif @endforeach>{{ __('Grok 2') }}</option>
 														<option value="grok-2-vision-1212" @foreach ($all_models as $key=>$value) @if($value == 'grok-2-vision-1212') selected @endif @endforeach>{{ __('Grok 2 Vision') }}</option>
 														@if (App\Services\HelperService::extensionPerplexity())	
@@ -1770,6 +1834,9 @@
 														<option value='elevenlabs' @foreach ($vendors as $key=>$value) @if($value == 'elevenlabs') selected @endif @endforeach>{{ __('ElevenLabs') }}</option>																																																																																																																											
 														@if (App\Services\HelperService::extensionWatson())
 															<option value='ibm' @foreach ($vendors as $key=>$value) @if($value == 'ibm') selected @endif @endforeach>{{ __('IBM') }}</option>																																																																																				
+														@endif
+														@if (App\Services\HelperService::extensionSpeechifyTextToSpeech())
+															<option value='speechify' @foreach ($vendors as $key=>$value) @if($value == 'speechify') selected @endif @endforeach>{{ __('Speechify') }}</option>																																																																																				
 														@endif
 													</select>
 												</div>

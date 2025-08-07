@@ -15,8 +15,8 @@ class VendorsSeeder extends Seeder
     public function run()
     {
         $vendors = [
-            ['id' => 6, 'vendor_id' => 'aws_std', 'enabled' => 0, 'cost' => 0.000004],
-            ['id' => 7, 'vendor_id' => 'aws_nrl', 'enabled' => 0, 'cost' => 0.000016],
+            ['id' => 8, 'vendor_id' => 'ibm_nrl', 'enabled' => 0, 'cost' => 0.000016],
+            ['id' => 9, 'vendor_id' => 'speechify_nrl', 'enabled' => 0, 'cost' => 0.000016],
         ];
 
         foreach ($vendors as $vendor) {

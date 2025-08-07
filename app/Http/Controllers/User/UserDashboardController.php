@@ -18,7 +18,6 @@ use App\Models\SupportTicket;
 use App\Models\FavoriteChat;
 use App\Models\MainSetting;
 use App\Models\Image;
-use App\Models\Banner;
 
 class UserDashboardController extends Controller
 {
@@ -98,11 +97,11 @@ class UserDashboardController extends Controller
                 $balance = $remaining_tokens;
             }
         }
-		$BannerModel = Banner::get()->toArray();  
+
         $latest_images = Image::latest()->take(10)->get();
         
 
-        return view('user.dashboard.index', compact('BannerModel','latest_images', 'remaining_tokens', 'used_tokens', 'balance', 'data', 'configs', 'chart_data', 'template_quantity', 'templates', 'subscription', 'custom_templates', 'chat_quantity', 'favorite_chats', 'custom_chats', 'term', 'documents', 'tickets', 'notifications', 'total_words', 'content_documents', 'content_images', 'content_voiceovers', 'content_transcripts'));           
+        return view('user.dashboard.index', compact('latest_images', 'remaining_tokens', 'used_tokens', 'balance', 'data', 'configs', 'chart_data', 'template_quantity', 'templates', 'subscription', 'custom_templates', 'chat_quantity', 'favorite_chats', 'custom_chats', 'term', 'documents', 'tickets', 'notifications', 'total_words', 'content_documents', 'content_images', 'content_voiceovers', 'content_transcripts'));           
     }
 
 
