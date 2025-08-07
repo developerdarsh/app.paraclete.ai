@@ -1,0 +1,21 @@
+{
+    "extension_name": "Wordress",
+    "version": "1.2",
+    "controllers": [
+      "app/Http/Controllers/Admin/Extensions/WordpressIntegrationController.php",
+      "app/Http/Controllers/User/WordpressController.php"
+    ],
+    "views": [
+      "resources/views/default/admin/davinci/configuration/extension/wordpress/setting.blade.php",
+      "resources/views/default/user/integration/wordpress/create.blade.php",
+      "resources/views/default/user/integration/wordpress/edit.blade.php",
+      "resources/views/default/user/integration/wordpress/index.blade.php",
+      "resources/views/default/user/integration/wordpress/create-post.blade.php",
+      "resources/views/default/user/integration/wordpress/show-post.blade.php"
+    ],
+    "routes": "routes/wordpress_route.php",
+    "migrations": {
+        "install": [],
+        "uninstall": []
+    }
+}

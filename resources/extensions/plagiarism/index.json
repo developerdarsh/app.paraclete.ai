@@ -1,0 +1,19 @@
+{
+    "extension_name": "AI Plagiarism and Content Detector",
+    "version": "1.0",
+    "controllers": [
+      "app/Http/Controllers/Admin/Extensions/PlagiarismController.php",
+      "app/Http/Controllers/User/PlagiarismCheckerController.php",
+      "app/Http/Controllers/User/DetectorController.php"
+    ],
+    "views": [
+      "resources/views/default/admin/davinci/configuration/extension/plagiarism/index.blade.php",
+      "resources/views/default/user/detector/detector.blade.php",
+      "resources/views/default/user/plagiarism/plagiarism.blade.php"
+    ],
+    "routes": "routes/plagiarism_route.php",
+    "migrations": {
+        "install": [],
+        "uninstall": []
+    }
+}

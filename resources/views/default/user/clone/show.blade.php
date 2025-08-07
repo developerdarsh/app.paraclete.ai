@@ -11,7 +11,7 @@
 		<div class="page-leftheader">
 			<h4 class="page-title mb-0">{{ __('View Result') }}</h4>
 			<ol class="breadcrumb mb-2">
-				<li class="breadcrumb-item"><a href="{{route('user.dashboard')}}"><i class="fa-sharp fa-solid fa-waveform-lines mr-2 fs-12"></i>{{ __('User') }}</a></li>
+				<li class="breadcrumb-item"><a href="{{route('user.dashboard')}}"><i class="   fa-solid fa-waveform-lines mr-2 fs-12"></i>{{ __('User') }}</a></li>
 				<li class="breadcrumb-item" aria-current="page"><a href="{{ route('user.voiceover') }}"> {{ __('Voiceover Studio') }}</a></li>
 				<li class="breadcrumb-item active" aria-current="page"><a href="{{url('#')}}"> {{ __('View Result') }}</a></li>
 			</ol>

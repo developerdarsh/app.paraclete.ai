@@ -3,32 +3,18 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\LicenseController;
-use App\Services\Statistics\UserService;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Services\HelperService;
 use App\Models\SubscriptionPlan;
-use App\Models\User;
-use App\Models\ApiKey;
-use App\Models\Setting;
+use App\Models\ExtensionSetting;
 use App\Models\Image;
-use App\Models\SdCost;
-use GuzzleHttp\Exception\Report;
+use App\Models\ImageCredit;
 
 class PhotoStudioController extends Controller
 {
-    private $api;
-    private $user;
-
-    public function __construct()
-    {
-        $this->api = new LicenseController();
-        $this->user = new UserService();
-    }
-
     /** 
      * Display a listing of the resource.
      *
@@ -36,30 +22,25 @@ class PhotoStudioController extends Controller
      */
     public function index(Request $request)
     {   
+        $studio = ImageCredit::first();
+        $check = ExtensionSetting::first();
 
-        $verify = $this->api->verify_license();
-        $type = (isset($verify['type'])) ? $verify['type'] : '';
-
-        $studio = SdCost::first();
-        
-        if (auth()->user()->group == 'user') {
-            if (config('settings.photo_studio_user_access') != 'allow') {
+        if (is_null(auth()->user()->plan_id)) {
+            if (is_null($check->photo_studio_free_tier) || !$check->photo_studio_free_tier) {
                 toastr()->warning(__('AI Photo Studio feature is not available for free tier users, subscribe to get a proper access'));
                 return redirect()->route('user.plans');
             } else {
-                return view('user.photo_studio.index', compact('type', 'studio'));
+                return view('user.photo_studio.index', compact('studio'));
             }
-        } elseif (auth()->user()->group == 'subscriber') {
+        } else {
             $plan = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
             if ($plan->photo_studio_feature == false) {     
                 toastr()->warning(__('Your current subscription plan does not include support for AI Photo Studio feature'));
                 return redirect()->back();                   
             } else {
-                return view('user.photo_studio.index', compact('type', 'studio'));
+                return view('user.photo_studio.index', compact('studio'));
             }
-        } else {
-            return view('user.photo_studio.index', compact('type', 'studio'));
-        }
+        } 
 
     }
 
@@ -75,79 +56,27 @@ class PhotoStudioController extends Controller
     {
         if ($request->ajax()) {
 
-            if (config('settings.personal_sd_api') == 'allow') {
-                if (is_null(auth()->user()->personal_sd_key)) {
-                    $data['status'] = 'error';
-                    $data['message'] = __('You must include your personal Stable Diffusion API key in your profile settings first');
-                    return $data; 
-                } else {
-                    $stable_diffusion = auth()->user()->personal_sd_key;
-                } 
-    
-            } elseif (!is_null(auth()->user()->plan_id)) {
-                $check_api = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
-                if ($check_api->personal_sd_api) {
-                    if (is_null(auth()->user()->personal_sd_key)) {
-                        $data['status'] = 'error';
-                        $data['message'] = __('You must include your personal Stable Diffusion API key in your profile settings first');
-                        return $data; 
-                    } else {
-                        $stable_diffusion = auth()->user()->personal_sd_key;
-                    }
-                } else {
-                    if (config('settings.sd_key_usage') == 'main') {
-                        $stable_diffusion = config('services.stable_diffusion.key');
-                    } else {
-                        $api_keys = ApiKey::where('engine', 'stable_diffusion')->where('status', true)->pluck('api_key')->toArray();
-                        array_push($api_keys, config('services.stable_diffusion.key'));
-                        $key = array_rand($api_keys, 1);
-                        $stable_diffusion = $api_keys[$key];
-                    }
-                }        
-            } else {
-                if (config('settings.sd_key_usage') == 'main') {
-                    $stable_diffusion = config('services.stable_diffusion.key');
-                } else {
-                    $api_keys = ApiKey::where('engine', 'stable_diffusion')->where('status', true)->pluck('api_key')->toArray();
-                    array_push($api_keys, config('services.stable_diffusion.key'));
-                    $key = array_rand($api_keys, 1);
-                    $stable_diffusion = $api_keys[$key];
-                }
-            }
+            $check = ExtensionSetting::first();
 
-            $settings = Setting::where('name', 'license')->first(); 
-            $verify = $this->user->verify_license();
-            if($settings->value != $verify['code']){return;}
+            if (is_null($check->photo_studio_stability_api) || $check->photo_studio_stability_api == '') {
+                $data['status'] = 'error';
+                $data['message'] = __('You must include your Stable Diffusion API key first');
+                return $data; 
+            } else {
+                $stable_diffusion = $check->photo_studio_stability_api;
+            }
+            
 
             # Verify if user has enough credits
-            if (auth()->user()->image_credits != -1) {
-                if ((auth()->user()->image_credits + auth()->user()->image_credits_prepaid) < 1) {
-                    if (!is_null(auth()->user()->member_of)) {
-                        if (auth()->user()->member_use_credits_image) {
-                            $member = User::where('id', auth()->user()->member_of)->first();
-                            if (($member->image_credits + $member->image_credits_prepaid) < 1) {
-                                $data['status'] = 'error';
-                                $data['message'] = __('Not enough image credits to proceed, subscribe or top up your image balance and try again');
-                                return $data;
-                            }
-                        } else {
-                            $data['status'] = 'error';
-                            $data['message'] = __('Not enough image credits to proceed, subscribe or top up your image balance and try again');
-                            return $data;
-                        }
-                        
-                    } else {
-                        $data['status'] = 'error';
-                        $data['message'] = __('Not enough image credits to proceed, subscribe or top up your image balance and try again');
-                        return $data;
-                    } 
-                }
+            $credit_status = $this->checkCredits($request->task);
+            if (!$credit_status) {
+                $data['status'] = 'error';
+                $data['message'] = __('Not enough media credits to proceed, subscribe or top up your media credit balance and try again');
+                return $data;
             }
 
 
             $plan_type = (auth()->user()->plan_id) ? 'paid' : 'free'; 
-            $output = 'a1d1c037d177f38570f2c4772d4402ac';
-            $init = new Report(); $file = $init->upload();
             
             $vendor_engine = 'photo_studio';
 
@@ -190,7 +119,6 @@ class PhotoStudioController extends Controller
 
                 $result = curl_exec($ch);
                 curl_close($ch);
-                if(md5($file['type']) != $output) return;
 
                 $response = json_decode($result , true);
 
@@ -231,7 +159,6 @@ class PhotoStudioController extends Controller
 
                 $result = curl_exec($ch);
                 curl_close($ch);
-                if(md5($file['type']) != $output) return;
 
                 $response = json_decode($result , true);
 
@@ -272,7 +199,6 @@ class PhotoStudioController extends Controller
 
                 $result = curl_exec($ch);
                 curl_close($ch);
-                if(md5($file['type']) != $output) return;
 
                 $response = json_decode($result , true);
 
@@ -310,7 +236,6 @@ class PhotoStudioController extends Controller
 
                 $result = curl_exec($ch);
                 curl_close($ch);
-                if(md5($file['type']) != $output) return;
 
                 $response = json_decode($result , true);
 
@@ -345,7 +270,6 @@ class PhotoStudioController extends Controller
 
                 $result = curl_exec($ch);
                 curl_close($ch);
-                if(md5($file['type']) != $output) return;
 
                 $response = json_decode($result , true);
 
@@ -386,7 +310,6 @@ class PhotoStudioController extends Controller
 
                 $result = curl_exec($ch);
                 curl_close($ch);
-                if(md5($file['type']) != $output) return;
 
                 $response = json_decode($result , true);
 
@@ -424,7 +347,6 @@ class PhotoStudioController extends Controller
 
                 $result = curl_exec($ch);
                 curl_close($ch);
-                if(md5($file['type']) != $output) return;
 
                 $response = json_decode($result , true);
 
@@ -469,7 +391,6 @@ class PhotoStudioController extends Controller
 
                 $result = curl_exec($ch);
                 curl_close($ch);
-                if(md5($file['type']) != $output) return;
 
                 $response = json_decode($result , true);
 
@@ -510,7 +431,6 @@ class PhotoStudioController extends Controller
 
                 $result = curl_exec($ch);
                 curl_close($ch);
-                if(md5($file['type']) != $output) return;
 
                 $response = json_decode($result , true);
 
@@ -551,7 +471,6 @@ class PhotoStudioController extends Controller
 
                 $result = curl_exec($ch);
                 curl_close($ch);
-                if(md5($file['type']) != $output) return;
 
                 $response = json_decode($result , true);
 
@@ -619,7 +538,6 @@ class PhotoStudioController extends Controller
 
                 $result = curl_exec($ch);
                 curl_close($ch);
-                if(md5($file['type']) != $output) return;
 
                 $response = json_decode($result , true);
 
@@ -690,7 +608,6 @@ class PhotoStudioController extends Controller
 
                 $result = curl_exec($ch);
                 curl_close($ch);
-                if(md5($file['type']) != $output) return;
 
                 $response = json_decode($result , true);
             }
@@ -736,7 +653,7 @@ class PhotoStudioController extends Controller
                     }
 
                     # Update credit balance
-                    $studio = SdCost::first();
+                    $studio = ImageCredit::first();
                     $credits = 1;
                     switch ($request->task) {
                         case 'reimagine': $credits = $studio->sd_photo_studio_reimagine; break;
@@ -755,24 +672,6 @@ class PhotoStudioController extends Controller
                         default: $credits = 1;
                     }
 
-                    $cost = 1;
-                    switch ($request->task) {
-                        case 'reimagine': $cost = 6; break;
-                        case 'structure': $cost = 3; break;
-                        case 'sketch': $cost = 3; break;
-                        case 'erase': $cost = 3; break;
-                        case 'inpaint': $cost = 3; break;
-                        case 'replace': $cost = 4; break;
-                        case 'background': $cost = 2; break;
-                        case 'outpaint': $cost = 4; break;
-                        case 'upscale_conservative': $cost = 25; break;
-                        case 'upscale_creative': $cost = 25; break;
-                        case 'style': $cost = 4; break;
-                        case '3d': $cost = 2; break;
-                        case 'text': $cost = 8; break;
-                        default: $cost = 1;
-                    }
-
                     $content = new Image();
                     $content->user_id = auth()->user()->id;
                     $content->description = $request->prompt;
@@ -783,17 +682,17 @@ class PhotoStudioController extends Controller
                     $content->vendor = 'sd';
                     $content->vendor_engine = $vendor_engine;
                     $content->negative_prompt = $request->negative_prompt;
-                    $content->cost = $cost;
+                    $content->cost = $credits;
                     $content->credits = $credits;
                     $content->save();
                     
-                    $this->updateBalance($credits);
+                    $this->updateBalance($request->task);
 
                     $data['status'] = 'success';
                     $data['image'] = $image_url;
-                    $data['old'] = auth()->user()->image_credits + auth()->user()->image_credits_prepaid;
-                    $data['current'] = auth()->user()->image_credits + auth()->user()->image_credits_prepaid - 1;
-                    $data['balance'] = (auth()->user()->image_credits == -1) ? 'unlimited' : 'counted';
+                    $data['old'] = auth()->user()->images + auth()->user()->images_prepaid;
+                    $data['current'] = auth()->user()->images + auth()->user()->images_prepaid - $credits;
+                    $data['balance'] = (auth()->user()->images == -1) ? 'unlimited' : 'counted';
                     return $data; 
                 }
             } else {
@@ -812,6 +711,57 @@ class PhotoStudioController extends Controller
 	}
 
 
+    public function checkCredits($task) 
+    {
+        $status = true;
+        
+        switch ($task) {
+            case 'reimagine':
+                $status = HelperService::checkMediaCredits('sd_photo_studio_reimagine');
+                break;
+            case 'structure':
+                $status = HelperService::checkMediaCredits('sd_photo_studio_structure');
+                break;
+            case 'sketch':
+                $status = HelperService::checkMediaCredits('sd_photo_studio_sketch');
+                break;
+            case 'erase':
+                $status = HelperService::checkMediaCredits('sd_photo_studio_erase_object');
+                break;
+            case 'inpaint':
+                $status = HelperService::checkMediaCredits('sd_photo_studio_inpaint');
+                break;
+            case 'replace':
+                $status = HelperService::checkMediaCredits('sd_photo_studio_search_replace');
+                break;
+            case 'background':
+                $status = HelperService::checkMediaCredits('sd_photo_studio_remove_background');
+                break;
+            case 'outpaint':
+                $status = HelperService::checkMediaCredits('sd_photo_studio_outpaint');
+                break;
+            case 'upscale_conservative':
+                $status = HelperService::checkMediaCredits('sd_photo_studio_conservative_upscaler');
+                break;
+            case 'upscale_creative':
+                $status = HelperService::checkMediaCredits('sd_photo_studio_creative_upscaler');
+                break;
+            case 'style':
+                $status = HelperService::checkMediaCredits('sd_photo_studio_style');
+                break;
+            case '3d':
+                $status = HelperService::checkMediaCredits('sd_photo_studio_3d');
+                break;
+            case 'text':
+                $status = HelperService::checkMediaCredits('sd_photo_studio_text');
+                break;
+        }
+
+        return $status;
+    }
+
+
+
     /**
 	*
 	* Update user image balance
@@ -819,70 +769,49 @@ class PhotoStudioController extends Controller
 	* @return - confirmation
 	*
 	*/
-    public function updateBalance($images) {
-
-        $user = User::find(Auth::user()->id);
-
-        if (auth()->user()->image_credits != -1) {
-        
-            if (Auth::user()->image_credits > $images) {
-
-                $total_images = Auth::user()->image_credits - $images;
-                $user->image_credits = ($total_images < 0) ? 0 : $total_images;
-
-            } elseif (Auth::user()->image_credits_prepaid > $images) {
-
-                $total_images_prepaid = Auth::user()->image_credits_prepaid - $images;
-                $user->image_credits_prepaid = ($total_images_prepaid < 0) ? 0 : $total_images_prepaid;
-
-            } elseif ((Auth::user()->image_credits + Auth::user()->image_credits_prepaid) == $images) {
-
-                $user->image_credits = 0;
-                $user->image_credits_prepaid = 0;
-
-            } else {
-
-                if (!is_null(Auth::user()->member_of)) {
-
-                    $member = User::where('id', Auth::user()->member_of)->first();
-
-                    if ($member->image_credits > $images) {
-
-                        $total_images = $member->image_credits - $images;
-                        $member->image_credits = ($total_images < 0) ? 0 : $total_images;
-            
-                    } elseif ($member->image_credits_prepaid > $images) {
-            
-                        $total_images_prepaid = $member->image_credits_prepaid - $images;
-                        $member->image_credits_prepaid = ($total_images_prepaid < 0) ? 0 : $total_images_prepaid;
-            
-                    } elseif (($member->image_credits + $member->image_credits_prepaid) == $images) {
-            
-                        $member->image_credits = 0;
-                        $member->image_credits_prepaid = 0;
-            
-                    } else {
-                        $remaining = $images - $member->image_credits;
-                        $member->image_credits = 0;
-        
-                        $prepaid_left = $member->image_credits_prepaid - $remaining;
-                        $member->image_credits_prepaid = ($prepaid_left < 0) ? 0 : $prepaid_left;
-                    }
-
-                    $member->update();
-
-                } else {
-                    $remaining = $images - Auth::user()->image_credits;
-                    $user->image_credits = 0;
-
-                    $prepaid_left = Auth::user()->image_credits_prepaid - $remaining;
-                    $user->image_credits_prepaid = ($prepaid_left < 0) ? 0 : $prepaid_left;
-                }
-            }
+    public function updateBalance($task) 
+    {
+        switch ($task) {
+            case 'reimagine':
+                HelperService::updateMediaBalance('sd_photo_studio_reimagine');
+                break;
+            case 'structure':
+                HelperService::updateMediaBalance('sd_photo_studio_structure');
+                break;
+            case 'sketch':
+                HelperService::updateMediaBalance('sd_photo_studio_sketch');
+                break;
+            case 'erase':
+                HelperService::updateMediaBalance('sd_photo_studio_erase_object');
+                break;
+            case 'inpaint':
+                HelperService::updateMediaBalance('sd_photo_studio_inpaint');
+                break;
+            case 'replace':
+                HelperService::updateMediaBalance('sd_photo_studio_search_replace');
+                break;
+            case 'background':
+                HelperService::updateMediaBalance('sd_photo_studio_remove_background');
+                break;
+            case 'outpaint':
+                HelperService::updateMediaBalance('sd_photo_studio_outpaint');
+                break;
+            case 'upscale_conservative':
+                HelperService::updateMediaBalance('sd_photo_studio_conservative_upscaler');
+                break;
+            case 'upscale_creative':
+                HelperService::updateMediaBalance('sd_photo_studio_creative_upscaler');
+                break;
+            case 'style':
+                HelperService::updateMediaBalance('sd_photo_studio_style');
+                break;
+            case '3d':
+                HelperService::updateMediaBalance('sd_photo_studio_3d');
+                break;
+            case 'text':
+                HelperService::updateMediaBalance('sd_photo_studio_text');
+                break;
         }
-
-        $user->update();
-
     }
 
 

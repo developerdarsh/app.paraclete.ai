@@ -3,21 +3,14 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\LicenseController;
 use App\Services\Statistics\UserService;
 use Illuminate\Http\Request;
 use App\Models\SubscriptionPlan;
-use App\Models\Setting;
+use App\Models\ExtensionSetting;
 
 
 class PlagiarismCheckerController extends Controller
 {
-    private $api;
-
-    public function __construct()
-    {
-        $this->api = new LicenseController();
-    }
 
     /** 
      * Display a listing of the resource.
@@ -26,27 +19,24 @@ class PlagiarismCheckerController extends Controller
      */
     public function index(Request $request)
     {   
-        $verify = $this->api->verify_license();
-        $type = (isset($verify['type'])) ? $verify['type'] : '';
+        $check = ExtensionSetting::first();
 
-        if (auth()->user()->group == 'user') {
-            if (config('settings.plagiarism_checker_user_access') != 'allow') {
+        if (is_null(auth()->user()->plan_id)) {
+            if (is_null($check->plagiarism_free_tier) || !$check->plagiarism_free_tier) {
                 toastr()->warning(__('AI Plagiarism Checker feature is not available for free tier users, subscribe to get a proper access'));
                 return redirect()->route('user.plans');
             } else {
-                return view('user.plagiarism.index', compact('type'));
+                return view('user.plagiarism.plagiarism');
             }
-        } elseif (auth()->user()->group == 'subscriber') {
+        } else {
             $plan = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
             if ($plan->plagiarism_feature == false) {     
                 toastr()->warning(__('Your current subscription plan does not include support for AI Plagiarism Checker feature'));
                 return redirect()->back();                   
             } else {
-                return view('user.plagiarism.index', compact('type'));
+                return view('user.plagiarism.plagiarism');
             }
-        } else {
-            return view('user.plagiarism.index', compact('type'));
-        }
+        } 
     }
 
 
@@ -71,11 +61,6 @@ class PlagiarismCheckerController extends Controller
                 $requestData[] = $name.'='.urlencode($value);
             }
 
-            $uploading = new UserService();
-            $settings = Setting::where('name', 'license')->first(); 
-            $verify = $uploading->upload();
-            if($settings->value != $verify['code']){return;}
-
             $ch = curl_init();
                 
             curl_setopt($ch, CURLOPT_URL, 'https://plagiarismcheck.org/api/v1/text');
@@ -93,33 +78,15 @@ class PlagiarismCheckerController extends Controller
 
             $response = json_decode($result);
 
-            sleep(5);
-
             if ($response->success) {
 
                 $id = $response->data->text->id;
 
-                $ch = curl_init();
-                
-                curl_setopt($ch, CURLOPT_URL, 'https://plagiarismcheck.org/api/v1/text/'.$id,);
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-                curl_setopt($ch, CURLOPT_POST, false);
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                    'X-API-TOKEN:'. config('services.plagiarism.key')
-                ));
-                
-                $status_check = curl_exec($ch);
-                curl_close($ch);
+                while (1) {
 
-                $status = json_decode($status_check);
-
-                if ($status->data->state === 5) {
-                    
                     $ch = curl_init();
-                
-                    curl_setopt($ch, CURLOPT_URL, 'https://plagiarismcheck.org/api/v1/text/report/'.$id,);
+                    
+                    curl_setopt($ch, CURLOPT_URL, 'https://plagiarismcheck.org/api/v1/text/'.$id,);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
                     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
@@ -128,18 +95,41 @@ class PlagiarismCheckerController extends Controller
                         'X-API-TOKEN:'. config('services.plagiarism.key')
                     ));
                     
-                    $report_check = curl_exec($ch);
+                    $status_check = curl_exec($ch);
                     curl_close($ch);
 
-                    $report = json_decode($report_check);
+                    $status = json_decode($status_check);
 
-                    $data['status'] = 200;
-                    $data['percentage'] = $report->data->report->percent;
-                    $data['report'] = json_encode($report->data->report_data->sources);
-
-                    return $data;
+                    if ($status->data->report != null) {
+                        break;
+                    }
                 }
+                    
+                $ch = curl_init();
+            
+                curl_setopt($ch, CURLOPT_URL, 'https://plagiarismcheck.org/api/v1/text/report/'.$id,);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+                curl_setopt($ch, CURLOPT_POST, false);
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                    'X-API-TOKEN:'. config('services.plagiarism.key')
+                ));
                 
+                $report_check = curl_exec($ch);
+                curl_close($ch);
+
+                $report = json_decode($report_check);
+            
+                $data['status'] = 200;
+                $data['percentage'] = $report->data->report->percent;
+                $data['report'] = json_decode($report_check);
+                return $data; 
+                
+            } else {
+                $data['status'] = 500;
+                $data['message'] = $response->message;
+                return $data;
             }
            
         }

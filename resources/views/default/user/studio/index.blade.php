@@ -14,198 +14,192 @@
 
 @section('content')	
 	<div class="row mt-24">
-		@if ($type == 'Regular License' || $type == '')
-			<div class="row text-center justify-content-center">
-				<p class="fs-14" style="background:#FFE2E5; color:#ff0000; padding:1rem 2rem; border-radius: 0.5rem; max-width: 1200px;">{{ __('Extended License is required in order to have access to these features') }}</p>
-			</div>	
-		@else
-			<div class="col-lg-12 col-md-12 col-sm-12">
-				<div class="card border-0">	
-					<div class="card-header">
-						<h3 class="card-title"><i class="fa-solid fa-photo-film-music mr-2 text-primary"></i> {{ __('Sound Studio') }}</h3>
-					</div>			
-					<div class="card-body pt-5">
-						<div class="row">
-							<div class="col-md-3 col-sm-12">
-								<div class="row">
-									<div class="col-md-12 col-sm-12">
-										<!-- CONTAINER FOR AUDIO FILE UPLOADS-->
-										<div id="audio-upload-container" class="mb-6">							
-											
-											<!-- DRAG & DROP MEDIA FILES -->
-											<div class="select-file">
-												<input type="file" name="filepond" id="filepond" class="filepond"/>	
-											</div>
-											@error('filepond')
-												<p class="text-danger">{{ $errors->first('filepond') }}</p>
-											@enderror	
-
-										</div> <!-- END CONTAINER FOR AUDIO FILE UPLOADS-->
-									</div>
-									<div class="col-md-12 col-sm-12 text-center">
-										<div class="dropdown mb-5">	
-											<button class="btn btn-primary ripple fs-11 pl-5 pr-5 mr-4" style="text-transform: none; min-width: 144px;" type="button" id="upload-music" data-tippy-content="{{ __('Upload Background Music Audio File') }}">{{ __('Upload Music File') }}</button>
-											<a class="btn btn-primary ripple fs-11 pl-5 pr-5" style="text-transform: none; min-width: 144px;" href="{{ route('user.music.list') }}" data-tippy-content="{{ __('View All Your Uploaded Background Music Audio Files') }}">{{ __('View Music Files') }}</a>
+		<div class="col-lg-12 col-md-12 col-sm-12">
+			<div class="card">	
+				<div class="card-header border-0">
+					<h3 class="card-title"><i class="fa-solid fa-photo-film-music mr-2 text-primary"></i> {{ __('Sound Studio') }}</h3>
+				</div>			
+				<div class="card-body pt-5">
+					<div class="row">
+						<div class="col-md-3 col-sm-12">
+							<div class="row">
+								<div class="col-md-12 col-sm-12">
+									<!-- CONTAINER FOR AUDIO FILE UPLOADS-->
+									<div id="audio-upload-container" class="mb-6">							
+										
+										<!-- DRAG & DROP MEDIA FILES -->
+										<div class="select-file">
+											<input type="file" name="filepond" id="filepond" class="filepond"/>	
 										</div>
-									</div>
-								</div>
-							</div>
+										@error('filepond')
+											<p class="text-danger">{{ $errors->first('filepond') }}</p>
+										@enderror	
 
-							<div class="col-md-3 col-sm-12 pr-5 pr-minify">
-								<div class="row">
-									<div class="col-md-12 col-sm-12">
-										<div class="row">
-											<div class="col-md-10 pr-0 pr-minify">
-												<div class="input-box">	
-													<h6 class="task-heading">{{ __('Select Backround Music') }}</h6>
-													<select id="bg-music" name="background-music" class="form-select">	
-														<option value="none" id="none" data-url="none" selected>{{ __('None') }}</option>		
-														@foreach ($musics as $music)
-															<option value="{{ $music->id }}" id="{{ $music->id }}" data-url="{{ URL::asset($music->url) }}"> {{ ucfirst($music->name) }}</option>
-														@endforeach
-													</select>
-												</div>
-											</div>
-											<div class="col-md-2 pt-5" id="listen-minify">
-												<div class="dropdown">
-													<button class="btn btn-special create-project" type="button" onclick="previewMusic(this)" src="" id="listen-music" data-tippy-content="{{ __('Play Selected Background Music') }}"><i class="fa fa-play"></i></button>
-												</div>
-											</div>
-										</div>											
-									</div>
-									<div class="col-md-12 col-sm-12">
-										<div class="input-box">	
-											<h6 class="task-heading">{{ __('Set Background Music Volume') }}</h6>
-											<select id="bg-volume" name="background-volume" class="form-select">	
-												<option value="0.25">{{ __('x-Quiet') }}</option>											
-												<option value="0.5">{{ __('Quiet') }}</option>																						
-												<option value="1.0" selected>{{ __('Default') }}</option>											
-												<option value="1.5">{{ __('Loud') }}</option>											
-												<option value="2">{{ __('x-Loud') }}</option>											
-											</select>
-										</div>												
-									</div>
+									</div> <!-- END CONTAINER FOR AUDIO FILE UPLOADS-->
 								</div>
-							</div>
-
-							<div class="col-md-3 col-sm-12 pl-5 pl-minify">
-								<div class="row">
-									<div class="col-md-12 col-sm-12">
-										<div class="input-box">	
-											<h6 class="task-heading">{{ __('Set Final Result Volume') }}</h6>
-											<select id="audio-volume" name="audio-volume" class="form-select">			
-												<option value="0.25">{{ __('x-Quiet') }}</option>											
-												<option value="0.5">{{ __('Quiet') }}</option>																						
-												<option value="1.0" selected>{{ __('Default') }}</option>											
-												<option value="1.5">{{ __('Loud') }}</option>											
-												<option value="2">{{ __('x-Loud') }}</option>
-											</select>
-										</div>												
+								<div class="col-md-12 col-sm-12 text-center">
+									<div class="dropdown mb-5">	
+										<button class="btn btn-primary ripple fs-11 mb-4" type="button" id="upload-music" data-tippy-content="{{ __('Upload Background Music Audio File') }}">{{ __('Upload Music File') }}</button>
+										<a class="btn btn-primary ripple fs-11" href="{{ route('user.music.list') }}" data-tippy-content="{{ __('View All Your Uploaded Background Music Audio Files') }}">{{ __('View Music Files') }}</a>
 									</div>
-									<div class="col-md-12 col-sm-12">
-										<div class="input-box">	
-											<h6 class="task-heading">{{ __('Set Result Title') }}</h6>
-											<div class="form-group">
-												<input type="text" id="title" class="form-control @error('title') is-danger @enderror" name="title">
-												@error('title')
-													<p class="text-danger">{{ $errors->first('title') }}</p>
-												@enderror
-											</div>
-										</div>												
-									</div>
-								</div>
-							</div>
-
-							<div class="col-md-3 col-sm-12 pl-5 pl-minify">
-								<div class="row">			
-									<div class="col-md-12 col-sm-12 mt-8 text-center" id="audio-format-minify">
-										<div class="input-box">	
-											<h6 class="task-heading">{{ __('Audio File Format') }}</h6>
-											<div id="audio-format" role="radiogroup">
-												<div class="radio-control">
-													<input type="radio" name="format" class="input-control" id="mp3" value="mp3" checked>
-													<label for="mp3" class="label-control">MP3</label>
-												</div>	
-												<div class="radio-control">
-													<input type="radio" name="format" class="input-control" id="wav" value="wav">
-													<label for="wav" class="label-control">WAV</label>
-												</div>																
-												<div class="radio-control">
-													<input type="radio" name="format" class="input-control" id="ogg" value="ogg">
-													<label for="ogg" class="label-control">OGG</label>
-												</div>								
-											</div>
-										</div>											
-									</div>								
 								</div>
 							</div>
 						</div>
 
-						<div class="row mt-3">
-							<div class="col-md-12 col-sm-12 text-center">
-								<div class="input-box mb-4">	
-									<button class="btn btn-primary ripple fs-11 pl-7 pr-7" type="button" id="merge-button" style="text-transform: none; min-width: 184px;">{{ __('Merge Audio Files') }}</button>
-								</div>												
+						<div class="col-md-3 col-sm-12 pr-5 pr-minify">
+							<div class="row">
+								<div class="col-md-12 col-sm-12">
+									<div class="row">
+										<div class="col-md-10 pr-0 pr-minify">
+											<div class="input-box">	
+												<h6 class="task-heading">{{ __('Select Backround Music') }}</h6>
+												<select id="bg-music" name="background-music" class="form-select">	
+													<option value="none" id="none" data-url="none" selected>{{ __('None') }}</option>		
+													@foreach ($musics as $music)
+														<option value="{{ $music->id }}" id="{{ $music->id }}" data-url="{{ URL::asset($music->url) }}"> {{ ucfirst($music->name) }}</option>
+													@endforeach
+												</select>
+											</div>
+										</div>
+										<div class="col-md-2 pt-5" id="listen-minify">
+											<div class="dropdown">
+												<button class="btn btn-special create-project" type="button" onclick="previewMusic(this)" src="" id="listen-music" data-tippy-content="{{ __('Play Selected Background Music') }}"><i class="fa fa-play"></i></button>
+											</div>
+										</div>
+									</div>											
+								</div>
+								<div class="col-md-12 col-sm-12">
+									<div class="input-box">	
+										<h6 class="task-heading">{{ __('Set Background Music Volume') }}</h6>
+										<select id="bg-volume" name="background-volume" class="form-select">	
+											<option value="0.25">{{ __('x-Quiet') }}</option>											
+											<option value="0.5">{{ __('Quiet') }}</option>																						
+											<option value="1.0" selected>{{ __('Default') }}</option>											
+											<option value="1.5">{{ __('Loud') }}</option>											
+											<option value="2">{{ __('x-Loud') }}</option>											
+										</select>
+									</div>												
+								</div>
 							</div>
+						</div>
+
+						<div class="col-md-3 col-sm-12 pl-5 pl-minify">
+							<div class="row">
+								<div class="col-md-12 col-sm-12">
+									<div class="input-box">	
+										<h6 class="task-heading">{{ __('Set Final Result Volume') }}</h6>
+										<select id="audio-volume" name="audio-volume" class="form-select">			
+											<option value="0.25">{{ __('x-Quiet') }}</option>											
+											<option value="0.5">{{ __('Quiet') }}</option>																						
+											<option value="1.0" selected>{{ __('Default') }}</option>											
+											<option value="1.5">{{ __('Loud') }}</option>											
+											<option value="2">{{ __('x-Loud') }}</option>
+										</select>
+									</div>												
+								</div>
+								<div class="col-md-12 col-sm-12">
+									<div class="input-box">	
+										<h6 class="task-heading">{{ __('Set Result Title') }}</h6>
+										<div class="form-group">
+											<input type="text" id="title" class="form-control @error('title') is-danger @enderror" name="title">
+											@error('title')
+												<p class="text-danger">{{ $errors->first('title') }}</p>
+											@enderror
+										</div>
+									</div>												
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-3 col-sm-12 pl-5 pl-minify">
+							<div class="row">			
+								<div class="col-md-12 col-sm-12 mt-8 text-center" id="audio-format-minify">
+									<div class="input-box">	
+										<h6 class="task-heading">{{ __('Audio File Format') }}</h6>
+										<div id="audio-format" role="radiogroup">
+											<div class="radio-control">
+												<input type="radio" name="format" class="input-control" id="mp3" value="mp3" checked>
+												<label for="mp3" class="label-control">MP3</label>
+											</div>	
+											<div class="radio-control">
+												<input type="radio" name="format" class="input-control" id="wav" value="wav">
+												<label for="wav" class="label-control">WAV</label>
+											</div>																
+											<div class="radio-control">
+												<input type="radio" name="format" class="input-control" id="ogg" value="ogg">
+												<label for="ogg" class="label-control">OGG</label>
+											</div>								
+										</div>
+									</div>											
+								</div>								
+							</div>
+						</div>
+					</div>
+
+					<div class="row mt-3">
+						<div class="col-md-12 col-sm-12 text-center">
+							<div class="input-box mb-4">	
+								<button class="btn btn-primary ripple fs-11 pl-7 pr-7" type="button" id="merge-button" style="text-transform: none; min-width: 184px;">{{ __('Merge Audio Files') }}</button>
+							</div>												
 						</div>
 					</div>
 				</div>
 			</div>
+		</div>
 
-			<div class="col-lg-12 col-md-12 col-sm-12">
-				<div class="card border-0">
-					
-					<div class="card-body pt-2">
-						<span class="text-muted fs-11">{{ __('Maximum rows to process is') }} {{ $row_limit }} <i class="ml-2 fa fa-info fs-8 info-notification" data-tippy-content="Select rows that you want to merge together. Click on checkboxes to change the order of rows."></i></span>
-						<!-- SET DATATABLE -->
-						<table id='resultsTable' class='table' width='100%'>
-								<thead>
-									<tr>
-										<th width="1%"></th>
-										<th width="9%">{{ __('Created On') }}</th> 
-										<th width="9%">{{ __('Project') }}</th> 
-										<th width="9%">{{ __('Title') }}</th> 
-										<th width="9%">{{ __('Language') }}</th>
-										<th width="5%">{{ __('Voice') }}</th>
-										<th width="5%">{{ __('Gender') }}</th>
-										<th width="7%">{{ __('Voice Engine') }}</th>
-										<th width="4%"><i class="fa fa-music fs-14"></i></th>							
-										<th width="4%"><i class="fa fa-cloud-download fs-14"></i></th>								
-										<th width="4%">{{ __('Format') }}</th>	
-										<th width="4%">{{ __('Chars') }}</th>								           								    						           	
-										<th width="5%">{{ __('Actions') }}</th>
-									</tr>
-								</thead>							
-						</table> <!-- END SET DATATABLE -->					
-					</div>
+		<div class="col-lg-12 col-md-12 col-sm-12">
+			<div class="card">
+				
+				<div class="card-body pt-2">
+					<span class="text-muted fs-11">{{ __('Maximum rows to process is') }} {{ $row_limit }} <i class="ml-2 fa fa-info fs-8 info-notification" data-tippy-content="Select rows that you want to merge together. Click on checkboxes to change the order of rows."></i></span>
+					<!-- SET DATATABLE -->
+					<table id='resultsTable' class='table' width='100%'>
+							<thead>
+								<tr>
+									<th width="1%"></th>
+									<th width="9%">{{ __('Created On') }}</th> 
+									<th width="9%">{{ __('Project') }}</th> 
+									<th width="9%">{{ __('Title') }}</th> 
+									<th width="9%">{{ __('Language') }}</th>
+									<th width="5%">{{ __('Voice') }}</th>
+									<th width="5%">{{ __('Gender') }}</th>
+									<th width="7%">{{ __('Voice Engine') }}</th>
+									<th width="4%"><i class="fa fa-music fs-14"></i></th>							
+									<th width="4%"><i class="fa fa-cloud-download fs-14"></i></th>								
+									<th width="4%">{{ __('Format') }}</th>	
+									<th width="4%">{{ __('Chars') }}</th>								           								    						           	
+									<th width="5%">{{ __('Actions') }}</th>
+								</tr>
+							</thead>							
+					</table> <!-- END SET DATATABLE -->					
 				</div>
 			</div>
+		</div>
 
-			<div class="col-lg-12 col-md-12 col-sm-12 mt-4">
-				<div class="card border-0">
-					<div class="card-header" id="sound-studio-header">
-						<h3 class="card-title">{{ __('Sound Studio Results') }}</h3>
-					</div>
-					<div class="card-body pt-2">
-						<!-- SET DATATABLE -->
-						<table id='studioResultsTable' class='table' width='100%'>
-								<thead>
-									<tr>
-										<th width="6%">{{ __('Created On') }}</th> 
-										<th width="10%">{{ __('Result Title') }}</th> 
-										<th width="4%"><i class="fa fa-music fs-14"></i></th>							
-										<th width="4%"><i class="fa fa-cloud-download fs-14"></i></th>								
-										<th width="4%">{{ __('Format') }}</th>	
-										<th width="4%">{{ __('Total Characters') }}</th>								           								    						           	
-										<th width="5%">{{ __('# Merged Files') }}</th>								           								    						           	
-										<th width="3%">{{ __('Actions') }}</th>
-									</tr>
-								</thead>
-						</table> <!-- END SET DATATABLE -->
-					</div>
+		<div class="col-lg-12 col-md-12 col-sm-12 mt-4">
+			<div class="card">
+				<div class="card-header border-0" id="sound-studio-header">
+					<h3 class="card-title">{{ __('Sound Studio Results') }}</h3>
+				</div>
+				<div class="card-body pt-2">
+					<!-- SET DATATABLE -->
+					<table id='studioResultsTable' class='table' width='100%'>
+							<thead>
+								<tr>
+									<th width="6%">{{ __('Created On') }}</th> 
+									<th width="10%">{{ __('Result Title') }}</th> 
+									<th width="4%"><i class="fa fa-music fs-14"></i></th>							
+									<th width="4%"><i class="fa fa-cloud-download fs-14"></i></th>								
+									<th width="4%">{{ __('Format') }}</th>	
+									<th width="4%">{{ __('Total Characters') }}</th>								           								    						           	
+									<th width="5%">{{ __('# Merged Files') }}</th>								           								    						           	
+									<th width="3%">{{ __('Actions') }}</th>
+								</tr>
+							</thead>
+					</table> <!-- END SET DATATABLE -->
 				</div>
 			</div>
-		@endif
+		</div>
 	</div>
 @endsection
 

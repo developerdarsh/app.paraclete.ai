@@ -10,16 +10,10 @@
 
 @section('content')
 		<div class="row mt-24">
-			@if ($type == 'Regular License' || $type == '')
-				<div class="row text-center justify-content-center">
-					<p class="fs-14" style="background:#FFE2E5; color:#ff0000; padding:1rem 2rem; border-radius: 0.5rem; max-width: 1200px;">{{ __('Extended License is required in order to have access to these features') }}</p>
-				</div>	
-			@else
-
 			<div class="col-lg-4 col-md-12 col-sm-12">
 				<div class="card border-0">
 					<div class="card-header pt-4 border-0" id="voiceover-character-counter-top">
-						<h3 class="card-title"><i class="fa-sharp fa-solid fa-user-music mr-4 text-info"></i>{{ __('Instant Voice Cloning') }} </h3>
+						<h3 class="card-title"><i class="   fa-solid fa-user-music mr-4 text-info"></i>{{ __('Instant Voice Cloning') }} </h3>
 					</div>
 					<form id="create-voice-form" action="{{ route('user.voiceover.clone.create') }}" method="POST" enctype="multipart/form-data">
 						@csrf
@@ -55,7 +49,7 @@
 									<div class="image-drop-area text-center mt-2 file-drop-border">
 										<input type="file" class="main-image-input" name="file[]" id="file" multiple accept=".mp3" required>
 										<div class="image-drop-icon">
-											<i class="fa-sharp fa-solid fa-user-music fs-25 text-muted"></i>
+											<i class="   fa-solid fa-user-music fs-25 text-muted"></i>
 										</div>
 										<p class="text-dark fw-bold mb-0 mt-3">
 											{{ __('Drag and drop your audio samples or') }}
@@ -103,8 +97,8 @@
 			<div class="col-lg-8 col-md-12 col-xm-12">
 				<div class="card border-0">
 					<div class="card-header pt-4 border-0" id="voiceover-character-counter-top">
-						<h3 class="card-title"><i class="fa-sharp fa-solid fa-waveform-lines mr-4 text-info"></i>{{ __('AI Text to Speech') }} </h3>
-						<span class="fs-11 text-muted pl-3" id="voiceover-character-counter"><i class="fa-sharp fa-solid fa-bolt-lightning mr-2 text-primary"></i>{{ __('Your Balance is') }} <span class="font-weight-semibold" id="balance-number">@if (auth()->user()->available_chars == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->available_chars + auth()->user()->available_chars_prepaid) }} {{ __('Characters') }} @endif</span></span>
+						<h3 class="card-title"><i class="   fa-solid fa-waveform-lines mr-4 text-info"></i>{{ __('AI Text to Speech') }} </h3>
+						<span class="fs-11 text-muted pl-3" id="voiceover-character-counter"><i class="   fa-solid fa-bolt-lightning mr-2 text-primary"></i>{{ __('Your Balance is') }} <span class="font-weight-semibold" id="balance-number">@if (auth()->user()->characters == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->characters + auth()->user()->characters_prepaid) }} {{ __('Characters') }} @endif</span></span>
 					</div>
 					<div class="card-body pt-2 pl-6 pr-6 pb-4" id="tts-body-minify">
 					
@@ -287,7 +281,6 @@
 				</div>
 			</div>
 		</div>
-	@endif
 </div>
 
 <!-- DELETE VOICE MODAL -->

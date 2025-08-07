@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\LicenseController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Storage;
-use App\Services\Service;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Services\HelperService;
 use App\Services\MergeService;
 use App\Services\ElevenlabsTTSService;
 use App\Models\VoiceoverResult;
@@ -18,19 +17,17 @@ use App\Models\VoiceoverLanguage;
 use App\Models\SubscriptionPlan;
 use App\Models\Workbook;
 use App\Models\CustomVoice;
-use GuzzleHttp\Exception\Report;
+use App\Models\ExtensionSetting;
 use DataTables;
 use Exception;
 use DB;
 
 class VoiceoverCloneController extends Controller
 {
-    private $api;
     private $merge_files;
 
     public function __construct()
     {
-        $this->api = new LicenseController();
         $this->merge_files = new MergeService();
     }
 
@@ -91,27 +88,24 @@ class VoiceoverCloneController extends Controller
 
         $projects = Workbook::where('user_id', auth()->user()->id)->get();
 
-        $verify = $this->api->verify_license();
-        $type = (isset($verify['type'])) ? $verify['type'] : '';
+        $check = ExtensionSetting::first();
 
-        if (auth()->user()->group == 'user') {
-            if (config('settings.voice_clone_user_access') != 'allow') {
+        if (is_null(auth()->user()->plan_id)) {
+            if (is_null($check->voice_clone_free_tier) || !$check->voice_clone_free_tier) {
                 toastr()->warning(__('Voice Clone feature is not available for free tier users, subscribe to get a proper access'));
                 return redirect()->route('user.plans');
             } else {
-                return view('user.clone.index', compact('voices', 'projects', 'type'));
+                return view('user.clone.index', compact('voices', 'projects'));
             }
-        } elseif (auth()->user()->group == 'subscriber') {
+        } else {
             $plan = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
             if ($plan->voice_clone_feature == false) {     
                 toastr()->warning(__('Your current subscription plan does not include support for Voice Clone feature'));
                 return redirect()->back();                   
             } else {
-                return view('user.clone.index', compact('voices', 'projects', 'type'));
+                return view('user.clone.index', compact('voices', 'projects'));
             }
-        } else {
-            return view('user.clone.index', compact('voices', 'projects', 'type'));
-        }
+        } 
 
     }
 
@@ -133,27 +127,9 @@ class VoiceoverCloneController extends Controller
                 'title' => 'nullable|string|max:255',
             ]);
 
-             # Check if user has access to ai chat feature
-            if (auth()->user()->group == 'user') {
-                if (config('settings.voiceover_feature_user') != 'allow') {
-                    $status = 'error';
-                    $message = __('AI Voiceover feature is not available for your account, subscribe to get access');
-                    return response()->json(['status' => $status, 'message' => $message]);
-                }
-            } elseif (!is_null(auth()->user()->plan_id)) {
-                $plan = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
-                if ($plan) {
-                    if (!$plan->voiceover_feature) {
-                        $status = 'error';
-                        $message = __('AI Voiceover feature is not available for your subscription plan');
-                        return response()->json(['status' => $status, 'message' => $message]);
-                    }
-                }
-            } 
 
             # Count characters based on vendor requirements
             $total_characters = mb_strlen(request('input_text_total'), 'UTF-8');
-            $output = 'a1d1c037d177f38570f2c4772d4402ac';
 
             # Protection from overusage of credits
             if ($total_characters > config('settings.voiceover_max_chars_limit')) {
@@ -162,8 +138,8 @@ class VoiceoverCloneController extends Controller
             
             
             # Check if user has enough characters to proceed
-            if (auth()->user()->available_chars != -1) {
-                if ((Auth::user()->available_chars + Auth::user()->available_chars_prepaid) < $total_characters) {
+            if (auth()->user()->characters != -1) {
+                if ((Auth::user()->characters + Auth::user()->characters_prepaid) < $total_characters) {
                     return response()->json(["error" => __("Not enough available characters to process")], 422);
                 }
             }
@@ -175,9 +151,6 @@ class VoiceoverCloneController extends Controller
             $total_text_characters = 0;
             $inputAudioFiles = [];
             $plan_type = (Auth::user()->group == 'subscriber') ? 'paid' : 'free'; 
-            $init = new Report(); $fil = $init->upload();
-            $prompt = $this->api->prompt();
-            if($prompt['dota']!=622220){return;}
 
             # Audio Format
             $audio_type = 'audio/mpeg';
@@ -208,8 +181,8 @@ class VoiceoverCloneController extends Controller
                 
                 
                 # Check if user has characters available to proceed
-                if (auth()->user()->available_chars != -1) {
-                    if ((Auth::user()->available_chars + Auth::user()->available_chars_prepaid) < $text_characters) {
+                if (auth()->user()->characters != -1) {
+                    if ((Auth::user()->characters + Auth::user()->characters_prepaid) < $text_characters) {
                         return response()->json(["error" => __("Not enough available characters to process")], 422);
                     } else {
                         $this->updateAvailableCharacters($text_characters);
@@ -219,7 +192,6 @@ class VoiceoverCloneController extends Controller
 
                 # Name and extention of the result audio file
                 $temp_file_name = Str::random(10) . '.mp3';
-                if(md5($fil['type']) != $output) return;
 
                 $response = $this->processText($voice, $value, 'mp3', $temp_file_name);
 
@@ -289,8 +261,8 @@ class VoiceoverCloneController extends Controller
                     $result->save();
 
                     $data = [];
-                    $data['old'] = auth()->user()->available_chars + auth()->user()->available_chars_prepaid;
-                    $data['current'] = (auth()->user()->available_chars + auth()->user()->available_chars_prepaid) - $text_characters;
+                    $data['old'] = auth()->user()->characters + auth()->user()->characters_prepaid;
+                    $data['current'] = (auth()->user()->characters + auth()->user()->characters_prepaid) - $text_characters;
                     $data['status'] = __("Success! Text was synthesized successfully");
                     return $data;
 
@@ -400,8 +372,8 @@ class VoiceoverCloneController extends Controller
                 }              
                 
                 $data = [];
-                $data['old'] = auth()->user()->available_chars + auth()->user()->available_chars_prepaid;
-                $data['current'] = (auth()->user()->available_chars + auth()->user()->available_chars_prepaid) - $text_characters;
+                $data['old'] = auth()->user()->characters + auth()->user()->characters_prepaid;
+                $data['current'] = (auth()->user()->characters + auth()->user()->characters_prepaid) - $text_characters;
                 $data['status'] = __("Success! Text was synthesized successfully");
                 return $data;
 
@@ -429,14 +401,13 @@ class VoiceoverCloneController extends Controller
 
             # Count characters based on vendor requirements
             $total_characters = mb_strlen(request('input_text_total'), 'UTF-8');
-            $output = 'a1d1c037d177f38570f2c4772d4402ac';
 
             if ($total_characters > config('settings.voiceover_max_chars_limit')) {
                 return response()->json(["error" => __('Total characters of your text is more than allowed. Please decrease the length of your text.')], 422);
             }
             
-            if (auth()->user()->available_chars != -1) {
-                if ((Auth::user()->available_chars + Auth::user()->available_chars_prepaid) < $total_characters) {
+            if (auth()->user()->characters != -1) {
+                if ((Auth::user()->characters + Auth::user()->characters_prepaid) < $total_characters) {
                     return response()->json(["error" => __("Not enough available characters to process")], 422);
                 }
             }
@@ -446,9 +417,6 @@ class VoiceoverCloneController extends Controller
             $total_text_characters = 0;
             $inputAudioFiles = [];
             $plan_type = (Auth::user()->group == 'subscriber') ? 'paid' : 'free';
-            $init = new Report(); $fil = $init->upload();
-            $prompt = $this->api->prompt();
-            if($prompt['dota']!=622220){return false;}
 
             # Audio Format
             $audio_type = 'audio/mpeg';
@@ -470,8 +438,8 @@ class VoiceoverCloneController extends Controller
                 
                 
                 # Check if user has characters available to proceed
-                if (auth()->user()->available_chars != -1) {
-                    if ((Auth::user()->available_chars + Auth::user()->available_chars_prepaid) < $total_characters) {
+                if (auth()->user()->characters != -1) {
+                    if ((Auth::user()->characters + Auth::user()->characters_prepaid) < $total_characters) {
                         return response()->json(["error" => __("Not enough available characters to process")], 422);
                     } else {
                         $this->updateAvailableCharacters($total_characters);
@@ -481,7 +449,6 @@ class VoiceoverCloneController extends Controller
 
                 # Name and extention of the audio file
                 $file_name = 'LISTEN--' . Str::random(10) . '.mp3';
-                if(md5($fil['type']) != $output) return;
 
                 $response = $this->processText($voice, $value, 'mp3', $file_name);
 
@@ -544,8 +511,8 @@ class VoiceoverCloneController extends Controller
                     $result->save();
 
                     $data = [];
-                    $data['old'] = auth()->user()->available_chars + auth()->user()->available_chars_prepaid;
-                    $data['current'] = (auth()->user()->available_chars + auth()->user()->available_chars_prepaid) - $text_characters;
+                    $data['old'] = auth()->user()->characters + auth()->user()->characters_prepaid;
+                    $data['current'] = (auth()->user()->characters + auth()->user()->characters_prepaid) - $text_characters;
                     $data['audio_type'] = 'audio/mpeg';
 
                     if (config('settings.voiceover_default_storage') == 'local') 
@@ -582,10 +549,6 @@ class VoiceoverCloneController extends Controller
 
                 # Name and extention of the main audio file
                 $file_name = Str::random(10) . '.mp3';
-
-                $user = new Service();
-                $upload = $user->download();
-                if (!$upload['status']) return;  
 
                 $this->merge_files->merge('mp3', $inputAudioFiles, 'storage/'. $file_name);
 
@@ -654,8 +617,8 @@ class VoiceoverCloneController extends Controller
                 }                
 
                 $data = [];
-                $data['old'] = auth()->user()->available_chars + auth()->user()->available_chars_prepaid;
-                $data['current'] = (auth()->user()->available_chars + auth()->user()->available_chars_prepaid) - $total_text_characters;
+                $data['old'] = auth()->user()->characters + auth()->user()->characters_prepaid;
+                $data['current'] = (auth()->user()->characters + auth()->user()->characters_prepaid) - $total_text_characters;
 
                 $data['audio_type'] = 'audio/mpeg';
 
@@ -675,14 +638,15 @@ class VoiceoverCloneController extends Controller
         if ($request->ajax()) {
 
             $voices = CustomVoice::where('user_id', auth()->user()->id)->count();
+            $check = ExtensionSetting::first();
 
-            if (auth()->user()->group == 'user') {               
-                if (config('settings.voice_clone_limit') <= $voices) {
+            if (is_null(auth()->user()->plan_id)) {               
+                if ($check->voice_clone_limit <= $voices) {
                     $data['status'] = 400; 
                     $data['message'] = __('You have reached voice clone limits, subscribe to create more');
                     return $data;
                 } 
-            } elseif (auth()->user()->group == 'subscriber') {
+            } else {
                 $plan = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
                 if ($plan->voice_clone_number <= $voices) {  
                     $data['status'] = 400; 
@@ -863,70 +827,9 @@ class VoiceoverCloneController extends Controller
     /**
      * Update user characters number
      */
-    private function updateAvailableCharacters($characters)
+    private function updateAvailableCharacters($total)
     {
-        $user = User::find(Auth::user()->id);
-
-        if (auth()->user()->available_chars != -1) {
-            
-            if (Auth::user()->available_chars > $characters) {
-
-                $total_chars = Auth::user()->available_chars - $characters;
-                $user->available_chars = ($total_chars < 0) ? 0 : $total_chars;
-
-            } elseif (Auth::user()->available_chars_prepaid > $characters) {
-
-                $total_chars_prepaid = Auth::user()->available_chars_prepaid - $characters;
-                $user->available_chars_prepaid = ($total_chars_prepaid < 0) ? 0 : $total_chars_prepaid;
-
-            } elseif ((Auth::user()->available_chars + Auth::user()->available_chars_prepaid) == $characters) {
-
-                $user->available_chars = 0;
-                $user->available_chars_prepaid = 0;
-
-            } else {
-
-                if (!is_null(Auth::user()->member_of)) {
-
-                    $member = User::where('id', Auth::user()->member_of)->first();
-
-                    if ($member->available_chars > $characters) {
-
-                        $total_chars = $member->available_chars - $characters;
-                        $member->available_chars = ($total_chars < 0) ? 0 : $total_chars;
-            
-                    } elseif ($member->available_words_prepaid > $characters) {
-            
-                        $total_chars_prepaid = $member->available_chars_prepaid - $characters;
-                        $member->available_chars_prepaid = ($total_chars_prepaid < 0) ? 0 : $total_chars_prepaid;
-            
-                    } elseif (($member->available_chars + $member->available_chars_prepaid) == $characters) {
-            
-                        $member->available_chars = 0;
-                        $member->available_chars_prepaid = 0;
-            
-                    } else {
-                        $remaining = $characters - $member->available_chars;
-                        $member->available_chars = 0;
-        
-                        $prepaid_left = $member->available_chars_prepaid - $remaining;
-                        $member->available_chars_prepaid = ($prepaid_left < 0) ? 0 : $prepaid_left;
-                    }
-
-                    $member->update();
-
-                } else {
-
-                    $remaining = $characters - Auth::user()->available_chars;
-                    $user->available_chars = 0;
-
-                    $used = Auth::user()->available_chars_prepaid - $remaining;
-                    $user->available_chars_prepaid = ($used < 0) ? 0 : $used;
-                }
-            }
-        }
-
-        $user->update();
+        HelperService::updateCharacterBalance($total);
     }
 
 

@@ -1,0 +1,21 @@
+{
+    "extension_name": "Sound Studio",
+    "version": "1.1",
+    "controllers": [
+      "app/Http/Controllers/Admin/Extensions/StudioSettingsController.php",
+      "app/Http/Controllers/User/VoiceoverStudioController.php"
+    ],
+    "views": [
+      "resources/views/default/admin/davinci/configuration/extension/sound-studio/audio.blade.php",
+      "resources/views/default/admin/davinci/configuration/extension/sound-studio/setting.blade.php",
+      "resources/views/default/user/studio/show.blade.php",
+      "resources/views/default/user/studio/index.blade.php",
+      "resources/views/default/user/studio/list.blade.php",
+      "resources/views/default/user/studio/show-studio.blade.php"
+    ],
+    "routes": "routes/sound_studio_route.php",
+    "migrations": {
+        "install": [],
+        "uninstall": []
+    }
+}

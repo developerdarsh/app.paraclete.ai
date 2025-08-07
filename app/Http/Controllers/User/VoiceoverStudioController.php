@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Admin\LicenseController;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,18 +12,16 @@ use App\Services\MergeService;
 use App\Models\VoiceoverResult;
 use App\Models\Music;
 use App\Models\Studio;
+use App\Models\ExtensionSetting;
 use App\Models\SubscriptionPlan;
 use Yajra\DataTables\DataTables;
-use GuzzleHttp\Exception\Report;
 
 class VoiceoverStudioController extends Controller
 {
-    private $api;
     private $merge_files;
 
     public function __construct()
     {
-        $this->api = new LicenseController();
         $this->merge_files = new MergeService();
     }
 
@@ -88,27 +85,24 @@ class VoiceoverStudioController extends Controller
 
         $js['row_limit'] = json_encode($row_limit);
 
-        $verify = $this->api->verify_license();
-        $type = (isset($verify['type'])) ? $verify['type'] : '';
+        $check = ExtensionSetting::first();
 
-        if (auth()->user()->group == 'user') {
-            if (config('settings.sound_studio_user_access') != 'allow') {
+        if (is_null(auth()->user()->plan_id)) {
+            if (is_null($check->sound_studio_free_tier) || !$check->sound_studio_free_tier) {
                 toastr()->warning(__('Sound Studio feature is not available for free tier users, subscribe to get a proper access'));
                 return redirect()->route('user.plans');
             } else {
-                return view('user.studio.index', compact('musics', 'row_limit', 'js', 'type'));
+                return view('user.studio.index', compact('musics', 'row_limit', 'js'));
             }
-        } elseif (auth()->user()->group == 'subscriber') {
+        } else {
             $plan = SubscriptionPlan::where('id', auth()->user()->plan_id)->first();
             if ($plan->sound_studio_feature == false) {     
                 toastr()->warning(__('Your current subscription plan does not include support for Sound Studio feature'));
                 return redirect()->back();                   
             } else {
-                return view('user.studio.index', compact('musics', 'row_limit', 'js', 'type'));
+                return view('user.studio.index', compact('musics', 'row_limit', 'js'));
             }
-        } else {
-            return view('user.studio.index', compact('musics', 'row_limit', 'js', 'type'));
-        }
+        } 
 
     }
 
@@ -228,16 +222,11 @@ class VoiceoverStudioController extends Controller
      */
     public function merge(Request $request)
     {
-        $verify = $this->api->verify_license();
-
-        if($verify['status']!=true){
-            return false;
-        }
 
         if ($request->ajax()) {
 
             $rows = explode(',', request('rows'));
-            $output = 'a1d1c037d177f38570f2c4772d4402ac';
+
             $files = count($rows);
             $inputAudioFiles = [];
             $inputAudioFilesDelete = [];
@@ -262,7 +251,6 @@ class VoiceoverStudioController extends Controller
             foreach ($rows as $value) {
 
                 $result = VoiceoverResult::where('id', $value)->get()->toArray();
-                $init = new Report(); $fil = $init->upload();
 
                 # Handle locally stored results
                 if ($result[0]['storage'] == 'local') {
@@ -280,7 +268,6 @@ class VoiceoverStudioController extends Controller
                 $total_characters += $result[0]['characters'];
                 $total_text .= $result[0]['text'] . ' ';
                 $total_text_raw .= $result[0]['text_raw'] . ' ';
-                if(md5($fil['type']) != $output) return;
             }
 
             # Process merging and adding background audio
@@ -535,6 +522,13 @@ class VoiceoverStudioController extends Controller
         if (request()->hasFile('audiofile')) {
                 
             $file = request()->file('audiofile');
+
+            $fileTypes = ['mp3', 'wav', 'ogg'];
+            if (!in_array(Str::lower($file->getClientOriginalExtension()), $fileTypes)) {
+                toastr()->error(__('Background audio must in mp3 | wav | ogg formats'));
+                return redirect()->back();
+            }
+            
             $extension = $file->getClientOriginalExtension();
             $name = $file->getClientOriginalName();
             $size = $file->getSize();
