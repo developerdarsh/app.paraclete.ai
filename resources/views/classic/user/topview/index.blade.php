@@ -10,8 +10,7 @@
 	<style>
 
      @import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css');
-     
-    .app-content .side-app {
+ .app-content .side-app {
         padding: 20px 0 0;
         max-width: 1600px !important;
     }
@@ -256,7 +255,11 @@
             align-items: center;
             margin-bottom: 15px;
         }
-
+        .templates-header .section-title {
+            font-size: 24px;
+            line-height: 24px;
+            font-weight: 600;
+        }
         .view-all {
             color: #000;
             text-decoration: none;
@@ -281,9 +284,10 @@
             transform: translateY(-1px);
             box-shadow: 0 8px 15px rgba(83, 58, 253, 0.15);
         }
+
         .template-preview {
             width: 100%;
-            height: 280px;
+            height: 360px;
             background: linear-gradient(135deg, #533afd 0%, #6c5ce7 100%);
             position: relative;
             overflow: hidden;
@@ -291,6 +295,12 @@
             border-radius: 12px;
             overflow: hidden;
             transition: all 0.3s ease;
+        }
+        @media (max-width: 1540px) {
+            .template-preview {
+                width: 100%;
+                height: 280px;
+            }
         }
 
         .template-preview img {
@@ -379,10 +389,152 @@
         backdrop-filter: blur(3px);
         color: rgb(255, 255, 255);
         background: var(--chakra-colors-transparent)
-    transparent
-    ;
+    transparent;
+    }
+    .css-nbqrex {
+        position: absolute;
+        top: 6px;
+        right: 6px;
+        width: 20px;
+        height: 20px;
+    }
+
+.projects-grid {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
 }
-// === Responsive CSS === //
+.projects-grid .project-item {
+    width: 240px;
+    flex-shrink: 0;
+}
+.projects-grid .project-card {
+    background-color: #1a1a1a;
+    border: 1px solid #ffffff;
+    border-radius: 12px;
+    overflow: hidden;
+    width: 100%;
+    height: 280px;
+    position: relative;
+}
+.projects-grid .project-thumbnail {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    position: relative;
+}
+.project-thumbnail .video-img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    object-position: center;
+}
+.projects-grid .project-type-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: none;
+    z-index: 10;
+}
+.projects-grid .avatar-video {
+    background-color: #2196F3;
+    color: white;
+}
+.projects-grid .hover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex
+;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 5;
+}
+.projects-grid .watch-btn {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #404040;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex
+;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.projects-grid .project-info {
+    padding: 16px;
+    height: 100px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.projects-grid .project-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #ffffff;
+    line-height: 1.2;
+}
+.projects-grid .project-time {
+    font-size: 14px;
+    color: #888888;
+    margin: 0;
+}
+.projects-grid .project-card:hover .hover-overlay {
+    opacity: 1;
+}
+.projects-grid .dubbing {
+    background-color: #FF9800;
+    color: white;
+}
+.projects-grid .placeholder-icon {
+    font-size: 48px;
+    color: #404040;
+}
+.projects-grid .placeholder-thumbnail {
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+    display: flex
+;
+    align-items: center;
+    justify-content: center;
+    height: 204px;
+    position: relative;
+}
+.projects-grid .edit-btn {
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid #404040;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.projects-grid .edit-btn:hover {
+    background: rgba(0, 0, 0, 0.9);
+    border-color: #666;
+}
+
+
+  // === Responsive CSS === //
 
     @media (max-width: 768px) {
         .sidebar {
@@ -438,25 +590,24 @@
         
         <div class="nav-section">Create</div>
         
-        <div class="nav-item">
+        <div class="nav-item mx-0">
           <a href="{{ route('avatars.product.templete') }}"> <i class="fas fa-user"></i>
             Create Avatars </a>
         </div>
-        <div class="nav-item">
+        <div class="nav-item mx-0">
           <a href="{{ route('avatars.create') }}"> <i class="fas fa-user"></i>
             Create Marketing Video </a>
         </div>
         
-        <div class="nav-item">
+        <div class="nav-item mx-0">
           <a href="{{ route('avatars.video.creation') }}"> <i class="fas fa-video"></i>
             Create Avatar Videos </a>
         </div>
 
-        <div class="nav-item">
+        <!-- <div class="nav-item mx-0">
           <a href="{{ route('all.project') }}"> <i class="fas fa-book"></i>
             My Project </a>
-        </div>
-        
+        </div> -->
         </div>
     </div>
 
@@ -479,7 +630,7 @@
         <div class="ai-tools-section">
             <h2 class="section-title">AI Creation Tools</h2>
             <div class="tools-slider">
-                <a href="#" class="tool-card">
+                <a href="{{ route('avatars.create') }}" class="tool-card">
                     <div class="tool-preview">
                         <div style="background: linear-gradient(135deg, #533afd 0%, #6c5ce7 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-video" style="font-size: 2rem; opacity: 0.7; color: #f5f9fc;"></i>
@@ -489,7 +640,7 @@
                     <div class="tool-description">Create marketing video ads from link or local materials</div>
                 </a>
                 
-                <a href="#" class="tool-card">
+                <a href="{{ route('avatars.video.creation') }}" class="tool-card">
                     <div class="tool-preview">
                         <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-user-circle" style="font-size: 2rem; opacity: 0.7;"></i>
@@ -499,7 +650,7 @@
                     <div class="tool-description">Create avatar videos or clone your avatar from a video</div>
                 </a>
                 
-                 <a href="#" class="tool-card">
+                 <a href="{{ route('avatars.product.templete') }}" class="tool-card">
                     <div class="tool-preview">
                         <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-box" style="font-size: 2rem; opacity: 0.7;"></i>
@@ -509,7 +660,7 @@
                     <div class="tool-description">Create an avatar holding your product with one image</div>
                  </a>
                 
-                <a href="#" class="tool-card">
+                <a href="{{ route('avatars.anyshoot.templete') }}" class="tool-card">
                     <div class="free-badge">Limited Free</div>
                     <div class="tool-preview">
                         <div style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
@@ -520,7 +671,7 @@
                     <div class="tool-description">Fit any product anywhere, perfect for try-ons and product showcases</div>
                 </a>
                 
-                <a href="#" class="tool-card">
+                <!-- <a href="#" class="tool-card">
                     <div class="tool-preview">
                         <div style="background: linear-gradient(135deg, #d299c2 0%, #fef9d7 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-magic" style="font-size: 2rem; opacity: 0.7;"></i>
@@ -528,9 +679,9 @@
                     </div>
                     <div class="tool-title">Prompt to Avatar</div>
                     <div class="tool-description">Create an avatar from a text description</div>
-                </a>
+                </a> -->
                 
-                 <a href="#" class="tool-card">
+                <!-- <a href="#" class="tool-card">
                     <div class="tool-preview">
                         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-exchange-alt" style="font-size: 2rem; opacity: 0.7;"></i>
@@ -538,9 +689,9 @@
                     </div>
                     <div class="tool-title">Face Swap</div>
                     <div class="tool-description">Swap the face in images</div>
-                </a>
+                </a> -->
 
-                <a href="#" class="tool-card">
+                <!-- <a href="#" class="tool-card">
                     <div class="tool-preview">
                         <div style="background: linear-gradient(135deg, #c471f5 0%, #fa71cd 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-link" style="font-size: 2rem; opacity: 0.7; color: #fff;"></i>
@@ -548,9 +699,9 @@
                     </div>
                     <div class="tool-title">Batch Link-to-Video</div>
                     <div class="tool-description">Up to 3000 videos can be created at once</div>
-                </a>
+                </a> -->
 
-                 <a href="#" class="tool-card">
+                <!-- <a href="#" class="tool-card">
                     <div class="tool-preview">
                         <div style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-user-circle" style="font-size: 2rem; opacity: 0.7; color: #fff;"></i>
@@ -558,9 +709,9 @@
                     </div>
                     <div class="tool-title">Photo Avatar</div>
                     <div class="tool-description">Make the picture talk</div>
-                </a>
+                </a> -->
 
-                 <a href="#" class="tool-card">
+                <!-- <a href="#" class="tool-card">
                     <div class="tool-preview">
                         <div style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-image" style="font-size: 2rem; opacity: 0.7; color: #fff;"></i>
@@ -568,9 +719,9 @@
                     </div>
                     <div class="tool-title">Text to Image</div>
                     <div class="tool-description">Enter prompts to generate UGC/pro style images</div>
-                </a>
+                </a> -->
 
-                 <a href="#" class="tool-card">
+                <!-- <a href="#" class="tool-card">
                     <div class="tool-preview">
                         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-video" style="font-size: 2rem; opacity: 0.7; color: #fff;"></i>
@@ -578,9 +729,9 @@
                     </div>
                     <div class="tool-title">Image/Text to Video</div>
                     <div class="tool-description">Generate videos from an image or text, supporting lip sync</div>
-                </a>
+                </a> -->
 
-                 <a href="#" class="tool-card">
+                <!-- <a href="#" class="tool-card">
                     <div class="tool-preview">
                         <div style="background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
                             <i class="fas fa-volume-up" style="font-size: 2rem; opacity: 0.7; color: #fff;"></i>
@@ -588,8 +739,8 @@
                     </div>
                     <div class="tool-title">AI Voice Generator</div>
                     <div class="tool-description">Transfer text to speech</div>
-                </a>
-
+                </a> -->
+                
             </div>
         </div> 
         <!-- AI Creation Tools End-->
@@ -651,7 +802,7 @@
         <div class="templates-section">
             <div class="templates-header">
                 <h2 class="section-title">AnyShoot Templates</h2>
-                <a href="{{ route('avatars.anyshoot.templete') }}" class="view-all" data-bs-toggle="modal" data-bs-target="#allTemplatesModal">View All</a>
+                <!-- <a href="{{ route('avatars.anyshoot.templete') }}" class="view-all" data-bs-toggle="modal" data-bs-target="#allTemplatesModal">View All</a>-->
                 <a href="{{ route('avatars.anyshoot.templete') }}" class="view-all">View All</a>
             </div>
             
@@ -666,103 +817,124 @@
                         </div>
                     </a>
                 @endforeach
-                <!-- <a href="#" class="template-card">
-                    <div class="template-preview">
-                        <img src="{{URL::asset('img/ai-avtar/qXA4SA7dfG.webp')}}" alt="" />
-                    </div>
-                    <div class="template-info">
-                        <p>Women's top</p>
-                    </div>
-                </a>
-                
-                 <a href="#" class="template-card">
-                    <div class="template-preview">
-                     <div class="css-1oi6e1a">UGC</div>
-                        <img src="{{URL::asset('img/ai-avtar/D2R6sPcSIy.webp')}}" alt="" />
-                    </div>
-                    <div class="template-info">
-                        <p>Women's bottoms</p>
-                    </div>
-                </a>
-                
-                <a href="#" class="template-card">
-                    <div class="template-preview">
-                        <img src="{{URL::asset('img/ai-avtar/ceSBOG40ah.webp')}}" alt="" /> 
-                    </div>
-                     <div class="template-info">
-                        <p>Men's top</p>
-                    </div>
-                </a>
-                
-                 <a href="#" class="template-card">
-                    <div class="template-preview">
-                       <div class="css-1oi6e1a">UGC</div>
-                       <img src="{{URL::asset('img/ai-avtar/8v4gKY9y1S.webp')}}" alt="" /> 
-                    </div>
-                     <div class="template-info">
-                        <p>Necklace</p>
-                    </div>
-                </a>
-                
-                <a href="#" class="template-card">
-                    <div class="template-preview">
-                       <img src="{{URL::asset('img/ai-avtar/DcZ7MFwYa1.webp')}}" alt="" /> 
-                    </div>
-                     <div class="template-info">
-                        <p>Creative templates</p>
-                    </div>
-                </a>
-                
-                <a href="#" class="template-card">
-                   <div class="template-preview">
-                       <img src="{{URL::asset('img/ai-avtar/fqE7BqO9IH.webp')}}" alt="" /> 
-                    </div>
-                     <div class="template-info">
-                        <p>Food</p>
-                    </div>
-                </a>
-                
-               <a href="#" class="template-card">
-                    <div class="template-preview">
-                       <img src="{{URL::asset('img/ai-avtar/AZY47D6xHu.webp')}}" alt="" /> 
-                    </div>
-                     <div class="template-info">
-                        <p>Home Decor </p>
-                    </div>
-                </a>
-                
-                 <a href="#" class="template-card">
-                     <div class="template-preview">
-                       <img src="{{URL::asset('img/ai-avtar/iJGhwDF2i7.webp')}}" alt="" /> 
-                    </div>
-                     <div class="template-info">
-                        <p>Personal Care Products </p>
-                    </div>
-                </a>
-
-                 <a href="#" class="template-card">
-                     <div class="template-preview">
-                       <img src="{{URL::asset('img/ai-avtar/htVABcor6U.webp')}}" alt="" /> 
-                    </div>
-                     <div class="template-info">
-                        <p>Maternal & Infant Products </p>
-                    </div>
-                </a>
-
-                 <a href="#" class="template-card">
-                     <div class="template-preview">
-                       <img src="{{URL::asset('img/ai-avtar/8RMlUV4E92.webp')}}" alt="" /> 
-                    </div>
-                     <div class="template-info">
-                        <p>Glasses </p>
-                    </div>
-                </a> -->
-
             </div>
         </div> 
-        <!-- Product Avatar Templates End -->
+    <!-- Product Avatar Templates End -->
 
-    </div>
+    <!-- Video Avatar Templates End -->
+     <div class="templates-section">
+            <div class="templates-header">
+                <h2 class="section-title">Video Avatar Templates</h2>
+                <a href="{{ route('avatars.video.creation') }}" class="view-all">View All</a>
+
+            </div>
+            
+            <div class="templates-slider" id="videoavatar-carousel">
+                @foreach(array_slice($video_avatars['result']['data'], 0, 6) as $video_avatar)
+                    <a href="#" class="template-card">
+                        <div class="template-preview">
+                            <img src="{{ $video_avatar['coverUrl'] }}" alt="Template Preview" />
+                        </div>
+                        <div class="template-info">
+                            <p>{{ $video_avatar['ethnicities'][0]['ethnicityName'] ?? 'Unknown Ethnicity'  }}</p>
+                        </div>
+                    </a>
+                @endforeach
+            </div>
+    </div><!-- Product Avatar Templates End -->
+
+    <!-- Recent Projects Templates Start -->
+    <!-- <div class="templates-section">
+          <div class="templates-header">
+               <h2 class="section-title">Recent Projects</h2>
+               <a href="#" class="view-all">View All</a>
+          </div>
+           <div class="projects-container">
+                <div class="projects-grid">
+                    <div class="project-item">
+                        <div class="project-card">
+                            <div class="project-thumbnail project-1">
+                                <img class="video-img" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face" alt="" class="img-fluid rounded" />
+                                <span class="project-type-badge avatar-video">Avatar Video</span>
+                                <div class="hover-overlay">
+                                    <button class="watch-btn" data-bs-toggle="modal" data-bs-target="#videoPreviewModal">
+                                        <i class="fas fa-play"></i>
+                                        Watch
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="project-info">
+                                <div class="project-title">Untitled video</div>
+                                <div class="project-time">4 hours ago</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-item">
+                        <div class="project-card">
+                            <div class="project-thumbnail project-2">
+                            <img class="video-img" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face" alt="" class="img-fluid rounded" />
+                                <span class="project-type-badge avatar-video">Avatar Video</span>
+                                <div class="hover-overlay">
+                                    <button class="watch-btn">
+                                        <i class="fas fa-play"></i>
+                                        Watch
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="project-info">
+                                <div class="project-title">Untitled video</div>
+                                <div class="project-time">a day ago</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-item">
+                        <div class="project-card">
+                            <div class="project-thumbnail project-3">
+                            <img class="video-img" src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face" alt="" class="img-fluid rounded" />
+                                <span class="project-type-badge avatar-video">Avatar Video</span>
+                                <div class="hover-overlay">
+                                    <button class="watch-btn">
+                                        <i class="fas fa-play"></i>
+                                        Watch
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="project-info">
+                                <div class="project-title">Untitled video</div>
+                                <div class="project-time">2 days ago</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="project-item">
+                        <div class="project-card">
+                            <div class="placeholder-thumbnail">
+                                <i class="fas fa-video placeholder-icon"></i>
+                                <span class="project-type-badge dubbing">Dubbing</span>
+                                <div class="hover-overlay">
+                                    <button class="edit-btn">
+                                        <i class="fas fa-edit"></i>
+                                        Edit
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="project-info">
+                                <div class="project-title">0701-1</div>
+                                <div class="project-time">2 days ago</div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+     </div> -->
+    <!-- Recent Projects Templates End -->
+
+</div>
+
 <!-- Modal to Show All Templates -->
 <div class="modal fade" id="allTemplatesModal" tabindex="-1" aria-labelledby="allTemplatesModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -819,7 +991,7 @@
   ]
 });
 
- $('#templates-carousel, #anyshoot-carousel').slick({
+ $('#templates-carousel, #anyshoot-carousel, #videoavatar-carousel').slick({
     slidesToShow: 5,
     slidesToScroll: 1,
     arrows: true,
@@ -830,6 +1002,7 @@
       { breakpoint: 576, settings: { slidesToShow: 1 } }
     ]
   });
+
 
 </script>
 

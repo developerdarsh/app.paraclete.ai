@@ -84,7 +84,34 @@
 
 				<div class="changelog">
 					<div class="changelog-version mt-5">
-						<span class="version-name">{{ __('Version') }} 7.7</span> - <span class="fs-14 font-weight-semibold">2.07.2025</span>
+						<span class="version-name">{{ __('Version') }} 7.8</span> - <span class="fs-14 font-weight-semibold">28.07.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Speechify Voice Clone extension (Paid)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Speechify Text to Speech extension (Free)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New Gemini 2.5 Pro | Gemini 2.5 Flash | Gemini 2.5 Flash Lite models added</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New Grok 3 | Grok 3 Fast | Grok 3 Mini | Grok 3 Mini Fast models added</span></span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">External Chatbot updated (v1.2)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">External Chatbot Website training improved</span></li>							
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">External Chatbot Text training improved</span></li>							
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">External Chatbot PDF training improved</span></li>							
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">External Chatbot CSV/Excel training added</span></li>							
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Text to Video updated (v1.6)</span></li>							
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">External Chatbot user credit balance check improved</span></li>							
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">SaaS Business extension updated (v2.3)</span></li>					
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Sound Studio extension updated (v1.1)</span></li>					
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Sonic Theme updated (v1.8)</span></li>					
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">External Chatbot page position css issue fixed</span></span></li>
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
+						<span class="version-name">{{ __('Version') }} 7.7</span> - <span class="fs-14 font-weight-semibold">5.07.2025</span>
 					</div>   
 					<div class="changelog-description mt-6">     
 						<ul>	 	 				     

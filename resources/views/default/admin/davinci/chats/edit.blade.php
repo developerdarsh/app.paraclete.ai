@@ -93,7 +93,6 @@
  	</style>
 @endsection
 
-
 @section('page-header')
 	<!-- PAGE HEADER -->
 	<div class="page-header mt-5-7 justify-content-center"> 
@@ -230,7 +229,7 @@
                 </div> 
               </div>
 
-				 <div class="col-sm-12">								
+			  <div class="col-sm-12">								
                 <div class="input-box add_templates-sec">								
                       <h6 class="fs-11 mb-2 font-weight-semibold">{{ __('Templates') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
                       <div class="form-group Templete_multiselect">
@@ -253,7 +252,7 @@
                       </div>
                     </div>
                 </div>   
-
+          
               <div class="col-sm-12">								
                 <div class="input-box">								
                   <h6 class="fs-11 mb-2 font-weight-semibold">{{ __('Prompt') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>

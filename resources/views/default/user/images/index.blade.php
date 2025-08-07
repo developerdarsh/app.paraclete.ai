@@ -20,8 +20,8 @@
 
 <form id="openai-form" action="" method="post" enctype="multipart/form-data" class="mt-24">		
 	@csrf
+	<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
 	<div class="row" id="image-side-space">
-		<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
 		<div class="row no-gutters justify-content-center">
 			<div class="col-lg-9 col-md-11 col-sm-12 text-center">
 				<h3 class="card-title mt-6 fs-20"><i class="fa-solid fa-wand-magic-sparkles mr-2 text-primary"></i></i>{{ __('AI Image Generator') }}</h3>

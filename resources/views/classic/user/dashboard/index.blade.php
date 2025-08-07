@@ -907,7 +907,7 @@
 				}
 			})
 		}
-
+		
 		$('.lazy').slick({
  			lazyLoad: 'ondemand',
  			// slidesToShow: 3,

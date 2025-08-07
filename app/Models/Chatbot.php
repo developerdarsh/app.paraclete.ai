@@ -23,4 +23,9 @@ class Chatbot extends Model
         return $this->hasMany(ChatbotHistory::class, 'chatbot_id');
     }
 
+    public function embeddings()
+    {
+        return $this->hasMany(ChatbotEmbedding::class, 'chatbot_id');
+    }
+
 }

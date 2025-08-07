@@ -98,7 +98,9 @@ class UserDashboardController extends Controller
                 $balance = $remaining_tokens;
             }
         }
-		$BannerModel = Banner::get()->toArray();  
+
+        $BannerModel = Banner::get()->toArray();  
+
         $latest_images = Image::latest()->take(10)->get();
         
 

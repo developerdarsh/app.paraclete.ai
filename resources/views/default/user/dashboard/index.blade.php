@@ -94,6 +94,7 @@
  				</div>
  			</div>
  		</div>
+	</div>	
 	<div class="row mb-6">		
 		<div class="col-lg-3 col-md-12">
 			<div class="card border-0" style="height: 100%;">
@@ -796,7 +797,6 @@
 	<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
 	<script src="{{URL::asset('plugins/sweetalert/sweetalert2.all.min.js')}}"></script>
 	<script src="{{ URL::asset('plugins/slick/slick.min.js') }}"></script>
-	
 	<script>
 		$(function() {
 	

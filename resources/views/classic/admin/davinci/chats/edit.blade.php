@@ -230,30 +230,6 @@
                   </div> 
                 </div> 
               </div>
-
-			  <div class="col-sm-12">								
-					<div class="input-box add_templates-sec">								
-						<h6 class="fs-11 mb-2 font-weight-semibold">{{ __('Templates') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
-						<div class="form-group Templete_multiselect">
-							@if(isset($templates))
-							<select id="template-list" name="templates[]"  class="multiselect-picker" multiple="multiple">
-								@foreach ($templates as $template)
-								<option value="{{ $template->id }}">{{ $template->template }}</option>
-								@endforeach
-							</select>
-							@endif
-						</div> 
-						<div class="add_templates-sec">
-							<div class="form-group">
-							<div class="form-input">
-							<input type="hidden" name="dataArrayField" id="dataArrayField">
-								<input type="text" name="template_name" id="template_name">
-									<button type="button" id="addTemplateBtn" class="btn btn-primary">Add </button>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
           
               <div class="col-sm-12">								
                 <div class="input-box">								
@@ -268,7 +244,31 @@
                 </div> 
               </div>
             </div>
-          
+
+			<div class="col-sm-12">								
+				<div class="input-box add_templates-sec">								
+					<h6 class="fs-11 mb-2 font-weight-semibold">{{ __('Templates') }} <span class="text-required"><i class="fa-solid fa-asterisk"></i></span></h6>
+					<div class="form-group Templete_multiselect">
+						@if(isset($templates))
+						<select id="template-list" name="templates[]"  class="multiselect-picker" multiple="multiple">
+							@foreach ($templates as $template)
+							<option value="{{ $template->id }}">{{ $template->template }}</option>
+							@endforeach
+						</select>
+						@endif
+					</div> 
+					<div class="add_templates-sec">
+						<div class="form-group">
+						<div class="form-input">
+						<input type="hidden" name="dataArrayField" id="dataArrayField">
+							<input type="text" name="template_name" id="template_name">
+								<button type="button" id="addTemplateBtn" class="btn btn-primary">Add </button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
             <div class="modal-footer d-inline">
               <div class="row text-center">
                 <div class="col-md-12">

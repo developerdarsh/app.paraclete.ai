@@ -682,9 +682,8 @@
     <span style="background-color: #1e1e2d;"></span>
     <span style="background-color: #1e1e2d;"></span>
     </span>`;
-
+	
 	const domainUrl = window.location.origin;
-
 	new AirDatepicker('#schedule_date', {
 		dateFormat: 'dd/MM/yyyy',
 		navTitles: {
@@ -700,10 +699,8 @@
 	// Process deault conversation
 	$(document).ready(function() {
 		$(".chat-sidebar-message").first().focus().trigger('click');
-
 		$('[data-toggle="tooltip"]').tooltip();
  		$('#audio-player').hide();
-
 		let check_messages = document.querySelectorAll('.chat-sidebar-message').length;
 		if (check_messages == 0) {
 			let id = makeid(10);
@@ -1250,6 +1247,20 @@
 						msgerChat.scrollTop += 100;
 					}
 				};
+				if( $('#isAudioSearch').val() == '1'){
+					fetch("/app/user/chat/audio-convert", { 
+						headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+						method: 'post',
+							body: formData
+						})
+						.then(function(response){
+						return response.text();
+					})
+					.then(function(result){
+						const parsedResult = JSON.parse(result);
+						convertTextToSpeech(parsedResult.data, parsedResult.voice_code);
+					})
+				}
 				eventSource.onerror = function (e) {
 					msgerSendBtn.disabled = false
 					console.log(e);
@@ -1526,53 +1537,53 @@
 	
 
 	// Capture input text via microphone
-    if(mic) {
-        if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-            const speechRecognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    // if(mic) {
+    //     if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
+    //         const speechRecognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 
-            speechRecognition.continuous = true;
+    //         speechRecognition.continuous = true;
 
-            speechRecognition.addEventListener('start', () => {
-                $("#mic-button").find('i').removeClass('fa-microphone').addClass('fa-stop-circle');
-            });
+    //         speechRecognition.addEventListener('start', () => {
+    //             $("#mic-button").find('i').removeClass('fa-microphone').addClass('fa-stop-circle');
+    //         });
 
-            speechRecognition.addEventListener('result', (event) => {
-                const transcript = event.results[0][0].transcript;
-                $("#message").val($("#message").val() + transcript + ' ');
+    //         speechRecognition.addEventListener('result', (event) => {
+    //             const transcript = event.results[0][0].transcript;
+    //             $("#message").val($("#message").val() + transcript + ' ');
 
-                mic.click();
-            });
+    //             mic.click();
+    //         });
 
-            speechRecognition.addEventListener('end', () => {
-                $("#mic-button").find('i').addClass('fa-microphone').removeClass('fa-stop-circle');
-                isTranscribing = false;
-            });
+    //         speechRecognition.addEventListener('end', () => {
+    //             $("#mic-button").find('i').addClass('fa-microphone').removeClass('fa-stop-circle');
+    //             isTranscribing = false;
+    //         });
 
-            mic.addEventListener('click', () => {
-                if (!isTranscribing) {
-                    speechRecognition.start();
-                    isTranscribing = true;
-                } else {
-                    speechRecognition.stop();
-                    isTranscribing = false;
-                }
-            });
-        } else {
-            console.log('Web Speech Recognition API not supported by this browser');
-            $("#mic-button").hide()
-        }
-    }
+    //         mic.addEventListener('click', () => {
+    //             if (!isTranscribing) {
+    //                 speechRecognition.start();
+    //                 isTranscribing = true;
+    //             } else {
+    //                 speechRecognition.stop();
+    //                 isTranscribing = false;
+    //             }
+    //         });
+    //     } else {
+    //         console.log('Web Speech Recognition API not supported by this browser');
+    //         $("#mic-button").hide()
+    //     }
+    // }
 
 
 	// Stop chat response
-	$('#stop-button').on('click', function(e){
-        e.preventDefault();
+	// $('#stop-button').on('click', function(e){
+    //     e.preventDefault();
 
-        if(eventSource){
-            eventSource.close();
-			msgerSendBtn.disabled = false
-        }
-    });
+    //     if(eventSource){
+    //         eventSource.close();
+	// 		msgerSendBtn.disabled = false
+    //     }
+    // });
 
 
 	// Apply prompt
@@ -1867,87 +1878,6 @@
 
 	}
 
-	const recordButton = document.getElementById('mic-button');
- 	const statusElement = document.getElementById('status');
- 	let mediaRecorder;
- 	let audioChunks = [];
- 	recordButton.addEventListener('click', toggleRecording);
- 	function toggleRecording() {
- 		if (mediaRecorder && mediaRecorder.state === 'recording') {
- 			stopRecording();
- 		} else {
- 			$('#isAudioSearch').val(1);
- 			startRecording();
- 		}
- 	}
- 	
- 	function startRecording() {
- 		navigator.mediaDevices.getUserMedia({ audio: true })
- 		.then(function (stream) {
- 		mediaRecorder = new MediaRecorder(stream);
- 		mediaRecorder.addEventListener('dataavailable', function (event) {
- 			audioChunks.push(event.data);
- 		});
- 		mediaRecorder.addEventListener('stop', function () {
- 			const audioBlob = new Blob(audioChunks);
- 			const formData = new FormData();
- 			formData.append('audio', audioBlob, 'recorded_audio.wav');
- 			fetch('/app/user/chat/save-audio', {
- 				headers: {
- 				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
- 				},
- 				method: 'POST',
- 				body: formData
- 			})
- 			.then(response => response.json())
- 			.then(data => {
- 				if (data.response) {
- 				$('#message').val(data.response.text);
- 				$('#chat-button').click();
- 				} else {
- 				console.log('Error saving audio');
- 				}
- 			})
- 			.catch(error => {
- 				console.error('Error:', error);
- 			});
- 			audioChunks = [];
- 		});
- 		mediaRecorder.start();
- 		recordButton.innerHTML = '<i class="fa-solid fa-stop active"></i>';
- 		})
- 		.catch(function (error) {
- 		console.error('Error:', error);
- 		});
- 	}
- 	function stopRecording() {
- 		if (mediaRecorder) {
- 			mediaRecorder.stop();
- 			recordButton.innerHTML = '<i class="fa-regular fa-microphone"></i>';
- 		}
- 	}
- 		
- 	function convertTextToSpeech(text, code){
- 		$.get('{{ route("convert-text-to-audio") }}', { text: text, voiceCode: code })
- 		.done(function (voices) {
- 			console.log(voices);
- 			$('#audioPlayer').css('visibility','inherit');  
- 			const audioUrl = domainUrl + voices.result_url;
- 			const audioPlayer = document.getElementById('audioPlayer');
- 			audioPlayer.src = audioUrl;
- 			audioPlayer.play();
-             $('#isAudioSearch').val(0);
- 		})
- 		.fail(function (error) {
- 			console.error('Error fetching voices:', error);
- 		});
- 	}
- 
-	$('.s-dropdown-menu li').on('click', function () {
-		var selectedTemplateText = $(this).text();
-		$('#message').val(selectedTemplateText);
-		$('#message').text(selectedTemplateText);
-	});
 
 	function copyUrl() {
 		const urlInput = document.getElementById('chat-url');
@@ -2052,6 +1982,88 @@
             }
         });
 
+	});
+
+	const recordButton = document.getElementById('mic-button');
+ 	const statusElement = document.getElementById('status');
+ 	let mediaRecorder;
+ 	let audioChunks = [];
+ 	recordButton.addEventListener('click', toggleRecording);
+ 	function toggleRecording() {
+ 		if (mediaRecorder && mediaRecorder.state === 'recording') {
+ 			stopRecording();
+ 		} else {
+ 			$('#isAudioSearch').val(1);
+ 			startRecording();
+ 		}
+ 	}
+ 	
+ 	function startRecording() {
+ 		navigator.mediaDevices.getUserMedia({ audio: true })
+ 		.then(function (stream) {
+ 		mediaRecorder = new MediaRecorder(stream);
+ 		mediaRecorder.addEventListener('dataavailable', function (event) {
+ 			audioChunks.push(event.data);
+ 		});
+ 		mediaRecorder.addEventListener('stop', function () {
+ 			const audioBlob = new Blob(audioChunks);
+ 			const formData = new FormData();
+ 			formData.append('audio', audioBlob, 'recorded_audio.wav');
+ 			fetch('/app/user/chat/save-audio', {
+ 				headers: {
+ 				'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+ 				},
+ 				method: 'POST',
+ 				body: formData
+ 			})
+ 			.then(response => response.json())
+ 			.then(data => {
+ 				if (data.response) {
+ 				$('#message').val(data.response.text);
+ 				$('#chat-button').click();
+ 				} else {
+ 				console.log('Error saving audio');
+ 				}
+ 			})
+ 			.catch(error => {
+ 				console.error('Error:', error);
+ 			});
+ 			audioChunks = [];
+ 		});
+ 		mediaRecorder.start();
+ 		recordButton.innerHTML = '<i class="fa-solid fa-stop active"></i>';
+ 		})
+ 		.catch(function (error) {
+ 		console.error('Error:', error);
+ 		});
+ 	}
+ 	function stopRecording() {
+ 		if (mediaRecorder) {
+ 			mediaRecorder.stop();
+ 			recordButton.innerHTML = '<i class="fa-regular fa-microphone"></i>';
+ 		}
+ 	}
+ 		
+ 	function convertTextToSpeech(text, code){
+ 		$.get('{{ route("convert-text-to-audio") }}', { text: text, voiceCode: code })
+ 		.done(function (voices) {
+ 			console.log(voices);
+ 			$('#audioPlayer').css('visibility','inherit');  
+ 			const audioUrl = domainUrl + voices.result_url;
+ 			const audioPlayer = document.getElementById('audioPlayer');
+ 			audioPlayer.src = audioUrl;
+ 			audioPlayer.play();
+             $('#isAudioSearch').val(0);
+ 		})
+ 		.fail(function (error) {
+ 			console.error('Error fetching voices:', error);
+ 		});
+ 	}
+ 
+	$('.s-dropdown-menu li').on('click', function () {
+		var selectedTemplateText = $(this).text();
+		$('#message').val(selectedTemplateText);
+		$('#message').text(selectedTemplateText);
 	});
 
 </script>

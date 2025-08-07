@@ -105,10 +105,9 @@ Route::get('/pdf',function(){
 Route::group(['prefix' => 'user', 'middleware' => ['verified', 'cors' , '2fa.verify', 'role:user|admin|subscriber', 'PreventBackHistory']], function() {
     Route::get('/elementor', [TrainingVideoController::class, 'viewElementor'])->name('user.elementor');
 });
- 
+
 // PAYMENT GATEWAY WEBHOOKS ROUTES
 Route::post('/webhooks/ghl-signup', [TrainingVideoController::class, 'handleGHLSignup']);
-
 
 // FRONTEND ROUTES
 Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['localeSessionRedirect', 'localizationRedirect', 'localeViewPath']], function () {
@@ -581,8 +580,8 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 Route::get('/payments/stripe/theme/cancel', 'processThemeCancel')->name('admin.payments.stripe.theme.cancel');
                 Route::get('/payments/stripe/market/cancel', 'processMarketCancel')->name('admin.payments.stripe.market.cancel');
             });
-
-            // ADMIN DAVINCI BANNER ROUTES
+   		
+	    // ADMIN DAVINCI BANNER ROUTES
             Route::controller(DavinciBannerController::class)->group(function() {
                 Route::get('/davinci/banner', 'index')->name('admin.davinci.banner');
                 Route::post('/davinci/banner', 'store')->name('admin.davinci.banner.store');
@@ -590,8 +589,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 Route::put('/davinci/banner/{id}/update', 'update')->name('admin.davinci.banner.update');
                 Route::post('/davinci/banner/create', 'create');
                 Route::post('/davinci/banner/delete', 'delete');
-            });
-    
+            }); 
         });
    
    
@@ -936,7 +934,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
             });    
 
             // USER SEARCH ROUTES
-            Route::post('/search', [SearchController::class, 'search'])->name('search'); 
+            Route::post('/search', [SearchController::class, 'search'])->name('search');
 
             // USER TRAINING VIDEO ROUTES
             Route::controller(TrainingVideoController::class)->group(function () {
@@ -988,6 +986,7 @@ Route::group(['prefix' => LaravelLocalization::setLocale(), 'middleware' => ['lo
                 Route::post('/openai-complete', 'complete')->name('user.openai.complete');
                 Route::post('/store-resume', 'storeResume')->name('resume.store');
             });
+
         });
 
 

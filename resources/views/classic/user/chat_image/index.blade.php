@@ -20,6 +20,7 @@
 @section('content')
 	<form id="openai-form" action="" method="GET" enctype="multipart/form-data" class="mt-24">		
 		@csrf
+		<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
 		<div class="row justify-content-md-center">	
 			<div class="col-sm-12 text-center">
 				<h3 class="page-title mb-2">{{ __('Chat Image') }}</h3>
@@ -28,7 +29,7 @@
 					<span class="fs-11 text-muted pl-3"><i class="   fa-solid fa-bolt-lightning mr-2 text-primary"></i>{{ __('Your Balance is') }} <span class="font-weight-semibold" id="balance-number">@if (auth()->user()->available_dalle_images == -1) {{ __('Unlimited') }} @else {{ number_format(auth()->user()->available_dalle_images + auth()->user()->available_dalle_images_prepaid) }}@endif</span> {{ __('Dalle Images') }}</span>
 				</div>	
 			</div>
-			<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
+
 			<div class="chat-main-container">
 				<div class="chat-sidebar-container">
 					<div class="chat-sidebar-search">	

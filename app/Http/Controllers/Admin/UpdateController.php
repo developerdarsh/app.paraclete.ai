@@ -36,6 +36,8 @@ class UpdateController extends Controller
             Artisan::call('migrate', ['--force' => true]);
             Artisan::call('db:seed', ['--class' => 'MenuSeeder', '--force' => true]);
             Artisan::call('db:seed', ['--class' => 'ApiManagementSeeder', '--force' => true]);
+            Artisan::call('db:seed', ['--class' => 'VendorsSeeder', '--force' => true]);
+            Artisan::call('db:seed', ['--class' => 'VoicesSeeder', '--force' => true]);
             Artisan::call('view:clear');
             Artisan::call('route:clear');
             Artisan::call('cache:clear');

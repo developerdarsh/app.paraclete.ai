@@ -54,7 +54,6 @@
 <!-- multiselect select  -->
 <script src="<?php echo e(URL::asset('plugins/bootstrap-5.0.2/js/bootstrap-multiselect.min.js')); ?>"></script>
 
-
 <!-- Google Analytics -->
 <?php if(config('services.google.analytics.enable') == 'on'): ?>
     <script async src="https://www.googletagmanager.com/gtag/js?id=<?php echo e(config('services.google.analytics.id')); ?>"></script>

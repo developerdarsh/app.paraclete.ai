@@ -3,18 +3,6 @@
 @section('css')
 	<!-- Sweet Alert CSS -->
 	<link href="{{URL::asset('plugins/sweetalert/sweetalert2.min.css')}}" rel="stylesheet" />
-	<style>
- 	.info-btn-alt {
- 		font-size: 15px;
- 		background-color: rgb(126, 34, 206);
- 		color: rgb(255, 255, 255);
- 		padding-top: 0.5rem;
- 		padding-bottom: 0.5rem;
- 		padding-left: 1rem;
- 		padding-right: 1rem;
- 		border-radius: 0.5rem;
- 	}
- 	</style>
 @endsection
 
 @section('content')
@@ -22,7 +10,6 @@
 	<div class="row mt-24">
 		<div class="col-lg-12 col-md-12 col-sm-12 p-4">
 			<div id="chat-search-panel">
-				<div class="text-center"><a class="info-btn-alt" data-bs-toggle="modal" data-bs-target="#info-alert-model" href="javascript:void(0)">How It works ?</a></div>
 				<h3 class="card-title mb-3 ml-2 fs-20 super-strong"><i class="fa-solid fa-message-captions mr-2 text-primary"></i>{{ __('AI Chat Assistants') }}</h3>
 				<h6 class="text-muted mb-3 ml-2">{{ __('Find your AI assistant quickly! Get ready to explore our fantastic lineup of AI chat assistants') }}</h6>
 				@if (config('settings.custom_chats') == 'anyone')
@@ -356,23 +343,7 @@
 			</div>
 		</div>
 	</div>
-	<div class="modal fade" id="info-alert-model" tabindex="-1" aria-labelledby="exampleModalLabel" aria-modal="true" role="dialog">
-         <div class="modal-dialog modal-dialog-centered modal-xl">
-             <div class="modal-content">
-                 <div class="modal-header">
-                 <h2></h2>
-                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-                 <span aria-hidden="true">&times;</span>
-                 </button>
-                 </div>
-             <div class="modal-body">
-                 <div class="row">
-                     <!--ARCADE EMBED START--><div style="position: relative; padding-bottom: calc(56.25% + 41px); height: 0; width: 100%;"><iframe src="https://demo.arcade.software/GGkkeoTkGDrJsnFvKicG?embed&embed_mobile=tab&embed_desktop=inline&show_copy_link=true" title="AI Chat Assistants" frameborder="0" loading="lazy" webkitallowfullscreen mozallowfullscreen allowfullscreen allow="clipboard-write" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; color-scheme: light;" ></iframe></div><!--ARCADE EMBED END-->
-                 </div>
-             </div>
-             </div>
-         </div>
- 	</div>
+
 @endsection
 
 @section('js')
@@ -502,22 +473,15 @@
 		$(document).on('keyup', '#search-template', function () {
 
 			var searchTerm = $(this).val().toLowerCase();
-			let value = $(this).val().toLowerCase();
- 			let activeTab = $('.tab-pane.active'); // Get currently active tab
- 			let chats = activeTab.find('.col-lg-3'); // Target chat cards within active tab
- 			chats.filter(function () {
- 				let chatText = $(this).text().toLowerCase();
- 				$(this).toggle(chatText.indexOf(value) > -1);
- 			});	
-			// $('#templates-panel').find('> div').each(function () {
-			// 	if ($(this).filter(function() {
-			// 		return (($(this).find('h6').text().toLowerCase().indexOf(searchTerm) > -1) || ($(this).find('p').text().toLowerCase().indexOf(searchTerm) > -1));
-			// 	}).length > 0 || searchTerm.length < 1) {
-			// 		$(this).show();
-			// 	} else {
-			// 		$(this).hide();
-			// 	}
-			// });
+			$('#templates-panel').find('> div').each(function () {
+				if ($(this).filter(function() {
+					return (($(this).find('h6').text().toLowerCase().indexOf(searchTerm) > -1) || ($(this).find('p').text().toLowerCase().indexOf(searchTerm) > -1));
+				}).length > 0 || searchTerm.length < 1) {
+					$(this).show();
+				} else {
+					$(this).hide();
+				}
+			});
 		});
 	</script>
 @endsection

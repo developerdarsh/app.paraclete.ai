@@ -54,7 +54,6 @@
 <!-- multiselect select  -->
 <script src="{{URL::asset('plugins/bootstrap-5.0.2/js/bootstrap-multiselect.min.js')}}"></script>
 
-
 <!-- Google Analytics -->
 @if (config('services.google.analytics.enable') == 'on')
     <script async src="https://www.googletagmanager.com/gtag/js?id={{ config('services.google.analytics.id') }}"></script>

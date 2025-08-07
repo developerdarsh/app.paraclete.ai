@@ -40,7 +40,6 @@ use App\Services\AzureTTSService;
 use App\Models\ChatTemplates;
 
 
-
 class ChatController extends Controller
 {
 
@@ -246,6 +245,7 @@ class ChatController extends Controller
         $chat_id = session()->get('chat_id');
         $model = session()->get('model');
         
+
         # Append real time data
         if($realtime == 'on') {
             if ($settings->realtime_data_engine == 'serper') {
@@ -254,6 +254,8 @@ class ChatController extends Controller
                 $prompt = $this->realtimeData($prompt, 'perplexity');
             } 
         } 
+        
+
         # Add Brand information
         if ($company != 'none') {
             $brand = BrandVoice::where('id', $company)->first();
@@ -308,15 +310,20 @@ class ChatController extends Controller
                 }
             }
         }
+
+
         # Start OpenAI task
         if (in_array($model, ['gpt-3.5-turbo-0125', 'gpt-4', 'gpt-4o', 'gpt-4o-mini', 'gpt-4.5-preview', 'o1', 'o1-mini', 'o3-mini', 'gpt-4-0125-preview', 'gpt-4o-search-preview', 'gpt-4o-mini-search-preview', 'gpt-4.1', 'gpt-4.1-mini', 'gpt-4.1-nano', 'o4-mini', 'o3'])) {
             if (\App\Services\HelperService::extensionAzureOpenai() && $extension->azure_openai_activate) {
+    
                 return $this->streamAzure($conversation_id, $chat_id, $prompt);                      
 
             } elseif (\App\Services\HelperService::extensionOpenRouter() && $extension->open_router_activate) {
+
                 return $this->streamOpenRouter($conversation_id, $chat_id, $prompt);                      
             
             } else {
+
                 if (config('settings.personal_openai_api') == 'allow') {
                     $openai_api = auth()->user()->personal_openai_key;        
                 } elseif (!is_null(auth()->user()->plan_id)) {
@@ -343,6 +350,7 @@ class ChatController extends Controller
                         $openai_api = config('services.openai.key');
                     }
                 }
+    
                 if (is_null($openai_api) || $openai_api == '') {
                     return response()->stream(function () {
                         echo 'data: OpenAI Notification: <span class="font-weight-bold">Missing OpenAI API key</span>. Please contact support team.';
@@ -357,10 +365,12 @@ class ChatController extends Controller
                         'Content-Type' => 'text/event-stream',
                     ]);
                 }
+    
                 return $this->streamOpenai($conversation_id, $chat_id, $prompt, $openai_api);
             }
             
         }
+
 
         # Start Anthropic task
         if (in_array($model, ['claude-3-7-sonnet-20250219', 'claude-3-opus-20240229', 'claude-3-5-sonnet-20241022', 'claude-3-5-haiku-20241022', 'claude-opus-4-20250514', 'claude-sonnet-4-20250514'])) {
@@ -397,7 +407,7 @@ class ChatController extends Controller
 
 
         # Start Gemini task         
-        if ($model == 'gemini-1.5-pro' || $model == 'gemini-1.5-flash' || $model == 'gemini-2.0-flash') {
+         if (in_array($model, ['gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash-lite-preview-06-17'])) {
             if (config('settings.personal_gemini_api') == 'allow') {
                 $gemini_api = auth()->user()->personal_gemini_key;        
             } elseif (!is_null(auth()->user()->plan_id)) {
@@ -431,7 +441,7 @@ class ChatController extends Controller
 
 
         # Start xAI task
-        if ($model == 'grok-2-1212' || $model == 'grok-2-vision-1212') {
+        if (in_array($model, ['grok-2-1212', 'grok-2-vision-1212', 'grok-3-latest', 'grok-3-fast-latest', 'grok-3-mini-latest', 'grok-3-mini-fast-latest'])) {
             if (is_null($settings->xai_api) || $settings->xai_api == '') {
                 return response()->stream(function () {
                     echo 'data: xAI Notification: <span class="font-weight-bold">Missing xAI API key</span>. Please contact support team.';
@@ -639,7 +649,7 @@ class ChatController extends Controller
             try {
 
                 $openai_client = \OpenAI::client($openai_api);
-                $content = '';                    
+                    
                 $stream = $openai_client->chat()->createStreamed([
                     'model' => $model,
                     'messages' => $messages,
@@ -647,12 +657,10 @@ class ChatController extends Controller
                         'include_usage' => true,
                     ]
                 ]);
+
                 foreach ($stream as $result) {
 
                     if (isset($result->choices[0]->delta->content)) {
-                        $delta = $result->choices[0]->delta->content ?? '';
-                        $content .= $delta;
-
                         $raw = $result->choices[0]->delta->content;
                         $clean = str_replace(["\r\n", "\r", "\n"], "<br/>", $raw);
                         $text .= $raw;
@@ -666,7 +674,7 @@ class ChatController extends Controller
                         ob_flush();
                         flush();
                     }
-
+    
                     if(isset($result->usage)){
                         $input_tokens = $result->usage->promptTokens;
                         $output_tokens = $result->usage->completionTokens; 
@@ -1317,6 +1325,9 @@ class ChatController extends Controller
                 'gemini-1.5-pro' => 'models/gemini-1.5-pro',
                 'gemini-1.5-flash' => 'models/gemini-1.5-flash',
                 'gemini-2.0-flash' => 'models/gemini-2.0-flash',
+                'gemini-2.5-flash' => 'models/gemini-2.5-flash',
+                'gemini-2.5-pro' => 'models/gemini-2.5-pro',
+                'gemini-2.5-flash-lite-preview-06-17' => 'models/gemini-2.5-flash-lite-preview-06-17',
             ];
 
             $apiModel = $modelMap[$model] ?? 'models/gemini-pro';
@@ -2148,6 +2159,7 @@ class ChatController extends Controller
     public function realtimeData($prompt, $engine)
     {   
         $settings = ExtensionSetting::first();
+
         if ($engine == 'serper') {
 
             $client = new GuzzleClient;
@@ -2169,6 +2181,7 @@ class ChatController extends Controller
                 ]);
     
                 $result = $response->getBody()->getContents();
+
                 $final_prompt = 'Prompt: ' . $prompt .
                                 '\n\nWeb search json results: '
                                 . json_encode($result) .
@@ -2185,6 +2198,7 @@ class ChatController extends Controller
 
             $url = 'https://api.perplexity.ai/chat/completions';
             $api = $settings->perplexity_api;
+
             $payload = [
                 'model'    => $settings->perplexity_realtime_model,
                 'messages' => [
@@ -2200,11 +2214,10 @@ class ChatController extends Controller
                                 ->withHeaders([
                                     'Content-Type' => 'application/json',
                                 ])->post($url, $payload);
-                
+
                 if ($response->successful()) {
 
                     $data = $response->json();
-                    Log::info($data);
                     $response = $data['choices'][0]['message']['content'];
 
                     $final_prompt = 'Prompt: ' . $prompt .
@@ -2352,8 +2365,8 @@ class ChatController extends Controller
             session()->forget('conversation_id');
         }
 
-        $chat = Chat::where('chat_code', $code)->first(); 
-        $template = ChatTemplates::where([['chat_id', $chat->id],['status',1]])->get();
+        $chat = Chat::where('chat_code', $code)->first();
+        $template = ChatTemplates::where([['chat_id', $chat->id],['status',1]])->get(); 
         $messages = ChatConversation::where('user_id', auth()->user()->id)->where('chat_code', $chat->chat_code)->orderBy('updated_at', 'desc')->get(); 
 
         $categories = ChatPrompt::where('status', true)->groupBy('group')->pluck('group'); 
@@ -2375,7 +2388,7 @@ class ChatController extends Controller
         $brands = BrandVoice::where('user_id', auth()->user()->id)->get();
         $brands_feature = \App\Services\HelperService::checkBrandVoiceAccess();
 
-        return view('user.chat.view', compact('chat', 'template' , 'messages', 'categories', 'prompts', 'internet', 'brands', 'brands_feature', 'default_model', 'extension'));
+        return view('user.chat.view', compact('chat', 'template', 'messages', 'categories', 'prompts', 'internet', 'brands', 'brands_feature', 'default_model', 'extension'));
 	}
 
 
@@ -3251,6 +3264,7 @@ Log::info($chat);
         }
 
     }
+    
     public function saveAudio(Request $request)
     {
         $audio = $request->file('audio');

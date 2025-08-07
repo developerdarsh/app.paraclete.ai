@@ -772,7 +772,7 @@ class TemplateController extends Controller
 
 
          # Start Anthropic task         
-         if ($model == 'gemini-1.5-pro' || $model == 'gemini-1.5-flash' || $model == 'gemini-2.0-flash') {
+         if (in_array($model, ['gemini-1.5-pro', 'gemini-1.5-flash', 'gemini-2.0-flash', 'gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.5-flash-lite-preview-06-17'])) {
             if (config('settings.personal_gemini_api') == 'allow') {
                 $gemini_api = auth()->user()->personal_gemini_key;        
             } elseif (!is_null(auth()->user()->plan_id)) {
@@ -806,7 +806,7 @@ class TemplateController extends Controller
 
 
         # Start xAI task
-        if ($model == 'grok-2-1212' || $model == 'grok-2-vision-1212') {
+       if (in_array($model, ['grok-2-1212', 'grok-2-vision-1212', 'grok-3-latest', 'grok-3-fast-latest', 'grok-3-mini-latest', 'grok-3-mini-fast-latest'])) {
             if (is_null($settings->xai_api) || $settings->xai_api == '') {
                 return response()->stream(function () {
                     echo 'data: xAI Notification: <span class="font-weight-bold">Missing xAI API key</span>. Please contact support team.';
@@ -1550,6 +1550,9 @@ Log::info($output_tokens);
                 'gemini-1.5-pro' => 'models/gemini-1.5-pro',
                 'gemini-1.5-flash' => 'models/gemini-1.5-flash',
                 'gemini-2.0-flash' => 'models/gemini-2.0-flash',
+                'gemini-2.5-flash' => 'models/gemini-2.5-flash',
+                'gemini-2.5-pro' => 'models/gemini-2.5-pro',
+                'gemini-2.5-flash-lite-preview-06-17' => 'models/gemini-2.5-flash-lite-preview-06-17',
             ];
 
             $apiModel = $modelMap[$model] ?? 'models/gemini-pro';

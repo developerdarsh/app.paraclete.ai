@@ -206,7 +206,7 @@ class RegisteredUserController extends Controller
         $user->referral_id = strtoupper(Str::random(15));
         $user->referred_by = $referrer_id;
         $user->email_opt_in = $email_opt_in;
-        $this->addToGetResponse($request->name, $request->email);
+		$this->addToGetResponse($request->name, $request->email);
         $user->save();     
 
         Auth::login($user, true);
@@ -251,7 +251,7 @@ class RegisteredUserController extends Controller
      
     }
 
-    protected function addToGetResponse($name, $email)
+	protected function addToGetResponse($name, $email)
     {
          $apiKey = config('services.getResponse.key');
          $listId = config('services.getResponse.list_id');
@@ -266,6 +266,7 @@ class RegisteredUserController extends Controller
              ]
          ]);
     }
+
 
     /**
      * Validate reCaptcha (if enabled)

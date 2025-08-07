@@ -157,7 +157,6 @@ return [
     'whisper_default_storage' => env('DAVINCI_SETTINGS_WHISPER_DEFAULT_STORAGE', 'local'),
     'whisper_welcome_minutes' => env('DAVINCI_SETTINGS_WHISPER_FREE_TIER_WELCOME_MINUTES', 0),
 
-
     'topview' => [
         'api_key' => env('TOPVIEW_API_KEY', 'sk-LD3a3Aa2JekwxJwt6ovuJLhe-HrY-jdYIVJ6ih6tcHY'),
         'uid' => env('TOPVIEW_UID', '7QNjCZNYupL0K16uus9v'),

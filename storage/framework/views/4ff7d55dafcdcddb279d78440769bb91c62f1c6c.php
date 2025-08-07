@@ -18,49 +18,61 @@
 <?php $__env->startSection('content'); ?>
 	<div class="row justify-content-center">
 		<div class="col-lg-10 col-md-12 col-sm-12">
-			<div class="card border-0">
+			<div class="card">
 				<div class="card-body p-5">
-					<form id="upgrade-form" method="POST" action="<?php echo e(route('admin.settings.upgrade.start', ['update_id' => $latest_version['update_id'], 'version' => $latest_version['version']])); ?>" enctype="multipart/form-data">
+					<form id="upgrade-form" method="POST" action="<?php if($version_metadata): ?><?php echo e(route('admin.settings.upgrade.start', ['update_id' => $latest_version['update_id'], 'version' => $latest_version['version']])); ?><?php else: ?><?php echo e(route('admin.settings.upgrade.start', ['update_id' => $current_version, 'version' => $current_version])); ?> <?php endif; ?>" enctype="multipart/form-data">
 						<?php echo csrf_field(); ?>
 						
 						<div class="row">
-							<div class="col-sm-12 col-md-12">															
-								<?php if($latest_version['status']): ?>
-									<div class="text-center" id="not-installed-info">
-										<h1 class="fs-24"><i class="fa-solid fa-box-check fs-24 mr-2 text-cancel"></i> <?php echo e(__('New Update is Available')); ?></h1>
-										<h6 class="fs-13 text-muted mt-4"><?php echo e(__('Current installed version')); ?>: <span class="text-info font-weight-bold"><?php echo e($current_version); ?></span></h6>	
-										<h6 class="fs-13 text-muted mb-4"><?php echo e(__('New available version')); ?>: <span class="text-info font-weight-bold"> <?php echo e($latest_version['version']); ?> </span> </h6>
-										<div id="audio-format" role="radiogroup">
-											<span  id="webm-format">							
-												<div class="radio-control">
-													<input type="checkbox" name="concent" class="input-control fs-13" id="concent">
-													<label for="concent" class="label-control text-muted fs-13" id="concent-label"><?php echo e(__('I confirm that I have read the Update tab in the documentation and will follow all steps there to finish the update')); ?> - <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation"><?php echo e(__('Documentation Link')); ?></a></label>
-												</div>	
-											</span>										
-										</div>	
-									</div>
-									<div id="installed-info">
-										<div class="text-center">
-											<h1 class="fs-24"><?php echo e(__('Update Installation Completed')); ?></h1>
-											<h6 class="text-success fs-14 font-weight-bold mt-4 mb-5"><span> <?php echo e($latest_version['version']); ?> </span> <?php echo e(__('version was installed successfully')); ?></h6>
-											<i class="fa-solid fa-box-check fs-50 text-success"></i>
-											<h6 class="text-danger fs-14 font-weight-bold mt-4"><?php echo e(__('Warning! Make sure to follow the instructions in the update tab in the')); ?> <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">documentation </a> <?php echo e(__('to finish the update process')); ?></h6>
+							<div class="col-sm-12 col-md-12">
+								<?php if($version_metadata): ?>															
+									<?php if($latest_version['status']): ?>
+										<div class="text-center" id="not-installed-info">
+											<h1 class="fs-24"><i class="fa-solid fa-box-check fs-24 mr-2 text-cancel"></i> <?php echo e(__('New Update is Available')); ?></h1>
+											<h6 class="fs-13 text-muted mt-4"><?php echo e(__('Current installed version')); ?>: <span class="text-info font-weight-bold"><?php echo e($current_version); ?></span></h6>	
+											<h6 class="fs-13 text-muted mb-4"><?php echo e(__('New available version')); ?>: <span class="text-info font-weight-bold"> <?php echo e($latest_version['version']); ?> </span> </h6>
+											<div id="audio-format" role="radiogroup">
+												<span  id="webm-format">							
+													<div class="radio-control">
+														<input type="checkbox" name="concent" class="input-control fs-13" id="concent">
+														<label for="concent" class="label-control text-muted fs-13" id="concent-label"><?php echo e(__('I confirm that I have read the Update tab in the documentation and will follow all steps there to finish the update')); ?> - <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation"><?php echo e(__('Documentation Link')); ?></a></label>
+													</div>	
+												</span>										
+											</div>	
 										</div>
-									</div>														
+										<div id="installed-info">
+											<div class="text-center">
+												<h1 class="fs-24"><?php echo e(__('Update Installation Completed')); ?></h1>
+												<h6 class="text-success fs-14 font-weight-bold mt-4 mb-5"><span> <?php echo e($latest_version['version']); ?> </span> <?php echo e(__('version was installed successfully')); ?></h6>
+												<i class="fa-solid fa-box-check fs-50 text-success"></i>
+												<h6 class="text-danger fs-14 font-weight-bold mt-4"><?php echo e(__('Warning! To complete the update process follow all steps listed under')); ?> <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">update instructions </a> <?php echo e(__('in the docs')); ?></h6>
+											</div>
+										</div>														
+									<?php else: ?>
+										<div class="text-center">
+											<h1 class="fs-24"><?php echo e(__('You have the Latest Version Installed')); ?></h1>
+											<h1 class="fs-30 super-strong"><?php echo e($current_version); ?></h1>	
+											<h6 class="text-danger fs-14 font-weight-bold mt-4"><?php echo e(__('Warning! To complete the update process follow all steps listed under')); ?> <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">update instructions </a> <?php echo e(__('in the docs')); ?></h6>									
+											
+										</div>
+									<?php endif; ?>
 								<?php else: ?>
 									<div class="text-center">
 										<h1 class="fs-24"><?php echo e(__('You have the Latest Version Installed')); ?></h1>
-										<h6 class="text-success fs-14 font-weight-bold mt-4 mb-5"><?php echo e(__('Current version is the latest')); ?></h6>
-										<i class="fa-solid fa-box-check fs-50 text-success"></i>	
-										<h6 class="text-danger fs-14 font-weight-bold mt-4"><?php echo e(__('Warning! Make sure to follow the instructions in the update tab in the')); ?> <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">documentation </a> <?php echo e(__('to finish the update process')); ?></h6>									
-										
+										<h1 class="fs-30 super-strong"><?php echo e($current_version); ?></h1>	
+										<h6 class="text-danger fs-14 font-weight-bold mt-4"><?php echo e(__('Warning! To complete the update process follow all steps listed under')); ?> <a class="font-weight-bold text-primary" target="_blank" href="https://davinci.berkine.me/documentation">update instructions </a> <?php echo e(__('in the docs')); ?></h6>									
 									</div>
 								<?php endif; ?>								
 							</div>
 						</div>
-						<div class="card-footer text-center border-0 pb-2 pt-5">		
-							<span id="processing"><img src="<?php echo e(theme_url('img/svgs/upgrade.svg')); ?>" alt=""></span>												
-							<button id="upgrade" type="button" class="btn btn-primary"><?php if($latest_version['status']): ?> <?php echo e(__('Download & Install Upgrade')); ?> <?php else: ?>	<?php echo e(__('Check New Version')); ?> <?php endif; ?></button>						
+						<div class="card-footer text-center border-0 pb-2 pt-5">
+							<?php if($version_metadata): ?>			
+								<span id="processing"><img src="<?php echo e(theme_url('img/svgs/upgrade.svg')); ?>" alt=""></span>												
+								<button id="upgrade" type="button" class="btn btn-primary"><?php if($latest_version['status']): ?> <?php echo e(__('Download & Install Upgrade')); ?> <?php else: ?>	<?php echo e(__('Check New Version')); ?> <?php endif; ?></button>					
+							<?php else: ?>
+								<span id="processing"><img src="<?php echo e(theme_url('img/svgs/upgrade.svg')); ?>" alt=""></span>												
+								<button id="update" type="button" class="btn btn-primary"><?php echo e(__('Check New Version')); ?></button>					
+							<?php endif; ?>
 						</div>
 					</form>
 				</div>
@@ -72,11 +84,88 @@
 
 				<div class="changelog">
 					<div class="changelog-version mt-5">
+						<span class="version-name"><?php echo e(__('Version')); ?> 7.8</span> - <span class="fs-14 font-weight-semibold">28.07.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Speechify Voice Clone extension (Paid)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Speechify Text to Speech extension (Free)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New Gemini 2.5 Pro | Gemini 2.5 Flash | Gemini 2.5 Flash Lite models added</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New Grok 3 | Grok 3 Fast | Grok 3 Mini | Grok 3 Mini Fast models added</span></span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">External Chatbot updated (v1.2)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">External Chatbot Website training improved</span></li>							
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">External Chatbot Text training improved</span></li>							
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">External Chatbot PDF training improved</span></li>							
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">External Chatbot CSV/Excel training added</span></li>							
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Text to Video updated (v1.6)</span></li>							
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">External Chatbot user credit balance check improved</span></li>							
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">SaaS Business extension updated (v2.3)</span></li>					
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Sound Studio extension updated (v1.1)</span></li>					
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Sonic Theme updated (v1.8)</span></li>					
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">External Chatbot page position css issue fixed</span></span></li>
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
+						<span class="version-name"><?php echo e(__('Version')); ?> 7.7</span> - <span class="fs-14 font-weight-semibold">5.07.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">SEO Tool extension (Paid)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">New Claude Sonnet 4 | Opus 4 models added</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Google Veo 3 added (AI Text to Video)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Kling 2.1 Standard | Pro | Master added (AI Image to Video) & (AI Text to Video)</span></span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">External Chatbot updated (v1.1)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Wallet System disable option added (v1.1)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Image to Video updated (v1.6)</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">AI Text to Video updated (v1.4)</span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Chat Share history deletion improved (v1.3)</span></span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">Chat history deletion improved</span></span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">External Chatbot credit consumption fixed</span></span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">External Chatbot conversation list view fixed</span></span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">External Chatbot history view minor issue fixed</span></span></li>
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
+						<span class="version-name"><?php echo e(__('Version')); ?> 7.6</span> - <span class="fs-14 font-weight-semibold">08.06.2025</span>
+					</div>   
+					<div class="changelog-description mt-6">     
+						<ul>	 	 				     
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">External Chatbots (Paid)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Enhanced User Dashboard</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Revamped Admin Dashboard with Advanced User and Finance Analytics</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Advanced search feature</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Redesign of the Default Theme</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">Export all Gift Codes to PDF | Excel feature added</span></span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">SaaS Business extension updated (v2.2)</span></span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">RTL css styles updated</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Email notifications for Wallet transfers added</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Dark mode for Default theme improved</span></li>
+							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Theme switch performance improved</span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">New openai models view fixed for AI Chat</span></span></li>
+							<li><span class="version-fix mr-2">Fix</span> <span class="text-muted fs-13">New openai models fixed for custom templates</span></span></li>
+						</ul>
+					</div>
+				</div>
+
+				<hr class="mt-6">
+
+				<div class="changelog">
+					<div class="changelog-version mt-5">
 						<span class="version-name"><?php echo e(__('Version')); ?> 7.5</span> - <span class="fs-14 font-weight-semibold">12.05.2025</span>
 					</div>   
 					<div class="changelog-description mt-6">     
 						<ul>	 	 				     
-							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">AI Speech to Text Pro (Paid)</span></span></li>
+							<li><span class="version-new mr-2">New</span> <span class="text-muted fs-13">AI Speech to Text Pro extension (Paid)</span></span></li>
 							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Gift System has been updated</span></li>
 							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Saas Business extension updated (v2.1)</span></li>
 							<li><span class="version-update mr-2">Update</span> <span class="text-muted fs-13">Wordpress Integration extension updated (v1.2)</span></li>

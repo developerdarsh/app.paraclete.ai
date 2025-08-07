@@ -52,6 +52,20 @@
             <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('Google | Gemini 1.5 Flash') }}</option>
         @elseif (trim($model) == 'gemini-2.0-flash')
             <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('Google | Gemini 2.0 Flash') }}</option>
+        @elseif (trim($model) == 'gemini-2.5-flash-lite-preview-06-17')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('Google | Gemini 2.5 Flash Lite') }}</option>
+        @elseif (trim($model) == 'gemini-2.5-flash')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('Google | Gemini 2.5 Flash') }}</option>
+        @elseif (trim($model) == 'gemini-2.5-pro')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('Google | Gemini 2.5 Pro') }}</option>
+        @elseif (trim($model) == 'grok-3-latest')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('xAI | Grok 3') }}</option>
+        @elseif (trim($model) == 'grok-3-fast-latest')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('xAI | Grok 3 Fast') }}</option>
+        @elseif (trim($model) == 'grok-3-mini-latest')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('xAI | Grok 3 Mini') }}</option>
+        @elseif (trim($model) == 'grok-3-mini-fast-latest')
+            <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('xAI | Grok 3 Mini Fast') }}</option>
         @elseif (trim($model) == 'grok-2-1212')
             <option value="{{ trim($model) }}" @if (trim($model) == $default_model) selected @endif>{{ __('xAI | Grok 2') }}</option>
         @elseif (trim($model) == 'grok-2-vision-1212')
