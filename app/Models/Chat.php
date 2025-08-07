@@ -26,7 +26,8 @@ class Chat extends Model implements Searchable
         'category',
         'type',
         'prompt',
-        'group', 
+        'group',
+        'voice_code',
         'model',
         'model_mode'
     ];
