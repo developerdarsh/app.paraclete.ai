@@ -383,7 +383,7 @@
           </div>
             <div class="row">
                 <!-- Main Content -->
-                <div class="col-lg-6">
+                <div class="col-lg-8">
                     <div class="header-section">
                         <div class="d-flex justify-content-between align-items-center">
                             <h2 class="mb-0">Choose an Avatar Template</h2>
@@ -451,7 +451,7 @@
                 </div>
 
                 <!-- Sidebar -->
-                <div class="col-lg-3">
+                <div class="col-lg-4">
                     <div class="sidebar">
                         <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=300&h=300&fit=crop&crop=face" alt="Selected Avatar" class="preview-image mb-3">
                         <input type="hidden" id="selectedAvatarId" name="avatarId" />

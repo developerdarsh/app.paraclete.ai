@@ -689,23 +689,6 @@
       <!-- Import Block -->
       <div class="import">
         <!-- URL Import -->
-        <div class="import__input-container">
-          <i class="fas fa-link import__link-icon"></i>
-          <input type="text" class="import__input" placeholder="Enter a link, supports">
-          <div class="import__format-icons">
-            <i class="fab fa-youtube" title="YouTube"></i>
-            <i class="fas fa-file-alt" title="Document"></i>
-            <i class="fas fa-file-pdf" title="PDF"></i>
-            <i class="fas fa-link" title="Link"></i>
-            <i class="fas fa-envelope" title="Email"></i>
-            <i class="fas fa-chart-bar" title="Excel"></i>
-            <i class="fas fa-font" title="Text"></i>
-            <i class="fas fa-play" title="Video"></i>
-            <i class="fas fa-ellipsis-h" title="More"></i>
-          </div>
-          <button class="button button--import import__button">Import from Link</button>
-        </div>
-
         <!-- Import Cards -->
         <div class="import__cards">
           <div class="card">
@@ -715,14 +698,6 @@
               <div class="card__subtitle">(mp4, mov, png, jpg, bmp, webp)</div>
             </div>
             <input type="file" id="fileInput" multiple accept=".mp4,.mov,.png,.jpg,.jpeg,.bmp,.webp" style="display: none;">
-          </div>
-          <div class="card">
-            <i class="fas fa-robot card__icon"></i>
-            <div class="card__title">AI Create</div>
-          </div>
-          <div class="card">
-            <i class="fas fa-folder card__icon"></i>
-            <div class="card__title">Import from Assets</div>
           </div>
         </div>
         <!-- preview images -->
@@ -760,7 +735,7 @@
           <!-- Tab 1 -->
           <div class="tab-pane fade show active" id="details" role="tabpanel" aria-labelledby="details-tab">
             <textarea class="form-control" placeholder="Describe the features of your product/service/application."
-              maxlength="5000" rows="10" oninput="updateCharCount(this, 'charCount1')"></textarea>
+              maxlength="5000" rows="10"></textarea>
             <div class="form-text text-end"><span id="charCount1">0</span>/5000</div>
           </div>
 
@@ -768,7 +743,7 @@
           <div class="tab-pane fade" id="myscript" role="tabpanel" aria-labelledby="myscript-tab">
             <textarea class="form-control"
               placeholder="Input your own script content; the Al will use it directly without editing." maxlength="5000"
-              rows="10" oninput="updateCharCount(this, 'charCount2')"></textarea>
+              rows="10"></textarea>
             <div class="form-text text-end"><span id="charCount2">0</span>/5000</div>
           </div>
         </div>

@@ -342,40 +342,65 @@ class AiUGCVideoController extends Controller
         ),
         ));
         $response = curl_exec($curl);
-        curl_close($curl);
+        dd($response);
 
+        curl_close($curl);
         $decodedResponse = json_decode($response, true);
         $uploadUrl = $decodedResponse['result']['uploadUrl'] ?? null;
         $fileId = $decodedResponse['result']['fileId'] ?? null;
-
         if (!$uploadUrl || !$fileId) {
             return response()->json(['error' => 'Failed to get upload URL from API'], 500);
         }
-        dd($uploadUrl);
 
-        //Step 2: Download the remote image to a temporary local file
+       // Step 2: Download the remote image to a temporary local file
         // $tempFile = tempnam(sys_get_temp_dir(), 'img_');
         // $imageContents = @file_get_contents($imageUrl);
 
+        // // Debug without halting
+        // \Log::info("Temporary file path: " . $tempFile);
+
         // if ($imageContents === false) {
-        //     return response()->json(['error' => 'Failed to download image from provided URL'], 400);
+        //     return response()->json([
+        //         'error' => 'Failed to download image from provided URL'
+        //     ], 400);
         // }
 
+        // // Save the downloaded image to the temporary file
         // file_put_contents($tempFile, $imageContents);
-        // $fileSize = filesize($tempFile); // Get file size for Content-Length
+        // $fileSize = filesize($tempFile);
+
         // // Step 3: Upload the local temp file to S3 via pre-signed URL
         // $ch = curl_init($uploadUrl);
         // curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         // curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
         // curl_setopt($ch, CURLOPT_INFILE, fopen($tempFile, 'r'));
-        // curl_setopt($ch, CURLOPT_INFILESIZE, filesize($tempFile));
+        // curl_setopt($ch, CURLOPT_INFILESIZE, $fileSize);
         // curl_setopt($ch, CURLOPT_HTTPHEADER, [
         //     'Content-Type: image/png',
-        //     'Content-Length:'.$fileSize // Required by S3 to avoid MissingContentLength error
+        //     'Content-Length: ' . $fileSize // Avoid MissingContentLength error
         // ]);
 
         // $uploadResponse = curl_exec($ch);
+
+        // // Check for cURL errors
+        // if (curl_errno($ch)) {
+        //     \Log::error("S3 Upload cURL Error: " . curl_error($ch));
+        // } else {
+        //     \Log::info("S3 Upload Response: " . $uploadResponse);
+        // }
+
+        // curl_close($ch);
+
+        // Delete the temp file after upload
+        // unlink($tempFile);
+
+        // return response()->json([
+        //     'message' => 'Image uploaded successfully',
+        //     's3_response' => $uploadResponse
+        // ]);
+
         // dd($uploadResponse);
+
         // if (curl_errno($ch)) {
         //     $error = curl_error($ch);
         //     curl_close($ch);
@@ -420,7 +445,6 @@ class AiUGCVideoController extends Controller
         ),
         ));
         $response = curl_exec($curl);
-        dd($response);
         if (curl_errno($curl)) {
             return response()->json(['error' => curl_error($curl)], 500);
         }
